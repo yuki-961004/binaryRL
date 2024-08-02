@@ -1,0 +1,310 @@
+---
+title: "Untitled"
+author: "YuKi"
+date: "2024-08-02"
+output: html_document
+---
+```{r}
+library(dplyr)
+```
+
+
+```{r}
+df <- read.csv("../DATA/df1_Delot.csv") 
+```
+
+```{r}
+df_test <- df %>%
+  dplyr::filter(Subject == 1, Choose == "Green") %>%
+  dplyr::arrange(Trial)
+```
+
+# argument
+```{r}
+# 输入data frame
+data <- df_test
+# 价值更新的时间线, 基于的列
+time_line <- c("Block", "Trial")
+# 初始值
+initial_value <- 0
+# model
+model <- "YuKi"
+# parameters
+etas <- c(0.5, 0.6, 0.7, 0.8, 0.9, 1)
+# epsilon
+epsilons <- c(50, 20)
+
+sub = "Subject"
+```
+
+# test function
+```{r}
+################################# Arrange ######################################
+# 基于time_line这个向量, 录入排序向量
+order_vector <- lapply(time_line, function(col) data[[col]])
+
+# 基于排序向量对输入数据集进行排序
+temp_data <- data[do.call(order, order_vector), ]
+
+############################### Add Null row ###################################
+# 生成一个与输入数据集相同的单行数据集. 用于存放初始值
+empty_row <- as.data.frame(matrix(ncol = ncol(data), nrow = 1))
+colnames(empty_row) <- colnames(data)
+
+# 在第一行插入一个空行
+temp_data <- rbind(empty_row, temp_data)
+temp_data$Time_Line <- seq(from = 0, to = nrow(temp_data) - 1)
+
+############################### Add Null row ###################################
+
+temp_data$V_value <- NA
+temp_data$V_update <- NA
+temp_data$DIF <- NA
+temp_data$eta <- NA
+
+# 设置初始值
+temp_data$V_value[1] <- initial_value + 1e-10
+temp_data$V_update[1] <- initial_value + 1e-10
+
+
+for (i in 2:nrow(temp_data)) {
+  temp_data$V_value[i] <- temp_data$V_update[i - 1]
+  temp_data$DIF[i] <- temp_data$Reward[i] - temp_data$V_value[i]
+  temp_data$eta[i] <- eta_function(
+    model = "YuKi",
+    etas = etas,
+    epsilons = epsilons,
+    value = temp_data$V_value[i],
+    reward = temp_data$Reward[i],
+    occurrence = temp_data$Time_Line[i]
+  )
+  temp_data$V_update[i] <- temp_data$V_value[i] + temp_data$eta[i] * temp_data$DIF[i]
+}
+```
+
+```{r}
+res <- update_v(data = df_test)
+```
+
+```{r}
+update_v <- function(
+  # 输入data frame
+  data,
+  # 价值更新的时间线, 基于的列
+  time_line = c("Block", "Trial"),
+  # 初始值
+  initial_value = 0,
+  # model
+  model = "RSTD",
+  # parameters
+  etas = c(0.5, 0.6, 0.7, 0.8, 0.9, 0.99),
+  # epsilon
+  epsilons = c(50, 20)
+  ){
+  ################################# Arrange ######################################
+  # 基于time_line这个向量, 录入排序向量
+  order_vector <- lapply(time_line, function(col) data[[col]])
+  
+  # 基于排序向量对输入数据集进行排序
+  temp_data <- data[do.call(order, order_vector), ]
+  
+  ############################### Add Null row ###################################
+  # 生成一个与输入数据集相同的单行数据集. 用于存放初始值
+  empty_row <- as.data.frame(matrix(ncol = ncol(data), nrow = 1))
+  colnames(empty_row) <- colnames(data)
+  
+  # 在第一行插入一个空行
+  temp_data <- rbind(empty_row, temp_data)
+  temp_data$Time_Line <- seq(from = 0, to = nrow(temp_data) - 1)
+  
+  ############################### Add Null row ###################################
+  
+  temp_data$V_value <- NA
+  temp_data$V_update <- NA
+  temp_data$DIF <- NA
+  temp_data$eta <- NA
+  
+  # 设置初始值
+  temp_data$V_value[1] <- initial_value + 1e-10
+  temp_data$V_update[1] <- initial_value + 1e-10
+  
+  
+  for (i in 2:nrow(temp_data)) {
+    temp_data$V_value[i] <- temp_data$V_update[i - 1]
+    temp_data$DIF[i] <- temp_data$Reward[i] - temp_data$V_value[i]
+    temp_data$eta[i] <- eta_function(
+      model = model,
+      etas = etas,
+      epsilons = epsilons,
+      value = temp_data$V_value[i],
+      reward = temp_data$Reward[i],
+      occurrence = temp_data$Time_Line[i]
+    )
+    temp_data$V_update[i] <- temp_data$V_value[i] + temp_data$eta[i] * temp_data$DIF[i]
+  }
+  
+  res_data <- temp_data[-1, ]
+  
+  return(res_data)
+}
+```
+
+
+```{r}
+eta_function <- function(model, value, reward, occurrence, etas, epsilons) {
+  if (!(model %in% c(
+    "TD", "UTI", "RSTD", 
+    "REL", "ABS", 
+    "Helen", "YuKi"
+  ))) {
+    stop(
+      "\n\nError: Invalid model!\n\n",
+      "-----------------------------\n",
+      "The model provided is not recognized.\n\n",
+      "Please choose a type of model\n",
+      "  - TD: learning rate(eta)\n",
+      "  - UTI: learning rate(eta) + subjective utility(weight)\n",
+      "  - RSTD: gain learning rate(eta_pos) + loss learning rate(eta_neg)\n",
+      "  - ABS: for absolute model\n",
+      "  - REL: for relative model\n",
+      "  - Helen: test model\n",
+      "  - YuKi: test model\n",
+      "Example usage:\n",
+      '  model = "REL"\n',
+      "-----------------------------"
+    )
+  }
+  ################################ [ TD ] ######################################
+  else if (model == "TD") {
+    eta <- etas[1]
+  } 
+  ################################ [ UTI ] #####################################
+  else if (model == "UTI") {
+    eta <- etas[1]
+  } 
+  ################################ [ RSTD ] ####################################
+  else if (model == "RSTD" & reward > value) {
+    eta <- etas[1]
+  } 
+  else if (model == "RSTD" & reward <= value) {
+    eta <- etas[2]
+  } 
+  else if (model == "RSTD") {
+    eta <-  "ERROR"
+  }
+  ################################ [ REL ] #####################################
+  else if (model == "REL" & reward > value & abs((reward - value) / value) >= epsilons[1]) {
+    eta <- etas[1]
+  } 
+  else if (model == "REL" & reward > value & abs((reward - value) / value) < epsilons[1]) {
+    eta <- etas[2]
+  } 
+  else if (model == "REL" & reward < value & abs((reward - value) / value) < epsilons[2]) {
+    eta <- etas[3]
+  } 
+  else if (model == "REL" & reward < value & abs((reward - value) / value) >= epsilons[2]) {
+    eta <- etas[4]
+  }
+  else if (model == "REL") {
+    eta <- "ERROR"
+  }
+  ################################ [ ABS ] #####################################
+  else if (model == "ABS" & reward > value & abs(reward - value) >= epsilons[1]) {
+    eta <- etas[1]
+  } 
+  else if (model == "ABS" & reward > value & abs(reward - value) < epsilons[1]) {
+    eta <- etas[2]
+  } 
+  else if (model == "ABS" & reward < value & abs(reward - value) < epsilons[2]) {
+    eta <- etas[3]
+  } 
+  else if (model == "ABS" & reward < value & abs(reward - value) >= epsilons[2]) {
+    eta <- etas[4]
+  }
+  else if (model == "ABS") {
+    eta <- "ERROR"
+  }
+  ################################ [ TD ] ######################################
+  else if (model == "YuKi" & reward > value & reward >= epsilons[1]) {
+    eta <- etas[1]
+  } 
+  else if (model == "YuKi" & reward <= value & reward >= epsilons[1]) {
+    eta <- etas[2]
+  } 
+  else if (model == "YuKi" & reward > value & reward > epsilons[2] & reward < epsilons[1]) {
+    eta <- etas[3]
+  } 
+  else if (model == "YuKi" & reward <= value & reward > epsilons[2] & reward < epsilons[1]) {
+    eta <- etas[4]
+  }
+  else if (model == "YuKi" & reward > value & reward <= epsilons[2]) {
+    eta <- etas[5]
+  } 
+  else if (model == "YuKi" & reward <= value & reward <= epsilons[2]) {
+    eta <- etas[6]
+  }
+  else if (model == "YuKi") {
+    eta <- "ERROR"
+  }
+  ################################ [ TD ] ######################################
+  else {
+    eta <- "ERROR" # 检查错误
+  }
+  return(eta)
+}
+
+```
+
+```{r loop_update}
+loop_update_v <- function(
+  data = df,
+  sub = "Subject",
+  choose = "Choose",
+  # 价值更新的时间线, 基于的列
+  time_line = c("Block", "Trial"),
+  # 初始值
+  initial_value = 0,
+  # model
+  model = "YuKi",
+  # parameters
+  etas = c(0.5, 0.6, 0.7, 0.8, 0.9, 1.0),
+  # epsilon
+  epsilons = c(50, 20)
+  ) {
+  df_split <- base::split(x = data, f = data[[sub]])
+  df_res <- list()
+  
+  for (i in 1:length(df_split)) {
+    df_subject <- df_split[[i]]
+    df_choose <- split(x = df_subject, f = df_subject[[choose]])
+    
+    df_update <- list()
+    df_update <- purrr::map(
+      .x = df_choose, 
+      .f = update_v,
+      # 价值更新的时间线, 基于的列
+      time_line = time_line,
+      # 初始值
+      initial_value = initial_value,
+      # model
+      model = model,
+      # parameters
+      etas = etas,
+      # epsilon
+      epsilons = epsilons
+    )
+    
+    df_res[[i]] <- dplyr::bind_rows(df_update)
+  }
+  
+  res <- dplyr::bind_rows(df_res) 
+  
+  return(res)
+}
+```
+
+```{r}
+res <- loop_update_v(model = "RSTD") %>%
+  dplyr::arrange(Subject, Block, Trial)
+```
+

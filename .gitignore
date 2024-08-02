@@ -1,0 +1,16 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# MacOS
+.DS_Store
+# Windows
+desktop.ini
+
+# Sensitive Files
+*lastrun.py
+
+# temp
+~*
+DATA/df1_Delot.csv
