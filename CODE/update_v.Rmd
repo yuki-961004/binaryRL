@@ -1,0 +1,226 @@
+---
+title: "Untitled"
+author: "YuKi"
+date: "2024-08-02"
+output: html_document
+---
+```{r}
+library(dplyr)
+```
+
+```{r}
+raw <- read.csv("../DATA/df1_Delot.csv") %>%
+  dplyr::mutate(
+    DL = case_when(
+      Frame == "Single" ~ DS,
+      TRUE ~ DL
+    ),
+    DR = case_when(
+      Frame == "Single" ~ DS,
+      TRUE ~ DR
+    ),
+  ) %>%
+  dplyr::select(-DS, -NetWorth)
+```
+
+```{r}
+ex_func_eta <- function(value, reward, occurrence, params) {
+  if (is.na(reward)) {
+    stop()
+  }
+  ################################ [ Your Mdoel ] ######################################
+  else if (reward > value & reward >= params[7]) {
+    eta <- params[1]
+  } 
+  else if (reward < value & reward >= params[7]) {
+    eta <- params[2]
+  } 
+  else if (reward > value & reward > params[8] & reward < params[7]) {
+    eta <- params[3]
+  } 
+  else if (reward < value & reward > params[8] & reward < params[7]) {
+    eta <- params[4]
+  }
+  else if (reward > value & reward <= params[8]) {
+    eta <- params[5]
+  } 
+  else if (reward < value & reward <= params[8]) {
+    eta <- params[6]
+  }
+  else if (reward == value) {
+    eta <- 0
+  }
+  else if (model == "YuKi") {
+    eta <- "ERROR"
+  }
+  ################################ [ TD ] ######################################
+  else {
+    eta <- "ERROR" # 检查错误
+  }
+  return(eta)
+}
+
+```
+
+```{r}
+test <- example_function(
+  value = 0,
+  reward = 40,
+  occurrence = 1,
+  params = c(0.5, 0.6, 0.7, 0.8, 0.9, 0.99, 50, 20)
+)
+```
+
+```{r}
+rl_update_v <- function(
+  # 输入data frame
+  data,
+  # 价值更新的时间线, 基于的列
+  time_line = c("Block", "Trial"),
+  # 初始值
+  initial_value = 0,
+  # parameters
+  params = c(0.5, 0.6, 0.7, 0.8, 0.9, 0.99, 50, 20),
+  # 价值函数选用示例函数
+  eta_func = ex_func_eta
+  ){
+  ################################# Arrange ######################################
+  # 基于time_line这个向量, 录入排序向量
+  order_vector <- lapply(time_line, function(col) data[[col]])
+  
+  # 基于排序向量对输入数据集进行排序
+  temp_data <- data[do.call(order, order_vector), ]
+  
+  ############################### Add Null row ###################################
+  # 生成一个与输入数据集相同的单行数据集. 用于存放初始值
+  empty_row <- as.data.frame(matrix(ncol = ncol(data), nrow = 1))
+  colnames(empty_row) <- colnames(data)
+  
+  # 在第一行插入一个空行
+  temp_data <- rbind(empty_row, temp_data)
+  temp_data$Time_Line <- seq(from = 0, to = nrow(data))
+  
+  ############################### Add Null row ###################################
+  
+  temp_data$V_value <- NA
+  temp_data$eta <- NA
+  temp_data$V_update <- NA
+  
+  
+  # 设置初始值
+  temp_data$V_value[1] <- initial_value + 1e-10
+  temp_data$V_update[1] <- initial_value + 1e-10
+  
+  
+  for (i in 2:nrow(temp_data)) {
+    temp_data$V_value[i] <- temp_data$V_update[i - 1]
+    temp_data$eta[i] <- eta_func(
+      value = temp_data$V_value[i],
+      reward = temp_data$Reward[i],
+      occurrence = temp_data$Time_Line[i],
+      params = params
+    )
+    temp_data$V_update[i] <- temp_data$V_value[i] + temp_data$eta[i] * (temp_data$Reward[i] - temp_data$V_value[i])
+  }
+  
+  res_data <- temp_data[-1, ]
+  res_data$V_value <- round(res_data$V_value, 2)
+  res_data$V_update <- round(res_data$V_update, 2)
+
+  return(res_data)
+}
+```
+
+```{r}
+test <- rl_update_v(
+  data = raw %>% filter(Subject == 1 & Choose == "Green"), 
+  # 价值更新的时间线, 基于的列
+  time_line = c("Block", "Trial"),
+  # 初始值
+  initial_value = 0,
+  # parameters
+  params = c(0.5, 0.6, 0.7, 0.8, 0.9, 0.99, 50, 20),
+  # 价值函数选用示例函数
+  eta_func = ex_func_eta
+)
+```
+
+```{r loop_update}
+loop_update_v <- function(
+  data,
+  # 被试序号列
+  sub = "Subject",
+  # 被试选择列
+  choose = "Choose",
+  # 价值更新的时间线, 基于的列
+  time_line = c("Block", "Trial"),
+  # 初始值
+  initial_value = 0,
+  # parameters
+  params = c(0.5, 0.6, 0.7, 0.8, 0.9, 0.99, 50, 20),
+  # 价值函数选用示例函数
+  eta_func = ex_func_eta
+  ) {
+  # 按照被试分裂原始数据
+  df_split <- base::split(x = data, f = data[[sub]])
+  # 每个被试的结果存入该list的一个元素中
+  df_res <- list()
+  
+  # 循环的每次针对一个被试
+  for (i in 1:length(df_split)) {
+    # 被试i的数据
+    df_subject <- df_split[[i]]
+    # 按照选择的不同进行分裂
+    df_choose <- split(x = df_subject, f = df_subject[[choose]])
+    # 每种选择的结果存入该list的一个元素中
+    df_update <- list()
+    # 对每种choose运行update_v
+    df_update <- purrr::map(
+      # list对象, 每个元素执行一次function
+      .x = df_choose, 
+      # function是update_v
+      .f = rl_update_v,
+      # 价值更新的时间线, 基于的列
+      time_line = time_line,
+      # 初始值
+      initial_value = initial_value,
+      # parameters
+      params = params,
+      # 价值函数选用示例函数
+      eta_func = eta_func
+    )
+    # 把所有choose类型的结果合并, 成为一个被试的结果
+    df_res[[i]] <- dplyr::bind_rows(df_update)
+  }
+  
+  # 把所有被试的结果合并, 成为总结果
+  temp_res <- dplyr::bind_rows(df_res) 
+  # 此时排序基于sub和time_line
+  order_var <- c(sub, time_line)
+  # 基于time_line这个向量, 录入排序向量
+  order_vector <- lapply(order_var, function(col) temp_res[[col]])
+  # 基于排序向量对输入数据集进行排序
+  res <- temp_res[do.call(order, order_vector), ]
+  
+  return(res)
+}
+```
+
+```{r}
+test <- loop_update_v(
+  data = raw, 
+  # 被试序号列
+  sub = "Subject",
+  # 被试选择列
+  choose = "Choose",
+  # 价值更新的时间线, 基于的列
+  time_line = c("Block", "Trial"),
+  # 初始值
+  initial_value = 0,
+  # parameters
+  params = c(0.5, 0.6, 0.7, 0.8, 0.9, 0.99, 50, 20),
+  # 价值函数选用示例函数
+  eta_func = ex_func_eta
+)
+```
+
