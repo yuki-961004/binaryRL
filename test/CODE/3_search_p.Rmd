@@ -12,6 +12,12 @@ library(yukiRL)
 ```
 
 ```{r}
+print(yukiRL::ex_func_eta)
+print(yukiRL::ex_func_prob)
+```
+
+
+```{r}
 raw <- read.csv("../DATA/df1_Delot.csv") %>%
   dplyr::mutate(
     DL = case_when(
@@ -142,24 +148,16 @@ rm(cl)
 ```
 
 ```{r}
-############################ Extraction parameters #############################
-best_params <- data.frame(t(ga_result@solution[1, ]), ga_result@fitnessValue)
-colnames(best_params) <- c(
-  "eta_pos", "eta_neg",
-  "tau",
-  "Log_L"
-)
-
 ############################# model fit parameters #############################
-n_params <- ncol(best_params) - 1
+n_params <- ncol(ga_result@solution)
 n_trials <- 288
-Log_Likelihood <- best_params[1,4]
+Log_Likelihood <- ga_result@fitnessValue
 ############################## print parameters ################################
 cat("Number of parameters (n_params):", n_params, "\n")
 cat("Number of trials (n_trials):", n_trials, "\n")
-cat("η+:", best_params[1,1], "\n")
-cat("η-:", best_params[1,2], "\n")
-cat("τ:", best_params[1,3], "\n")
+cat("η+:", ga_result@solution[1,1], "\n")
+cat("η-:", ga_result@solution[1,2], "\n")
+cat("τ:", ga_result@solution[1,3], "\n")
 cat("Log-Likelihood:", Log_Likelihood, "\n")
 cat("AIC:", 2 * n_params - 2 * Log_Likelihood, "\n")
 cat("BIC:", n_params * log(n_trials) - 2 * Log_Likelihood, "\n")
