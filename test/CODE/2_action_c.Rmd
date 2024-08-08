@@ -17,24 +17,27 @@ step1 <- loop_update_v(
   choose = "Choose",
   # 价值更新的时间线, 基于的列
   time_line = c("Block", "Trial"),
+  # 被试id
+  n = 1:41,
   # 初始值
   initial_value = 0,
   # parameters
-  params = c(0.5, 0.6, 0.7, 0.8, 0.9, 0.99, 50, 20),
+  params = c(0.3, 0.7),
   # 价值函数选用示例函数
-  eta_func = example_function
+  eta_func = ex_func_eta
 ) 
 ```
 
 ```{r}
 ex_func_prob <- function(
-  L_value = df_wider$L_value[i],
-  R_value = df_wider$R_value[i],
+  L_value,
+  R_value,
   tau = 1,
+  beta,
   LR
   ){
   if (!(LR %in% c("L", "R"))) {
-    stop("Prob of L or R")
+    stop("LR = 'L' or 'R'")
   }
   else if (LR == "L") {
     prob <- 1 / (1 + exp(-(L_value - R_value) * tau))
@@ -66,123 +69,6 @@ ex_func_prob(
 )
 ```
 
-
-```{r}
-seed = 123
-softmax = TRUE
-# 左右选项
-L_choice = "DL"
-R_choice = "DR"
-# 初始值
-initial_value = 0
-# update_v数据集
-df_raw <- step1
-# 长转宽
-df_wider <- step1 %>%
-  dplyr::mutate(
-    names = Choose,
-    values = V_value
-  ) %>%
-  tidyr::pivot_wider(
-    names_from = "names",
-    values_from = "values"
-  )
-
-# 长转宽前后不同的列, 也就是Choose列
-wide_columns1 <- setdiff(x = names(df_raw), y = "ID")
-wide_columns2 <- setdiff(x = names(df_wider), y = "ID")
-choose_col <- setdiff(wide_columns2, wide_columns1)
-
-# 初始化 L_value 和 R_value 列
-df_wider$L_value <- NA
-df_wider$R_value <- NA
-df_wider$L_prob <- NA
-df_wider$R_prob <- NA
-df_wider$Sub_Choose <- df_wider$Choose
-df_wider$Rob_Choose <- NA
-df_wider$L_dir <- NA
-df_wider$R_dir <- NA
-df_wider$L_logl <- NA
-df_wider$R_logl <- NA
-df_wider$ACC <- NA
-
-# 处理选择列和更新 L_value 和 R_value
-for (i in 1:nrow(df_wider)) {
-  for (col in choose_col) {
-    if (i == 1) {
-      df_wider[i, col] <- initial_value
-    } else if (is.na(df_wider[i, col])) {
-      df_wider[i, col] <- df_wider[i - 1, col]
-    }
-  }
-  
-  # 更新 L_value 和 R_value 列
-  L_name <- df_wider[[L_choice]][i]
-  R_name <- df_wider[[R_choice]][i]
-  df_wider$L_value[i] <- df_wider[[L_name]][i]
-  df_wider$R_value[i] <- df_wider[[R_name]][i]
-  df_wider$L_prob[i] <- round(ex_func_prob(LR = "L", tau = 1), 2)
-  df_wider$R_prob[i] <- round(ex_func_prob(LR = "R", tau = 1), 2)
-   
-  if (!(softmax %in% c(TRUE, FALSE))) {
-    stop("softmax")
-  }
-  else if (softmax == TRUE) {
-    # 基于刚刚的概率, 随机选一个. 而不是谁大选谁
-    set.seed(seed = seed)
-    df_wider$Rob_Choose[i] <- sample(
-      c(df_wider[[L_choice]][i], df_wider[[R_choice]][i]), size = 1, 
-      prob = c(df_wider$L_prob[i], df_wider$R_prob[i])
-    ) 
-  } 
-  else if (softmax == FALSE) {
-    # 如果左边大选左边
-    if (df_wider$L_value[i] > df_wider$R_value[i]) {
-      df_wider$Rob_Choose[i] <- df_wider[[L_choice]][i]
-    } 
-    # 如果右边大选右边
-    else if (df_wider$L_value[i] < df_wider$R_value[i]) {
-      df_wider$Rob_Choose[i] <- df_wider[[R_choice]][i]
-    } 
-    # 一样大随机选一个(说明是DS情况)
-    else if (df_wider$L_value[i] == df_wider$R_value[i]) {
-      df_wider$Rob_Choose[i] <- sample(
-        c(df_wider[[L_choice]][i], df_wider[[R_choice]][i]), size = 1
-      )
-    } 
-    # 除此以外, 则说明有问题
-    else {
-      df_wider$Rob_Choose[i] <- "ERROR"
-    }
-  }
-  else {
-    print("ERROR softmax")
-  }
-  
-  if (df_wider$Sub_Choose[i] == df_wider[[L_choice]][i]) {
-    df_wider$L_dir[i] <- 1
-    df_wider$R_dir[i] <- 0
-  } 
-  else if (df_wider$Sub_Choose[i] == df_wider[[R_choice]][i]){
-    df_wider$L_dir[i] <- 0
-    df_wider$R_dir[i] <- 1
-  }
-  else {
-    print("L/R_dir ERROR")
-  }
-  
-  df_wider$L_logl[i] <- round(df_wider$L_dir[i] * log(df_wider$L_prob[i] + 1e-10), 2)
-  df_wider$R_logl[i] <- round(df_wider$R_dir[i] * log(df_wider$R_prob[i] + 1e-10), 2)
-  
-  if (df_wider$Sub_Choose[i] == df_wider$Rob_Choose[i]) {
-    df_wider$ACC[i] <- 1
-  }
-  else {
-    df_wider$ACC[i] <- 0
-  }
-}
-```
-
 ```{r}
 rl_action_c <- function(
   # update_v数据集
@@ -190,19 +76,22 @@ rl_action_c <- function(
   # 左右选项
   L_choice = "DL",
   R_choice = "DR",
+  # column choose
+  choose = "Choose",
+  # column value
+  value = "V_value",
   # 初始值
   initial_value = 0,
   seed = 123,
   softmax = TRUE,
   tau = 1,
+  beta = NA,
   prob_func = ex_func_prob
 ){
   # 长转宽
+  data$names <- data[[choose]]
+  data$values <- data[[value]]
   df_wider <- data %>%
-    dplyr::mutate(
-      names = Choose,
-      values = V_value
-    ) %>%
     tidyr::pivot_wider(
       names_from = "names",
       values_from = "values"
@@ -250,7 +139,8 @@ rl_action_c <- function(
         L_value = df_wider$L_value[i],
         R_value = df_wider$R_value[i],
         LR = "L", 
-        tau = tau
+        tau = tau,
+        beta = beta
       ),
       digits = 2
     )
@@ -259,7 +149,8 @@ rl_action_c <- function(
         L_value = df_wider$L_value[i],
         R_value = df_wider$R_value[i],
         LR = "R", 
-        tau = tau
+        tau = tau,
+        beta = beta
       ),
       digits = 2
     )
@@ -334,7 +225,23 @@ rl_action_c <- function(
 ```
 
 ```{r}
-test <- action_c(data = step1 %>% dplyr::filter(Subject == 1))
+test <- rl_action_c(
+  data = step1 %>% dplyr::filter(Subject == 1),
+  # 左右选项
+  L_choice = "DL",
+  R_choice = "DR",
+  # column choose
+  choose = "Choose",
+  # column value
+  value = "V_value",
+  # 初始值
+  initial_value = 0,
+  seed = 123,
+  softmax = TRUE,
+  tau = 1,
+  beta = NA,
+  prob_func = ex_func_prob
+)
 ```
 
 ```{r loop_evaluate}
@@ -345,36 +252,49 @@ loop_action_c <- function(
   L_choice = "DL",
   R_choice = "DR",
   sub = "Subject",
+  choose = "Choose",
+  value = "V_value",
+  time_line = c("Block", "Trial"),
   # 初始值
-  sub_id,
+  n,
   initial_value = 0,
   seed = 123,
   softmax = TRUE,
   tau = 1,
+  beta = NA,
   prob_func = ex_func_prob
   ) {
   
   df_split <- base::split(x = data, f = data[[sub]])
   df_res <- list()
   
-  for (i in sub_id) {
+  for (i in n) {
     df_subject <- df_split[[i]]
     df_res[[i]] <- rl_action_c(
       data = df_subject, 
       # 左右选项
       L_choice = L_choice,
       R_choice = R_choice,
+      choose = choose,
+      value = value,
       # 初始值
       initial_value = initial_value,
       seed = seed,
       softmax = softmax,
       tau = tau,
+      beta = beta,
       prob_func = prob_func
     )
   }
   
-  res <- dplyr::bind_rows(df_res) %>%
-    dplyr::arrange(Subject, Block, Trial)
+  # 把所有被试的结果合并, 成为总结果
+  temp_res <- dplyr::bind_rows(df_res) 
+  # 此时排序基于sub和time_line
+  order_var <- c(sub, time_line)
+  # 基于time_line这个向量, 录入排序向量
+  order_vector <- lapply(order_var, function(col) temp_res[[col]])
+  # 基于排序向量对输入数据集进行排序
+  res <- temp_res[do.call(order, order_vector), ]
   
   return(res)
 }
@@ -388,12 +308,16 @@ step2 <- loop_action_c(
   L_choice = "DL",
   R_choice = "DR",
   sub = "Subject",
+  choose = "Choose",
+  value = "V_value",
+  time_line = c("Block", "Trial"),
   # 初始值
-  sub_id = 1,
+  n = 17,
   initial_value = 0,
   seed = 123,
   softmax = FALSE,
   tau = 1,
+  beta = NA,
   prob_func = ex_func_prob  
 )
 ```
