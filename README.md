@@ -157,7 +157,7 @@ foreach::registerDoSEQ()
 rm(cl)
 ```
 
-# Output
+### Output
 ```{r}
 ############################# model fit parameters #############################
 n_params <- ncol(ga_result@solution)

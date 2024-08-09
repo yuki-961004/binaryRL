@@ -14,7 +14,7 @@ rl_action_c(
   seed = 123,
   softmax = TRUE,
   tau = 1,
-  beta = NA,
+  params = NA,
   prob_func = ex_func_prob
 )
 }
@@ -37,7 +37,7 @@ rl_action_c(
 
 \item{tau}{The τ parameter in the soft-max function, with a default value of 1}
 
-\item{beta}{Other parameters that you think might influence the softmax function}
+\item{params}{Other parameters that you think might influence the softmax function}
 
 \item{prob_func}{The soft-max function, which you can customize.}
 }

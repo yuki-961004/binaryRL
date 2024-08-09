@@ -7,7 +7,7 @@ output: html_document
 ```{r}
 library(dplyr)
 library(GA)
-#install.packages("../../../yukiRL_0.0.1.tar.gz")
+#install.packages("../../../yukiRL_0.0.2.tar.gz")
 library(yukiRL)
 ```
 
@@ -68,7 +68,7 @@ step2 <- yukiRL::loop_action_c(
   seed = 123,
   softmax = FALSE,
   tau = 1,
-  beta = NA,
+  params = NA,
   prob_func = yukiRL::ex_func_prob  
 )
 ```
@@ -112,7 +112,7 @@ obj_func <- function(params){
     seed = 123,
     softmax = FALSE,
     tau = params[3],
-    beta = NA,
+    params = NA,
     prob_func = yukiRL::ex_func_prob  
   )
   

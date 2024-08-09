@@ -4,8 +4,8 @@
 #' @param sub The column name for the subject ID
 #' @param choose The column name indicating which option the subject chose
 #' @param time_line Variables used to represent the experimental timeline, such as block and trial
-#' @param n How many subjects' data do you need to run?
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
+#' @param n How many subjects' data do you need to run?
 #' @param params The parameter values corresponding to eta_func.
 #' @param eta_func The function for the learning rate η, which you can customize
 #'
@@ -14,24 +14,26 @@
 #'
 loop_update_v <- function(
     data,
-    # 被试序号列
+    # 被试序号列, 列名
     sub = "Subject",
     # 被试选择列
     choose = "Choose",
     # 价值更新的时间线, 基于的列
     time_line = c("Block", "Trial"),
-    # 被试的id
-    n,
-    # 初始值
+    # 被试心中价值初始值
     initial_value = 0,
+    # 要处理多少个被试. 由于估计时候是对被试分别进行, 所以这里也是被试序号
+    n,
     # parameters
     params = c(0.3, 0.7),
     # 价值函数选用示例函数
     eta_func = ex_func_eta
-) {
-  # 按照被试分裂原始数据
+    ################################# [function start] #############################
+){
+  ################################# [split sub data] #############################
+  # 按照[被试序号列][sub]分裂原始数据
   df_split <- base::split(x = data, f = data[[sub]])
-  # 每个被试的结果存入该list的一个元素中
+  # 新建空list, 每个被试的结果存入该list的一个元素中
   df_res <- list()
   
   # 循环的每次针对一个被试
@@ -40,8 +42,10 @@ loop_update_v <- function(
     df_subject <- df_split[[i]]
     # 按照选择的不同进行分裂
     df_choose <- split(x = df_subject, f = df_subject[[choose]])
+    ############################# [res for each stimulate] #########################
     # 每种选择的结果存入该list的一个元素中
     df_update <- list()
+    ################################ [ CORE CODE ] #################################
     # 对每种choose运行update_v
     df_update <- purrr::map(
       # list对象, 每个元素执行一次function
@@ -57,10 +61,12 @@ loop_update_v <- function(
       # 价值函数选用示例函数
       eta_func = eta_func
     )
+    ################################ [ CORE CODE ] #################################
     # 把所有choose类型的结果合并, 成为一个被试的结果
     df_res[[i]] <- dplyr::bind_rows(df_update)
   }
   
+  ################################### [result] ###################################
   # 把所有被试的结果合并, 成为总结果
   temp_res <- dplyr::bind_rows(df_res) 
   # 此时排序基于sub和time_line

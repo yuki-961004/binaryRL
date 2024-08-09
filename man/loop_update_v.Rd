@@ -9,8 +9,8 @@ loop_update_v(
   sub = "Subject",
   choose = "Choose",
   time_line = c("Block", "Trial"),
-  n,
   initial_value = 0,
+  n,
   params = c(0.3, 0.7),
   eta_func = ex_func_eta
 )
@@ -24,9 +24,9 @@ loop_update_v(
 
 \item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
 
-\item{n}{How many subjects' data do you need to run?}
-
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to 0}
+
+\item{n}{How many subjects' data do you need to run?}
 
 \item{params}{The parameter values corresponding to eta_func.}
 

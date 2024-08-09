@@ -12,12 +12,12 @@ loop_action_c(
   choose = "Choose",
   value = "V_value",
   time_line = c("Block", "Trial"),
-  n,
   initial_value = 0,
+  n = 1,
   seed = 123,
   softmax = TRUE,
   tau = 1,
-  beta = NA,
+  params = NA,
   prob_func = ex_func_prob
 )
 }
@@ -36,9 +36,9 @@ loop_action_c(
 
 \item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
 
-\item{n}{How many subjects' data do you need to run?}
-
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to 0}
+
+\item{n}{How many subjects' data do you need to run?}
 
 \item{seed}{seed}
 
@@ -46,7 +46,7 @@ loop_action_c(
 
 \item{tau}{The τ parameter in the soft-max function, with a default value of 1}
 
-\item{beta}{Other parameters that you think might influence the softmax function}
+\item{params}{Other parameters that you think might influence the softmax function}
 
 \item{prob_func}{The soft-max function, which you can customize.}
 }
