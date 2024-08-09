@@ -7,7 +7,7 @@ output: html_document
 ```{r}
 library(dplyr)
 library(GA)
-#install.packages("../../../yukiRL_0.0.2.tar.gz")
+#install.packages("../../../yukiRL_0.0.3.tar.gz")
 library(yukiRL)
 ```
 
@@ -116,9 +116,10 @@ obj_func <- function(params){
     prob_func = yukiRL::ex_func_prob  
   )
   
-  Log_Likelihood <- sum(step2$L_logl) + sum(step2$R_logl)
-  mean_ACC <- mean(step2$ACC)
+  mean_ACC <- round(mean(step2$ACC), 4) * 100
+  cat("Mean Accuracy:", mean_ACC, "%", "\n")
   
+  Log_Likelihood <- sum(step2$L_logl) + sum(step2$R_logl)
   return(Log_Likelihood)
 }
 ```
@@ -135,7 +136,7 @@ ga_result <- GA::ga(
   lower = c(0, 0, 0),
   upper = c(2, 2, 2),
   popSize = 50,        # 初始种群大小
-  maxiter = 5,        # 最大迭代次数
+  maxiter = 5,         # 最大迭代次数
   run = 20,            # 多少次不改进则停止
   parallel = TRUE,          
   seed = 123                
@@ -148,18 +149,41 @@ rm(cl)
 ```
 
 ```{r}
-############################# model fit parameters #############################
-n_params <- ncol(ga_result@solution)
-n_trials <- 288
-Log_Likelihood <- ga_result@fitnessValue
-############################## print parameters ################################
-cat("Number of parameters (n_params):", n_params, "\n")
-cat("Number of trials (n_trials):", n_trials, "\n")
-cat("η+:", ga_result@solution[1,1], "\n")
-cat("η-:", ga_result@solution[1,2], "\n")
-cat("τ:", ga_result@solution[1,3], "\n")
-cat("Log-Likelihood:", Log_Likelihood, "\n")
-cat("AIC:", 2 * n_params - 2 * Log_Likelihood, "\n")
-cat("BIC:", n_params * log(n_trials) - 2 * Log_Likelihood, "\n")
+output <- function(
+    ga_result = ga_result, 
+    obj_func = obj_func,
+    n_trials,
+    params_name
+){
+  n_params <- ncol(ga_result@solution)
+  n_trials <- n_trials
+  Log_Likelihood <- ga_result@fitnessValue
+  
+  params <- as.vector(ga_result@solution)
+  acc <- capture.output(obj_func(params = params))[1]
+  
+  cat("Number of Parameters:", n_params, "\n")
+  cat("Number of Trials:", n_trials, "\n", "\n")
+  
+  cat(acc, "\n")
+  cat("Log-Likelihood:", Log_Likelihood, "\n")
+  cat("AIC:", 2 * n_params - 2 * Log_Likelihood, "\n")
+  cat("BIC:", n_params * log(n_trials) - 2 * Log_Likelihood, "\n", "\n")
+  
+  for (i in 1:ncol(ga_result@solution)) {
+    cat(params_name[i], ga_result@solution[1,i], "\n")
+  }
+  
+}
+```
+
+
+```{r}
+yukiRL::output(
+  ga_result = ga_result, 
+  obj_func = obj_func,
+  n_trials = 288,
+  params_name = c("η+", "η-", "τ")
+)
 ```
 
