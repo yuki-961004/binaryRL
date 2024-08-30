@@ -30,19 +30,36 @@ library(yukiRL)
 library(GA)
 ```
 ### Example Value Function
+#### Discount Rate β
 ```{r}
 print(yukiRL::ex_func_eta)
 
-#> function (value, reward, occurrence, params) 
+#> ex_func_beta <- function(value, temp, reward, occurrence, beta = 1, epsilon = NA){
+#>   if (any(is.na(epsilon))) {
+#>     beta <- beta
+#>     temp <- beta * reward
+#>   }
+#>   else {
+#>     temp <- "ERROR" 
+#>   }
+#>   return(list(beta, temp))
+#> }
+```
+
+#### Learning Rate η
+```{r}
+print(yukiRL::ex_func_eta)
+
+#> function (value, temp, reward, occurrence, eta) 
 #> {
-#>     if (is.na(reward)) {
+#>     if (is.na(temp)) {
 #>         stop()
 #>     }
-#>     else if (reward > value) {
-#>         eta <- params[1]
+#>     else if (temp > value) {
+#>         eta <- eta[1]
 #>     }
-#>     else if (reward <= value) {
-#>         eta <- params[2]
+#>     else if (temp <= value) {
+#>         eta <- eta[2]
 #>     }
 #>     else {
 #>         eta <- "ERROR"
@@ -118,10 +135,13 @@ obj_func <- function(params){
     initial_value = 0,
     # subject numbers to be analyzed
     n = 1,
+    # parameters
+    beta = c(params[1]),
+    epsilon = NA,
+    eta = c(params[2], params[3]),
     # your value function
-    eta_func = yukiRL::ex_func_eta,
-    # params in your value function
-    params = c(params[1], params[2])
+    beta_func = ex_func_beta,
+    eta_func = ex_func_eta
   ) 
 ################################## [Step 2] ####################################
   # Soft-Max Function
@@ -139,7 +159,7 @@ obj_func <- function(params){
     # your soft-max function
     prob_func = yukiRL::ex_func_prob,  
     # params in your soft-max function
-    tau = params[3],
+    tau = params[4],
     params = NA
   )
 ################################## [Step 3] ####################################  
@@ -159,8 +179,8 @@ doParallel::registerDoParallel(cores = cl)
 ga_result <- GA::ga(
   type = "real-valued",
   fitness = function(x) obj_func(x),  # obj_func(params)
-  lower = c(0, 0, 0),                 # lower bounds of parameters
-  upper = c(2, 2, 2),                 # upper bounds of parameters
+  lower = c(0, 0, 0, 1),                 # lower bounds of parameters
+  upper = c(1, 1, 1, 1),                 # upper bounds of parameters
   popSize = 50,                       # Initial population size
   maxiter = 5,                        # Maximum number of iterations
   run = 20,                           # Number of iterations without improvement before stopping
@@ -179,7 +199,7 @@ yukiRL::output(
   ga_result = ga_result, 
   obj_func = obj_func,
   n_trials = 288,
-  params_name = c("η+", "η-", "τ")
+  params_name = c("beta", "η+", "η-", "τ")
 )
 
 #> Number of Parameters: 3 
@@ -190,6 +210,7 @@ yukiRL::output(
 #> AIC: 314.28  
 #> BIC: 325.2689  
 #> 
+#> β: 0.1234567
 #> η+: 0.8274487   
 #> η-: 0.6870329   
 #> τ: 0.02093422   
