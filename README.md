@@ -52,18 +52,15 @@ print(yukiRL::ex_func_eta)
 
 #> function (value, temp, reward, occurrence, eta) 
 #> {
-#>     if (is.na(temp)) {
-#>         stop()
-#>     }
-#>     else if (temp > value) {
-#>         eta <- eta[1]
-#>     }
-#>     else if (temp <= value) {
-#>         eta <- eta[2]
-#>     }
-#>     else {
-#>         eta <- "ERROR"
-#>     }
+#>   if (length(eta) == 1) {
+#>     eta <- as.numeric(eta)
+#>   }
+#>   else if (length(eta) > 1 & temp > value) {
+#>     eta <- eta[1]
+#>   }
+#>   else if (length(eta) > 1 & temp <= value) {
+#>     eta <- eta[2]
+#>   }
 #>     return(eta)
 #> }
 ```

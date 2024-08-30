@@ -22,14 +22,14 @@ ex_func_eta <- function(
   eta
 ################################# [function start] #############################
 ){
-  if (is.na(temp)) {
-    stop()
+  if (length(eta) == 1) {
+    eta <- as.numeric(eta)
   }
 ################################### [ RSTD ] ###################################
-  else if (temp > value) {
+  else if (length(eta) > 1 & temp > value) {
     eta <- eta[1]
   } 
-  else if (temp <= value) {
+  else if (length(eta) > 1 & temp <= value) {
     eta <- eta[2]
   }
 ################################### [ RSTD ] ###################################
