@@ -6,7 +6,10 @@
 #' @param time_line Variables used to represent the experimental timeline, such as block and trial
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
 #' @param n How many subjects' data do you need to run?
-#' @param params The parameter values corresponding to eta_func.
+#' @param beta In the utility model, it is assumed that all rewards will be discounted
+#' @param epsilon In the WXT model, the discount rate is divided into different intervals.
+#' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
+#' @param beta_func The function for the discount rate β, which you can customize
 #' @param eta_func The function for the learning rate η, which you can customize
 #'
 #' @return update value for every subject with whole choice
@@ -25,8 +28,11 @@ loop_update_v <- function(
     # 要处理多少个被试. 由于估计时候是对被试分别进行, 所以这里也是被试序号
     n,
     # parameters
-    params = c(0.3, 0.7),
+    beta = 1,
+    epsilon = NA,
+    eta,
     # 价值函数选用示例函数
+    beta_func = ex_func_beta,
     eta_func = ex_func_eta
     ################################# [function start] #############################
 ){
@@ -57,8 +63,11 @@ loop_update_v <- function(
       # 初始值
       initial_value = initial_value,
       # parameters
-      params = params,
+      beta = beta,
+      epsilon = epsilon,
+      eta = eta,
       # 价值函数选用示例函数
+      beta_func = beta_func,
       eta_func = eta_func
     )
     ################################ [ CORE CODE ] #################################

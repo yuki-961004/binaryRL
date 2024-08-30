@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.Rbuildignore
 
 # MacOS
 .DS_Store

@@ -3,22 +3,28 @@
 #' @param data Data containing only one type of stimulus
 #' @param time_line Variables used to represent the experimental timeline, such as block and trial
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
-#' @param params The parameter values corresponding to eta_func.
+#' @param beta In the utility model, it is assumed that all rewards will be discounted
+#' @param epsilon In the WXT model, the discount rate is divided into different intervals.
+#' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
+#' @param beta_func The function for the discount rate β, which you can customize
 #' @param eta_func The function for the learning rate η, which you can customize
 #'
 #' @return update value for 1 choice
 #' @export
 
 rl_update_v <- function(
-  # 输入data frame
+    # 输入data frame
   data,
   # 价值更新的时间线, 基于的列
   time_line = c("Block", "Trial"),
   # 被试心中价值初始值
   initial_value = 0,
   # parameters
-  params = c(0.3, 0.7),
+  beta = 1,
+  epsilon = NA,
+  eta = c(0.3, 0.7),
   # 价值函数选用示例函数
+  beta_func = ex_func_beta,
   eta_func = ex_func_eta
   ################################# [function start] #############################
 ){
@@ -41,27 +47,44 @@ rl_update_v <- function(
   ############################# [ update row by row] #############################
   # 添加空列
   temp_data$V_value <- NA
+  temp_data$beta <- NA
+  temp_data$V_temp <- NA
   temp_data$eta <- NA
   temp_data$V_update <- NA
   
   # 设置初始值
   temp_data$V_value[1] <- initial_value
+  temp_data$V_temp[1] <- initial_value
   temp_data$V_update[1] <- initial_value
   
   # 逐行更新Value
   for (i in 2:nrow(temp_data)) {
     # value是上一行的update
     temp_data$V_value[i] <- temp_data$V_update[i - 1]
+    
+    # 使用beta_func选择此时对应的beta, 然后计算出temp
+    beta_temp <- beta_func(
+      value = temp_data$V_value[i],
+      temp = temp_data$V_temp[i],
+      reward = temp_data$Reward[i],
+      occurrence = temp_data$Time_Line[i],
+      beta = beta,
+      epsilon = epsilon
+    )
+    temp_data$beta[i] <- as.numeric(beta_temp[1])
+    temp_data$V_temp[i] <- as.numeric(beta_temp[2])
+    
     # 使用eta_func选择此时对应的eta
     temp_data$eta[i] <- eta_func(
       value = temp_data$V_value[i],
+      temp = temp_data$V_temp[i],
       reward = temp_data$Reward[i],
       occurrence = temp_data$Time_Line[i],
-      params = params
+      eta = eta
     )
     # 计算此次update的值
     temp_data$V_update[i] <- temp_data$V_value[i] + 
-      temp_data$eta[i] * (temp_data$Reward[i] - temp_data$V_value[i])
+      temp_data$eta[i] * (temp_data$V_temp[i] - temp_data$V_value[i])
   }
   
   ############################## [delete first row] ############################## 

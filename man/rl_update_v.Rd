@@ -8,7 +8,10 @@ rl_update_v(
   data,
   time_line = c("Block", "Trial"),
   initial_value = 0,
-  params = c(0.3, 0.7),
+  beta = 1,
+  epsilon = NA,
+  eta = c(0.3, 0.7),
+  beta_func = ex_func_beta,
   eta_func = ex_func_eta
 )
 }
@@ -19,7 +22,13 @@ rl_update_v(
 
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to 0}
 
-\item{params}{The parameter values corresponding to eta_func.}
+\item{beta}{In the utility model, it is assumed that all rewards will be discounted}
+
+\item{epsilon}{In the WXT model, the discount rate is divided into different intervals.}
+
+\item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
+
+\item{beta_func}{The function for the discount rate β, which you can customize}
 
 \item{eta_func}{The function for the learning rate η, which you can customize}
 }
