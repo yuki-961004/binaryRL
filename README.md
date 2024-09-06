@@ -37,7 +37,7 @@ Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction 
 In my understanding, the value function in reinforcement learning for a two-alternative decision task can be written as:
 <p align="center">
   $Value_n = Value_{n-1} + \eta \times (\beta \times Reward_n - Value_{n-1})$
-</p>
+</p>  
 
 - The `TD model` does not consider `discount rate (β)`, with only `learning rates (η)` as a free parameter.  
 - The `Utility model` introduces a `discount rate (β)` for rewards based on this foundation.  
