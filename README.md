@@ -34,8 +34,7 @@ Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction 
 
 
 ### My understanding
-In my understanding, the value function in reinforcement learning for a two-alternative decision task can be written as:  
-
+In my understanding, the value function in reinforcement learning for a two-alternative decision task can be written as:
 <p align="center">
   $Value_n = Value_{n-1} + \eta \times (\beta \times Reward_n - Value_{n-1})$
 </p>
