@@ -35,9 +35,10 @@ devtools::install_github("yuki-961004/yukiRL")
 ### 3. Risk-sensitive TD model
 "*In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, 2002).*"  
 
-<div style="text-align: center;">
-    <img src="./fig/rl_models.png" alt="RL Models" style="width: 50%;"/>
-</div>
+<p align="center">
+    <img src="./fig/rl_models.png" alt="RL Models" width="70%">
+</p>
+
 
 
 ### In my ppinion
@@ -58,7 +59,8 @@ library(GA)
 #### Discount Rate β 
 ```{r}
 print(yukiRL::func_eta)
-
+```
+```
 #> func_beta <- function(
 #>   value, temp, reward, occurrence, beta = 1, epsilon = NA
 #> ){
@@ -76,7 +78,8 @@ print(yukiRL::func_eta)
 #### Learning Rate η 
 ```{r}
 print(yukiRL::func_eta)
-
+```
+```
 #> func_eta <- function (
 #>   value, temp, reward, occurrence, eta, epsilon = NA
 #> ){
@@ -99,7 +102,8 @@ print(yukiRL::func_eta)
 #### Example Soft-Max Function [Default τ = 1]
 ```{r}
 print(yukiRL::func_prob)
-
+```
+```
 #> func_prob <- function (
 #>   L_value, R_value, tau = 1, params, LR 
 #> ){
@@ -233,7 +237,8 @@ yukiRL::output(
   n_trials = 288,
   params_name = c("β", "η+", "η-")
 )
-
+```
+```
 #> Number of Parameters: 3 
 #> Number of Trials: 288 
 #> 
