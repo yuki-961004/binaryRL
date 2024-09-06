@@ -13,21 +13,11 @@ In addition, we need to determine the optimal parameters. Here, I will use `Gene
 ## How to cite 
 you can cite this github project :)
 
-## NAMESPACE
-```{r}
-importFrom("dplyr", "%>%", "bind_rows")
-importFrom("tidyr", "pivot_wider")
-importFrom("purrr", "map")
-importFrom("utils", "capture.output")
-```
-
 ## Install
 ```{r}
 devtools::install_github("yuki-961004/yukiRL") 
 ```
 ## Classic Models
-[Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. Journal of Neuroscience, 32(2), 551-562.](https://doi.org/10.1523/JNEUROSCI.5498-10.2012)  
-
 ### 1. TD model
 *"The TD model is a standard temporal difference learning model (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998)."*  
 ### 2. Utility model
@@ -39,9 +29,11 @@ devtools::install_github("yuki-961004/yukiRL")
     <img src="./fig/rl_models.png" alt="RL Models" width="70%">
 </p>
 
+### References
+Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
 
 
-### In my ppinion
+### My understanding
 In my understanding, the value function in reinforcement learning for a two-alternative decision task can be written as:
 $$
 Value_n = Value_{n-1} + \eta \times (\beta \times Reward_n - Value_{n-1})
@@ -49,6 +41,7 @@ $$
 - The `TD model` does not consider `discount rate (β)`, with only `learning rates (η)` as a free parameter.  
 - The `Utility model` introduces a `discount rate (β)` for rewards based on this foundation.  
 - The `Risk-sensitive TD model` assumes that the `learning rates (η)` are different for gains and losses, but it does not account for `discount rate (β)`.
+
 ## Examples
 ### Load Pacakge
 ```{r}
@@ -215,10 +208,10 @@ doParallel::registerDoParallel(cores = cl)
 ga_result <- GA::ga(
   type = "real-valued",
   fitness = function(x) obj_func(x),  # obj_func(params)
-  lower = c(0, 0, 0, 1),                 # lower bounds of parameters
-  upper = c(1, 1, 1, 1),                 # upper bounds of parameters
+  lower = c(0, 0, 0),                 # lower bounds of parameters
+  upper = c(1, 1, 1),                 # upper bounds of parameters
   popSize = 50,                       # Initial population size
-  maxiter = 5,                        # Maximum number of iterations
+  maxiter = 999,                      # Maximum number of iterations
   run = 20,                           # Number of iterations without improvement before stopping
   parallel = TRUE,          
   seed = 123                
