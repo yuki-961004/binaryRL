@@ -1,4 +1,4 @@
-#' ex_func_beta
+#' func_beta
 #'
 #' @param value The value you assign to this stimulus at this moment
 #' @param temp Intermediate transition value. May not be used
@@ -10,7 +10,7 @@
 #' @return Discount rate and temp value
 #' @export
 #'
-ex_func_beta <- function(
+func_beta <- function(
     # 此时心中对该刺激的的value
   value, 
   # 中间过渡的value. 可能用不上
@@ -24,13 +24,12 @@ ex_func_beta <- function(
   epsilon = NA
   ################################# [function start] #############################
 ){
-  # 如果epsilon是NA, 则说明只使用了beta, 也可以beta也没用是默认值1
-  if (any(is.na(epsilon))) {
-    beta <- beta
+  ################################# [ Utility ] ##################################
+  # 如果beta只有一种, 则直接用这个beta计算temp
+  if (length(beta) == 1) {
+    beta <- as.numeric(beta)
     temp <- beta * reward
   }
-  ################################# [ Utility ] ##################################
-
   ################################# [ Utility ] ##################################
   else {
     temp <- "ERROR" # 检查错误

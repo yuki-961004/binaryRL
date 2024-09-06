@@ -1,4 +1,4 @@
-#' ex_func_prob
+#' func_prob
 #'
 #' @param L_value The value of the left option
 #' @param R_value The value of the right option
@@ -9,8 +9,8 @@
 #' @return example soft-max function
 #' @export
 #'
-ex_func_prob <- function(
-  # 左边选项的价值
+func_prob <- function(
+    # 左边选项的价值
   L_value,
   # 右边选项的价值
   R_value,

@@ -4,11 +4,14 @@ This package is suitable for binary-choice decision tasks and allows you to cust
 I divide reinforcement learning into two parts:
 
  - `Value Function`: updating the value you assign to a stimulus based on the current reward.  
+    1. `discount rate (β)`: People tend to discount the value of the rewards they see.
+    2. `learning rates (η)`: The difference between the reward and the perceived value is used, at a certain learning rate, to update the estimated value of a particular stimulus.
  - `Soft-max Function`, calculating the probability of choosing a certain option based on the values of the two available options.
+    1. By default, the `parameter (τ)` is set to 1.
 
 In addition, we need to determine the optimal parameters. Here, I will use `Genetic Algorithms` to find the optimal solution for the model.
 ## How to cite 
-not yet
+you can cite this github project :)
 
 ## NAMESPACE
 ```{r}
@@ -22,7 +25,29 @@ importFrom("utils", "capture.output")
 ```{r}
 devtools::install_github("yuki-961004/yukiRL") 
 ```
+## Classic Models
+[Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. Journal of Neuroscience, 32(2), 551-562.](https://doi.org/10.1523/JNEUROSCI.5498-10.2012)  
 
+### 1. TD model
+*"The TD model is a standard temporal difference learning model (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998)."*  
+### 2. Utility model
+*"The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, 1954)"*
+### 3. Risk-sensitive TD model
+"*In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, 2002).*"  
+
+<div style="text-align: center;">
+    <img src="./fig/rl_models.png" alt="RL Models" style="width: 50%;"/>
+</div>
+
+
+### In my ppinion
+In my understanding, the value function in reinforcement learning for a two-alternative decision task can be written as:
+$$
+Value_n = Value_{n-1} + \eta \times (\beta \times Reward_n - Value_{n-1})
+$$
+- The `TD model` does not consider `discount rate (β)`, with only `learning rates (η)` as a free parameter.  
+- The `Utility model` introduces a `discount rate (β)` for rewards based on this foundation.  
+- The `Risk-sensitive TD model` assumes that the `learning rates (η)` are different for gains and losses, but it does not account for `discount rate (β)`.
 ## Examples
 ### Load Pacakge
 ```{r}
@@ -30,12 +55,14 @@ library(yukiRL)
 library(GA)
 ```
 ### Example Value Function
-#### Discount Rate β
+#### Discount Rate β 
 ```{r}
-print(yukiRL::ex_func_eta)
+print(yukiRL::func_eta)
 
-#> ex_func_beta <- function(value, temp, reward, occurrence, beta = 1, epsilon = NA){
-#>   if (any(is.na(epsilon))) {
+#> func_beta <- function(
+#>   value, temp, reward, occurrence, beta = 1, epsilon = NA
+#> ){
+#>   if (length(beta) == 1) {
 #>     beta <- beta
 #>     temp <- beta * reward
 #>   }
@@ -46,12 +73,13 @@ print(yukiRL::ex_func_eta)
 #> }
 ```
 
-#### Learning Rate η
+#### Learning Rate η 
 ```{r}
-print(yukiRL::ex_func_eta)
+print(yukiRL::func_eta)
 
-#> function (value, temp, reward, occurrence, eta) 
-#> {
+#> func_eta <- function (
+#>   value, temp, reward, occurrence, eta, epsilon = NA
+#> ){
 #>   if (length(eta) == 1) {
 #>     eta <- as.numeric(eta)
 #>   }
@@ -61,29 +89,33 @@ print(yukiRL::ex_func_eta)
 #>   else if (length(eta) > 1 & temp <= value) {
 #>     eta <- eta[2]
 #>   }
+#>   else {
+#>     eta <- "ERROR" 
+#>   }
 #>     return(eta)
 #> }
 ```
 
-### Example Soft-Max Function
+#### Example Soft-Max Function [Default τ = 1]
 ```{r}
-print(yukiRL::ex_func_prob)
+print(yukiRL::func_prob)
 
-#> function (L_value, R_value, tau = 1, params, LR) 
-#> {
-#>     if (!(LR %in% c("L", "R"))) {
-#>         stop("LR = 'L' or 'R'")
-#>     }
-#>     else if (LR == "L") {
-#>         prob <- 1/(1 + exp(-(L_value - R_value) * tau))
-#>     }
-#>     else if (LR == "R") {
-#>         prob <- 1/(1 + exp(-(R_value - L_value) * tau))
-#>     }
-#>     else {
-#>         prob <- "ERROR"
-#>     }
-#>     return(prob)
+#> func_prob <- function (
+#>   L_value, R_value, tau = 1, params, LR 
+#> ){
+#>   if (!(LR %in% c("L", "R"))) {
+#>       stop("LR = 'L' or 'R'")
+#>   }
+#>   else if (LR == "L") {
+#>       prob <- 1/(1 + exp(-(L_value - R_value) * tau))
+#>   }
+#>   else if (LR == "R") {
+#>       prob <- 1/(1 + exp(-(R_value - L_value) * tau))
+#>   }
+#>   else {
+#>       prob <- "ERROR"
+#>   }
+#>   return(prob)
 #> }
 ```
 
@@ -112,7 +144,10 @@ If you have already created your `value function` and `softmax function`, then h
 ```
 Most importantly, replace the `function` with your custom function.
 ```
+ - beta_func = your_beta_func
+
  - eta_func = your_eta_func  
+
  - prob_func = your_prob_func
  ```
 #### Example obj_func
@@ -137,8 +172,8 @@ obj_func <- function(params){
     epsilon = NA,
     eta = c(params[2], params[3]),
     # your value function
-    beta_func = ex_func_beta,
-    eta_func = ex_func_eta
+    beta_func = func_beta,
+    eta_func = func_eta
   ) 
 ################################## [Step 2] ####################################
   # Soft-Max Function
@@ -154,9 +189,9 @@ obj_func <- function(params){
     seed = 123,
     softmax = TRUE,
     # your soft-max function
-    prob_func = yukiRL::ex_func_prob,  
+    prob_func = func_prob,  
     # params in your soft-max function
-    tau = params[4],
+    tau = 1,
     params = NA
   )
 ################################## [Step 3] ####################################  
@@ -196,7 +231,7 @@ yukiRL::output(
   ga_result = ga_result, 
   obj_func = obj_func,
   n_trials = 288,
-  params_name = c("beta", "η+", "η-", "τ")
+  params_name = c("β", "η+", "η-")
 )
 
 #> Number of Parameters: 3 
@@ -210,5 +245,4 @@ yukiRL::output(
 #> β: 0.1234567
 #> η+: 0.8274487   
 #> η-: 0.6870329   
-#> τ: 0.02093422   
 ```

@@ -80,7 +80,8 @@ rl_update_v <- function(
       temp = temp_data$V_temp[i],
       reward = temp_data$Reward[i],
       occurrence = temp_data$Time_Line[i],
-      eta = eta
+      eta = eta,
+      epsilon = epsilon
     )
     # 计算此次update的值
     temp_data$V_update[i] <- temp_data$V_value[i] + 
