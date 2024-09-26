@@ -32,8 +32,8 @@ loop_update_v <- function(
     epsilon = NA,
     eta,
     # 价值函数选用示例函数
-    beta_func = ex_func_beta,
-    eta_func = ex_func_eta
+    beta_func,
+    eta_func
     ################################# [function start] #############################
 ){
   ################################# [split sub data] #############################

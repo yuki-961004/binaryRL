@@ -14,8 +14,8 @@ loop_update_v(
   beta = 1,
   epsilon = NA,
   eta,
-  beta_func = ex_func_beta,
-  eta_func = ex_func_eta
+  beta_func,
+  eta_func
 )
 }
 \arguments{

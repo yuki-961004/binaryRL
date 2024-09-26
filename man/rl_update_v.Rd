@@ -11,8 +11,8 @@ rl_update_v(
   beta = 1,
   epsilon = NA,
   eta = c(0.3, 0.7),
-  beta_func = ex_func_beta,
-  eta_func = ex_func_eta
+  beta_func,
+  eta_func
 )
 }
 \arguments{

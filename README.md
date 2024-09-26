@@ -1,14 +1,17 @@
 # yukiRL
 This package is suitable for binary-choice decision tasks and allows you to customize your reinforcement learning model.  
 
-I divide reinforcement learning into two parts:
+I divide reinforcement learning into three parts:
 
  - `Value Function`: updating the value you assign to a stimulus based on the current reward.  
     1. `discount rate (β)`: People tend to discount the value of the rewards they see.
     2. `learning rates (η)`: The difference between the reward and the perceived value is used, at a certain learning rate, to update the estimated value of a particular stimulus.
- - `Soft-max Function`, calculating the probability of choosing a certain option based on the values of the two available options.
+ - `Soft-Max Function`, calculating the probability of choosing a certain option based on the values of the two available options.
     1. By default, the `parameter (τ)` is set to 1.
+ - `Generate Simulated Data`: Given the `Value function` and the `Soft-Max function`, along with the corresponding parameters, simulate data.  
 
+<br>
+    
 In addition, we need to determine the optimal parameters. Here, I will use `Genetic Algorithms` to find the optimal solution for the model.
 ## How to cite 
 you can cite this github project :)
@@ -170,8 +173,8 @@ obj_func <- function(params){
     epsilon = NA,
     eta = c(params[2], params[3]),
     # your value function
-    beta_func = func_beta,
-    eta_func = func_eta
+    beta_func = yukiRL::func_beta,
+    eta_func = yukiRL::func_eta
   ) 
 ################################## [Step 2] ####################################
   # Soft-Max Function
@@ -187,7 +190,7 @@ obj_func <- function(params){
     seed = 123,
     softmax = TRUE,
     # your soft-max function
-    prob_func = func_prob,  
+    prob_func = yukiRL::func_prob,  
     # params in your soft-max function
     tau = 1,
     params = NA
@@ -245,3 +248,38 @@ yukiRL::output(
 #> η+: 0.8274487   
 #> η-: 0.6870329   
 ```
+
+### Generate Decisions
+Similar to the previous dataset, this time the data also requires rewards for both the left option and the right option.
+```
+| Subject | Block | Trial | L_choice | R_choice | L_reward | R_reward |
+|---------|-------|-------|----------|----------|----------|----------|
+| 1       | 1     | 1     | A        | B        | 1        | 5        |
+| 1       | 1     | 2     | A        | B        | 2        | 3        |
+| 2       | 2     | 1     | X        | Y        | 3        | 4        |
+| 2       | 2     | 2     | X        | Y        | 4        | 2        |
+```
+
+```
+yukiRL::generate_d(
+  data = <your data>,
+  L_choice = <col_name of L_choice>,
+  R_choice = <col_name of R_choice>,
+  L_reward = <col_name of L_reward>,
+  R_reward = <col_name of L_reward>,
+  time_line = c("Block", "Trial"),
+  initial_value = 0,
+  softmax = TRUE,
+  seed = 123,
+  beta = 1,
+  epsilon = c(20, 40),
+  eta = c(0.6, 0.8),
+  tau = 1,
+  params = NA,
+  beta_func = yukiRL::func_beta,
+  eta_func = yukiRL::func_eta,
+  prob_func = yukiRL::func_prob
+)
+```
+
+The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option.

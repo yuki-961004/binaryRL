@@ -36,7 +36,7 @@ rl_action_c <- function(
   # 如果你的softmax含有别的参数, 就放在这里
   params = NA,
   # 示例softmax函数
-  prob_func = ex_func_prob
+  prob_func
 ################################# [function start] #############################
 ){
   # 为了保证choose和value在长转宽中这两列不消失. 所以复制一次

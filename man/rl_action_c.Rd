@@ -15,7 +15,7 @@ rl_action_c(
   softmax = TRUE,
   tau = 1,
   params = NA,
-  prob_func = ex_func_prob
+  prob_func
 )
 }
 \arguments{

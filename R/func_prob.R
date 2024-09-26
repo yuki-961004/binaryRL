@@ -10,7 +10,7 @@
 #' @export
 #'
 func_prob <- function(
-    # 左边选项的价值
+  # 左边选项的价值
   L_value,
   # 右边选项的价值
   R_value,

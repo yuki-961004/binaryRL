@@ -45,7 +45,7 @@ loop_action_c <- function(
   # 如果你的softmax含有别的参数, 就放在这里
   params = NA,
   # 示例softmax函数
-  prob_func = ex_func_prob
+  prob_func
 ################################# [function start] #############################
 ) {
 ################################# [split sub data] #############################  
