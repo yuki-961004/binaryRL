@@ -232,21 +232,23 @@ yukiRL::output(
   ga_result = ga_result, 
   obj_func = obj_func,
   n_trials = 288,
-  params_name = c("β", "η+", "η-")
+  params_name = c("η", "τ")
 )
 ```
 ```
-#> Number of Parameters: 3 
-#> Number of Trials: 288 
-#> 
-#> Mean Accuracy: 69.44 %  
-#> Log-Likelihood: -154.14  
-#> AIC: 314.28  
-#> BIC: 325.2689  
-#> 
-#> β: 0.1234567
-#> η+: 0.8274487   
-#> η-: 0.6870329   
+|                 name|   value|
+|---------------------|--------|
+| Number of Parameters|    2.00|
+|     Number of Trials|  288.00|
+|             Accuracy|   85.42|
+|       Log-Likelihood| -105.88|
+|                  AIC|  215.76|
+|                  BIC|  223.09|
+
+| name| value|
+|-----|------|
+|  η  | 0.02 |
+|  τ  | 0.15 |
 ```
 
 ### Generate Decisions
