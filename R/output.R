@@ -20,9 +20,9 @@ output <- function(
   acc <- as.numeric(
     capture.output(obj_func(params = as.vector(ga_result@solution)))[1]
   )
-  Log_Likelihood <- round(ga_result@fitnessValue, 5)
-  AIC <- round(2 * n_params - 2 * Log_Likelihood, 5)
-  BIC <- round(n_params * log(n_trials) - 2 * Log_Likelihood, 5)
+  Log_Likelihood <- round(ga_result@fitnessValue, 2)
+  AIC <- round(2 * n_params - 2 * Log_Likelihood, 2)
+  BIC <- round(n_params * log(n_trials) - 2 * Log_Likelihood, 2)
   
   # 创建一个包含指标名称的向量
   model_fit_name <- c(
