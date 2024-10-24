@@ -29,10 +29,10 @@ func_eta <- function(
     eta <- as.numeric(eta)
   }
   ################################### [ RSTD ] ###################################
-  else if (length(eta) > 1 & temp > value) {
+  else if (length(eta) > 1 & temp < value) {
     eta <- eta[1]
   } 
-  else if (length(eta) > 1 & temp <= value) {
+  else if (length(eta) > 1 & temp >= value) {
     eta <- eta[2]
   }
   ################################### [ RSTD ] ###################################
