@@ -4,11 +4,13 @@ This package is suitable for binary-choice decision tasks and allows you to cust
 I divide reinforcement learning into four steps:
 ## Step 1: Update values based on the value function.
  - `Value Function`, updating the value you assign to a stimulus based on the current reward.  
+
     **Learning Rates ($\eta$)**: It is a parameter that controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.  
     **Subjective Utility ($\beta$)**: People's subjective perception of objective rewards: $\beta$ > 1 means exaggerating the received reward, while $\beta$ < 1 means diminishing the received reward.
 
 ## Step 2: Make choices according to the softmax function.
  - `Soft-Max Function`, calculating the probability of choosing a certain option based on the values of the two available options.   
+
     **Sensitivity of Value Differences ($\tau$)**: This value represents people's sensitivity to value differences. The larger $\tau$, the more sensitive they are to the differences in value between the two options.
 ## Step 3: Calculate the consistency rate between the robot's choices and the human choices.
  - `Log Likelihood`, $LL$ = $\sum$ $B_{L}$ $\times$ $\log P_{L}$ + $\sum$ $B_{R}$ $\times$ $\log P_{R}$   
@@ -16,12 +18,14 @@ I divide reinforcement learning into four steps:
     $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option)   
     $P_{L}$ and $P_{R}$ the probability of a subject selecting either a left or right option, as determined by a reinforcement learning model.   
     $N_{L}$ and $N_{R}$ the total number of trials the subject chose the left or right option.   
+
+    Here, we seek to find the optimal parameters for the model by maximizing the `Log Likelihood (LL)` using `Genetic Algorithms`.
 ## Step 4: Generate simulated data based on the best parameters for each subject.
  - `Generate Simulated Data`: Given the `Value function` and the `Soft-Max function`, along with the corresponding parameters, simulate data.  
 
 <br>
     
-In addition, we need to determine the optimal parameters. Here, I will use `Genetic Algorithms` to find the optimal solution for the model.
+
 ## How to cite 
 ...
 
@@ -61,6 +65,13 @@ $LL$ = $\sum$ $B_{L}$ $\times$ $\log P_{L}$ + $\sum$ $B_{R}$ $\times$ $\log P_{R
 
 $AIC$ =  $- 2 LL$ + $2 k$  
 $BIC$ =  $- 2 LL$ + $k \times \log n$ 
+
+$B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option)   
+$P_{L}$ and $P_{R}$ the probability of a subject selecting either a left or right option, as determined by a reinforcement learning model.   
+$N_{L}$ and $N_{R}$ the total number of trials the subject chose the left or right option.   
+
+${k}$ the number of free parameters in the model.   
+${n}$ represents the total number of trials in the paradigm.
 ### References
 
 Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventromedial prefrontal cortex in abstract state-based inference during decision making in humans. *Journal of Neuroscience, 26*(32), 8360-8367. https://doi.org/10.1523/JNEUROSCI.1010-06.2006
@@ -305,9 +316,9 @@ yukiRL::generate_d(
   softmax = TRUE,
   seed = 123,
   beta = 1,
-  epsilon = c(20, 40),
-  eta = c(0.6, 0.8),
-  tau = 1,
+  epsilon = NA,
+  eta = c(0.30344, 0.57334),
+  tau = c(0.03575),
   params = NA,
   beta_func = yukiRL::func_beta,
   eta_func = yukiRL::func_eta,
