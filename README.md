@@ -4,29 +4,32 @@ This package is suitable for binary-choice decision tasks and allows you to cust
 I divide reinforcement learning into three parts:
 
  - `Value Function`: updating the value you assign to a stimulus based on the current reward.  
-    1. `discount rate (β)`: People tend to discount the value of the rewards they see.
-    2. `learning rates (η)`: The difference between the reward and the perceived value is used, at a certain learning rate, to update the estimated value of a particular stimulus.
- - `Soft-Max Function`, calculating the probability of choosing a certain option based on the values of the two available options.
-    1. By default, the `parameter (τ)` is set to 1.
+    1. **Learning Rates ($\eta$)**: The difference between the reward and the perceived value is used, at a certain 
+    2. **Subjective Utility ($\beta$)**: People tend to discount or boost the value of the rewards they see.learning rate, to update the estimated value of a particular stimulus.
+ - `Soft-Max Function`, calculating the probability of choosing a certain option based on the values of the two available options.   
+    1. **Sensitivity of Value Differences ($\tau$)**: This value represents people's sensitivity to value differences. The larger this value, the more sensitive they are to the differences in value between the two options.
  - `Generate Simulated Data`: Given the `Value function` and the `Soft-Max function`, along with the corresponding parameters, simulate data.  
 
 <br>
     
 In addition, we need to determine the optimal parameters. Here, I will use `Genetic Algorithms` to find the optimal solution for the model.
 ## How to cite 
-you can cite this github project :)
+...
 
 ## Install
 ```{r}
 devtools::install_github("yuki-961004/yukiRL") 
 ```
+
 ## Classic Models
-### 1. TD model
+
+### 1. TD model ($\eta$, $\tau$)
 *"The TD model is a standard temporal difference learning model (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998)."*  
-### 2. Utility model
-*"The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, 1954)"*
-### 3. Risk-sensitive TD model
+### 2. Risk-sensitive TD model ($\eta_{-}$, $\eta_{+}$, $\tau$)
 "*In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, 2002).*"  
+### 3. Utility model ($\eta$, $\beta$, $\tau$)
+*"The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, 1954)"*
+
 
 <p align="center">
     <img src="./fig/rl_models.png" alt="RL Models" width="70%">
@@ -35,16 +38,36 @@ devtools::install_github("yuki-961004/yukiRL")
 ### References
 Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
 
+## Initial Value
+
+Comparisons between the two learning rates generally revealed a positivity bias ($\alpha_{+}$ > $\alpha_{-}$)  
+However, that on some occasions, studies failed to find a positivity bias or even reported a negativity bias ($\alpha_{+}$ <> $\alpha_{-}$).  
+Because Q-values initialization markedly affect learning rate and learning bias estimates.
+
+### References
+Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and confirmation biases in reinforcement learning. *Trends in Cognitive Sciences, 26*(7), 607-621. https://doi.org/10.1016/j.tics.2022.04.005
+
+## Model Fit
+$LL$ = $\sum$ $B_{L}$ $\times$ $\log P_{L}$ + $\sum$ $B_{R}$ $\times$ $\log P_{R}$   
+
+$AIC$ =  $- 2 LL$ + $2 k$  
+$BIC$ =  $- 2 LL$ + $k \times \log n$ 
+### References
+
+Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventromedial prefrontal cortex in abstract state-based inference during decision making in humans. *Journal of Neuroscience, 26*(32), 8360-8367. https://doi.org/10.1523/JNEUROSCI.1010-06.2006
+
+---
 
 ### My understanding
 In my understanding, the value function in reinforcement learning for a two-alternative decision task can be written as:
-<p align="center">
-  $Value_n = Value_{n-1} + \eta \times (\beta \times Reward_n - Value_{n-1})$
-</p>  
 
-- The `TD model` does not consider `discount rate (β)`, with only `learning rates (η)` as a free parameter.  
-- The `Utility model` introduces a `discount rate (β)` for rewards based on this foundation.  
-- The `Risk-sensitive TD model` assumes that the `learning rates (η)` are different for gains and losses, but it does not account for `discount rate (β)`.
+$Value_{n}$ = $Value_{n-1}$ + $\eta$ $\times$ ($\beta$ $\times$ $Reward_{n}$ - $Value_{n-1}$)
+
+- The `TD model` only consider **learning rates ($\eta$)** as a free parameter.   
+- The `Risk-sensitive TD model` is based on `TD model` and assumes that the **learning rates ($\eta$)** are different for gains and losses.
+- The `Utility model` introduces a **subjective utility ($\beta$)** for rewards based on this foundation. 
+
+*NOTE*: Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)**. When the initial value is not set, it is taken to be the reward received for that stimulus the first time.
 
 ## Examples
 ### Load Pacakge
@@ -52,10 +75,35 @@ In my understanding, the value function in reinforcement learning for a two-alte
 library(yukiRL)
 library(GA)
 ```
-### Example Value Function
-#### Discount Rate β 
+### Example Function
+
+#### Learning Rate ($\eta$)   
 ```{r}
 print(yukiRL::func_eta)
+```
+```
+#> func_eta <- function (
+#>   value, temp, reward, occurrence, eta, epsilon = NA
+#> ){
+#>   if (length(eta) == 1) {
+#>     eta <- as.numeric(eta)
+#>   }
+#>   else if (length(eta) > 1 & temp < value) {
+#>     eta <- eta[1]
+#>   }
+#>   else if (length(eta) > 1 & temp >= value) {
+#>     eta <- eta[2]
+#>   }
+#>   else {
+#>     eta <- "ERROR" 
+#>   }
+#>     return(eta)
+#> }
+```
+
+#### Subjective Utility ($\beta$)  
+```{r}
+print(yukiRL::func_beta)
 ```
 ```
 #> func_beta <- function(
@@ -72,31 +120,7 @@ print(yukiRL::func_eta)
 #> }
 ```
 
-#### Learning Rate η 
-```{r}
-print(yukiRL::func_eta)
-```
-```
-#> func_eta <- function (
-#>   value, temp, reward, occurrence, eta, epsilon = NA
-#> ){
-#>   if (length(eta) == 1) {
-#>     eta <- as.numeric(eta)
-#>   }
-#>   else if (length(eta) > 1 & temp > value) {
-#>     eta <- eta[1]
-#>   }
-#>   else if (length(eta) > 1 & temp <= value) {
-#>     eta <- eta[2]
-#>   }
-#>   else {
-#>     eta <- "ERROR" 
-#>   }
-#>     return(eta)
-#> }
-```
-
-#### Example Soft-Max Function [Default τ = 1]
+#### Sensitivity of Value Differences ($\tau$)
 ```{r}
 print(yukiRL::func_prob)
 ```
@@ -165,13 +189,13 @@ obj_func <- function(params){
     sub = "Subject",
     choose = "Choose",
     time_line = c("Block", "Trial"),
-    initial_value = 0,
+    initial_value = NA,
     # subject numbers to be analyzed
     n = 1,
     # parameters
-    beta = c(params[1]),
+    beta = 1,
     epsilon = NA,
-    eta = c(params[2], params[3]),
+    eta = c(params[1], params[2]),
     # your value function
     beta_func = yukiRL::func_beta,
     eta_func = yukiRL::func_eta
@@ -192,7 +216,7 @@ obj_func <- function(params){
     # your soft-max function
     prob_func = yukiRL::func_prob,  
     # params in your soft-max function
-    tau = 1,
+    tau = c(params[3]),
     params = NA
   )
 ################################## [Step 3] ####################################  
@@ -232,7 +256,7 @@ yukiRL::output(
   ga_result = ga_result, 
   obj_func = obj_func,
   n_trials = 288,
-  params_name = c("η", "τ")
+  params_name = c("eta_neg", ""eta_pos", "tau")
 )
 ```
 ```
@@ -245,10 +269,11 @@ yukiRL::output(
 |                  AIC|  215.76|
 |                  BIC|  223.09|
 
-| name| value|
-|-----|------|
-|  η  | 0.02 |
-|  τ  | 0.15 |
+|       name|    value|
+|-----------|---------|
+|  eta_neg  | 0.30344 |
+|  eta_pos  | 0.57334 |
+|    tau    | 0.03575 |
 ```
 
 ### Generate Decisions
