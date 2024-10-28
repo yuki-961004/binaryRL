@@ -41,7 +41,7 @@ Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction 
 ## Initial Value
 
 Comparisons between the two learning rates generally revealed a positivity bias ($\alpha_{+}$ > $\alpha_{-}$)  
-However, that on some occasions, studies failed to find a positivity bias or even reported a negativity bias ($\alpha_{+}$ <> $\alpha_{-}$).  
+However, that on some occasions, studies failed to find a positivity bias or even reported a negativity bias ($\alpha_{+}$ < $\alpha_{-}$).  
 Because Q-values initialization markedly affect learning rate and learning bias estimates.
 
 ### References
@@ -185,14 +185,12 @@ obj_func <- function(params){
   # Value Function
   step1 <- yukiRL::loop_update_v(
     data = data, 
-    # column name
-    sub = "Subject",
-    choose = "Choose",
-    time_line = c("Block", "Trial"),
-    initial_value = NA,
-    # subject numbers to be analyzed
-    n = 1,
+    sub = <col name [character] of subject id>,
+    choose = <col name [character] of subject's choice>,
+    time_line = <col name [vector], of block and trial>,
+    n = 1, # subject id that will be analyzed
     # parameters
+    initial_value = NA, 
     beta = 1,
     epsilon = NA,
     eta = c(params[1], params[2]),
@@ -204,13 +202,11 @@ obj_func <- function(params){
   # Soft-Max Function
   step2 <- yukiRL::loop_action_c(
     data = step1,
-    # column name
-    L_choice = "DL",
-    R_choice = "DR",
+    L_choice = <col name [character] of left choice>,
+    R_choice = <col name [character] of right choice>,
     sub = "Subject",
     initial_value = 0,
-    # subject numbers to be analyzed
-    n = 1,
+    n = 1, # the params of subjects should be calculated one by one
     seed = 123,
     softmax = TRUE,
     # your soft-max function
@@ -262,7 +258,7 @@ yukiRL::output(
 ```
 |                 name|   value|
 |---------------------|--------|
-| Number of Parameters|    2.00|
+| Number of Parameters|    3.00|
 |     Number of Trials|  288.00|
 |             Accuracy|   85.42|
 |       Log-Likelihood| -105.88|
@@ -290,11 +286,11 @@ Similar to the previous dataset, this time the data also requires rewards for bo
 ```
 yukiRL::generate_d(
   data = <your data>,
-  L_choice = <col_name of L_choice>,
-  R_choice = <col_name of R_choice>,
-  L_reward = <col_name of L_reward>,
-  R_reward = <col_name of L_reward>,
-  time_line = c("Block", "Trial"),
+  L_choice = <col_name [character] of L_choice>,
+  R_choice = <col_name [character] of R_choice>,
+  L_reward = <col_name [character] of L_reward>,
+  R_reward = <col_name [character] of L_reward>,
+  time_line = <col name [vector], of block and trial>,
   initial_value = 0,
   softmax = TRUE,
   seed = 123,
