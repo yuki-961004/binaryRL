@@ -20,7 +20,7 @@ rl_update_v(
 
 \item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
 
-\item{initial_value}{The initial value you assign to a stimulus, defaulting to 0}
+\item{initial_value}{The initial value you assign to a stimulus, defaulting to NA}
 
 \item{beta}{In the utility model, it is assumed that all rewards will be discounted}
 

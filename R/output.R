@@ -53,13 +53,13 @@ output <- function(
   }
   
   # 筛选包含 "ε" 的行并排序
-  epsilon_rows <- grep("ε", best_params$name)
+  epsilon_rows <- grep("epsilon", best_params$name)
   epsilon_values <- best_params[epsilon_rows, "value"]
   epsilon_values_sorted <- sort(epsilon_values)
   best_params[epsilon_rows, "value"] <- epsilon_values_sorted
   
   # 筛选包含 "β" 的行并排序
-  beta_rows <- grep("β", best_params$name)
+  beta_rows <- grep("beta", best_params$name)
   beta_values <- best_params[beta_rows, "value"]
   beta_values_sorted <- sort(beta_values)
   best_params[beta_rows, "value"] <- beta_values_sorted

@@ -226,11 +226,16 @@ rl_generate_d <- function(
       epsilon = epsilon
     )
     
-    # 计算此次V_update的值
-    temp_data$V_update[i] <- temp_data$V_value[i] + 
-      temp_data$eta[i] * (temp_data$V_temp[i] - temp_data$V_value[i])
-    
-    temp_data[[choose]][i] <- temp_data$V_update[i]
+    # 如果是第一次选这个选项, 直接将temp赋予给V_update
+    if (!(choose %in% chosen)) {
+      temp_data$V_update[i] <- temp_data$V_temp[i]
+      temp_data[[choose]][i] <- temp_data$V_update[i]
+      # 如果这次的选项是选过的, 正常按照eta更新价值
+    } else {
+      temp_data$V_update[i] <- temp_data$V_value[i] + 
+        temp_data$eta[i] * (temp_data$V_temp[i] - temp_data$V_value[i])
+      temp_data[[choose]][i] <- temp_data$V_update[i]  
+    }
   }
   ############################## [delete first row] ############################## 
   # 删除第一行赋予的初始值
