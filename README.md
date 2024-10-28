@@ -1,13 +1,22 @@
 # yukiRL
 This package is suitable for binary-choice decision tasks and allows you to customize your reinforcement learning model.  
 
-I divide reinforcement learning into three parts:
+I divide reinforcement learning into four steps:
+## Step 1: Update values based on the value function.
+ - `Value Function`, updating the value you assign to a stimulus based on the current reward.  
+    **Learning Rates ($\eta$)**: It is a parameter that controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.  
+    **Subjective Utility ($\beta$)**: People's subjective perception of objective rewards: $\beta$ > 1 means exaggerating the received reward, while $\beta$ < 1 means diminishing the received reward.
 
- - `Value Function`: updating the value you assign to a stimulus based on the current reward.  
-    1. **Learning Rates ($\eta$)**: The difference between the reward and the perceived value is used, at a certain 
-    2. **Subjective Utility ($\beta$)**: People tend to discount or boost the value of the rewards they see.learning rate, to update the estimated value of a particular stimulus.
+## Step 2: Make choices according to the softmax function.
  - `Soft-Max Function`, calculating the probability of choosing a certain option based on the values of the two available options.   
-    1. **Sensitivity of Value Differences ($\tau$)**: This value represents people's sensitivity to value differences. The larger this value, the more sensitive they are to the differences in value between the two options.
+    **Sensitivity of Value Differences ($\tau$)**: This value represents people's sensitivity to value differences. The larger $\tau$, the more sensitive they are to the differences in value between the two options.
+## Step 3: Calculate the consistency rate between the robot's choices and the human choices.
+ - `Log Likelihood`, $LL$ = $\sum$ $B_{L}$ $\times$ $\log P_{L}$ + $\sum$ $B_{R}$ $\times$ $\log P_{R}$   
+
+    $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option)   
+    $P_{L}$ and $P_{R}$ the probability of a subject selecting either a left or right option, as determined by a reinforcement learning model.   
+    $N_{L}$ and $N_{R}$ the total number of trials the subject chose the left or right option.   
+## Step 4: Generate simulated data based on the best parameters for each subject.
  - `Generate Simulated Data`: Given the `Value function` and the `Soft-Max function`, along with the corresponding parameters, simulate data.  
 
 <br>
@@ -67,7 +76,7 @@ $Value_{n}$ = $Value_{n-1}$ + $\eta$ $\times$ ($\beta$ $\times$ $Reward_{n}$ - $
 - The `Risk-sensitive TD model` is based on `TD model` and assumes that the **learning rates ($\eta$)** are different for gains and losses.
 - The `Utility model` introduces a **subjective utility ($\beta$)** for rewards based on this foundation. 
 
-*NOTE*: Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)**. When the initial value is not set, it is taken to be the reward received for that stimulus the first time.
+*NOTE*: Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)**. When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
 
 ## Examples
 ### Load Pacakge
@@ -231,12 +240,12 @@ doParallel::registerDoParallel(cores = cl)
 
 ga_result <- GA::ga(
   type = "real-valued",
-  fitness = function(x) obj_func(x),  # obj_func(params)
-  lower = c(0, 0, 0),                 # lower bounds of parameters
-  upper = c(1, 1, 1),                 # upper bounds of parameters
-  popSize = 50,                       # Initial population size
-  maxiter = 999,                      # Maximum number of iterations
-  run = 20,                           # Number of iterations without improvement before stopping
+  fitness = function(x) obj_func(x), 
+  lower = c(0, 0, 0), # lower bounds of parameters
+  upper = c(1, 1, 1), # upper bounds of parameters
+  popSize = 50,       # Initial population size
+  maxiter = 999,      # Maximum number of iterations
+  run = 20,           # Number of iterations without improvement before stopping
   parallel = TRUE,          
   seed = 123                
 )
@@ -284,12 +293,13 @@ Similar to the previous dataset, this time the data also requires rewards for bo
 ```
 
 ```
+################################## [Step 4] #################################### 
 yukiRL::generate_d(
   data = <your data>,
-  L_choice = <col_name [character] of L_choice>,
-  R_choice = <col_name [character] of R_choice>,
-  L_reward = <col_name [character] of L_reward>,
-  R_reward = <col_name [character] of L_reward>,
+  L_choice = <col_name [character] of left choice>,
+  R_choice = <col_name [character] of right choice>,
+  L_reward = <col_name [character] of left reward>,
+  R_reward = <col_name [character] of right reward>,
   time_line = <col name [vector], of block and trial>,
   initial_value = 0,
   softmax = TRUE,
