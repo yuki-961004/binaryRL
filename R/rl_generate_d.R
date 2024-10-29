@@ -28,7 +28,7 @@ rl_generate_d <- function(
     L_reward,
     R_reward,
     time_line,
-    initial_value = 0,
+    initial_value = NA,
     softmax = TRUE,
     seed = 123,
     beta = 1,
@@ -56,15 +56,15 @@ rl_generate_d <- function(
   for (name in alternative_choice) {
     data[[name]] <- NA
   }
-  
-  ################################## [Arrange] ###################################
+
+################################## [Arrange] ###################################
   # 基于time_line这个向量, 录入排序向量
   order_vector <- lapply(time_line, function(col) data[[col]])
   
   # 基于排序向量对输入数据集进行排序
   temp_data <- data[do.call(order, order_vector), ]
-  
-  ############################### [Add Null row] #################################
+
+############################### [Add Null row] #################################
   # 生成一个与输入数据集相同的单行数据集. 用于存放初始值
   empty_row <- as.data.frame(matrix(ncol = ncol(data), nrow = 1))
   colnames(empty_row) <- colnames(data)
@@ -72,8 +72,8 @@ rl_generate_d <- function(
   # 在第一行插入一个空行
   temp_data <- rbind(empty_row, temp_data)
   temp_data$Time_Line <- seq(from = 0, to = nrow(data))
-  
-  ################################ [ new col ] ###################################
+
+################################ [ new col ] ###################################
   
   temp_data$Reward <- NA
   # 添加空列 update_v
@@ -90,34 +90,52 @@ rl_generate_d <- function(
   temp_data$R_prob <- NA
   temp_data$Rob_Choose <- NA
   
-  # 设置初始值
-  temp_data$V_value[1] <- initial_value
-  temp_data$V_temp[1] <- initial_value
-  temp_data$V_update[1] <- initial_value
-  temp_data$L_value[1] <- initial_value
-  temp_data$R_value[1] <- initial_value
-  
-  for (name in alternative_choice) {
-    temp_data[[name]][1] <- initial_value
+  # 设置初始值, 如果没有设置初始值, 则赋予一个0
+  # 这个初始值并不是很关键, 只要有数字就行
+  if (is.na(initial_value)) {
+    # update_v 相关
+    temp_data$V_value[1] <- 0
+    temp_data$V_temp[1] <- 0
+    temp_data$V_update[1] <- 0
+    # action_c 相关
+    temp_data$L_value[1] <- 0
+    temp_data$R_value[1] <- 0
+    
+    # 给每个选项赋予初始值
+    for (name in alternative_choice) {
+      temp_data[[name]][1] <- 0
+    }
+  } else {
+    # update_v 相关
+    temp_data$V_value[1] <- initial_value
+    temp_data$V_temp[1] <- initial_value
+    temp_data$V_update[1] <- initial_value
+    # action_c 相关
+    temp_data$L_value[1] <- initial_value
+    temp_data$R_value[1] <- initial_value
+    
+    # 给每个选项赋予初始值
+    for (name in alternative_choice) {
+      temp_data[[name]][1] <- initial_value
+    }
   }
-  
   
   # 逐行更新Value
   for (i in 2:nrow(temp_data)) {
-    
+  
     # 记录此时L和R的名字
     L_name <- temp_data[[L_choice]][i]
     R_name <- temp_data[[R_choice]][i]
     # 此时V_value的值传入L_value和R_value
     temp_data$L_value[i] <- temp_data[[L_name]][i - 1]
     temp_data$R_value[i] <- temp_data[[R_name]][i - 1]
-    
-    ################################ [ CORE CODE ] #################################
-    
+  
+################################ [ CORE CODE ] #################################
+
     # 查询此次选择时, 已经选过哪些了
     chosen <- unique(temp_data$Rob_Choose)
-    
-    ################################ [ 1+ CHOOSE ] #################################
+  
+################################ [ 1+ CHOOSE ] #################################
     # 如果选项都不是第一次出现, 则正常计算概率
     if ((temp_data[[L_choice]][i] %in% chosen) & (temp_data[[R_choice]][i] %in% chosen)) {
       # 基于prob函数计算选择左边和右边的概率
@@ -135,7 +153,7 @@ rl_generate_d <- function(
         tau = tau,
         params = params
       )
-      ############################### [ 1st CHOOSE ] #################################
+############################### [ 1st CHOOSE ] #################################
     } else if (!(temp_data[[L_choice]][i] %in% chosen) & (temp_data[[R_choice]][i] %in% chosen)) {
       # 如果左边选项是第一次出现, 则一定选左边  
       temp_data$L_prob[i] <- 1
@@ -150,13 +168,13 @@ rl_generate_d <- function(
       temp_data$R_prob[i] <- 0.5
     }
     
-    ############################### [ PASS VALUE ] #################################  
+############################### [ PASS VALUE ] #################################  
     # 去上一行找每个选项此时的value
     for (name in alternative_choice) {
       temp_data[[name]][i] <- temp_data[[name]][i - 1]
     }
-    
-    ################################ [ Soft-Max ] ##################################    
+  
+################################ [ Soft-Max ] ##################################    
     # 如果是softmax = TRUE就基于概率随机选
     if (!(softmax %in% c(TRUE, FALSE))) {
       stop("softmax TRUE or FALSE?")
@@ -172,7 +190,7 @@ rl_generate_d <- function(
         prob = c(temp_data$L_prob[i], temp_data$R_prob[i]),
         size = 1
       ) 
-      # 如果softmax = FALSE, 则按照谁大选谁
+    # 如果softmax = FALSE, 则按照谁大选谁
     } else if (softmax == FALSE) {
       if (!is.numeric(temp_data$L_value[i]) | !is.numeric(temp_data$R_value[i])) {
         stop("An error occurs when softmax == FALSE")
@@ -190,15 +208,15 @@ rl_generate_d <- function(
         )
       } 
     }
-    ################################## [ Reward ] ##################################    
+################################## [ Reward ] ##################################    
     # 基于选择, 来给予奖励
     if (temp_data$Rob_Choose[i] == temp_data[[L_choice]][i]){
       temp_data$Reward[i] <- temp_data[[L_reward]][i]
     } else if (temp_data$Rob_Choose[i] == temp_data[[R_choice]][i]) {
       temp_data$Reward[i] <- temp_data[[R_reward]][i]
     }
-    
-    ################################ [ update_v ] ##################################     
+  
+################################ [ update_v ] ##################################     
     # 记录这次选了哪个
     choose <- temp_data$Rob_Choose[i]
     # 看到奖励前, 对该选项预期的奖励, 去上一行找
@@ -227,17 +245,17 @@ rl_generate_d <- function(
     )
     
     # 如果是第一次选这个选项, 直接将temp赋予给V_update
-    if (!(choose %in% chosen)) {
+    if (is.na(initial_value) & !(choose %in% chosen)) {
       temp_data$V_update[i] <- temp_data$V_temp[i]
       temp_data[[choose]][i] <- temp_data$V_update[i]
-      # 如果这次的选项是选过的, 正常按照eta更新价值
+    # 如果这次的选项是选过的, 正常按照eta更新价值
     } else {
       temp_data$V_update[i] <- temp_data$V_value[i] + 
         temp_data$eta[i] * (temp_data$V_temp[i] - temp_data$V_value[i])
       temp_data[[choose]][i] <- temp_data$V_update[i]  
-    }
+    } 
   }
-  ############################## [delete first row] ############################## 
+############################## [delete first row] ############################## 
   # 删除第一行赋予的初始值
   res_data <- temp_data[-1, ]
   # round
