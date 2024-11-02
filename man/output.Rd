@@ -4,7 +4,13 @@
 \alias{output}
 \title{summary ga_result}
 \usage{
-output(ga_result, obj_func, n_trials, params_name)
+output(
+  ga_result = ga_result,
+  obj_func = obj_func,
+  n_trials,
+  params_name,
+  sort = c("epsilon")
+)
 }
 \arguments{
 \item{ga_result}{ga_result}
@@ -14,6 +20,8 @@ output(ga_result, obj_func, n_trials, params_name)
 \item{n_trials}{number of trials in your experiment}
 
 \item{params_name}{name of your parameters}
+
+\item{sort}{vars need to be sorted}
 }
 \value{
 output

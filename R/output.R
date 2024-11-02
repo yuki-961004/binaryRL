@@ -4,17 +4,19 @@
 #' @param obj_func obj_func in your global environment
 #' @param n_trials number of trials in your experiment
 #' @param params_name name of your parameters
+#' @param sort vars need to be sorted
 #'
 #' @return output
 #' @export
 #'
 output <- function(
-    ga_result, 
-    obj_func,
+    ga_result = ga_result,
+    obj_func = obj_func,
     n_trials,
-    params_name
+    params_name,
+    sort = c("epsilon")
 ){
-################################ [model fit] ###################################
+  ################################ [model fit] ###################################
   n_params <- ncol(ga_result@solution)
   n_trials <- n_trials
   acc <- as.numeric(
@@ -41,7 +43,7 @@ output <- function(
   # 将两个向量组合成 data.frame
   model_fit <- data.frame(name = model_fit_name, value = model_fit_value)
   
-################################ [best params] #################################
+  ################################ [best params] #################################
   # 在程序内对ε和β进行了排序, 但是在params输入时并没有排序
   # output需要重新排序后输出
   # 创建一个空的 data.frame
@@ -52,20 +54,16 @@ output <- function(
     best_params <- rbind(best_params, data.frame(name = params_name[i], value = ga_result@solution[1,i]))
   }
   
-  # 筛选包含 "ε" 的行并排序
-  epsilon_rows <- grep("epsilon", best_params$name)
-  epsilon_values <- best_params[epsilon_rows, "value"]
-  epsilon_values_sorted <- sort(epsilon_values)
-  best_params[epsilon_rows, "value"] <- epsilon_values_sorted
   
-  # 筛选包含 "β" 的行并排序
-  beta_rows <- grep("beta", best_params$name)
-  beta_values <- best_params[beta_rows, "value"]
-  beta_values_sorted <- sort(beta_values)
-  best_params[beta_rows, "value"] <- beta_values_sorted
+  for (sort_var in sort) {
+    target_rows <- grep(sort_var, best_params$name)
+    target_values <- best_params[target_rows, "value"]
+    target_values_sorted <- sort(target_values)
+    best_params[target_rows, "value"] <- target_values_sorted
+  }
   
   rownames(best_params) <- NULL
-  best_params$value <- round(best_params$value, 5)
+  best_params$value <- round(best_params$value, 2)
   
   res <- list(model_fit, best_params)
   # 查看结果

@@ -11,7 +11,7 @@ rl_generate_d(
   L_reward,
   R_reward,
   time_line,
-  initial_value = 0,
+  initial_value = NA,
   softmax = TRUE,
   seed = 123,
   beta = 1,
