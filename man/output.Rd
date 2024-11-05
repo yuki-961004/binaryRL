@@ -9,7 +9,8 @@ output(
   obj_func = obj_func,
   n_trials,
   params_name,
-  sort = c("epsilon")
+  sort = c("epsilon"),
+  digits = 5
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ output(
 \item{params_name}{name of your parameters}
 
 \item{sort}{vars need to be sorted}
+
+\item{dig}{Digits after decimal point}
 }
 \value{
 output

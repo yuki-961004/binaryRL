@@ -5,6 +5,7 @@
 #' @param n_trials number of trials in your experiment
 #' @param params_name name of your parameters
 #' @param sort vars need to be sorted
+#' @param dig Digits after decimal point
 #'
 #' @return output
 #' @export
@@ -14,7 +15,8 @@ output <- function(
     obj_func = obj_func,
     n_trials,
     params_name,
-    sort = c("epsilon")
+    sort = c("epsilon"),
+    digits = 5
 ){
   ################################ [model fit] ###################################
   n_params <- ncol(ga_result@solution)
@@ -22,9 +24,9 @@ output <- function(
   acc <- as.numeric(
     capture.output(obj_func(params = as.vector(ga_result@solution)))[1]
   )
-  Log_Likelihood <- round(ga_result@fitnessValue, 2)
-  AIC <- round(2 * n_params - 2 * Log_Likelihood, 2)
-  BIC <- round(n_params * log(n_trials) - 2 * Log_Likelihood, 2)
+  Log_Likelihood <- round(ga_result@fitnessValue, digits = digits)
+  AIC <- round(2 * n_params - 2 * Log_Likelihood, digits = digits)
+  BIC <- round(n_params * log(n_trials) - 2 * Log_Likelihood, digits = digits)
   
   # 创建一个包含指标名称的向量
   model_fit_name <- c(
@@ -51,7 +53,10 @@ output <- function(
   
   # 将结果添加到 data.frame
   for (i in 1:ncol(ga_result@solution)) {
-    best_params <- rbind(best_params, data.frame(name = params_name[i], value = ga_result@solution[1,i]))
+    best_params <- rbind(
+      best_params, 
+      data.frame(name = params_name[i], value = ga_result@solution[1,i])
+    )
   }
   
   
@@ -63,7 +68,7 @@ output <- function(
   }
   
   rownames(best_params) <- NULL
-  best_params$value <- round(best_params$value, 2)
+  best_params$value <- round(best_params$value, digits = digits)
   
   res <- list(model_fit, best_params)
   # 查看结果
