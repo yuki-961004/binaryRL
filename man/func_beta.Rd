@@ -4,7 +4,7 @@
 \alias{func_beta}
 \title{func_beta}
 \usage{
-func_beta(value, temp, reward, occurrence, beta = 1, epsilon = NA)
+func_beta(value, temp, reward, ev, occurrence, beta = 1, epsilon = NA)
 }
 \arguments{
 \item{value}{The value you assign to this stimulus at this moment}
@@ -13,11 +13,13 @@ func_beta(value, temp, reward, occurrence, beta = 1, epsilon = NA)
 
 \item{reward}{The reward given to you by the experimental procedure after choosing this stimulus}
 
+\item{ev}{The current reward expectations under this framework}
+
 \item{occurrence}{The number of times this stimulus is encountered}
 
 \item{beta}{In the utility model, it is assumed that all rewards will be discounted}
 
-\item{epsilon}{In the WXT model, the discount is divided into different intervals.}
+\item{epsilon}{In the Prospect theory, the discount is divided into different intervals.}
 }
 \value{
 Discount rate and temp value

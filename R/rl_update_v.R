@@ -13,7 +13,7 @@
 #' @export
 
 rl_update_v <- function(
-    # 输入data frame
+  # 输入data frame
   data,
   # 价值更新的时间线, 基于的列
   time_line = c("Block", "Trial"),
@@ -59,6 +59,7 @@ rl_update_v <- function(
     # 之后才回根据学习率对这个值进行矫正. 
     if (i == 1 & is.na(initial_value)) {
       temp_data$Reward[i] <- temp_data$Reward[i+1]
+      temp_data$EV[i] <- temp_data$EV[i+1]
       temp_data$V_value[i] <- temp_data$Reward[i+1]
       
       # 使用beta_func选择此时对应的beta, 然后计算出temp
@@ -66,6 +67,7 @@ rl_update_v <- function(
         value = temp_data$V_value[i],
         temp = temp_data$V_temp[i],
         reward = temp_data$Reward[i],
+        ev = temp_data$EV[i],
         occurrence = temp_data$Time_Line[i],
         beta = beta,
         epsilon = epsilon
@@ -78,6 +80,7 @@ rl_update_v <- function(
       # 如果是第一次, 但是给了初始值, 那么就赋予上初始值, 给予正常的奖励 
     } else if (i == 1 & !(is.na(initial_value))) {
       temp_data$Reward[i] <- temp_data$Reward[i+1]
+      temp_data$EV[i] <- temp_data$EV[i+1]
       temp_data$V_value[i] <- initial_value
       temp_data$V_temp[i] <- initial_value
       temp_data$V_update[i] <- initial_value
@@ -91,6 +94,7 @@ rl_update_v <- function(
       value = temp_data$V_value[i],
       temp = temp_data$V_temp[i],
       reward = temp_data$Reward[i],
+      ev = temp_data$EV[i],
       occurrence = temp_data$Time_Line[i],
       beta = beta,
       epsilon = epsilon

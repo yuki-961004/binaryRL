@@ -3,9 +3,10 @@
 #' @param value The value you assign to this stimulus at this moment
 #' @param temp Intermediate transition value. May not be used
 #' @param reward The reward given to you by the experimental procedure after choosing this stimulus
+#' @param ev The current reward expectations under this framework
 #' @param occurrence The number of times this stimulus is encountered
 #' @param beta In the utility model, it is assumed that all rewards will be discounted
-#' @param epsilon In the WXT model, the discount is divided into different intervals.
+#' @param epsilon In the Prospect theory, the discount is divided into different intervals.
 #'
 #' @return Discount rate and temp value
 #' @export
@@ -17,6 +18,8 @@ func_beta <- function(
   temp,
   # 选择后看到的reward
   reward, 
+  # 目前这个框架下的奖励期望
+  ev,
   # 第几次看到这个刺激
   occurrence, 
   # 使用的参数

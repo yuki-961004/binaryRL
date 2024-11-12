@@ -24,7 +24,7 @@ output(
 
 \item{sort}{vars need to be sorted}
 
-\item{dig}{Digits after decimal point}
+\item{digits}{Digits after decimal point}
 }
 \value{
 output

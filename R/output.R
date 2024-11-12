@@ -5,7 +5,7 @@
 #' @param n_trials number of trials in your experiment
 #' @param params_name name of your parameters
 #' @param sort vars need to be sorted
-#' @param dig Digits after decimal point
+#' @param digits Digits after decimal point
 #'
 #' @return output
 #' @export
