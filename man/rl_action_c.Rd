@@ -10,12 +10,14 @@ rl_action_c(
   R_choice = "DR",
   choose = "Choose",
   value = "V_value",
+  expected_value = NA,
+  decision_frame = NA,
   initial_value = 0,
   seed = 123,
   softmax = TRUE,
   tau = 1,
   params = NA,
-  prob_func
+  prob_func = func_prob
 )
 }
 \arguments{
@@ -28,6 +30,10 @@ rl_action_c(
 \item{choose}{The column name for the option chosen by the subject}
 
 \item{value}{The column name for the stimulate's current value}
+
+\item{expected_value}{expected_value}
+
+\item{decision_frame}{decision_frame}
 
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to 0}
 

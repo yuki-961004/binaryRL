@@ -5,38 +5,43 @@
 #' @param choose The column name indicating which option the subject chose
 #' @param time_line Variables used to represent the experimental timeline, such as block and trial
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
+#' @param expected_value expected_value
+#' @param decision_frame decision_frame
 #' @param n How many subjects' data do you need to run?
 #' @param beta In the utility model, it is assumed that all rewards will be discounted
 #' @param epsilon In the WXT model, the discount rate is divided into different intervals.
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
 #' @param beta_func The function for the discount rate β, which you can customize
 #' @param eta_func The function for the learning rate η, which you can customize
+
 #'
 #' @return update value for every subject with whole choice
 #' @export 
 #'
 loop_update_v <- function(
-    data,
-    # 被试序号列, 列名
-    sub = "Subject",
-    # 被试选择列
-    choose = "Choose",
-    # 价值更新的时间线, 基于的列
-    time_line = c("Block", "Trial"),
-    # 被试心中价值初始值
-    initial_value = 0,
-    # 要处理多少个被试. 由于估计时候是对被试分别进行, 所以这里也是被试序号
-    n,
-    # parameters
-    beta = 1,
-    epsilon = NA,
-    eta,
-    # 价值函数选用示例函数
-    beta_func,
-    eta_func
-    ################################# [function start] #############################
+  data,
+  # 被试序号列, 列名
+  sub = "Subject",
+  # 被试选择列
+  choose = "Choose",
+  # 价值更新的时间线, 基于的列
+  time_line = c("Block", "Trial"),
+  expected_value = NA,
+  decision_frame = NA,
+  # 被试心中价值初始值
+  initial_value = 0,
+  # 要处理多少个被试. 由于估计时候是对被试分别进行, 所以这里也是被试序号
+  n,
+  # parameters
+  beta = 1,
+  epsilon = NA,
+  eta,
+  # 价值函数选用示例函数
+  beta_func = func_beta,
+  eta_func = func_eta
+################################# [function start] #############################
 ){
-  ################################# [split sub data] #############################
+################################# [split sub data] #############################
   # 按照[被试序号列][sub]分裂原始数据
   df_split <- base::split(x = data, f = data[[sub]])
   # 新建空list, 每个被试的结果存入该list的一个元素中
@@ -48,10 +53,10 @@ loop_update_v <- function(
     df_subject <- df_split[[i]]
     # 按照选择的不同进行分裂
     df_choose <- split(x = df_subject, f = df_subject[[choose]])
-    ############################# [res for each stimulate] #########################
+############################# [res for each stimulate] #########################
     # 每种选择的结果存入该list的一个元素中
     df_update <- list()
-    ################################ [ CORE CODE ] #################################
+################################ [ CORE CODE ] #################################
     # 对每种choose运行update_v
     df_update <- purrr::map(
       # list对象, 每个元素执行一次function
@@ -60,6 +65,8 @@ loop_update_v <- function(
       .f = rl_update_v,
       # 价值更新的时间线, 基于的列
       time_line = time_line,
+      expected_value = expected_value,
+      decision_frame = decision_frame,
       # 初始值
       initial_value = initial_value,
       # parameters
@@ -70,12 +77,12 @@ loop_update_v <- function(
       beta_func = beta_func,
       eta_func = eta_func
     )
-    ################################ [ CORE CODE ] #################################
+################################ [ CORE CODE ] #################################
     # 把所有choose类型的结果合并, 成为一个被试的结果
     df_res[[i]] <- dplyr::bind_rows(df_update)
   }
   
-  ################################### [result] ###################################
+################################### [result] ###################################
   # 把所有被试的结果合并, 成为总结果
   temp_res <- dplyr::bind_rows(df_res) 
   # 此时排序基于sub和time_line

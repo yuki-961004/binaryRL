@@ -6,17 +6,23 @@
 \usage{
 rl_update_v(
   data,
+  expected_value = NA,
+  decision_frame = NA,
   time_line = c("Block", "Trial"),
   initial_value = 0,
   beta = 1,
   epsilon = NA,
   eta = c(0.3, 0.7),
-  beta_func,
-  eta_func
+  beta_func = func_beta,
+  eta_func = func_eta
 )
 }
 \arguments{
 \item{data}{Data containing only one type of stimulus}
+
+\item{expected_value}{expected_value}
+
+\item{decision_frame}{decision_frame}
 
 \item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
 

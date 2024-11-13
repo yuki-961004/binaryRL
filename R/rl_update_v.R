@@ -3,6 +3,8 @@
 #' @param data Data containing only one type of stimulus
 #' @param time_line Variables used to represent the experimental timeline, such as block and trial
 #' @param initial_value The initial value you assign to a stimulus, defaulting to NA
+#' @param expected_value expected_value
+#' @param decision_frame decision_frame
 #' @param beta In the utility model, it is assumed that all rewards will be discounted
 #' @param epsilon In the WXT model, the discount rate is divided into different intervals.
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
@@ -13,10 +15,13 @@
 #' @export
 
 rl_update_v <- function(
-  # 输入data frame
+    # 输入data frame
   data,
   # 价值更新的时间线, 基于的列
+  expected_value = NA,
+  decision_frame = NA,
   time_line = c("Block", "Trial"),
+  # 此时对应的奖励期望
   # 被试心中价值初始值
   initial_value = 0,
   # parameters
@@ -24,8 +29,8 @@ rl_update_v <- function(
   epsilon = NA,
   eta = c(0.3, 0.7),
   # 价值函数选用示例函数
-  beta_func,
-  eta_func
+  beta_func = func_beta,
+  eta_func = func_eta
 ################################# [function start] #############################
 ){
 ################################## [Arrange] ###################################
@@ -35,7 +40,7 @@ rl_update_v <- function(
   # 基于排序向量对输入数据集进行排序
   temp_data <- data[do.call(order, order_vector), ]
   
-############################### [Add Null row] #################################
+  ############################### [Add Null row] #################################
   # 生成一个与输入数据集相同的单行数据集. 用于存放初始值
   empty_row <- as.data.frame(matrix(ncol = ncol(data), nrow = 1))
   colnames(empty_row) <- colnames(data)
@@ -59,15 +64,23 @@ rl_update_v <- function(
     # 之后才回根据学习率对这个值进行矫正. 
     if (i == 1 & is.na(initial_value)) {
       temp_data$Reward[i] <- temp_data$Reward[i+1]
-      temp_data$EV[i] <- temp_data$EV[i+1]
       temp_data$V_value[i] <- temp_data$Reward[i+1]
+      # 如果输入了Expected_Value, 就赋值
+      if (is.character(expected_value)) {
+        temp_data[[expected_value]][i] <- temp_data[[expected_value]][i+1]
+      }
+      # 如果输入了Expected_Value, 就赋值
+      if (is.character(decision_frame)) {
+        temp_data[[decision_frame]][i] <- temp_data[[decision_frame]][i+1]
+      }
       
       # 使用beta_func选择此时对应的beta, 然后计算出temp
       beta_temp <- beta_func(
         value = temp_data$V_value[i],
         temp = temp_data$V_temp[i],
         reward = temp_data$Reward[i],
-        ev = temp_data$EV[i],
+        ev = temp_data[[expected_value]][i],
+        frame = temp_data[[decision_frame]][i],
         occurrence = temp_data$Time_Line[i],
         beta = beta,
         epsilon = epsilon
@@ -80,7 +93,6 @@ rl_update_v <- function(
       # 如果是第一次, 但是给了初始值, 那么就赋予上初始值, 给予正常的奖励 
     } else if (i == 1 & !(is.na(initial_value))) {
       temp_data$Reward[i] <- temp_data$Reward[i+1]
-      temp_data$EV[i] <- temp_data$EV[i+1]
       temp_data$V_value[i] <- initial_value
       temp_data$V_temp[i] <- initial_value
       temp_data$V_update[i] <- initial_value
@@ -94,7 +106,8 @@ rl_update_v <- function(
       value = temp_data$V_value[i],
       temp = temp_data$V_temp[i],
       reward = temp_data$Reward[i],
-      ev = temp_data$EV[i],
+      ev = temp_data[[expected_value]][i],
+      frame = temp_data[[decision_frame]][i],
       occurrence = temp_data$Time_Line[i],
       beta = beta,
       epsilon = epsilon
@@ -107,6 +120,8 @@ rl_update_v <- function(
       value = temp_data$V_value[i],
       temp = temp_data$V_temp[i],
       reward = temp_data$Reward[i],
+      ev = temp_data[[expected_value]][i],
+      frame = temp_data[[decision_frame]][i],
       occurrence = temp_data$Time_Line[i],
       eta = eta,
       epsilon = epsilon
@@ -126,6 +141,6 @@ rl_update_v <- function(
   # 对于V取两位小数
   res_data$V_value <- round(res_data$V_value, 2)
   res_data$V_update <- round(res_data$V_update, 2)
-  # 返回结果
+  
   return(res_data)
 }

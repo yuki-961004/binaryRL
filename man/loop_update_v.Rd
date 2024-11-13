@@ -9,13 +9,15 @@ loop_update_v(
   sub = "Subject",
   choose = "Choose",
   time_line = c("Block", "Trial"),
+  expected_value = NA,
+  decision_frame = NA,
   initial_value = 0,
   n,
   beta = 1,
   epsilon = NA,
   eta,
-  beta_func,
-  eta_func
+  beta_func = func_beta,
+  eta_func = func_eta
 )
 }
 \arguments{
@@ -26,6 +28,10 @@ loop_update_v(
 \item{choose}{The column name indicating which option the subject chose}
 
 \item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
+
+\item{expected_value}{expected_value}
+
+\item{decision_frame}{decision_frame}
 
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to 0}
 

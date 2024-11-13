@@ -6,6 +6,8 @@
 #' @param choose The column name for the option chosen by the subject
 #' @param value The column name for the stimulate's current value
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
+#' @param expected_value expected_value
+#' @param decision_frame decision_frame
 #' @param seed seed
 #' @param softmax use softmax or not, defaulting to TRUE
 #' @param tau The τ parameter in the soft-max function, with a default value of 1
@@ -25,6 +27,8 @@ rl_action_c <- function(
   choose = "Choose",
   # 被试心中价值列的列名
   value = "V_value",
+  expected_value = NA,
+  decision_frame = NA,
   # 被试心中价值初始值
   initial_value = 0,
   # softmax选择时的随机种子
@@ -36,9 +40,11 @@ rl_action_c <- function(
   # 如果你的softmax含有别的参数, 就放在这里
   params = NA,
   # 示例softmax函数
-  prob_func
+  prob_func = func_prob
 ################################# [function start] #############################
 ){
+################################# [function start] #############################
+  
   # 为了保证choose和value在长转宽中这两列不消失. 所以复制一次
   data$names <- data[[choose]]
   data$values <- data[[value]]
@@ -102,6 +108,8 @@ rl_action_c <- function(
     df_wider$L_prob[i] <- prob_func(
       L_value = df_wider$L_value[i],
       R_value = df_wider$R_value[i],
+      ev = df_wider[[expected_value]][i],
+      frame = df_wider[[decision_frame]][i],
       LR = "L", 
       tau = tau,
       params = params
@@ -109,6 +117,8 @@ rl_action_c <- function(
     df_wider$R_prob[i] <- prob_func(
       L_value = df_wider$L_value[i],
       R_value = df_wider$R_value[i],
+      ev = df_wider[[expected_value]][i],
+      frame = df_wider[[decision_frame]][i],
       LR = "R", 
       tau = tau,
       params = params
@@ -174,7 +184,7 @@ rl_action_c <- function(
       print("L/R_dir ERROR")
     }
     
-############################## [ log_likelyhood ] ##############################    
+    ############################## [ log_likelyhood ] ##############################    
     # 基于得到的被试选项与强化学习估计的选择概率, 计算似然值
     df_wider$L_logl[i] <- df_wider$L_dir[i] * log(df_wider$L_prob[i] + 1e-10)
     df_wider$R_logl[i] <- df_wider$R_dir[i] * log(df_wider$R_prob[i] + 1e-10)
@@ -197,6 +207,5 @@ rl_action_c <- function(
   df_wider$R_prob <- round(df_wider$R_prob, 2)
   df_wider$L_logl <- round(df_wider$L_logl, 2)
   df_wider$R_logl <- round(df_wider$R_logl, 2)
-  
   return(df_wider)
 }

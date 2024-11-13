@@ -10,6 +10,8 @@ rl_generate_d(
   R_choice,
   L_reward,
   R_reward,
+  expected_value = NA,
+  decision_frame = NA,
   time_line,
   initial_value = 0,
   softmax = TRUE,
@@ -34,6 +36,10 @@ rl_generate_d(
 \item{L_reward}{The column name for the reward of right option}
 
 \item{R_reward}{The column name for the reward of left option}
+
+\item{expected_value}{Expected Value}
+
+\item{decision_frame}{Decision Frame}
 
 \item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
 

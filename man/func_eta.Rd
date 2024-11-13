@@ -4,7 +4,7 @@
 \alias{func_eta}
 \title{func_eta}
 \usage{
-func_eta(value, temp, reward, occurrence, eta, epsilon)
+func_eta(value, temp, reward, ev, frame, occurrence, eta, epsilon)
 }
 \arguments{
 \item{value}{The value you assign to this stimulus at this moment}
@@ -12,6 +12,10 @@ func_eta(value, temp, reward, occurrence, eta, epsilon)
 \item{temp}{Intermediate transition value. May not be used}
 
 \item{reward}{The reward given to you by the experimental procedure after choosing this stimulus}
+
+\item{ev}{expected value}
+
+\item{frame}{decision frame}
 
 \item{occurrence}{The number of times this stimulus is encountered}
 

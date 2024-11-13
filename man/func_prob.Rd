@@ -4,12 +4,16 @@
 \alias{func_prob}
 \title{func_prob}
 \usage{
-func_prob(L_value, R_value, tau = 1, params = NA, LR)
+func_prob(L_value, R_value, ev, frame, tau = 1, params = NA, LR)
 }
 \arguments{
 \item{L_value}{The value of the left option}
 
 \item{R_value}{The value of the right option}
+
+\item{ev}{expected value}
+
+\item{frame}{decision frame}
 
 \item{tau}{The τ parameter in the soft-max function, with a default value of 1}
 

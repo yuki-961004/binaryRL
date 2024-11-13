@@ -2,10 +2,12 @@
 #'
 #' @param L_value The value of the left option
 #' @param R_value The value of the right option
+#' @param ev expected value
+#' @param frame decision frame
 #' @param tau The τ parameter in the soft-max function, with a default value of 1
 #' @param params Other parameters that you think might influence the softmax function
 #' @param LR Are you calculating the probability for the left option or the right option?
-#'
+#' 
 #' @return example soft-max function
 #' @export
 #'
@@ -14,7 +16,11 @@ func_prob <- function(
   L_value,
   # 右边选项的价值
   R_value,
-  # softmax固有参数, 默认为1
+  # 目前这个框架下的奖励期望
+  ev,
+  # 框架low, high
+  frame,
+  # softmax固有参数
   tau = 1,
   # 其他你想使用的参数, 默认没有
   params = NA,
