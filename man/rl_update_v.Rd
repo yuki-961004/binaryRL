@@ -6,10 +6,10 @@
 \usage{
 rl_update_v(
   data,
+  time_line = c("Block", "Trial"),
   expected_value = NA,
   decision_frame = NA,
-  time_line = c("Block", "Trial"),
-  initial_value = 0,
+  initial_value = NA,
   beta = 1,
   epsilon = NA,
   eta = c(0.3, 0.7),
@@ -20,11 +20,11 @@ rl_update_v(
 \arguments{
 \item{data}{Data containing only one type of stimulus}
 
+\item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
+
 \item{expected_value}{expected_value}
 
 \item{decision_frame}{decision_frame}
-
-\item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
 
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to NA}
 

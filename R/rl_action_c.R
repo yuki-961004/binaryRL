@@ -27,7 +27,9 @@ rl_action_c <- function(
   choose = "Choose",
   # 被试心中价值列的列名
   value = "V_value",
+  # 决策时情景对应的期望价值
   expected_value = NA,
+  # 决策时情景对应的框架名称
   decision_frame = NA,
   # 被试心中价值初始值
   initial_value = 0,
@@ -43,7 +45,6 @@ rl_action_c <- function(
   prob_func = func_prob
 ################################# [function start] #############################
 ){
-################################# [function start] #############################
   
   # 为了保证choose和value在长转宽中这两列不消失. 所以复制一次
   data$names <- data[[choose]]
@@ -184,7 +185,7 @@ rl_action_c <- function(
       print("L/R_dir ERROR")
     }
     
-    ############################## [ log_likelyhood ] ##############################    
+############################## [ log_likelyhood ] ##############################    
     # 基于得到的被试选项与强化学习估计的选择概率, 计算似然值
     df_wider$L_logl[i] <- df_wider$L_dir[i] * log(df_wider$L_prob[i] + 1e-10)
     df_wider$R_logl[i] <- df_wider$R_dir[i] * log(df_wider$R_prob[i] + 1e-10)
@@ -203,9 +204,10 @@ rl_action_c <- function(
   }
   
 ################################# [ ROUNND ] ###################################  
-  df_wider$L_prob <- round(df_wider$L_prob, 2)
-  df_wider$R_prob <- round(df_wider$R_prob, 2)
-  df_wider$L_logl <- round(df_wider$L_logl, 2)
-  df_wider$R_logl <- round(df_wider$R_logl, 2)
+  df_wider$L_prob <- round(df_wider$L_prob, 5)
+  df_wider$R_prob <- round(df_wider$R_prob, 5)
+  df_wider$L_logl <- round(df_wider$L_logl, 5)
+  df_wider$R_logl <- round(df_wider$R_logl, 5)
+  
   return(df_wider)
 }

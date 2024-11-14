@@ -34,7 +34,9 @@ loop_action_c <- function(
   value = "V_value",
   # 表示时间线的列, 便于排序. 可以不止两列
   time_line = c("Block", "Trial"),
+  # 决策时情景对应的期望价值
   expected_value = NA,
+  # 决策时情景对应的框架名称
   decision_frame = NA,
   # 初始值
   initial_value = 0,

@@ -18,12 +18,13 @@ rl_update_v <- function(
     # 输入data frame
   data,
   # 价值更新的时间线, 基于的列
-  expected_value = NA,
-  decision_frame = NA,
   time_line = c("Block", "Trial"),
-  # 此时对应的奖励期望
+  # 决策时情景对应的期望价值
+  expected_value = NA,
+  # 决策时情景对应的框架名称
+  decision_frame = NA,
   # 被试心中价值初始值
-  initial_value = 0,
+  initial_value = NA,
   # parameters
   beta = 1,
   epsilon = NA,
@@ -40,7 +41,7 @@ rl_update_v <- function(
   # 基于排序向量对输入数据集进行排序
   temp_data <- data[do.call(order, order_vector), ]
   
-  ############################### [Add Null row] #################################
+############################## [Add Null row] #################################
   # 生成一个与输入数据集相同的单行数据集. 用于存放初始值
   empty_row <- as.data.frame(matrix(ncol = ncol(data), nrow = 1))
   colnames(empty_row) <- colnames(data)
@@ -63,7 +64,9 @@ rl_update_v <- function(
     # 而且没有设置初始值, 则见到的第一个值会被100%学到
     # 之后才回根据学习率对这个值进行矫正. 
     if (i == 1 & is.na(initial_value)) {
+      # 奖励是第一行(i = 2)的奖励
       temp_data$Reward[i] <- temp_data$Reward[i+1]
+      # Value是100%学习到了奖励, 所以直接赋值
       temp_data$V_value[i] <- temp_data$Reward[i+1]
       # 如果输入了Expected_Value, 就赋值
       if (is.character(expected_value)) {
@@ -85,18 +88,29 @@ rl_update_v <- function(
         beta = beta,
         epsilon = epsilon
       )
-      temp_data$beta[i] <- as.numeric(beta_temp[1])
       
+      temp_data$beta[i] <- as.numeric(beta_temp[1])
       temp_data$V_temp[i] <- as.numeric(beta_temp[2])
+      # 设定学习率此时是100%, 而不使用eta_func
       temp_data$eta[i] <- 1
       temp_data$V_update[i] <- as.numeric(beta_temp[2])
+      
       # 如果是第一次, 但是给了初始值, 那么就赋予上初始值, 给予正常的奖励 
     } else if (i == 1 & !(is.na(initial_value))) {
       temp_data$Reward[i] <- temp_data$Reward[i+1]
+      # 如果输入了Expected_Value, 就赋值
+      if (is.character(expected_value)) {
+        temp_data[[expected_value]][i] <- temp_data[[expected_value]][i+1]
+      }
+      # 如果输入了Expected_Value, 就赋值
+      if (is.character(decision_frame)) {
+        temp_data[[decision_frame]][i] <- temp_data[[decision_frame]][i+1]
+      }
+      # 赋予初始值
       temp_data$V_value[i] <- initial_value
       temp_data$V_temp[i] <- initial_value
       temp_data$V_update[i] <- initial_value
-      # 除此之外, 就是正常的情况了. 基于上一行进行更新
+      # 除此之外, 是i >= 2的情况. 则Value是上一次的Update
     } else {
       temp_data$V_value[i] <- temp_data$V_update[i - 1]
     }

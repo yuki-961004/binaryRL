@@ -68,7 +68,7 @@ rl_generate_d <- function(
   # 基于排序向量对输入数据集进行排序
   temp_data <- data[do.call(order, order_vector), ]
   
-############################### [Add Null row] #################################
+  ############################### [Add Null row] #################################
   # 生成一个与输入数据集相同的单行数据集. 用于存放初始值
   empty_row <- as.data.frame(matrix(ncol = ncol(data), nrow = 1))
   colnames(empty_row) <- colnames(data)
@@ -78,9 +78,8 @@ rl_generate_d <- function(
   temp_data$Time_Line <- seq(from = 0, to = nrow(data))
   
 ################################ [ new col ] ###################################
-  
   temp_data$Reward <- NA
-  # 添加空列 update_v
+  # 添加空列 update_v 相关
   temp_data$V_value <- NA
   temp_data$beta <- NA
   temp_data$V_temp <- NA
@@ -110,6 +109,7 @@ rl_generate_d <- function(
       temp_data[[name]][1] <- 0
     }
   } else {
+    # 赋予设定的初始值
     # update_v 相关
     temp_data$V_value[1] <- initial_value
     temp_data$V_temp[1] <- initial_value
@@ -123,23 +123,21 @@ rl_generate_d <- function(
       temp_data[[name]][1] <- initial_value
     }
   }
-  
+########################### [update row by row] ################################  
   # 逐行更新Value
   for (i in 2:nrow(temp_data)) {
     
     # 记录此时L和R的名字
     L_name <- temp_data[[L_choice]][i]
     R_name <- temp_data[[R_choice]][i]
-    # 此时V_value的值传入L_value和R_value
+    # 在上一行找此时左右选项对应的心中的价值
     temp_data$L_value[i] <- temp_data[[L_name]][i - 1]
     temp_data$R_value[i] <- temp_data[[R_name]][i - 1]
     
-################################ [ CORE CODE ] #################################
-    
+################################ [ 1+ CHOOSE ] #################################
     # 查询此次选择时, 已经选过哪些了
     chosen <- unique(temp_data$Rob_Choose)
     
-################################ [ 1+ CHOOSE ] #################################
     # 如果选项都不是第一次出现, 则正常计算概率
     if ((temp_data[[L_choice]][i] %in% chosen) & (temp_data[[R_choice]][i] %in% chosen)) {
       # 基于prob函数计算选择左边和右边的概率
@@ -183,9 +181,10 @@ rl_generate_d <- function(
     }
     
 ################################ [ Soft-Max ] ##################################    
-    # 如果是softmax = TRUE就基于概率随机选
+    # 检查是否设定了softmax
     if (!(softmax %in% c(TRUE, FALSE))) {
       stop("softmax TRUE or FALSE?")
+      # 如果是softmax = TRUE就基于概率随机选
     } else if (softmax == TRUE) {
       if (!is.numeric(temp_data$L_value[i]) | !is.numeric(temp_data$R_value[i])) {
         stop("An error occurs when softmax == FALSE")
@@ -219,8 +218,10 @@ rl_generate_d <- function(
 ################################## [ Reward ] ##################################    
     # 基于选择, 来给予奖励
     if (temp_data$Rob_Choose[i] == temp_data[[L_choice]][i]){
+      # 选了左边, 给左的奖励
       temp_data$Reward[i] <- temp_data[[L_reward]][i]
     } else if (temp_data$Rob_Choose[i] == temp_data[[R_choice]][i]) {
+      # 选了右边, 给右的奖励
       temp_data$Reward[i] <- temp_data[[R_reward]][i]
     }
     
@@ -235,9 +236,9 @@ rl_generate_d <- function(
       value = temp_data$V_value[i],
       temp = temp_data$V_temp[i],
       reward = temp_data$Reward[i],
-      occurrence = temp_data$Time_Line[i],
       ev = temp_data[[expected_value]][i],
       frame = temp_data[[decision_frame]][i],
+      occurrence = temp_data$Time_Line[i],
       beta = beta,
       epsilon = epsilon
     )
@@ -249,9 +250,9 @@ rl_generate_d <- function(
       value = temp_data$V_value[i],
       temp = temp_data$V_temp[i],
       reward = temp_data$Reward[i],
-      occurrence = temp_data$Time_Line[i],
       ev = temp_data[[expected_value]][i],
       frame = temp_data[[decision_frame]][i],
+      occurrence = temp_data$Time_Line[i],
       eta = eta,
       epsilon = epsilon
     )

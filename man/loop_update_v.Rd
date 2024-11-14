@@ -11,7 +11,7 @@ loop_update_v(
   time_line = c("Block", "Trial"),
   expected_value = NA,
   decision_frame = NA,
-  initial_value = 0,
+  initial_value = NA,
   n,
   beta = 1,
   epsilon = NA,

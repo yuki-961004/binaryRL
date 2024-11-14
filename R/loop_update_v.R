@@ -19,26 +19,28 @@
 #' @export 
 #'
 loop_update_v <- function(
-  data,
-  # 被试序号列, 列名
-  sub = "Subject",
-  # 被试选择列
-  choose = "Choose",
-  # 价值更新的时间线, 基于的列
-  time_line = c("Block", "Trial"),
-  expected_value = NA,
-  decision_frame = NA,
-  # 被试心中价值初始值
-  initial_value = 0,
-  # 要处理多少个被试. 由于估计时候是对被试分别进行, 所以这里也是被试序号
-  n,
-  # parameters
-  beta = 1,
-  epsilon = NA,
-  eta,
-  # 价值函数选用示例函数
-  beta_func = func_beta,
-  eta_func = func_eta
+    data,
+    # 被试序号列, 列名
+    sub = "Subject",
+    # 被试选择列
+    choose = "Choose",
+    # 价值更新的时间线, 基于的列
+    time_line = c("Block", "Trial"),
+    # 决策时情景对应的期望价值
+    expected_value = NA,
+    # 决策时情景对应的框架名称
+    decision_frame = NA,
+    # 被试心中价值初始值
+    initial_value = NA,
+    # 要处理多少个被试. 由于估计时候是对被试分别进行, 所以这里也是被试序号
+    n,
+    # parameters
+    beta = 1,
+    epsilon = NA,
+    eta,
+    # 价值函数选用示例函数
+    beta_func = func_beta,
+    eta_func = func_eta
 ################################# [function start] #############################
 ){
 ################################# [split sub data] #############################
@@ -65,7 +67,9 @@ loop_update_v <- function(
       .f = rl_update_v,
       # 价值更新的时间线, 基于的列
       time_line = time_line,
+      # 决策时情景对应的期望价值
       expected_value = expected_value,
+      # 决策时情景对应的框架名称
       decision_frame = decision_frame,
       # 初始值
       initial_value = initial_value,
