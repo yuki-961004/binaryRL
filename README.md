@@ -1,12 +1,19 @@
 # yukiRL
 This package is suitable for binary-choice decision tasks and allows you to customize your reinforcement learning model.  
 
+- *Assumption: value updates between different stimuli will not affect each other*  
+
 I divide reinforcement learning into four steps:
 ## Step 1: Update values based on the value function.
  - `Value Function`, updating the value you assign to a stimulus based on the current reward.  
 
     **Learning Rates ($\eta$)**: It is a parameter that controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.  
-    **Subjective Utility ($\beta$)**: People's subjective perception of objective rewards: $\beta$ > 1 means exaggerating the received reward, while $\beta$ < 1 means diminishing the received reward.
+    **Subjective Utility ($\beta$)**: People's subjective perception of objective rewards: $\beta$ > 1 means exaggerating the received reward, while $\beta$ < 1 means diminishing the received reward.  
+    
+    <br>
+
+
+
 
 ## Step 2: Make choices according to the softmax function.
  - `Soft-Max Function`, calculating the probability of choosing a certain option based on the values of the two available options.   
@@ -22,9 +29,6 @@ I divide reinforcement learning into four steps:
     Here, we seek to find the optimal parameters for the model by maximizing the `Log Likelihood (LL)` using `Genetic Algorithms`.
 ## Step 4: Generate simulated data based on the best parameters for each subject.
  - `Generate Simulated Data`: Given the `Value function` and the `Soft-Max function`, along with the corresponding parameters, simulate data.  
-
-<br>
-    
 
 ## How to cite 
 ...
@@ -87,8 +91,12 @@ $Value_{n}$ = $Value_{n-1}$ + $\eta$ $\times$ ($\beta$ $\times$ $Reward_{n}$ - $
 - The `Risk-sensitive TD model` is based on `TD model` and assumes that the **learning rates ($\eta$)** are different for gains and losses.
 - The `Utility model` introduces a **subjective utility ($\beta$)** for rewards based on this foundation. 
 
-*NOTE*: Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)**. When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
-
+*NOTE*: 
+1. Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)**. When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.  
+2. I assume that there is a linear relationship between subjective value and objective value. In fact, it may be in other forms: 
+- $U(v) = \beta \times V$
+- $U(v) = V^\beta$
+- $U(v) = \beta \times V^2$
 ## Examples
 ### Load Pacakge
 ```{r}
@@ -103,7 +111,7 @@ print(yukiRL::func_eta)
 ```
 ```
 #> func_eta <- function (
-#>   value, temp, reward, occurrence, eta, epsilon = NA
+#>   value, temp, reward, ev, frame, occurrence, eta, epsilon = NA
 #> ){
 #>   if (length(eta) == 1) {
 #>     eta <- as.numeric(eta)
@@ -127,7 +135,7 @@ print(yukiRL::func_beta)
 ```
 ```
 #> func_beta <- function(
-#>   value, temp, reward, occurrence, beta = 1, epsilon = NA
+#>   value, temp, reward, ev, frame, occurrence, beta = 1, epsilon = NA
 #> ){
 #>   if (length(beta) == 1) {
 #>     beta <- beta
@@ -146,7 +154,7 @@ print(yukiRL::func_prob)
 ```
 ```
 #> func_prob <- function (
-#>   L_value, R_value, tau = 1, params, LR 
+#>   L_value, R_value, ev, frame, tau = 1, params, LR 
 #> ){
 #>   if (!(LR %in% c("L", "R"))) {
 #>       stop("LR = 'L' or 'R'")
@@ -171,13 +179,14 @@ raw <- [your_raw_data]
 Make sure the global environment contains the raw data.   
 Your dataset needs to include the following columns.   
 `Block` and `Trial` columns are not mandatory, but there must be a column that represents the sequence of the experiment.
+`EV` and `Frame` are also not mandatory columns. But if you need them in your function, you can enter their column names.
 ```
-| Subject | Block | Trial | L_choice | R_choice | Choose | Reward |
-|---------|-------|-------|----------|----------|--------|--------|
-| 1       | 1     | 1     | A        | B        | A      | 5      |
-| 1       | 1     | 2     | A        | B        | B      | 3      |
-| 2       | 2     | 1     | X        | Y        | X      | 4      |
-| 2       | 2     | 2     | X        | Y        | Y      | 2      |
+| Subject | Block | Trial | L_choice | R_choice | Choose | Reward |    | EV | Frame |
+|---------|-------|-------|----------|----------|--------|--------|    |----|-------|
+| 1       | 1     | 1     | A        | B        | A      | 5      |    | 80 |  High |
+| 1       | 1     | 2     | A        | B        | B      | 3      |    | 80 |  High |
+| 2       | 2     | 1     | X        | Y        | X      | 4      |    | 20 |  Low  |
+| 2       | 2     | 2     | X        | Y        | Y      | 2      |    | 20 |  Low  |
 ```
 
 ### Creat a Object Function for `GA::ga`
@@ -185,15 +194,15 @@ Create a function that contains only the `params` argument, used for `GA::ga` to
   
 If you have already created your `value function` and `softmax function`, then here you only need to fill in the `[column names]` from your dataset into the corresponding arguments.   
 ```
- - sub = "your_col_name[sub]"
+ - sub <- "your_col_name[sub]"
 ```
 Most importantly, replace the `function` with your custom function.
 ```
- - beta_func = your_beta_func
+ - beta_func <- your_beta_func
 
- - eta_func = your_eta_func  
+ - eta_func <- your_eta_func  
 
- - prob_func = your_prob_func
+ - prob_func <- your_prob_func
  ```
 #### Example obj_func
 ```{r}
@@ -205,9 +214,11 @@ obj_func <- function(params){
   # Value Function
   step1 <- yukiRL::loop_update_v(
     data = data, 
-    sub = <col name [character] of subject id>,
+    sub = <col name [character] of subject id>
     choose = <col name [character] of subject's choice>,
-    time_line = <col name [vector], of block and trial>,
+    time_line = # <col name [vector], of block and trial>,
+    expected_value = <col name [character] of expected value>
+    decision_frame = <col name [character] of decision frame>
     n = 1, # subject id that will be analyzed
     # parameters
     initial_value = NA, 
@@ -224,8 +235,10 @@ obj_func <- function(params){
     data = step1,
     L_choice = <col name [character] of left choice>,
     R_choice = <col name [character] of right choice>,
-    sub = "Subject",
-    initial_value = 0,
+    sub = <col name [character] of subject id>
+    expected_value = <col name [character] of expected value>
+    decision_frame = <col name [character] of decision frame>
+    initial_value = NA,
     n = 1, # the params of subjects should be calculated one by one
     seed = 123,
     softmax = TRUE,
@@ -311,6 +324,8 @@ yukiRL::generate_d(
   R_choice = <col_name [character] of right choice>,
   L_reward = <col_name [character] of left reward>,
   R_reward = <col_name [character] of right reward>,
+  expected_value = <col name [character] of expected value>
+  decision_frame = <col name [character] of decision frame>
   time_line = <col name [vector], of block and trial>,
   initial_value = 0,
   softmax = TRUE,
