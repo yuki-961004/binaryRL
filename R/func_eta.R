@@ -3,9 +3,9 @@
 #' @param value The value you assign to this stimulus at this moment
 #' @param temp Intermediate transition value. May not be used
 #' @param reward The reward given to you by the experimental procedure after choosing this stimulus
-#' @param ev expected value
-#' @param frame decision frame
 #' @param occurrence The number of times this stimulus is encountered
+#' @param var1 extra variable 1
+#' @param var2 extra variable 2
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
 #' @param epsilon In the WXT model, the discount is divided into different intervals.
 #'
@@ -19,12 +19,12 @@ func_eta <- function(
   temp,
   # 选择后看到的reward
   reward, 
-  # 目前这个框架下的奖励期望
-  ev,
-  # 框架low, high
-  frame,
   # 第几次看到这个刺激
   occurrence, 
+  # 额外需要用到的变量1
+  var1 = NA,
+  # 额外需要用到的变量2
+  var2 = NA,
   # 使用的参数
   eta,
   epsilon

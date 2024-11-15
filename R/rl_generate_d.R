@@ -5,9 +5,9 @@
 #' @param R_choice The column name for the right option
 #' @param L_reward The column name for the reward of right option
 #' @param R_reward The column name for the reward of left option
-#' @param expected_value Expected Value
-#' @param decision_frame Decision Frame
 #' @param time_line Variables used to represent the experimental timeline, such as block and trial
+#' @param var1 extra variable 1
+#' @param var2 extra variable 2
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
 #' @param softmax use softmax or not, defaulting to TRUE
 #' @param seed seed
@@ -29,16 +29,16 @@ rl_generate_d <- function(
     R_choice,
     L_reward,
     R_reward,
-    expected_value = NA,
-    decision_frame = NA,
     time_line,
-    initial_value = 0,
+    var1 = NA,
+    var2 = NA,
+    initial_value = NA,
     softmax = TRUE,
     seed = 123,
-    beta = 1,
-    epsilon,
     eta,
-    tau = 1,
+    beta = 1,
+    tau,
+    epsilon,
     params = NA,
     beta_func,
     eta_func,
@@ -144,8 +144,8 @@ rl_generate_d <- function(
       temp_data$L_prob[i] <- prob_func(
         L_value = temp_data$L_value[i],
         R_value = temp_data$R_value[i],
-        ev = temp_data[[expected_value]][i],
-        frame = temp_data[[decision_frame]][i],
+        var1 = temp_data[[var1]][i],
+        var2 = temp_data[[var2]][i],
         LR = "L", 
         tau = tau,
         params = params
@@ -153,8 +153,8 @@ rl_generate_d <- function(
       temp_data$R_prob[i] <- prob_func(
         L_value = temp_data$L_value[i],
         R_value = temp_data$R_value[i],
-        ev = temp_data[[expected_value]][i],
-        frame = temp_data[[decision_frame]][i],
+        var1 = temp_data[[var1]][i],
+        var2 = temp_data[[var2]][i],
         LR = "R", 
         tau = tau,
         params = params
@@ -236,9 +236,9 @@ rl_generate_d <- function(
       value = temp_data$V_value[i],
       temp = temp_data$V_temp[i],
       reward = temp_data$Reward[i],
-      ev = temp_data[[expected_value]][i],
-      frame = temp_data[[decision_frame]][i],
       occurrence = temp_data$Time_Line[i],
+      var1 = temp_data[[var1]][i],
+      var2 = temp_data[[var2]][i],
       beta = beta,
       epsilon = epsilon
     )
@@ -250,9 +250,9 @@ rl_generate_d <- function(
       value = temp_data$V_value[i],
       temp = temp_data$V_temp[i],
       reward = temp_data$Reward[i],
-      ev = temp_data[[expected_value]][i],
-      frame = temp_data[[decision_frame]][i],
       occurrence = temp_data$Time_Line[i],
+      var1 = temp_data[[var1]][i],
+      var2 = temp_data[[var2]][i],
       eta = eta,
       epsilon = epsilon
     )

@@ -7,8 +7,8 @@
 rl_update_v(
   data,
   time_line = c("Block", "Trial"),
-  expected_value = NA,
-  decision_frame = NA,
+  var1 = NA,
+  var2 = NA,
   initial_value = NA,
   beta = 1,
   epsilon = NA,
@@ -22,9 +22,9 @@ rl_update_v(
 
 \item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
 
-\item{expected_value}{expected_value}
+\item{var1}{extra variable 1}
 
-\item{decision_frame}{decision_frame}
+\item{var2}{extra variable 2}
 
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to NA}
 

@@ -10,16 +10,16 @@ rl_generate_d(
   R_choice,
   L_reward,
   R_reward,
-  expected_value = NA,
-  decision_frame = NA,
   time_line,
-  initial_value = 0,
+  var1 = NA,
+  var2 = NA,
+  initial_value = NA,
   softmax = TRUE,
   seed = 123,
-  beta = 1,
-  epsilon,
   eta,
-  tau = 1,
+  beta = 1,
+  tau,
+  epsilon,
   params = NA,
   beta_func,
   eta_func,
@@ -37,11 +37,11 @@ rl_generate_d(
 
 \item{R_reward}{The column name for the reward of left option}
 
-\item{expected_value}{Expected Value}
-
-\item{decision_frame}{Decision Frame}
-
 \item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
+
+\item{var1}{extra variable 1}
+
+\item{var2}{extra variable 2}
 
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to 0}
 
@@ -49,13 +49,13 @@ rl_generate_d(
 
 \item{seed}{seed}
 
-\item{beta}{In the Utility model, it is assumed that all rewards will be discounted}
-
-\item{epsilon}{In the WXT model, the discount rate is divided into different intervals.}
-
 \item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
 
+\item{beta}{In the Utility model, it is assumed that all rewards will be discounted}
+
 \item{tau}{The τ parameter in the soft-max function, with a default value of 1}
+
+\item{epsilon}{In the WXT model, the discount rate is divided into different intervals.}
 
 \item{params}{Other parameters that you think might influence the softmax function}
 

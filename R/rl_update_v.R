@@ -3,8 +3,8 @@
 #' @param data Data containing only one type of stimulus
 #' @param time_line Variables used to represent the experimental timeline, such as block and trial
 #' @param initial_value The initial value you assign to a stimulus, defaulting to NA
-#' @param expected_value expected_value
-#' @param decision_frame decision_frame
+#' @param var1 extra variable 1
+#' @param var2 extra variable 2
 #' @param beta In the utility model, it is assumed that all rewards will be discounted
 #' @param epsilon In the WXT model, the discount rate is divided into different intervals.
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
@@ -15,14 +15,14 @@
 #' @export
 
 rl_update_v <- function(
-    # 输入data frame
+  # 输入data frame
   data,
   # 价值更新的时间线, 基于的列
   time_line = c("Block", "Trial"),
-  # 决策时情景对应的期望价值
-  expected_value = NA,
-  # 决策时情景对应的框架名称
-  decision_frame = NA,
+  # 额外需要用到的变量1
+  var1 = NA,
+  # 额外需要用到的变量2
+  var2 = NA,
   # 被试心中价值初始值
   initial_value = NA,
   # parameters
@@ -68,13 +68,13 @@ rl_update_v <- function(
       temp_data$Reward[i] <- temp_data$Reward[i+1]
       # Value是100%学习到了奖励, 所以直接赋值
       temp_data$V_value[i] <- temp_data$Reward[i+1]
-      # 如果输入了Expected_Value, 就赋值
-      if (is.character(expected_value)) {
-        temp_data[[expected_value]][i] <- temp_data[[expected_value]][i+1]
+      # 如果输入了var1, 就赋值
+      if (is.character(var1)) {
+        temp_data[[var1]][i] <- temp_data[[var1]][i+1]
       }
-      # 如果输入了Expected_Value, 就赋值
-      if (is.character(decision_frame)) {
-        temp_data[[decision_frame]][i] <- temp_data[[decision_frame]][i+1]
+      # 如果输入了var2, 就赋值
+      if (is.character(var2)) {
+        temp_data[[var2]][i] <- temp_data[[var2]][i+1]
       }
       
       # 使用beta_func选择此时对应的beta, 然后计算出temp
@@ -82,8 +82,8 @@ rl_update_v <- function(
         value = temp_data$V_value[i],
         temp = temp_data$V_temp[i],
         reward = temp_data$Reward[i],
-        ev = temp_data[[expected_value]][i],
-        frame = temp_data[[decision_frame]][i],
+        var1 = temp_data[[var1]][i],
+        var2 = temp_data[[var2]][i],
         occurrence = temp_data$Time_Line[i],
         beta = beta,
         epsilon = epsilon
@@ -98,13 +98,13 @@ rl_update_v <- function(
       # 如果是第一次, 但是给了初始值, 那么就赋予上初始值, 给予正常的奖励 
     } else if (i == 1 & !(is.na(initial_value))) {
       temp_data$Reward[i] <- temp_data$Reward[i+1]
-      # 如果输入了Expected_Value, 就赋值
-      if (is.character(expected_value)) {
-        temp_data[[expected_value]][i] <- temp_data[[expected_value]][i+1]
+      # 如果输入了var1, 就赋值
+      if (is.character(var1)) {
+        temp_data[[var1]][i] <- temp_data[[var1]][i+1]
       }
-      # 如果输入了Expected_Value, 就赋值
-      if (is.character(decision_frame)) {
-        temp_data[[decision_frame]][i] <- temp_data[[decision_frame]][i+1]
+      # 如果输入了var2, 就赋值
+      if (is.character(var2)) {
+        temp_data[[var2]][i] <- temp_data[[var2]][i+1]
       }
       # 赋予初始值
       temp_data$V_value[i] <- initial_value
@@ -120,8 +120,8 @@ rl_update_v <- function(
       value = temp_data$V_value[i],
       temp = temp_data$V_temp[i],
       reward = temp_data$Reward[i],
-      ev = temp_data[[expected_value]][i],
-      frame = temp_data[[decision_frame]][i],
+      var1 = temp_data[[var1]][i],
+      var2 = temp_data[[var2]][i],
       occurrence = temp_data$Time_Line[i],
       beta = beta,
       epsilon = epsilon
@@ -134,8 +134,8 @@ rl_update_v <- function(
       value = temp_data$V_value[i],
       temp = temp_data$V_temp[i],
       reward = temp_data$Reward[i],
-      ev = temp_data[[expected_value]][i],
-      frame = temp_data[[decision_frame]][i],
+      var1 = temp_data[[var1]][i],
+      var2 = temp_data[[var2]][i],
       occurrence = temp_data$Time_Line[i],
       eta = eta,
       epsilon = epsilon

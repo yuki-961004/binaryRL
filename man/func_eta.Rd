@@ -4,7 +4,7 @@
 \alias{func_eta}
 \title{func_eta}
 \usage{
-func_eta(value, temp, reward, ev, frame, occurrence, eta, epsilon)
+func_eta(value, temp, reward, occurrence, var1 = NA, var2 = NA, eta, epsilon)
 }
 \arguments{
 \item{value}{The value you assign to this stimulus at this moment}
@@ -13,11 +13,11 @@ func_eta(value, temp, reward, ev, frame, occurrence, eta, epsilon)
 
 \item{reward}{The reward given to you by the experimental procedure after choosing this stimulus}
 
-\item{ev}{expected value}
-
-\item{frame}{decision frame}
-
 \item{occurrence}{The number of times this stimulus is encountered}
+
+\item{var1}{extra variable 1}
+
+\item{var2}{extra variable 2}
 
 \item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
 

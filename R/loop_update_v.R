@@ -4,9 +4,9 @@
 #' @param sub The column name for the subject ID
 #' @param choose The column name indicating which option the subject chose
 #' @param time_line Variables used to represent the experimental timeline, such as block and trial
+#' @param var1 extra variable 1
+#' @param var2 extra variable 2
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
-#' @param expected_value expected_value
-#' @param decision_frame decision_frame
 #' @param n How many subjects' data do you need to run?
 #' @param beta In the utility model, it is assumed that all rewards will be discounted
 #' @param epsilon In the WXT model, the discount rate is divided into different intervals.
@@ -26,10 +26,10 @@ loop_update_v <- function(
     choose = "Choose",
     # 价值更新的时间线, 基于的列
     time_line = c("Block", "Trial"),
-    # 决策时情景对应的期望价值
-    expected_value = NA,
-    # 决策时情景对应的框架名称
-    decision_frame = NA,
+    # 额外需要用到的变量1
+    var1 = NA,
+    # 额外需要用到的变量2
+    var2 = NA,
     # 被试心中价值初始值
     initial_value = NA,
     # 要处理多少个被试. 由于估计时候是对被试分别进行, 所以这里也是被试序号
@@ -67,10 +67,10 @@ loop_update_v <- function(
       .f = rl_update_v,
       # 价值更新的时间线, 基于的列
       time_line = time_line,
-      # 决策时情景对应的期望价值
-      expected_value = expected_value,
-      # 决策时情景对应的框架名称
-      decision_frame = decision_frame,
+      # 额外需要用到的变量1
+      var1 = var1,
+      # 额外需要用到的变量2
+      var2 = var2,
       # 初始值
       initial_value = initial_value,
       # parameters

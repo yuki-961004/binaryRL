@@ -10,8 +10,8 @@ rl_action_c(
   R_choice = "DR",
   choose = "Choose",
   value = "V_value",
-  expected_value = NA,
-  decision_frame = NA,
+  var1 = NA,
+  var2 = NA,
   initial_value = 0,
   seed = 123,
   softmax = TRUE,
@@ -31,9 +31,9 @@ rl_action_c(
 
 \item{value}{The column name for the stimulate's current value}
 
-\item{expected_value}{expected_value}
+\item{var1}{extra variable 1}
 
-\item{decision_frame}{decision_frame}
+\item{var2}{extra variable 2}
 
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to 0}
 

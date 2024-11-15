@@ -6,8 +6,8 @@
 #' @param choose The column name for the option chosen by the subject
 #' @param value The column name for the stimulate's current value
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
-#' @param expected_value expected_value
-#' @param decision_frame decision_frame
+#' @param var1 extra variable 1
+#' @param var2 extra variable 2
 #' @param seed seed
 #' @param softmax use softmax or not, defaulting to TRUE
 #' @param tau The τ parameter in the soft-max function, with a default value of 1
@@ -27,10 +27,10 @@ rl_action_c <- function(
   choose = "Choose",
   # 被试心中价值列的列名
   value = "V_value",
-  # 决策时情景对应的期望价值
-  expected_value = NA,
-  # 决策时情景对应的框架名称
-  decision_frame = NA,
+  # 额外需要用到的变量1
+  var1 = NA,
+  # 额外需要用到的变量2
+  var2 = NA,
   # 被试心中价值初始值
   initial_value = 0,
   # softmax选择时的随机种子
@@ -109,8 +109,8 @@ rl_action_c <- function(
     df_wider$L_prob[i] <- prob_func(
       L_value = df_wider$L_value[i],
       R_value = df_wider$R_value[i],
-      ev = df_wider[[expected_value]][i],
-      frame = df_wider[[decision_frame]][i],
+      var1 = df_wider[[var1]][i],
+      var2 = df_wider[[var2]][i],
       LR = "L", 
       tau = tau,
       params = params
@@ -118,8 +118,8 @@ rl_action_c <- function(
     df_wider$R_prob[i] <- prob_func(
       L_value = df_wider$L_value[i],
       R_value = df_wider$R_value[i],
-      ev = df_wider[[expected_value]][i],
-      frame = df_wider[[decision_frame]][i],
+      var1 = df_wider[[var1]][i],
+      var2 = df_wider[[var2]][i],
       LR = "R", 
       tau = tau,
       params = params

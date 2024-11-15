@@ -12,8 +12,8 @@ loop_action_c(
   choose = "Choose",
   value = "V_value",
   time_line = c("Block", "Trial"),
-  expected_value = NA,
-  decision_frame = NA,
+  var1 = NA,
+  var2 = NA,
   initial_value = 0,
   n = 1,
   seed = 123,
@@ -38,9 +38,9 @@ loop_action_c(
 
 \item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
 
-\item{expected_value}{expected_value}
+\item{var1}{extra variable 1}
 
-\item{decision_frame}{decision_frame}
+\item{var2}{extra variable 2}
 
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to 0}
 
