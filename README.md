@@ -23,13 +23,10 @@ $$
 
 $$  
 U(R) = \beta \cdot R  
-$$  
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then:  
-  
-$$  
+\quad \quad \Rightarrow \quad \quad
 V_{n} = V_{n-1} + \eta \cdot (\beta \cdot R_{n} - V_{n-1})  
 $$  
+ 
 
   *NOTE:* this relationship can take any form. It just represents how the objective value is transformed into subjective value.
 
@@ -42,9 +39,6 @@ $$
   P_{R} = \frac{1}{1 + e^{-(V_{R} - V_{L}) \cdot \tau}}
   $$
   
- 
-  
-
  - **Sensitivity of Value Differences ($\tau$)**: This value represents people's sensitivity to value differences. The larger $\tau$, the more sensitive they are to the differences in value between the two options.
 
 ## Step 3: Calculate the consistency rate between the robot's choices and the human choices.
@@ -62,7 +56,7 @@ $$
 **Generate Simulated Data**: Given the **Value Function** and the **Soft-Max function**, along with the optimal parameters, simulate data.  
 
 $$
-binaryRL(\eta, \beta, \tau) \quad \rightarrow \quad [data.frame]
+binaryRL(\hat\eta, \hat\beta, \hat\tau) \quad \Rightarrow \quad Y \sim \text{data.frame}
 $$
 
 # How to cite 
