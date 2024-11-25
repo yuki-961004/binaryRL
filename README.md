@@ -1,4 +1,4 @@
-# yukiRL
+# binaryRL
 This package is designed to simplify the process of building reinforcement learning models. It allows beginners to easily construct a model with just an `if-else` statement, making model creation more accessible.
 
 Before using this package, please make sure you agree with these assumptions.
@@ -60,29 +60,29 @@ $$
 **Generate Simulated Data**: Given the **Value Function** and the **Soft-Max function**, along with the optimal parameters, simulate data.  
 
 $$
-yukiRL(\eta, \beta, \tau) \quad \rightarrow \quad [data.frame]
+binaryRL(\eta, \beta, \tau) \quad \rightarrow \quad [data.frame]
 $$
 
 # How to cite 
-Hu, M., & L, Z. (2025). yukiRL: A Package for Building Reinforcement Learning Models in R. *Journal*(7), 123-123. https://doi.org/
+Hu, M., & L, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal*(7), 123-123. https://doi.org/
 
 
 # Install
 ```{r}
-devtools::install_github("yuki-961004/yukiRL") 
+devtools::install_github("yuki-961004/binaryRL") 
 ```
 
 # Examples
 ## Load Pacakge
 ```{r}
-library(yukiRL)
+library(binaryRL)
 library(GA)
 ```
 ## Example Function
 
 ### Learning Rate ($\eta$)   
 ```{r}
-print(yukiRL::func_eta)
+print(binaryRL::func_eta)
 ```
 ```
 #> func_eta <- function (
@@ -106,7 +106,7 @@ print(yukiRL::func_eta)
 
 ### Subjective Utility ($\beta$)  
 ```{r}
-print(yukiRL::func_beta)
+print(binaryRL::func_beta)
 ```
 ```
 #> func_beta <- function(
@@ -125,7 +125,7 @@ print(yukiRL::func_beta)
 
 ### Sensitivity of Value Differences ($\tau$)
 ```{r}
-print(yukiRL::func_prob)
+print(binaryRL::func_prob)
 ```
 ```
 #> func_prob <- function (
@@ -181,7 +181,7 @@ Most importantly, replace the `function` with your custom function. Alternativel
  ```
 ### Example obj_func
 ```{r}
-library(yukiRL)
+library(binaryRL)
 
 obj_func <- function(params){
 ################################## [ Raw ] #####################################
@@ -189,7 +189,7 @@ obj_func <- function(params){
   data <- raw
 ################################## [Step 1] ####################################
   # Value Function
-  step1 <- yukiRL::loop_update_v(
+  step1 <- binaryRL::loop_update_v(
     data = data, 
     sub = <col name [character] of subject id>
     choose = <col name [character] of subject's choice>,
@@ -203,12 +203,12 @@ obj_func <- function(params){
     epsilon = NA,
     eta = c(params[1], params[2]),
     # your value function
-    beta_func = yukiRL::func_beta,
-    eta_func = yukiRL::func_eta
+    beta_func = binaryRL::func_beta,
+    eta_func = binaryRL::func_eta
   ) 
 ################################## [Step 2] ####################################
   # Soft-Max Function
-  step2 <- yukiRL::loop_action_c(
+  step2 <- binaryRL::loop_action_c(
     data = step1,
     L_choice = <col name [character] of left choice>,
     R_choice = <col name [character] of right choice>,
@@ -220,7 +220,7 @@ obj_func <- function(params){
     seed = 123,
     softmax = TRUE,
     # your soft-max function
-    prob_func = yukiRL::func_prob,  
+    prob_func = binaryRL::func_prob,  
     # params in your soft-max function
     tau = c(params[3]),
     params = NA
@@ -260,7 +260,7 @@ rm(cl)
 
 ## Output
 ```{r}
-yukiRL::output(
+binaryRL::output(
   ga_result = ga_result, 
   obj_func = obj_func,
   n_trials = 288,
@@ -298,7 +298,7 @@ Unlike the previous dataset, this time the input dataset requires the rewards fo
 
 ```
 ################################## [Step 4] #################################### 
-yukiRL::generate_d(
+binaryRL::generate_d(
   data = <your data>,
   L_choice = <col_name [character] of left choice>,
   R_choice = <col_name [character] of right choice>,
@@ -315,9 +315,9 @@ yukiRL::generate_d(
   eta = c(0.30344, 0.57334),
   tau = c(0.03575),
   params = NA,
-  beta_func = yukiRL::func_beta,
-  eta_func = yukiRL::func_eta,
-  prob_func = yukiRL::func_prob
+  beta_func = binaryRL::func_beta,
+  eta_func = binaryRL::func_eta,
+  prob_func = binaryRL::func_prob
 )
 ```
 
