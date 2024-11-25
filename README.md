@@ -260,7 +260,7 @@ binaryRL::output(
   ga_result = ga_result, 
   obj_func = obj_func,
   n_trials = 288,
-  params_name = c("eta_neg", ""eta_pos", "tau"),
+  params_name = c("eta_neg", "eta_pos", "tau"),
   digits = 5
 )
 ```
