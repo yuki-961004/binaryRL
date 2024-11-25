@@ -12,22 +12,24 @@ If you agree with these three points, I will introduce the process of my package
 ## Step 1: Update Values Based on the Value Function
 
 **Value Function** updating the value you assign to a stimulus based on the current reward.
-$$
+
+$$  
 V_{n} = V_{n-1} + \eta \cdot [U(R_{n}) - V_{n-1}]
-$$
+$$  
 
 - **Learning Rates ($\eta$)**: This parameter controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.
 
 - **Utility Function ($\beta$)**: People's subjective perception of objective rewards. If you believe the relationship between objective value and subjective value is linear, represented by the equation:
 
-  $$
+  $$  
   U(R) = \beta \cdot R
-  $$
+  $$  
 
   then:  
-  $$
+  
+  $$  
   V_{n} = V_{n-1} + \eta \cdot (\beta \cdot R_{n} - V_{n-1})
-  $$
+  $$  
 
   *NOTE:* this relationship can take any form. It just represents how the objective value is transformed into subjective value.
 
