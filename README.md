@@ -322,11 +322,11 @@ The reinforcement learning model will generate a column called `Rob_Choose`, ind
 # Classic Models
 
 ## 1. TD Model ($\eta$, $\tau$)
-> *"The TD model is a standard temporal difference learning model (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998)."*  
+> "The TD model is a standard temporal difference learning model (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998)."  
 ## 2. Risk-Sensitive TD Model ($\eta_{-}$, $\eta_{+}$, $\tau$)
-> "*In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, 2002).*"  
+> "In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, 2002)."  
 ## 3. Utility Model ($\eta$, $\beta$, $\tau$)
-> *"The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, 1954)"*
+> "The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, 1954)"
 
 
 <p align="center">
@@ -338,9 +338,9 @@ Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction 
 
 ## Initial Value
 
-> *"Comparisons between the two learning rates generally revealed a positivity bias ($\alpha_{+} > \alpha_{-}$)"*  
-> *"However, that on some occasions, studies failed to find a positivity bias or even reported a negativity bias ($\alpha_{+} < \alpha_{-}$)."*  
-> *"Because Q-values initialization markedly affect learning rate and learning bias estimates."*
+> "Comparisons between the two learning rates generally revealed a positivity bias ($\alpha_{+} > \alpha_{-}$)"  
+> "However, that on some occasions, studies failed to find a positivity bias or even reported a negativity bias ($\alpha_{+} < \alpha_{-}$)."  
+> "Because Q-values initialization markedly affect learning rate and learning bias estimates."
 
 ### References
 Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and confirmation biases in reinforcement learning. *Trends in Cognitive Sciences, 26*(7), 607-621. https://doi.org/10.1016/j.tics.2022.04.005
