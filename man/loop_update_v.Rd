@@ -12,12 +12,13 @@ loop_update_v(
   var1 = NA,
   var2 = NA,
   initial_value = NA,
-  n,
+  n = 1,
   beta = 1,
   epsilon = NA,
   eta,
   beta_func = func_beta,
-  eta_func = func_eta
+  eta_func = func_eta,
+  digits = 2
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ loop_update_v(
 \item{beta_func}{The function for the discount rate β, which you can customize}
 
 \item{eta_func}{The function for the learning rate η, which you can customize}
+
+\item{digits}{digits}
 }
 \value{
 update value for every subject with whole choice

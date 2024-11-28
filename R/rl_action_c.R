@@ -13,6 +13,7 @@
 #' @param tau The τ parameter in the soft-max function, with a default value of 1
 #' @param params Other parameters that you think might influence the softmax function
 #' @param prob_func The soft-max function, which you can customize.
+#' @param digits digits
 #'
 #' @return robot choose R or L
 #' @export
@@ -42,7 +43,9 @@ rl_action_c <- function(
   # 如果你的softmax含有别的参数, 就放在这里
   params = NA,
   # 示例softmax函数
-  prob_func = func_prob
+  prob_func = func_prob,
+  # 小数位数
+  digits = 5
 ################################# [function start] #############################
 ){
   
@@ -204,10 +207,10 @@ rl_action_c <- function(
   }
   
 ################################# [ ROUNND ] ###################################  
-  df_wider$L_prob <- round(df_wider$L_prob, 5)
-  df_wider$R_prob <- round(df_wider$R_prob, 5)
-  df_wider$L_logl <- round(df_wider$L_logl, 5)
-  df_wider$R_logl <- round(df_wider$R_logl, 5)
+  df_wider$L_prob <- round(df_wider$L_prob, digits)
+  df_wider$R_prob <- round(df_wider$R_prob, digits)
+  df_wider$L_logl <- round(df_wider$L_logl, digits)
+  df_wider$R_logl <- round(df_wider$R_logl, digits)
   
   return(df_wider)
 }

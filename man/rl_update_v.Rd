@@ -14,7 +14,8 @@ rl_update_v(
   epsilon = NA,
   eta = c(0.3, 0.7),
   beta_func = func_beta,
-  eta_func = func_eta
+  eta_func = func_eta,
+  digits = 2
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ rl_update_v(
 \item{beta_func}{The function for the discount rate β, which you can customize}
 
 \item{eta_func}{The function for the learning rate η, which you can customize}
+
+\item{digits}{digits}
 }
 \value{
 update value for 1 choice

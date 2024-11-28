@@ -6,7 +6,7 @@
 \usage{
 func_beta(
   value,
-  temp,
+  utility,
   reward,
   occurrence,
   var1 = NA,
@@ -18,7 +18,7 @@ func_beta(
 \arguments{
 \item{value}{The value you assign to this stimulus at this moment}
 
-\item{temp}{Intermediate transition value. May not be used}
+\item{utility}{Subjects' subjective value of the reward}
 
 \item{reward}{The reward given to you by the experimental procedure after choosing this stimulus}
 

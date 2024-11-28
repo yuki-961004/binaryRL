@@ -6,6 +6,7 @@
 #' @param L_reward The column name for the reward of right option
 #' @param R_reward The column name for the reward of left option
 #' @param time_line Variables used to represent the experimental timeline, such as block and trial
+#' @param sub_choose subject choose
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
@@ -19,6 +20,7 @@
 #' @param beta_func The function for the discount rate β, which you can customize
 #' @param eta_func The function for the learning rate η, which you can customize
 #' @param prob_func The soft-max function, which you can customize.
+#' @param digits digits
 #'
 #' @return generated data
 #' @export
@@ -30,6 +32,7 @@ rl_generate_d <- function(
     L_reward,
     R_reward,
     time_line,
+    sub_choose,
     var1 = NA,
     var2 = NA,
     initial_value = NA,
@@ -42,7 +45,8 @@ rl_generate_d <- function(
     params = NA,
     beta_func,
     eta_func,
-    prob_func
+    prob_func,
+    digits = 2
 ){
   # 获取 L_choice 和 R_choice 的唯一值
   unique_L <- unique(data[[L_choice]])
@@ -68,21 +72,22 @@ rl_generate_d <- function(
   # 基于排序向量对输入数据集进行排序
   temp_data <- data[do.call(order, order_vector), ]
   
-  ############################### [Add Null row] #################################
+############################### [Add Null row] #################################
   # 生成一个与输入数据集相同的单行数据集. 用于存放初始值
   empty_row <- as.data.frame(matrix(ncol = ncol(data), nrow = 1))
   colnames(empty_row) <- colnames(data)
   
   # 在第一行插入一个空行
   temp_data <- rbind(empty_row, temp_data)
-  temp_data$Time_Line <- seq(from = 0, to = nrow(data))
+  temp_data$Time_Line <- NA
   
 ################################ [ new col ] ###################################
+  # 添加空列 update_v
   temp_data$Reward <- NA
-  # 添加空列 update_v 相关
-  temp_data$V_value <- NA
   temp_data$beta <- NA
-  temp_data$V_temp <- NA
+  temp_data$R_utility <- NA
+  
+  temp_data$V_value <- NA
   temp_data$eta <- NA
   temp_data$V_update <- NA
   
@@ -98,7 +103,7 @@ rl_generate_d <- function(
   if (is.na(initial_value)) {
     # update_v 相关
     temp_data$V_value[1] <- 0
-    temp_data$V_temp[1] <- 0
+    temp_data$R_utility[1] <- 0
     temp_data$V_update[1] <- 0
     # action_c 相关
     temp_data$L_value[1] <- 0
@@ -112,7 +117,7 @@ rl_generate_d <- function(
     # 赋予设定的初始值
     # update_v 相关
     temp_data$V_value[1] <- initial_value
-    temp_data$V_temp[1] <- initial_value
+    temp_data$R_utility[1] <- initial_value
     temp_data$V_update[1] <- initial_value
     # action_c 相关
     temp_data$L_value[1] <- initial_value
@@ -215,6 +220,11 @@ rl_generate_d <- function(
         )
       } 
     }
+################################ [occurrence] ##################################   
+    temp_data$Time_Line[[i]] <- sum(
+      temp_data$Rob_Choose == temp_data$Rob_Choose[[i]], 
+      na.rm = TRUE
+    )
 ################################## [ Reward ] ##################################    
     # 基于选择, 来给予奖励
     if (temp_data$Rob_Choose[i] == temp_data[[L_choice]][i]){
@@ -231,10 +241,10 @@ rl_generate_d <- function(
     # 看到奖励前, 对该选项预期的奖励, 去上一行找
     temp_data$V_value[i] <- temp_data[[choose]][i - 1]
     
-    # 看到reward之后的折扣率, 用beta_func选择此时对应的beta, 计算出V_temp
-    beta_temp <- beta_func(
+    # 看到reward之后的折扣率, 用beta_func选择此时对应的beta, 计算出R_utility
+    beta_utility <- beta_func(
       value = temp_data$V_value[i],
-      temp = temp_data$V_temp[i],
+      utility = temp_data$R_utility[i],
       reward = temp_data$Reward[i],
       occurrence = temp_data$Time_Line[i],
       var1 = temp_data[[var1]][i],
@@ -242,13 +252,13 @@ rl_generate_d <- function(
       beta = beta,
       epsilon = epsilon
     )
-    temp_data$beta[i] <- as.numeric(beta_temp[1])
-    temp_data$V_temp[i] <- as.numeric(beta_temp[2])
+    temp_data$beta[i] <- as.numeric(beta_utility[1])
+    temp_data$R_utility[i] <- as.numeric(beta_utility[2])
     
     # 看到reward之后的学习率, 用eta_func选择此时对应的eta
     temp_data$eta[i] <- eta_func(
       value = temp_data$V_value[i],
-      temp = temp_data$V_temp[i],
+      utility = temp_data$R_utility[i],
       reward = temp_data$Reward[i],
       occurrence = temp_data$Time_Line[i],
       var1 = temp_data[[var1]][i],
@@ -259,12 +269,12 @@ rl_generate_d <- function(
     
     # 如果是第一次选这个选项, 直接将temp赋予给V_update
     if (is.na(initial_value) & !(choose %in% chosen)) {
-      temp_data$V_update[i] <- temp_data$V_temp[i]
+      temp_data$V_update[i] <- temp_data$R_utility[i]
       temp_data[[choose]][i] <- temp_data$V_update[i]
       # 如果这次的选项是选过的, 正常按照eta更新价值
     } else {
       temp_data$V_update[i] <- temp_data$V_value[i] + 
-        temp_data$eta[i] * (temp_data$V_temp[i] - temp_data$V_value[i])
+        temp_data$eta[i] * (temp_data$R_utility[i] - temp_data$V_value[i])
       temp_data[[choose]][i] <- temp_data$V_update[i]  
     } 
   }
@@ -272,17 +282,35 @@ rl_generate_d <- function(
   # 删除第一行赋予的初始值
   res_data <- temp_data[-1, ]
   # round
-  res_data$L_prob <- round(res_data$L_prob, 3)
-  res_data$R_prob <- round(res_data$R_prob, 3)
+  res_data$L_prob <- round(res_data$L_prob, digits + 3)
+  res_data$R_prob <- round(res_data$R_prob, digits + 3)
   
-  res_data$L_value <- round(res_data$L_value, 2)
-  res_data$R_value <- round(res_data$R_value, 2)
+  res_data$L_value <- round(res_data$L_value, digits)
+  res_data$R_value <- round(res_data$R_value, digits)
   
-  res_data$V_value <- round(res_data$V_value, 2)
-  res_data$V_update <- round(res_data$V_update, 2)
+  res_data$V_value <- round(res_data$V_value, digits)
+  res_data$V_update <- round(res_data$V_update, digits)
   
   for (name in alternative_choice) {
-    res_data[[name]] <- round(res_data[[name]], 2)
+    res_data[[name]] <- round(res_data[[name]], digits)
+  }
+  
+  # 如果输入了sub_choose, 就计算rob_choose和sub_choose的匹配度
+  if (is.character(sub_choose)) {
+    # 重新命名成Sub_Choose
+    colnames(res_data)[colnames(res_data) == sub_choose] <- "Sub_Choose"
+  }
+  
+  res_data$ACC <- NA
+  
+  for (i in 1:nrow(res_data)){
+    if (res_data$Sub_Choose[i] == res_data$Rob_Choose[i]) {
+      res_data$ACC[i] <- 1
+    } else if (res_data$Sub_Choose[i] != res_data$Rob_Choose[i]) {
+      res_data$ACC[i] <- 0
+    } else {
+      res_data$ACC[i] <- "ERROR"
+    }
   }
   
   return(res_data)

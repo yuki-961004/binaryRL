@@ -1,7 +1,7 @@
 #' func_eta
 #'
 #' @param value The value you assign to this stimulus at this moment
-#' @param temp Intermediate transition value. May not be used
+#' @param utility Subjects' subjective value of the reward
 #' @param reward The reward given to you by the experimental procedure after choosing this stimulus
 #' @param occurrence The number of times this stimulus is encountered
 #' @param var1 extra variable 1
@@ -15,8 +15,8 @@
 func_eta <- function(
     # 此时心中对该刺激的的value
   value, 
-  # 中间过渡的value. 可能用不上
-  temp,
+  # 心中的主观价值
+  utility,
   # 选择后看到的reward
   reward, 
   # 第几次看到这个刺激
@@ -35,13 +35,13 @@ func_eta <- function(
     eta <- as.numeric(eta)
   }
   ################################### [ RSTD ] ###################################
-  else if (length(eta) > 1 & temp < value) {
+  else if (length(eta) > 1 & utility < value) {
     eta <- eta[1]
   } 
-  else if (length(eta) > 1 & temp >= value) {
+  else if (length(eta) > 1 & utility >= value) {
     eta <- eta[2]
   }
-  ################################### [ RSTD ] ###################################
+  ################################## [ ERROR ] ###################################
   else {
     eta <- "ERROR" # 检查错误
   }

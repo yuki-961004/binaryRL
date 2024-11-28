@@ -4,12 +4,21 @@
 \alias{func_eta}
 \title{func_eta}
 \usage{
-func_eta(value, temp, reward, occurrence, var1 = NA, var2 = NA, eta, epsilon)
+func_eta(
+  value,
+  utility,
+  reward,
+  occurrence,
+  var1 = NA,
+  var2 = NA,
+  eta,
+  epsilon
+)
 }
 \arguments{
 \item{value}{The value you assign to this stimulus at this moment}
 
-\item{temp}{Intermediate transition value. May not be used}
+\item{utility}{Subjects' subjective value of the reward}
 
 \item{reward}{The reward given to you by the experimental procedure after choosing this stimulus}
 

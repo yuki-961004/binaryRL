@@ -13,37 +13,39 @@
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
 #' @param beta_func The function for the discount rate β, which you can customize
 #' @param eta_func The function for the learning rate η, which you can customize
-
+#' @param digits digits
 #'
 #' @return update value for every subject with whole choice
 #' @export 
 #'
 loop_update_v <- function(
-    data,
-    # 被试序号列, 列名
-    sub = "Subject",
-    # 被试选择列
-    choose = "Choose",
-    # 价值更新的时间线, 基于的列
-    time_line = c("Block", "Trial"),
-    # 额外需要用到的变量1
-    var1 = NA,
-    # 额外需要用到的变量2
-    var2 = NA,
-    # 被试心中价值初始值
-    initial_value = NA,
-    # 要处理多少个被试. 由于估计时候是对被试分别进行, 所以这里也是被试序号
-    n,
-    # parameters
-    beta = 1,
-    epsilon = NA,
-    eta,
-    # 价值函数选用示例函数
-    beta_func = func_beta,
-    eta_func = func_eta
+  data,
+  # 被试序号列, 列名
+  sub = "Subject",
+  # 被试选择列
+  choose = "Choose",
+  # 价值更新的时间线, 基于的列
+  time_line = c("Block", "Trial"),
+  # 额外需要用到的变量1
+  var1 = NA,
+  # 额外需要用到的变量2
+  var2 = NA,
+  # 被试心中价值初始值
+  initial_value = NA,
+  # 要处理多少个被试. 由于估计时候是对被试分别进行, 所以这里也是被试序号
+  n = 1,
+  # parameters
+  beta = 1,
+  epsilon = NA,
+  eta,
+  # 价值函数选用示例函数
+  beta_func = func_beta,
+  eta_func = func_eta,
+  # 小数位数
+  digits = 2
 ################################# [function start] #############################
 ){
-################################# [split sub data] #############################
+  ################################# [split sub data] #############################
   # 按照[被试序号列][sub]分裂原始数据
   df_split <- base::split(x = data, f = data[[sub]])
   # 新建空list, 每个被试的结果存入该list的一个元素中
@@ -79,7 +81,9 @@ loop_update_v <- function(
       eta = eta,
       # 价值函数选用示例函数
       beta_func = beta_func,
-      eta_func = eta_func
+      eta_func = eta_func,
+      # 小数位数
+      digits = digits
     )
 ################################ [ CORE CODE ] #################################
     # 把所有choose类型的结果合并, 成为一个被试的结果

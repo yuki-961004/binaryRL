@@ -17,7 +17,8 @@ rl_action_c(
   softmax = TRUE,
   tau = 1,
   params = NA,
-  prob_func = func_prob
+  prob_func = func_prob,
+  digits = 5
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ rl_action_c(
 \item{params}{Other parameters that you think might influence the softmax function}
 
 \item{prob_func}{The soft-max function, which you can customize.}
+
+\item{digits}{digits}
 }
 \value{
 robot choose R or L

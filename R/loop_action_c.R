@@ -16,12 +16,13 @@
 #' @param tau The τ parameter in the soft-max function, with a default value of 1
 #' @param params Other parameters that you think might influence the softmax function
 #' @param prob_func The soft-max function, which you can customize.
+#' @param digits digits
 #' 
 #' @return robot choose R or L, loop for every subject
 #' @export
 #'
 loop_action_c <- function(
-    # update_v数据集
+  # update_v数据集
   data,
   # 左右选项列名
   L_choice = "DL",
@@ -51,7 +52,9 @@ loop_action_c <- function(
   # 如果你的softmax含有别的参数, 就放在这里
   params = NA,
   # 示例softmax函数
-  prob_func = func_prob
+  prob_func = func_prob,
+  # 小数位数
+  digits = 5
 ################################# [function start] #############################
 ) {
 ################################# [split sub data] #############################  
@@ -74,7 +77,8 @@ loop_action_c <- function(
       softmax = softmax,
       tau = tau,
       params = params,
-      prob_func = prob_func
+      prob_func = prob_func,
+      digits = digits
     )
   }
 ################################ [ CORE CODE ] #################################  

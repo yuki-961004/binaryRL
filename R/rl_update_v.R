@@ -10,12 +10,13 @@
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
 #' @param beta_func The function for the discount rate β, which you can customize
 #' @param eta_func The function for the learning rate η, which you can customize
+#' @param digits digits
 #'
 #' @return update value for 1 choice
 #' @export
 
 rl_update_v <- function(
-  # 输入data frame
+    # 输入data frame
   data,
   # 价值更新的时间线, 基于的列
   time_line = c("Block", "Trial"),
@@ -31,7 +32,9 @@ rl_update_v <- function(
   eta = c(0.3, 0.7),
   # 价值函数选用示例函数
   beta_func = func_beta,
-  eta_func = func_eta
+  eta_func = func_eta,
+  # 小数位数
+  digits = 2
 ################################# [function start] #############################
 ){
 ################################## [Arrange] ###################################
@@ -52,9 +55,9 @@ rl_update_v <- function(
   
 ############################# [ update row by row] #############################
   # 添加空列
-  temp_data$V_value <- NA
   temp_data$beta <- NA
-  temp_data$V_temp <- NA
+  temp_data$R_utility <- NA
+  temp_data$V_value <- NA
   temp_data$eta <- NA
   temp_data$V_update <- NA
   
@@ -78,9 +81,9 @@ rl_update_v <- function(
       }
       
       # 使用beta_func选择此时对应的beta, 然后计算出temp
-      beta_temp <- beta_func(
+      beta_utility <- beta_func(
         value = temp_data$V_value[i],
-        temp = temp_data$V_temp[i],
+        utility = temp_data$R_utility[i],
         reward = temp_data$Reward[i],
         var1 = temp_data[[var1]][i],
         var2 = temp_data[[var2]][i],
@@ -89,11 +92,11 @@ rl_update_v <- function(
         epsilon = epsilon
       )
       
-      temp_data$beta[i] <- as.numeric(beta_temp[1])
-      temp_data$V_temp[i] <- as.numeric(beta_temp[2])
+      temp_data$beta[i] <- as.numeric(beta_utility[1])
+      temp_data$R_utility[i] <- as.numeric(beta_utility[2])
       # 设定学习率此时是100%, 而不使用eta_func
       temp_data$eta[i] <- 1
-      temp_data$V_update[i] <- as.numeric(beta_temp[2])
+      temp_data$V_update[i] <- as.numeric(beta_utility[2])
       
       # 如果是第一次, 但是给了初始值, 那么就赋予上初始值, 给予正常的奖励 
     } else if (i == 1 & !(is.na(initial_value))) {
@@ -108,7 +111,7 @@ rl_update_v <- function(
       }
       # 赋予初始值
       temp_data$V_value[i] <- initial_value
-      temp_data$V_temp[i] <- initial_value
+      temp_data$R_utility[i] <- initial_value
       temp_data$V_update[i] <- initial_value
       # 除此之外, 是i >= 2的情况. 则Value是上一次的Update
     } else {
@@ -116,9 +119,9 @@ rl_update_v <- function(
     }
     
     # 使用beta_func选择此时对应的beta, 然后计算出temp
-    beta_temp <- beta_func(
+    beta_utility <- beta_func(
       value = temp_data$V_value[i],
-      temp = temp_data$V_temp[i],
+      utility = temp_data$R_utility[i],
       reward = temp_data$Reward[i],
       var1 = temp_data[[var1]][i],
       var2 = temp_data[[var2]][i],
@@ -126,13 +129,13 @@ rl_update_v <- function(
       beta = beta,
       epsilon = epsilon
     )
-    temp_data$beta[i] <- as.numeric(beta_temp[1])
-    temp_data$V_temp[i] <- as.numeric(beta_temp[2])
+    temp_data$beta[i] <- as.numeric(beta_utility[1])
+    temp_data$R_utility[i] <- as.numeric(beta_utility[2])
     
     # 使用eta_func选择此时对应的eta
     temp_data$eta[i] <- eta_func(
       value = temp_data$V_value[i],
-      temp = temp_data$V_temp[i],
+      utility = temp_data$R_utility[i],
       reward = temp_data$Reward[i],
       var1 = temp_data[[var1]][i],
       var2 = temp_data[[var2]][i],
@@ -145,7 +148,7 @@ rl_update_v <- function(
     if (i >= 2) {
       # 计算此次update的值
       temp_data$V_update[i] <- temp_data$V_value[i] + 
-        temp_data$eta[i] * (temp_data$V_temp[i] - temp_data$V_value[i])
+        temp_data$eta[i] * (temp_data$R_utility[i] - temp_data$V_value[i])
     }
   }
   
@@ -153,8 +156,8 @@ rl_update_v <- function(
   # 删除第一行赋予的初始值
   res_data <- temp_data[-1, ]
   # 对于V取两位小数
-  res_data$V_value <- round(res_data$V_value, 2)
-  res_data$V_update <- round(res_data$V_update, 2)
+  res_data$V_value <- round(res_data$V_value, digits)
+  res_data$V_update <- round(res_data$V_update, digits)
   
   return(res_data)
 }

@@ -1,7 +1,7 @@
 #' func_beta
 #'
 #' @param value The value you assign to this stimulus at this moment
-#' @param temp Intermediate transition value. May not be used
+#' @param utility Subjects' subjective value of the reward
 #' @param reward The reward given to you by the experimental procedure after choosing this stimulus
 #' @param occurrence The number of times this stimulus is encountered
 #' @param var1 extra variable 1
@@ -15,8 +15,8 @@
 func_beta <- function(
     # 此时心中对该刺激的的value
   value, 
-  # 中间过渡的value. 可能用不上
-  temp,
+  # 心中的主观价值
+  utility,
   # 选择后看到的reward
   reward, 
   # 第几次看到这个刺激
@@ -34,11 +34,11 @@ func_beta <- function(
   # 如果beta只有一种, 则直接用这个beta计算temp
   if (length(beta) == 1) {
     beta <- as.numeric(beta)
-    temp <- beta * reward
+    utility <- beta * reward
   }
   ################################# [ Utility ] ##################################
   else {
-    temp <- "ERROR" # 检查错误
+    utility <- "ERROR" # 检查错误
   }
-  return(list(beta, temp))
+  return(list(beta, utility))
 }

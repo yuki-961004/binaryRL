@@ -11,6 +11,7 @@ rl_generate_d(
   L_reward,
   R_reward,
   time_line,
+  sub_choose,
   var1 = NA,
   var2 = NA,
   initial_value = NA,
@@ -23,7 +24,8 @@ rl_generate_d(
   params = NA,
   beta_func,
   eta_func,
-  prob_func
+  prob_func,
+  digits = 2
 )
 }
 \arguments{
@@ -38,6 +40,8 @@ rl_generate_d(
 \item{R_reward}{The column name for the reward of left option}
 
 \item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
+
+\item{sub_choose}{subject choose}
 
 \item{var1}{extra variable 1}
 
@@ -64,6 +68,8 @@ rl_generate_d(
 \item{eta_func}{The function for the learning rate η, which you can customize}
 
 \item{prob_func}{The soft-max function, which you can customize.}
+
+\item{digits}{digits}
 }
 \value{
 generated data
