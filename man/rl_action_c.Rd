@@ -15,9 +15,9 @@ rl_action_c(
   initial_value = 0,
   seed = 123,
   softmax = TRUE,
-  tau = 1,
+  tau,
   lambda = NA,
-  prob_func = func_prob,
+  prob_func = func_tau,
   digits = 5
 )
 }

@@ -16,17 +16,19 @@ rl_run_m(
   id = 1,
   initial_value = NA,
   epsilon = NA,
-  beta = 1,
+  gamma = 1,
   eta,
   tau,
   lambda = NA,
-  beta_func = func_beta,
-  eta_func = func_eta,
-  prob_func = func_prob,
   seed = 123,
   softmax = FALSE,
   digits_1 = 2,
-  digits_2 = 5
+  digits_2 = 5,
+  n_params,
+  n_trials,
+  utility_func = func_gamma,
+  rate_func = func_eta,
+  prob_func = func_tau
 )
 }
 \arguments{
@@ -52,19 +54,13 @@ rl_run_m(
 
 \item{epsilon}{In some models, the learning rate is divided into different intervals.}
 
-\item{beta}{In the utility model, it is assumed that all rewards will be discounted}
+\item{gamma}{In the utility model, it is assumed that all rewards will be discounted}
 
 \item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
 
 \item{tau}{Indicates the sensitivity of the subjects to the two options}
 
 \item{lambda}{extra param in soft-max function}
-
-\item{beta_func}{The function for the discount rate β, which you can customize}
-
-\item{eta_func}{The function for the learning rate η, which you can customize}
-
-\item{prob_func}{The soft-max function, which you can customize.}
 
 \item{seed}{seed}
 
@@ -73,6 +69,16 @@ rl_run_m(
 \item{digits_1}{digits in update v, default is 2}
 
 \item{digits_2}{digits in action c, default is 5}
+
+\item{n_params}{number of parameters}
+
+\item{n_trials}{number of trails}
+
+\item{utility_func}{The function for the discount rate β, which you can customize}
+
+\item{rate_func}{The function for the learning rate η, which you can customize}
+
+\item{prob_func}{The soft-max function, which you can customize.}
 }
 \value{
 A table showing how participants updated their values ​​and selected

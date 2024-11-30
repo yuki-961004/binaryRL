@@ -18,12 +18,12 @@ rl_generate_d(
   softmax = TRUE,
   seed = 123,
   eta,
-  beta = 1,
+  gamma = 1,
   tau,
   epsilon,
   lambda = NA,
-  beta_func,
-  eta_func,
+  utility_func,
+  rate_func,
   prob_func,
   digits = 2
 )
@@ -55,7 +55,7 @@ rl_generate_d(
 
 \item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
 
-\item{beta}{In the Utility model, it is assumed that all rewards will be discounted}
+\item{gamma}{In the Utility model, it is assumed that all rewards will be discounted}
 
 \item{tau}{The τ parameter in the soft-max function, with a default value of 1}
 
@@ -63,9 +63,9 @@ rl_generate_d(
 
 \item{lambda}{Other parameters that you think might influence the softmax function}
 
-\item{beta_func}{The function for the discount rate β, which you can customize}
+\item{utility_func}{The function for the discount rate β, which you can customize}
 
-\item{eta_func}{The function for the learning rate η, which you can customize}
+\item{rate_func}{The function for the learning rate η, which you can customize}
 
 \item{prob_func}{The soft-max function, which you can customize.}
 

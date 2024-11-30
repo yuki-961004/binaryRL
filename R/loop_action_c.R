@@ -22,7 +22,7 @@
 #' @export
 #'
 loop_action_c <- function(
-  # update_v数据集
+    # update_v数据集
   data,
   # 左右选项列名
   L_choice = "DL",
@@ -52,18 +52,18 @@ loop_action_c <- function(
   # 如果你的softmax含有别的参数, 就放在这里
   lambda = NA,
   # 示例softmax函数
-  prob_func = func_prob,
+  prob_func = func_tau,
   # 小数位数
   digits = 5
-################################# [function start] #############################
+  ################################# [function start] #############################
 ) {
-################################# [split sub data] #############################  
+  ################################# [split sub data] #############################  
   df_split <- base::split(x = data, f = data[[sub]])
   df_res <- list()
   
   for (i in n) {
     df_subject <- df_split[[i]]
-################################ [ CORE CODE ] #################################
+    ################################ [ CORE CODE ] #################################
     df_res[[i]] <- rl_action_c(
       data = df_subject, 
       L_choice = L_choice,
@@ -81,11 +81,11 @@ loop_action_c <- function(
       digits = digits
     )
   }
-################################ [ CORE CODE ] #################################  
+  ################################ [ CORE CODE ] #################################  
   # 把所有被试的结果合并, 成为总结果
   temp_res <- dplyr::bind_rows(df_res) 
   
-################################### [result] ###################################
+  ################################### [result] ###################################
   # 此时排序基于sub和time_line
   order_var <- c(sub, time_line)
   # 基于time_line这个向量, 录入排序向量

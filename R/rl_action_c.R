@@ -39,14 +39,14 @@ rl_action_c <- function(
   # 是否使用softmax, 还是说value谁大选谁
   softmax = TRUE,
   # softmax的固有参数, 默认为1
-  tau = 1,
+  tau,
   # 如果你的softmax含有别的参数, 就放在这里
   lambda = NA,
   # 示例softmax函数
-  prob_func = func_prob,
+  prob_func = func_tau,
   # 小数位数
   digits = 5
-################################# [function start] #############################
+  ################################# [function start] #############################
 ){
   
   # 为了保证choose和value在长转宽中这两列不消失. 所以复制一次
@@ -64,7 +64,7 @@ rl_action_c <- function(
   wide_columns2 <- setdiff(x = names(df_wider), y = "ID")
   choose_col <- setdiff(wide_columns2, wide_columns1)
   
-############################### [Initialization] ###############################
+  ############################### [Initialization] ###############################
   # 左右选项对应的价值
   df_wider$L_value <- NA
   df_wider$R_value <- NA
@@ -84,7 +84,7 @@ rl_action_c <- function(
   # 被试选的和机器人选的是否一致
   df_wider$ACC <- NA
   
-################################ [Loop Update] #################################
+  ################################ [Loop Update] #################################
   # 对宽数据逐行赋予值
   for (i in 1:nrow(df_wider)) {
     # 首先对刺激种类列[choose_col]进行操作
@@ -107,7 +107,7 @@ rl_action_c <- function(
     df_wider$L_value[i] <- df_wider[[L_name]][i]
     df_wider$R_value[i] <- df_wider[[R_name]][i]
     
-################################ [ CORE CODE ] #################################
+    ################################ [ CORE CODE ] #################################
     # 基于prob函数计算选择左边和右边的概率
     df_wider$L_prob[i] <- prob_func(
       L_value = df_wider$L_value[i],
@@ -127,9 +127,9 @@ rl_action_c <- function(
       tau = tau,
       lambda = lambda
     )
-################################ [ CORE CODE ] #################################
+    ################################ [ CORE CODE ] #################################
     
-################################ [ soft-max ] ##################################    
+    ################################ [ soft-max ] ##################################    
     # 如果是softmax就基于概率随机选
     if (!(softmax %in% c(TRUE, FALSE))) {
       stop("softmax TRUE or FALSE?")
@@ -168,7 +168,7 @@ rl_action_c <- function(
         )
       } 
     }
-################################ [ direction ] #################################
+    ################################ [ direction ] #################################
     # 如果选项即等于左也等于右, 则说明此时只有一个选项
     if (df_wider$Sub_Choose[i] == L_name & df_wider$Sub_Choose[i] == R_name) {
       df_wider$L_dir[i] <- 0
@@ -188,12 +188,12 @@ rl_action_c <- function(
       print("L/R_dir ERROR")
     }
     
-############################## [ log_likelyhood ] ##############################    
+    ############################## [ log_likelyhood ] ##############################    
     # 基于得到的被试选项与强化学习估计的选择概率, 计算似然值
     df_wider$L_logl[i] <- df_wider$L_dir[i] * log(df_wider$L_prob[i] + 1e-10)
     df_wider$R_logl[i] <- df_wider$R_dir[i] * log(df_wider$R_prob[i] + 1e-10)
     
-################################ [ accuracy ] ##################################
+    ################################ [ accuracy ] ##################################
     if (!(df_wider$Rob_Choose[i] %in% choose_col)) {
       stop("ERROR in ACC")
     }
@@ -206,7 +206,7 @@ rl_action_c <- function(
     }
   }
   
-################################# [ ROUNND ] ###################################  
+  ################################# [ ROUNND ] ###################################  
   df_wider$L_prob <- round(df_wider$L_prob, digits)
   df_wider$R_prob <- round(df_wider$R_prob, digits)
   df_wider$L_logl <- round(df_wider$L_logl, digits)

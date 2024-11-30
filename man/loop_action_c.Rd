@@ -20,7 +20,7 @@ loop_action_c(
   softmax = TRUE,
   tau = 1,
   lambda = NA,
-  prob_func = func_prob,
+  prob_func = func_tau,
   digits = 5
 )
 }

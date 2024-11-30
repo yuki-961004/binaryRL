@@ -5,11 +5,11 @@
 #' @param initial_value The initial value you assign to a stimulus, defaulting to NA
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
-#' @param beta In the utility model, it is assumed that all rewards will be discounted
+#' @param gamma In the utility model, it is assumed that all rewards will be discounted
 #' @param epsilon In the WXT model, the discount rate is divided into different intervals.
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
-#' @param beta_func The function for the discount rate β, which you can customize
-#' @param eta_func The function for the learning rate η, which you can customize
+#' @param utility_func The function for the discount rate β, which you can customize
+#' @param rate_func The function for the learning rate η, which you can customize
 #' @param digits digits
 #'
 #' @return update value for 1 choice
@@ -27,24 +27,24 @@ rl_update_v <- function(
   # 被试心中价值初始值
   initial_value = NA,
   # parameters
-  beta = 1,
+  gamma = 1,
   epsilon = NA,
   eta = c(0.3, 0.7),
   # 价值函数选用示例函数
-  beta_func = func_beta,
-  eta_func = func_eta,
+  utility_func = func_gamma,
+  rate_func = func_eta,
   # 小数位数
   digits = 2
-################################# [function start] #############################
+  ################################# [function start] #############################
 ){
-################################## [Arrange] ###################################
+  ################################## [Arrange] ###################################
   # 基于time_line这个向量, 录入排序向量
   order_vector <- lapply(time_line, function(col) data[[col]])
   
   # 基于排序向量对输入数据集进行排序
   temp_data <- data[do.call(order, order_vector), ]
   
-############################## [Add Null row] #################################
+  ############################## [Add Null row] #################################
   # 生成一个与输入数据集相同的单行数据集. 用于存放初始值
   empty_row <- as.data.frame(matrix(ncol = ncol(data), nrow = 1))
   colnames(empty_row) <- colnames(data)
@@ -53,9 +53,9 @@ rl_update_v <- function(
   temp_data <- rbind(empty_row, temp_data)
   temp_data$Time_Line <- seq(from = 0, to = nrow(data))
   
-############################# [ update row by row] #############################
+  ############################# [ update row by row] #############################
   # 添加空列
-  temp_data$beta <- NA
+  temp_data$gamma <- NA
   temp_data$R_utility <- NA
   temp_data$V_value <- NA
   temp_data$eta <- NA
@@ -80,23 +80,23 @@ rl_update_v <- function(
         temp_data[[var2]][i] <- temp_data[[var2]][i+1]
       }
       
-      # 使用beta_func选择此时对应的beta, 然后计算出temp
-      beta_utility <- beta_func(
+      # 使用gamma_func选择此时对应的gamma, 然后计算出temp
+      gamma_utility <- utility_func(
         value = temp_data$V_value[i],
         utility = temp_data$R_utility[i],
         reward = temp_data$Reward[i],
         var1 = temp_data[[var1]][i],
         var2 = temp_data[[var2]][i],
         occurrence = temp_data$Time_Line[i],
-        beta = beta,
+        gamma = gamma,
         epsilon = epsilon
       )
       
-      temp_data$beta[i] <- as.numeric(beta_utility[1])
-      temp_data$R_utility[i] <- as.numeric(beta_utility[2])
-      # 设定学习率此时是100%, 而不使用eta_func
+      temp_data$gamma[i] <- as.numeric(gamma_utility[1])
+      temp_data$R_utility[i] <- as.numeric(gamma_utility[2])
+      # 设定学习率此时是100%, 而不使用rate_func
       temp_data$eta[i] <- 1
-      temp_data$V_update[i] <- as.numeric(beta_utility[2])
+      temp_data$V_update[i] <- as.numeric(gamma_utility[2])
       
       # 如果是第一次, 但是给了初始值, 那么就赋予上初始值, 给予正常的奖励 
     } else if (i == 1 & !(is.na(initial_value))) {
@@ -118,22 +118,22 @@ rl_update_v <- function(
       temp_data$V_value[i] <- temp_data$V_update[i - 1]
     }
     
-    # 使用beta_func选择此时对应的beta, 然后计算出temp
-    beta_utility <- beta_func(
+    # 使用gamma_func选择此时对应的utility_func, 然后计算出temp
+    gamma_utility <- utility_func(
       value = temp_data$V_value[i],
       utility = temp_data$R_utility[i],
       reward = temp_data$Reward[i],
       var1 = temp_data[[var1]][i],
       var2 = temp_data[[var2]][i],
       occurrence = temp_data$Time_Line[i],
-      beta = beta,
+      gamma = gamma,
       epsilon = epsilon
     )
-    temp_data$beta[i] <- as.numeric(beta_utility[1])
-    temp_data$R_utility[i] <- as.numeric(beta_utility[2])
+    temp_data$gamma[i] <- as.numeric(gamma_utility[1])
+    temp_data$R_utility[i] <- as.numeric(gamma_utility[2])
     
-    # 使用eta_func选择此时对应的eta
-    temp_data$eta[i] <- eta_func(
+    # 使用rate_func选择此时对应的eta
+    temp_data$eta[i] <- rate_func(
       value = temp_data$V_value[i],
       utility = temp_data$R_utility[i],
       reward = temp_data$Reward[i],
@@ -152,7 +152,7 @@ rl_update_v <- function(
     }
   }
   
-############################## [delete first row] ############################## 
+  ############################## [delete first row] ############################## 
   # 删除第一行赋予的初始值
   res_data <- temp_data[-1, ]
   # 对于V取两位小数

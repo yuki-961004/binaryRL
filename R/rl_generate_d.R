@@ -12,13 +12,13 @@
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
 #' @param softmax use softmax or not, defaulting to TRUE
 #' @param seed seed
-#' @param beta In the Utility model, it is assumed that all rewards will be discounted
+#' @param gamma In the Utility model, it is assumed that all rewards will be discounted
 #' @param epsilon In the WXT model, the discount rate is divided into different intervals.
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
 #' @param tau The τ parameter in the soft-max function, with a default value of 1
 #' @param lambda Other parameters that you think might influence the softmax function
-#' @param beta_func The function for the discount rate β, which you can customize
-#' @param eta_func The function for the learning rate η, which you can customize
+#' @param utility_func The function for the discount rate β, which you can customize
+#' @param rate_func The function for the learning rate η, which you can customize
 #' @param prob_func The soft-max function, which you can customize.
 #' @param digits digits
 #'
@@ -39,12 +39,12 @@ rl_generate_d <- function(
     softmax = TRUE,
     seed = 123,
     eta,
-    beta = 1,
+    gamma = 1,
     tau,
     epsilon,
     lambda = NA,
-    beta_func,
-    eta_func,
+    utility_func,
+    rate_func,
     prob_func,
     digits = 2
 ){
@@ -65,14 +65,14 @@ rl_generate_d <- function(
     data[[name]] <- NA
   }
   
-################################## [Arrange] ###################################
+  ################################## [Arrange] ###################################
   # 基于time_line这个向量, 录入排序向量
   order_vector <- lapply(time_line, function(col) data[[col]])
   
   # 基于排序向量对输入数据集进行排序
   temp_data <- data[do.call(order, order_vector), ]
   
-############################### [Add Null row] #################################
+  ############################### [Add Null row] #################################
   # 生成一个与输入数据集相同的单行数据集. 用于存放初始值
   empty_row <- as.data.frame(matrix(ncol = ncol(data), nrow = 1))
   colnames(empty_row) <- colnames(data)
@@ -81,10 +81,10 @@ rl_generate_d <- function(
   temp_data <- rbind(empty_row, temp_data)
   temp_data$Time_Line <- NA
   
-################################ [ new col ] ###################################
+  ################################ [ new col ] ###################################
   # 添加空列 update_v
   temp_data$Reward <- NA
-  temp_data$beta <- NA
+  temp_data$gamma <- NA
   temp_data$R_utility <- NA
   
   temp_data$V_value <- NA
@@ -128,7 +128,7 @@ rl_generate_d <- function(
       temp_data[[name]][1] <- initial_value
     }
   }
-########################### [update row by row] ################################  
+  ########################### [update row by row] ################################  
   # 逐行更新Value
   for (i in 2:nrow(temp_data)) {
     
@@ -139,7 +139,7 @@ rl_generate_d <- function(
     temp_data$L_value[i] <- temp_data[[L_name]][i - 1]
     temp_data$R_value[i] <- temp_data[[R_name]][i - 1]
     
-################################ [ 1+ CHOOSE ] #################################
+    ################################ [ 1+ CHOOSE ] #################################
     # 查询此次选择时, 已经选过哪些了
     chosen <- unique(temp_data$Rob_Choose)
     
@@ -164,7 +164,7 @@ rl_generate_d <- function(
         tau = tau,
         lambda = lambda
       )
-############################### [ 1st CHOOSE ] #################################
+      ############################### [ 1st CHOOSE ] #################################
     } else if (!(temp_data[[L_choice]][i] %in% chosen) & (temp_data[[R_choice]][i] %in% chosen)) {
       # 如果左边选项是第一次出现, 则一定选左边  
       temp_data$L_prob[i] <- 1
@@ -179,13 +179,13 @@ rl_generate_d <- function(
       temp_data$R_prob[i] <- 0.5
     }
     
-############################### [ PASS VALUE ] #################################  
+    ############################### [ PASS VALUE ] #################################  
     # 去上一行找每个选项此时的value
     for (name in alternative_choice) {
       temp_data[[name]][i] <- temp_data[[name]][i - 1]
     }
     
-################################ [ Soft-Max ] ##################################    
+    ################################ [ Soft-Max ] ##################################    
     # 检查是否设定了softmax
     if (!(softmax %in% c(TRUE, FALSE))) {
       stop("softmax TRUE or FALSE?")
@@ -220,12 +220,12 @@ rl_generate_d <- function(
         )
       } 
     }
-################################ [occurrence] ##################################   
+    ################################ [occurrence] ##################################   
     temp_data$Time_Line[[i]] <- sum(
       temp_data$Rob_Choose == temp_data$Rob_Choose[[i]], 
       na.rm = TRUE
     )
-################################## [ Reward ] ##################################    
+    ################################## [ Reward ] ##################################    
     # 基于选择, 来给予奖励
     if (temp_data$Rob_Choose[i] == temp_data[[L_choice]][i]){
       # 选了左边, 给左的奖励
@@ -235,28 +235,28 @@ rl_generate_d <- function(
       temp_data$Reward[i] <- temp_data[[R_reward]][i]
     }
     
-################################ [ update_v ] ##################################     
+    ################################ [ update_v ] ##################################     
     # 记录这次选了哪个
     choose <- temp_data$Rob_Choose[i]
     # 看到奖励前, 对该选项预期的奖励, 去上一行找
     temp_data$V_value[i] <- temp_data[[choose]][i - 1]
     
-    # 看到reward之后的折扣率, 用beta_func选择此时对应的beta, 计算出R_utility
-    beta_utility <- beta_func(
+    # 看到reward之后的折扣率, 用utility_func选择此时对应的gamma, 计算出R_utility
+    gamma_utility <- utility_func(
       value = temp_data$V_value[i],
       utility = temp_data$R_utility[i],
       reward = temp_data$Reward[i],
       occurrence = temp_data$Time_Line[i],
       var1 = temp_data[[var1]][i],
       var2 = temp_data[[var2]][i],
-      beta = beta,
+      gamma = gamma,
       epsilon = epsilon
     )
-    temp_data$beta[i] <- as.numeric(beta_utility[1])
-    temp_data$R_utility[i] <- as.numeric(beta_utility[2])
+    temp_data$gamma[i] <- as.numeric(gamma_utility[1])
+    temp_data$R_utility[i] <- as.numeric(gamma_utility[2])
     
-    # 看到reward之后的学习率, 用eta_func选择此时对应的eta
-    temp_data$eta[i] <- eta_func(
+    # 看到reward之后的学习率, 用rate_func选择此时对应的eta
+    temp_data$eta[i] <- rate_func(
       value = temp_data$V_value[i],
       utility = temp_data$R_utility[i],
       reward = temp_data$Reward[i],
@@ -278,7 +278,7 @@ rl_generate_d <- function(
       temp_data[[choose]][i] <- temp_data$V_update[i]  
     } 
   }
-############################## [delete first row] ############################## 
+  ############################## [delete first row] ############################## 
   # 删除第一行赋予的初始值
   res_data <- temp_data[-1, ]
   # round

@@ -11,8 +11,8 @@
 #' @return example soft-max function
 #' @export
 #'
-func_prob <- function(
-  # 左边选项的价值
+func_tau <- function(
+    # 左边选项的价值
   L_value,
   # 右边选项的价值
   R_value,
@@ -20,8 +20,8 @@ func_prob <- function(
   var1 = NA,
   # 额外需要用到的变量2
   var2 = NA,
-  # softmax固有参数
-  tau = 1,
+  # softmax固有参数, 表示对左右差异的敏感性
+  tau,
   # 其他你想使用的参数, 默认没有
   lambda = NA,
   # 此时计算的是选左概率还是选右概率

@@ -10,11 +10,11 @@ rl_update_v(
   var1 = NA,
   var2 = NA,
   initial_value = NA,
-  beta = 1,
+  gamma = 1,
   epsilon = NA,
   eta = c(0.3, 0.7),
-  beta_func = func_beta,
-  eta_func = func_eta,
+  utility_func = func_gamma,
+  rate_func = func_eta,
   digits = 2
 )
 }
@@ -29,15 +29,15 @@ rl_update_v(
 
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to NA}
 
-\item{beta}{In the utility model, it is assumed that all rewards will be discounted}
+\item{gamma}{In the utility model, it is assumed that all rewards will be discounted}
 
 \item{epsilon}{In the WXT model, the discount rate is divided into different intervals.}
 
 \item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
 
-\item{beta_func}{The function for the discount rate β, which you can customize}
+\item{utility_func}{The function for the discount rate β, which you can customize}
 
-\item{eta_func}{The function for the learning rate η, which you can customize}
+\item{rate_func}{The function for the learning rate η, which you can customize}
 
 \item{digits}{digits}
 }

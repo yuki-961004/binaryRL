@@ -1,4 +1,4 @@
-#' func_beta
+#' func_gamma
 #'
 #' @param value The value you assign to this stimulus at this moment
 #' @param utility Subjects' subjective value of the reward
@@ -6,13 +6,13 @@
 #' @param occurrence The number of times this stimulus is encountered
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
-#' @param beta In the utility model, it is assumed that all rewards will be discounted
+#' @param gamma In the utility model, it is assumed that all rewards will be discounted
 #' @param epsilon In the Prospect theory, the discount is divided into different intervals.
 #'
 #' @return Discount rate and temp value
 #' @export
 #'
-func_beta <- function(
+func_gamma <- function(
     # 此时心中对该刺激的的value
   value, 
   # 心中的主观价值
@@ -26,19 +26,19 @@ func_beta <- function(
   # 额外需要用到的变量2
   var2 = NA,
   # 使用的参数
-  beta = 1,
+  gamma = 1,
   epsilon = NA
   ################################# [function start] #############################
 ){
   ################################# [ Utility ] ##################################
-  # 如果beta只有一种, 则直接用这个beta计算temp
-  if (length(beta) == 1) {
-    beta <- as.numeric(beta)
-    utility <- beta * reward
+  # 如果gamma只有一种, 则直接用这个gamma计算temp
+  if (length(gamma) == 1) {
+    gamma <- as.numeric(gamma)
+    utility <- gamma * reward
   }
   ################################# [ Utility ] ##################################
   else {
     utility <- "ERROR" # 检查错误
   }
-  return(list(beta, utility))
+  return(list(gamma, utility))
 }
