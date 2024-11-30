@@ -21,7 +21,7 @@ rl_generate_d(
   beta = 1,
   tau,
   epsilon,
-  params = NA,
+  lambda = NA,
   beta_func,
   eta_func,
   prob_func,
@@ -61,7 +61,7 @@ rl_generate_d(
 
 \item{epsilon}{In the WXT model, the discount rate is divided into different intervals.}
 
-\item{params}{Other parameters that you think might influence the softmax function}
+\item{lambda}{Other parameters that you think might influence the softmax function}
 
 \item{beta_func}{The function for the discount rate β, which you can customize}
 

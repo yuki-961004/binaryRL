@@ -4,7 +4,7 @@
 \alias{func_prob}
 \title{func_prob}
 \usage{
-func_prob(L_value, R_value, var1 = NA, var2 = NA, tau = 1, params = NA, LR)
+func_prob(L_value, R_value, var1 = NA, var2 = NA, tau = 1, lambda = NA, LR)
 }
 \arguments{
 \item{L_value}{The value of the left option}
@@ -17,7 +17,7 @@ func_prob(L_value, R_value, var1 = NA, var2 = NA, tau = 1, params = NA, LR)
 
 \item{tau}{The τ parameter in the soft-max function, with a default value of 1}
 
-\item{params}{Other parameters that you think might influence the softmax function}
+\item{lambda}{Other parameters that you think might influence the softmax function}
 
 \item{LR}{Are you calculating the probability for the left option or the right option?}
 }

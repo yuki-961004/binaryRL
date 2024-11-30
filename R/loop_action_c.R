@@ -14,7 +14,7 @@
 #' @param seed seed
 #' @param softmax use softmax or not, defaulting to TRUE
 #' @param tau The τ parameter in the soft-max function, with a default value of 1
-#' @param params Other parameters that you think might influence the softmax function
+#' @param lambda Other parameters that you think might influence the softmax function
 #' @param prob_func The soft-max function, which you can customize.
 #' @param digits digits
 #' 
@@ -50,7 +50,7 @@ loop_action_c <- function(
   # softmax的固有参数, 默认为1
   tau = 1,
   # 如果你的softmax含有别的参数, 就放在这里
-  params = NA,
+  lambda = NA,
   # 示例softmax函数
   prob_func = func_prob,
   # 小数位数
@@ -76,7 +76,7 @@ loop_action_c <- function(
       seed = seed,
       softmax = softmax,
       tau = tau,
-      params = params,
+      lambda = lambda,
       prob_func = prob_func,
       digits = digits
     )

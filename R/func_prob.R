@@ -5,7 +5,7 @@
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
 #' @param tau The τ parameter in the soft-max function, with a default value of 1
-#' @param params Other parameters that you think might influence the softmax function
+#' @param lambda Other parameters that you think might influence the softmax function
 #' @param LR Are you calculating the probability for the left option or the right option?
 #' 
 #' @return example soft-max function
@@ -23,7 +23,7 @@ func_prob <- function(
   # softmax固有参数
   tau = 1,
   # 其他你想使用的参数, 默认没有
-  params = NA,
+  lambda = NA,
   # 此时计算的是选左概率还是选右概率
   LR
 ){

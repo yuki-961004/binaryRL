@@ -19,7 +19,7 @@ rl_run_m(
   beta = 1,
   eta,
   tau,
-  params = NA,
+  lambda = NA,
   beta_func = func_beta,
   eta_func = func_eta,
   prob_func = func_prob,
@@ -58,7 +58,7 @@ rl_run_m(
 
 \item{tau}{Indicates the sensitivity of the subjects to the two options}
 
-\item{params}{extra param in soft-max function}
+\item{lambda}{extra param in soft-max function}
 
 \item{beta_func}{The function for the discount rate β, which you can customize}
 

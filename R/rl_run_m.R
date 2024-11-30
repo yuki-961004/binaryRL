@@ -14,7 +14,7 @@
 #' @param beta In the utility model, it is assumed that all rewards will be discounted
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
 #' @param tau Indicates the sensitivity of the subjects to the two options
-#' @param params extra param in soft-max function
+#' @param lambda extra param in soft-max function
 #' @param beta_func The function for the discount rate β, which you can customize
 #' @param eta_func The function for the learning rate η, which you can customize
 #' @param prob_func The soft-max function, which you can customize.
@@ -50,7 +50,7 @@ rl_run_m <- function(
   beta = 1,
   eta,
   tau,
-  params = NA,
+  lambda = NA,
   # 示例函数
   beta_func = func_beta,
   eta_func = func_eta,
@@ -93,7 +93,7 @@ rl_run_m <- function(
     seed = seed,
     softmax = softmax,
     tau = tau,
-    params = params,
+    lambda = lambda,
     prob_func = prob_func,
     digits = digits_2
   )

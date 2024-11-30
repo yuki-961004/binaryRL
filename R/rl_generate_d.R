@@ -16,7 +16,7 @@
 #' @param epsilon In the WXT model, the discount rate is divided into different intervals.
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
 #' @param tau The τ parameter in the soft-max function, with a default value of 1
-#' @param params Other parameters that you think might influence the softmax function
+#' @param lambda Other parameters that you think might influence the softmax function
 #' @param beta_func The function for the discount rate β, which you can customize
 #' @param eta_func The function for the learning rate η, which you can customize
 #' @param prob_func The soft-max function, which you can customize.
@@ -42,7 +42,7 @@ rl_generate_d <- function(
     beta = 1,
     tau,
     epsilon,
-    params = NA,
+    lambda = NA,
     beta_func,
     eta_func,
     prob_func,
@@ -153,7 +153,7 @@ rl_generate_d <- function(
         var2 = temp_data[[var2]][i],
         LR = "L", 
         tau = tau,
-        params = params
+        lambda = lambda
       )
       temp_data$R_prob[i] <- prob_func(
         L_value = temp_data$L_value[i],
@@ -162,7 +162,7 @@ rl_generate_d <- function(
         var2 = temp_data[[var2]][i],
         LR = "R", 
         tau = tau,
-        params = params
+        lambda = lambda
       )
 ############################### [ 1st CHOOSE ] #################################
     } else if (!(temp_data[[L_choice]][i] %in% chosen) & (temp_data[[R_choice]][i] %in% chosen)) {

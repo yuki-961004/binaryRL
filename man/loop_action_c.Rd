@@ -19,7 +19,7 @@ loop_action_c(
   seed = 123,
   softmax = TRUE,
   tau = 1,
-  params = NA,
+  lambda = NA,
   prob_func = func_prob,
   digits = 5
 )
@@ -53,7 +53,7 @@ loop_action_c(
 
 \item{tau}{The τ parameter in the soft-max function, with a default value of 1}
 
-\item{params}{Other parameters that you think might influence the softmax function}
+\item{lambda}{Other parameters that you think might influence the softmax function}
 
 \item{prob_func}{The soft-max function, which you can customize.}
 
