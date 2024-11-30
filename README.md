@@ -19,12 +19,12 @@ $$
 
 - **Learning Rates ($\eta$)**: This parameter controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.
 
-- **Utility Function ($\beta$)**: People's subjective perception of objective rewards. If you believe the relationship between objective value and subjective value is linear, represented by the equation:
+- **Utility Function ($\gamma$)**: People's subjective perception of objective rewards. If you believe the relationship between objective value and subjective value is linear, represented by the equation:
 
 $$  
-U(R) = \beta \cdot R  
+U(R) = \gamma \cdot R  
 \quad \quad \Rightarrow \quad \quad
-V_{n} = V_{n-1} + \eta \cdot (\beta \cdot R_{n} - V_{n-1})  
+V_{n} = V_{n-1} + \eta \cdot (\gamma \cdot R_{n} - V_{n-1})  
 $$  
  
 
@@ -56,7 +56,7 @@ $$
 **Generate Simulated Data**: Given the **Value Function** and the **Soft-Max function**, along with the optimal parameters, simulate data.  
 
 $$
-binaryRL(\hat\eta, \hat\beta, \hat\tau) \quad \Rightarrow \quad Y \sim \text{data.frame}
+binaryRL(\hat\eta, \hat\gamma, \hat\tau) \quad \Rightarrow \quad Y \sim \text{data.frame}
 $$
 
 # How to cite 
@@ -100,22 +100,22 @@ print(binaryRL::func_eta)
 #> }
 ```
 
-### Subjective Utility ($\beta$)  
+### Subjective Utility ($\gamma$)  
 ```{r}
-print(binaryRL::func_beta)
+print(binaryRL::func_gamma)
 ```
 ```
-#> func_beta <- function(
-#>   value, temp, reward, var1, var2, occurrence, beta = 1, epsilon = NA
+#> func_gamma <- function(
+#>   value, temp, reward, var1, var2, occurrence, gamma = 1, epsilon = NA
 #> ){
-#>   if (length(beta) == 1) {
-#>     beta <- beta
-#>     temp <- beta * reward
+#>   if (length(gamma) == 1) {
+#>     gamma <- gamma
+#>     temp <- gamma * reward
 #>   }
 #>   else {
 #>     temp <- "ERROR" 
 #>   }
-#>   return(list(beta, temp))
+#>   return(list(gamma, temp))
 #> }
 ```
 
@@ -171,8 +171,8 @@ If you have already created your `value function` and `softmax function`, then h
 ```
 Most importantly, replace the `function` with your custom function. Alternatively, you can just use the default function, which can run the three basic models.
 ```
-> beta_func = your_beta_func
-> eta_func = your_eta_func  
+> utility_func = your_utility_func
+> rate_func = your_rate_func  
 > prob_func = your_prob_func
  ```
 ### Example obj_func
@@ -195,12 +195,12 @@ obj_func <- function(params){
     n = 1, # subject id that will be analyzed
     # parameters
     initial_value = NA, 
-    beta = 1,
+    gamma = 1,
     epsilon = NA,
     eta = c(params[1], params[2]),
     # your value function
-    beta_func = binaryRL::func_beta,
-    eta_func = binaryRL::func_eta
+    utility_func = binaryRL::func_gamma,
+    rate_func = binaryRL::func_eta
   ) 
 ################################## [Step 2] ####################################
   # Soft-Max Function
@@ -306,13 +306,13 @@ binaryRL::generate_d(
   initial_value = 0,
   softmax = TRUE,
   seed = 123,
-  beta = 1,
+  gamma = 1,
   epsilon = NA,
   eta = c(0.30344, 0.57334),
   tau = c(0.03575),
   params = NA,
-  beta_func = binaryRL::func_beta,
-  eta_func = binaryRL::func_eta,
+  utility_func = binaryRL::func_gamma,
+  rate_func = binaryRL::func_eta,
   prob_func = binaryRL::func_prob
 )
 ```
@@ -325,7 +325,7 @@ The reinforcement learning model will generate a column called `Rob_Choose`, ind
 > "The TD model is a standard temporal difference learning model (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998)."  
 ## 2. Risk-Sensitive TD Model ($\eta_{-}$, $\eta_{+}$, $\tau$)
 > "In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, 2002)."  
-## 3. Utility Model ($\eta$, $\beta$, $\tau$)
+## 3. Utility Model ($\eta$, $\gamma$, $\tau$)
 > "The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, 1954)"
 
 
@@ -374,10 +374,10 @@ $$
 
 - The `TD model` only consider **learning rates ($\eta$)** as a free parameter.   
 - The `Risk-Sensitive TD model` is based on `TD model` and assumes that the **learning rates ($\eta$)** are different for gains and losses.
-- The `Utility model` introduces a **utility function ($\beta$)** for rewards based on this foundation. 
+- The `Utility model` introduces a **utility function ($\gamma$)** for rewards based on this foundation. 
 
 ## Utility Function
-- I assume that there is a linear relationship between subjective value and objective value ($U(R) = \beta \cdot R$). In fact, it may be in other forms. 
+- I assume that there is a linear relationship between subjective value and objective value ($U(R) = \gamma \cdot R$). In fact, it may be in other forms. 
 
 ## Initial Value
 - Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
