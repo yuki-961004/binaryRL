@@ -35,8 +35,8 @@ rl_run_m <- function(
     # 价值更新的时间线, 基于的列
     time_line = c("Block", "Trial"),
     # 左右选项
-    L_choice = "DL",
-    R_choice = "DR",
+    L_choice = "L_choice",
+    R_choice = "R_choice",
     # 被试选择列
     choose = "Choose",
     # 决策时情景对应的期望价值
