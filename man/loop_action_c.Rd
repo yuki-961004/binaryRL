@@ -6,8 +6,8 @@
 \usage{
 loop_action_c(
   data,
-  L_choice = "DL",
-  R_choice = "DR",
+  L_choice = "L_choice",
+  R_choice = "R_choice",
   sub = "Subject",
   choose = "Choose",
   value = "V_value",
@@ -18,8 +18,10 @@ loop_action_c(
   n = 1,
   seed = 123,
   softmax = TRUE,
-  tau = 1,
-  lambda = NA,
+  threshold = 20,
+  epsilon = NA,
+  tau = 0.5,
+  expl_func = func_epsilon,
   prob_func = func_tau,
   digits = 5
 )
@@ -45,15 +47,19 @@ loop_action_c(
 
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to 0}
 
-\item{n}{How many subjects' data do you need to run?}
+\item{n}{How many subjects' data do you need to run? default = 1}
 
 \item{seed}{seed}
 
 \item{softmax}{use softmax or not, defaulting to TRUE}
 
-\item{tau}{The τ parameter in the soft-max function, with a default value of 1}
+\item{threshold}{How many trials ago were subjects randomly selected?}
 
-\item{lambda}{Other parameters that you think might influence the softmax function}
+\item{epsilon}{How much the subjects like to try}
+
+\item{tau}{The τ parameter in the soft-max function}
+
+\item{expl_func}{The exploration function, which you can customize.}
 
 \item{prob_func}{The soft-max function, which you can customize.}
 

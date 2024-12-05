@@ -5,8 +5,8 @@
 #' @param initial_value The initial value you assign to a stimulus, defaulting to NA
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
+#' @param lambda the eta or gamma could be divided into different intervals.
 #' @param gamma In the utility model, it is assumed that all rewards will be discounted
-#' @param epsilon In the WXT model, the discount rate is divided into different intervals.
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
 #' @param utility_func The function for the discount rate β, which you can customize
 #' @param rate_func The function for the learning rate η, which you can customize
@@ -28,7 +28,7 @@ rl_update_v <- function(
   initial_value = NA,
   # parameters
   gamma = 1,
-  epsilon = NA,
+  lambda = NA,
   eta = c(0.3, 0.7),
   # 价值函数选用示例函数
   utility_func = func_gamma,
@@ -89,7 +89,7 @@ rl_update_v <- function(
         var2 = temp_data[[var2]][i],
         occurrence = temp_data$Time_Line[i],
         gamma = gamma,
-        epsilon = epsilon
+        lambda = lambda
       )
       
       temp_data$gamma[i] <- as.numeric(gamma_utility[1])
@@ -118,7 +118,7 @@ rl_update_v <- function(
       temp_data$V_value[i] <- temp_data$V_update[i - 1]
     }
     
-    # 使用gamma_func选择此时对应的utility_func, 然后计算出temp
+    # 使用gamma_func选择此时对应的gamma, 然后计算出temp
     gamma_utility <- utility_func(
       value = temp_data$V_value[i],
       utility = temp_data$R_utility[i],
@@ -127,7 +127,7 @@ rl_update_v <- function(
       var2 = temp_data[[var2]][i],
       occurrence = temp_data$Time_Line[i],
       gamma = gamma,
-      epsilon = epsilon
+      lambda = lambda
     )
     temp_data$gamma[i] <- as.numeric(gamma_utility[1])
     temp_data$R_utility[i] <- as.numeric(gamma_utility[2])
@@ -141,7 +141,7 @@ rl_update_v <- function(
       var2 = temp_data[[var2]][i],
       occurrence = temp_data$Time_Line[i],
       eta = eta,
-      epsilon = epsilon
+      lambda = lambda
     )
     
     # 从第二次才是真的开始学习了

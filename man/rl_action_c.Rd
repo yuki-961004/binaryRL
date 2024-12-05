@@ -6,8 +6,8 @@
 \usage{
 rl_action_c(
   data,
-  L_choice = "DL",
-  R_choice = "DR",
+  L_choice = "L_choice",
+  R_choice = "R_choice",
   choose = "Choose",
   value = "V_value",
   var1 = NA,
@@ -15,8 +15,10 @@ rl_action_c(
   initial_value = 0,
   seed = 123,
   softmax = TRUE,
-  tau,
-  lambda = NA,
+  threshold = 20,
+  epsilon = NA,
+  tau = 0.5,
+  expl_func = func_epsilon,
   prob_func = func_tau,
   digits = 5
 )
@@ -42,9 +44,13 @@ rl_action_c(
 
 \item{softmax}{use softmax or not, defaulting to TRUE}
 
+\item{threshold}{How many trials ago were subjects randomly selected?}
+
+\item{epsilon}{How much the subjects like to try}
+
 \item{tau}{The τ parameter in the soft-max function, with a default value of 1}
 
-\item{lambda}{Other parameters that you think might influence the softmax function}
+\item{expl_func}{The exploration function, which you can customize.}
 
 \item{prob_func}{The soft-max function, which you can customize.}
 

@@ -7,13 +7,13 @@
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
-#' @param epsilon In the WXT model, the discount is divided into different intervals.
+#' @param lambda the eta or gamma could be divided into different intervals.
 #'
 #' @return learning rate eta
 #' @export
 #'
 func_eta <- function(
-    # 此时心中对该刺激的的value
+  # 此时心中对该刺激的的value
   value, 
   # 心中的主观价值
   utility,
@@ -27,7 +27,7 @@ func_eta <- function(
   var2 = NA,
   # 使用的参数
   eta,
-  epsilon
+  lambda
   ################################# [function start] #############################
 ){
   #################################### [ TD ] ####################################

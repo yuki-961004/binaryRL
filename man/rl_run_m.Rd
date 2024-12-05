@@ -13,13 +13,14 @@ rl_run_m(
   choose = "Choose",
   var1 = NA,
   var2 = NA,
-  id = 1,
-  initial_value = NA,
-  epsilon = NA,
+  id = 11,
+  initial_value = 0,
+  lambda = NA,
   gamma = 1,
   eta,
+  epsilon = NA,
   tau,
-  lambda = NA,
+  threshold = 5,
   seed = 123,
   softmax = FALSE,
   digits_1 = 2,
@@ -28,6 +29,7 @@ rl_run_m(
   n_trials,
   utility_func = func_gamma,
   rate_func = func_eta,
+  expl_func = func_epsilon,
   prob_func = func_tau
 )
 }
@@ -52,15 +54,17 @@ rl_run_m(
 
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to NA}
 
-\item{epsilon}{In some models, the learning rate is divided into different intervals.}
+\item{lambda}{the eta or gamma could be divided into different intervals.}
 
 \item{gamma}{In the utility model, it is assumed that all rewards will be discounted}
 
 \item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
 
+\item{epsilon}{How much the subjects like to try}
+
 \item{tau}{Indicates the sensitivity of the subjects to the two options}
 
-\item{lambda}{extra param in soft-max function}
+\item{threshold}{How many trials ago were subjects randomly selected?}
 
 \item{seed}{seed}
 
@@ -77,6 +81,8 @@ rl_run_m(
 \item{utility_func}{The function for the discount rate β, which you can customize}
 
 \item{rate_func}{The function for the learning rate η, which you can customize}
+
+\item{expl_func}{Exploration function, which determines how likely the subject is to try randomly}
 
 \item{prob_func}{The soft-max function, which you can customize.}
 }

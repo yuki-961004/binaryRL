@@ -17,14 +17,16 @@ rl_generate_d(
   initial_value = NA,
   softmax = TRUE,
   seed = 123,
-  eta,
-  gamma = 1,
-  tau,
-  epsilon,
+  threshold = 15,
   lambda = NA,
-  utility_func,
-  rate_func,
-  prob_func,
+  gamma = 1,
+  eta = c(0.6, 0.8),
+  epsilon = NA,
+  tau = 0.5,
+  utility_func = func_gamma,
+  rate_func = func_eta,
+  expl_func = func_epsilon,
+  prob_func = func_tau,
   digits = 2
 )
 }
@@ -53,19 +55,23 @@ rl_generate_d(
 
 \item{seed}{seed}
 
-\item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
+\item{threshold}{How many trials ago were subjects randomly selected?}
+
+\item{lambda}{the eta or gamma could be divided into different intervals.}
 
 \item{gamma}{In the Utility model, it is assumed that all rewards will be discounted}
 
+\item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
+
+\item{epsilon}{How much the subjects like to try}
+
 \item{tau}{The τ parameter in the soft-max function, with a default value of 1}
-
-\item{epsilon}{In the WXT model, the discount rate is divided into different intervals.}
-
-\item{lambda}{Other parameters that you think might influence the softmax function}
 
 \item{utility_func}{The function for the discount rate β, which you can customize}
 
 \item{rate_func}{The function for the learning rate η, which you can customize}
+
+\item{expl_func}{Exploration function, which determines how likely the subject is to try randomly}
 
 \item{prob_func}{The soft-max function, which you can customize.}
 

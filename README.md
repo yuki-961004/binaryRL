@@ -9,7 +9,7 @@ Before using this package, please make sure you agree with these assumptions.
 
 If you agree with these three points, I will introduce the process of my package.
 
-## Step 1: Update Values Based on the Value Function
+## Step 1: Value Function
 
 **Value Function** updating the value you assign to a stimulus based on the current reward.
 
@@ -19,19 +19,18 @@ $$
 
 - **Learning Rates ($\eta$)**: This parameter controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.
 
-- **Utility Function ($\gamma$)**: People's subjective perception of objective rewards. If you believe the relationship between objective value and subjective value is linear, represented by the equation:
+- **Utility Function ($\gamma$)**: Some also refer to it as the _discount rate_ (for example, in the R package `ReinforcementLearning`), but I believe expressing it as people's subjective perception of objective rewards is more accurate. This is because the relationship between physical quantities and psychological quantities is not necessarily always a linear discount function; it could also be another type of power function relationship (Stevens' Power Law).   
+  - If you believe the relationship between objective value and subjective value is linear, represented by the equation:
 
 $$  
 U(R) = \gamma \cdot R  
 \quad \quad \Rightarrow \quad \quad
 V_{n} = V_{n-1} + \eta \cdot (\gamma \cdot R_{n} - V_{n-1})  
 $$  
- 
 
-  *NOTE:* this relationship can take any form. It just represents how the objective value is transformed into subjective value.
 
-## Step 2: Make choices according to the softmax function.
-**Soft-Max Function** calculating the probability of choosing a certain option based on the values of the two available options.   
+## Step 2: Action Selection
+**Action Selection** calculating the probability of choosing a certain option based on the values of the two available options.  
 
   $$
   P_{L} = \frac{1}{1 + e^{-(V_{L} - V_{R}) \cdot \tau}}

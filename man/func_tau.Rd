@@ -4,9 +4,11 @@
 \alias{func_tau}
 \title{func_prob}
 \usage{
-func_tau(L_value, R_value, var1 = NA, var2 = NA, tau, lambda = NA, LR)
+func_tau(try, L_value, R_value, var1 = NA, var2 = NA, tau = 1, LR)
 }
 \arguments{
+\item{try}{random choose one or based on the values}
+
 \item{L_value}{The value of the left option}
 
 \item{R_value}{The value of the right option}
@@ -17,12 +19,10 @@ func_tau(L_value, R_value, var1 = NA, var2 = NA, tau, lambda = NA, LR)
 
 \item{tau}{The τ parameter in the soft-max function, with a default value of 1}
 
-\item{lambda}{Other parameters that you think might influence the softmax function}
-
 \item{LR}{Are you calculating the probability for the left option or the right option?}
 }
 \value{
-example soft-max function
+The probability of choosing this option
 }
 \description{
 func_prob

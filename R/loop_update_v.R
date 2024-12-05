@@ -8,8 +8,8 @@
 #' @param var2 extra variable 2
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
 #' @param n How many subjects' data do you need to run?
+#' @param lambda the eta or gamma could be divided into different intervals.
 #' @param gamma In the utility model, it is assumed that all rewards will be discounted
-#' @param epsilon In the WXT model, the discount rate is divided into different intervals.
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
 #' @param utility_func The function for the discount rate γ, which you can customize
 #' @param rate_func The function for the learning rate η, which you can customize
@@ -19,31 +19,31 @@
 #' @export 
 #'
 loop_update_v <- function(
-    data,
-    # 被试序号列, 列名
-    sub = "Subject",
-    # 被试选择列
-    choose = "Choose",
-    # 价值更新的时间线, 基于的列
-    time_line = c("Block", "Trial"),
-    # 额外需要用到的变量1
-    var1 = NA,
-    # 额外需要用到的变量2
-    var2 = NA,
-    # 被试心中价值初始值
-    initial_value = NA,
-    # 要处理多少个被试. 由于估计时候是对被试分别进行, 所以这里也是被试序号
-    n = 1,
-    # parameters
-    gamma = 1,
-    epsilon = NA,
-    eta,
-    # 价值函数选用示例函数
-    utility_func = func_gamma,
-    rate_func = func_eta,
-    # 小数位数
-    digits = 2
-    ################################# [function start] #############################
+  data,
+  # 被试序号列, 列名
+  sub = "Subject",
+  # 被试选择列
+  choose = "Choose",
+  # 价值更新的时间线, 基于的列
+  time_line = c("Block", "Trial"),
+  # 额外需要用到的变量1
+  var1 = NA,
+  # 额外需要用到的变量2
+  var2 = NA,
+  # 被试心中价值初始值
+  initial_value = NA,
+  # 要处理多少个被试. 由于估计时候是对被试分别进行, 所以这里也是被试序号
+  n = 1,
+  # parameters
+  lambda = NA,
+  gamma = 1,
+  eta,
+  # 价值函数选用示例函数
+  utility_func = func_gamma,
+  rate_func = func_eta,
+  # 小数位数
+  digits = 2
+  ################################# [function start] #############################
 ){
   ################################# [split sub data] #############################
   # 按照[被试序号列][sub]分裂原始数据
@@ -76,8 +76,8 @@ loop_update_v <- function(
       # 初始值
       initial_value = initial_value,
       # parameters
+      lambda = lambda,
       gamma = gamma,
-      epsilon = epsilon,
       eta = eta,
       # 价值函数选用示例函数
       utility_func = utility_func,

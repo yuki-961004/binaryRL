@@ -13,11 +13,12 @@ summary <- function(object, ...) {
   
   cat("\nParameters:\n")
   
-  cat("  ", "\u03B5: ", round(object$params$epsilon, 3), "\n")
+  cat("  ", "\u03BB: ", round(object$params$lambda, 3), "\n")
   cat("  ", "\u03B3: ", round(object$params$gamma, 3), "\n")
   cat("  ", "\u03B7: ", round(object$params$eta, 3), "\n")
+  cat("  ", "\u03B5: ", round(object$params$epsilon, 3), "\n")
   cat("  ", "\u03C4: ", round(object$params$tau, 3), "\n")
-  cat("  ", "\u03BB: ", round(object$params$lambda, 3), "\n")
+  
   
   cat("\nModel Fit:\n")
   

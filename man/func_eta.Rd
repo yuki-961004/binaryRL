@@ -4,16 +4,7 @@
 \alias{func_eta}
 \title{func_eta}
 \usage{
-func_eta(
-  value,
-  utility,
-  reward,
-  occurrence,
-  var1 = NA,
-  var2 = NA,
-  eta,
-  epsilon
-)
+func_eta(value, utility, reward, occurrence, var1 = NA, var2 = NA, eta, lambda)
 }
 \arguments{
 \item{value}{The value you assign to this stimulus at this moment}
@@ -30,7 +21,7 @@ func_eta(
 
 \item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
 
-\item{epsilon}{In the WXT model, the discount is divided into different intervals.}
+\item{lambda}{the eta or gamma could be divided into different intervals.}
 }
 \value{
 learning rate eta

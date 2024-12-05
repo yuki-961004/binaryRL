@@ -7,13 +7,13 @@
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
 #' @param gamma In the utility model, it is assumed that all rewards will be discounted
-#' @param epsilon In the Prospect theory, the discount is divided into different intervals.
+#' @param lambda the eta or gamma could be divided into different intervals.
 #'
-#' @return Discount rate and temp value
+#' @return Discount rate and utility
 #' @export
 #'
 func_gamma <- function(
-    # 此时心中对该刺激的的value
+  # 此时心中对该刺激的的value
   value, 
   # 心中的主观价值
   utility,
@@ -27,7 +27,7 @@ func_gamma <- function(
   var2 = NA,
   # 使用的参数
   gamma = 1,
-  epsilon = NA
+  lambda = NA
   ################################# [function start] #############################
 ){
   ################################# [ Utility ] ##################################

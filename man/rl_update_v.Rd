@@ -11,7 +11,7 @@ rl_update_v(
   var2 = NA,
   initial_value = NA,
   gamma = 1,
-  epsilon = NA,
+  lambda = NA,
   eta = c(0.3, 0.7),
   utility_func = func_gamma,
   rate_func = func_eta,
@@ -31,7 +31,7 @@ rl_update_v(
 
 \item{gamma}{In the utility model, it is assumed that all rewards will be discounted}
 
-\item{epsilon}{In the WXT model, the discount rate is divided into different intervals.}
+\item{lambda}{the eta or gamma could be divided into different intervals.}
 
 \item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
 

@@ -12,13 +12,15 @@
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
 #' @param softmax use softmax or not, defaulting to TRUE
 #' @param seed seed
+#' @param threshold How many trials ago were subjects randomly selected?
+#' @param lambda the eta or gamma could be divided into different intervals.
 #' @param gamma In the Utility model, it is assumed that all rewards will be discounted
-#' @param epsilon In the WXT model, the discount rate is divided into different intervals.
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
+#' @param epsilon How much the subjects like to try
 #' @param tau The τ parameter in the soft-max function, with a default value of 1
-#' @param lambda Other parameters that you think might influence the softmax function
 #' @param utility_func The function for the discount rate β, which you can customize
 #' @param rate_func The function for the learning rate η, which you can customize
+#' @param expl_func Exploration function, which determines how likely the subject is to try randomly
 #' @param prob_func The soft-max function, which you can customize.
 #' @param digits digits
 #'
@@ -38,21 +40,23 @@ rl_generate_d <- function(
     initial_value = NA,
     softmax = TRUE,
     seed = 123,
-    eta,
-    gamma = 1,
-    tau,
-    epsilon,
+    threshold = 15,
     lambda = NA,
-    utility_func,
-    rate_func,
-    prob_func,
+    gamma = 1,
+    eta = c(0.6, 0.8),
+    epsilon = NA,
+    tau = 0.5,
+    utility_func = func_gamma,
+    rate_func = func_eta,
+    expl_func = func_epsilon,
+    prob_func = func_tau,
     digits = 2
 ){
   # 获取 L_choice 和 R_choice 的唯一值
   unique_L <- unique(data[[L_choice]])
   unique_R <- unique(data[[R_choice]])
   
-  # 检查是否一致
+  # 检查L_choice 和R_choice是否包含了一样的选项
   if (!all(unique_L %in% unique_R) || !all(unique_R %in% unique_L)) {
     stop("Error: L_choice and R_choice have different unique values!")
   } else {
@@ -60,7 +64,7 @@ rl_generate_d <- function(
     alternative_choice <- unique_L
   }
   
-  # 新建对应的列，命名为 LC 的唯一值，并赋值为 NA
+  # 把所有选项, 变成新的列. 方便每个选项更新价值
   for (name in alternative_choice) {
     data[[name]] <- NA
   }
@@ -79,10 +83,11 @@ rl_generate_d <- function(
   
   # 在第一行插入一个空行
   temp_data <- rbind(empty_row, temp_data)
+  # 新建一列Time_Line
   temp_data$Time_Line <- NA
   
   ################################ [ new col ] ###################################
-  # 添加空列 update_v
+  # 添加空列 update_v 相关
   temp_data$Reward <- NA
   temp_data$gamma <- NA
   temp_data$R_utility <- NA
@@ -91,9 +96,12 @@ rl_generate_d <- function(
   temp_data$eta <- NA
   temp_data$V_update <- NA
   
-  # 添加空列 action_c
+  # 添加空列 action_c 相关
   temp_data$L_value <- NA
   temp_data$R_value <- NA
+  
+  temp_data$Try <- NA
+  
   temp_data$L_prob <- NA
   temp_data$R_prob <- NA
   temp_data$Rob_Choose <- NA
@@ -143,26 +151,41 @@ rl_generate_d <- function(
     # 查询此次选择时, 已经选过哪些了
     chosen <- unique(temp_data$Rob_Choose)
     
+    # 设置随机种子
+    set.seed(seed = seed + i)
+    
+    temp_data$Try[i] <- expl_func(
+      i = i,
+      var1 = temp_data[[var1]][i],
+      var2 = temp_data[[var2]][i],
+      threshold = threshold,
+      epsilon = epsilon
+    )
+    
     # 如果选项都不是第一次出现, 则正常计算概率
     if ((temp_data[[L_choice]][i] %in% chosen) & (temp_data[[R_choice]][i] %in% chosen)) {
+      # 基于prob函数计算选择左边和右边的概率
+      # 如果选项都不是第一次出现, 则正常计算概率
+      
       # 基于prob函数计算选择左边和右边的概率
       temp_data$L_prob[i] <- prob_func(
         L_value = temp_data$L_value[i],
         R_value = temp_data$R_value[i],
+        try = temp_data$Try[i],
         var1 = temp_data[[var1]][i],
         var2 = temp_data[[var2]][i],
         LR = "L", 
-        tau = tau,
-        lambda = lambda
+        tau = tau
       )
+      
       temp_data$R_prob[i] <- prob_func(
         L_value = temp_data$L_value[i],
         R_value = temp_data$R_value[i],
+        try = temp_data$Try[i],
         var1 = temp_data[[var1]][i],
         var2 = temp_data[[var2]][i],
         LR = "R", 
-        tau = tau,
-        lambda = lambda
+        tau = tau
       )
       ############################### [ 1st CHOOSE ] #################################
     } else if (!(temp_data[[L_choice]][i] %in% chosen) & (temp_data[[R_choice]][i] %in% chosen)) {
@@ -178,7 +201,6 @@ rl_generate_d <- function(
       temp_data$L_prob[i] <- 0.5
       temp_data$R_prob[i] <- 0.5
     }
-    
     ############################### [ PASS VALUE ] #################################  
     # 去上一行找每个选项此时的value
     for (name in alternative_choice) {
@@ -250,7 +272,7 @@ rl_generate_d <- function(
       var1 = temp_data[[var1]][i],
       var2 = temp_data[[var2]][i],
       gamma = gamma,
-      epsilon = epsilon
+      lambda = lambda
     )
     temp_data$gamma[i] <- as.numeric(gamma_utility[1])
     temp_data$R_utility[i] <- as.numeric(gamma_utility[2])
@@ -264,12 +286,14 @@ rl_generate_d <- function(
       var1 = temp_data[[var1]][i],
       var2 = temp_data[[var2]][i],
       eta = eta,
-      epsilon = epsilon
+      lambda = lambda
     )
     
-    # 如果是第一次选这个选项, 直接将temp赋予给V_update
+    # 如果是第一次选这个选项, 则此次学习率为1
     if (is.na(initial_value) & !(choose %in% chosen)) {
-      temp_data$V_update[i] <- temp_data$R_utility[i]
+      temp_data$eta[i] <- 1
+      temp_data$V_update[i] <- temp_data$V_value[i] + 
+        temp_data$eta[i] * (temp_data$R_utility[i] - temp_data$V_value[i])
       temp_data[[choose]][i] <- temp_data$V_update[i]
       # 如果这次的选项是选过的, 正常按照eta更新价值
     } else {

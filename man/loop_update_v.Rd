@@ -13,8 +13,8 @@ loop_update_v(
   var2 = NA,
   initial_value = NA,
   n = 1,
+  lambda = NA,
   gamma = 1,
-  epsilon = NA,
   eta,
   utility_func = func_gamma,
   rate_func = func_eta,
@@ -38,9 +38,9 @@ loop_update_v(
 
 \item{n}{How many subjects' data do you need to run?}
 
-\item{gamma}{In the utility model, it is assumed that all rewards will be discounted}
+\item{lambda}{the eta or gamma could be divided into different intervals.}
 
-\item{epsilon}{In the WXT model, the discount rate is divided into different intervals.}
+\item{gamma}{In the utility model, it is assumed that all rewards will be discounted}
 
 \item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
 

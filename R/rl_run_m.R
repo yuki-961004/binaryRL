@@ -10,12 +10,13 @@
 #' @param var2 extra variable 2
 #' @param id the subject being analysised
 #' @param initial_value The initial value you assign to a stimulus, defaulting to NA
-#' @param epsilon In some models, the learning rate is divided into different intervals.
+#' @param lambda the eta or gamma could be divided into different intervals.
 #' @param gamma In the utility model, it is assumed that all rewards will be discounted
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
 #' @param tau Indicates the sensitivity of the subjects to the two options
-#' @param lambda extra param in soft-max function
+#' @param epsilon How much the subjects like to try
 #' @param seed seed
+#' @param threshold How many trials ago were subjects randomly selected?
 #' @param softmax use softmax or not, defaulting to TRUE
 #' @param digits_1 digits in update v, default is 2
 #' @param digits_2 digits in action c, default is 5
@@ -23,6 +24,7 @@
 #' @param n_trials number of trails
 #' @param utility_func The function for the discount rate β, which you can customize
 #' @param rate_func The function for the learning rate η, which you can customize
+#' @param expl_func Exploration function, which determines how likely the subject is to try randomly
 #' @param prob_func The soft-max function, which you can customize.
 #'
 #' @return A table showing how participants updated their values ​​and selected
@@ -44,15 +46,16 @@ rl_run_m <- function(
     # 决策时情景对应的框架名称
     var2 = NA,
     # 被试id
-    id = 1,
+    id = 11,
     # 初始值
-    initial_value = NA,
+    initial_value = 0,
     # parameters
-    epsilon = NA,
+    lambda = NA,
     gamma = 1,
     eta,
+    epsilon = NA,
     tau,
-    lambda = NA,
+    threshold = 5,
     seed = 123,
     softmax = FALSE,
     digits_1 = 2, 
@@ -62,6 +65,7 @@ rl_run_m <- function(
     n_trials,
     utility_func = func_gamma,
     rate_func = func_eta,
+    expl_func = func_epsilon,
     prob_func = func_tau 
 ) {
   step0 <- data
@@ -76,7 +80,7 @@ rl_run_m <- function(
     var2 = var2,
     n = id,
     initial_value = initial_value,
-    epsilon = epsilon,
+    lambda = lambda,
     gamma = gamma,
     eta = eta,
     utility_func = utility_func,
@@ -98,18 +102,20 @@ rl_run_m <- function(
     initial_value = 0,
     seed = seed,
     softmax = softmax,
+    threshold = threshold,
+    epsilon = epsilon,
     tau = tau,
-    lambda = lambda,
+    expl_func = expl_func,
     prob_func = prob_func,
     digits = digits_2
   )
   
   params <- list(
-    epsilon = c(epsilon),
+    lambda = c(lambda),
     gamma = c(gamma),
-    eta = c(eta),   
-    tau = c(tau),
-    lambda = c(lambda)
+    eta = c(eta), 
+    epsilon = c(epsilon),
+    tau = c(tau)
   )
   
   mean_ACC <- round(mean(step2$ACC), 4) * 100

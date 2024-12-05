@@ -10,23 +10,26 @@
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
-#' @param n How many subjects' data do you need to run?
+#' @param n How many subjects' data do you need to run? default = 1
 #' @param seed seed
 #' @param softmax use softmax or not, defaulting to TRUE
-#' @param tau The τ parameter in the soft-max function, with a default value of 1
-#' @param lambda Other parameters that you think might influence the softmax function
+#' @param threshold How many trials ago were subjects randomly selected?
+#' @param tau The τ parameter in the soft-max function
+#' @param epsilon How much the subjects like to try
+#' @param expl_func The exploration function, which you can customize.
 #' @param prob_func The soft-max function, which you can customize.
 #' @param digits digits
+#' 
 #' 
 #' @return robot choose R or L, loop for every subject
 #' @export
 #'
 loop_action_c <- function(
-    # update_v数据集
+  # update_v数据集
   data,
   # 左右选项列名
-  L_choice = "DL",
-  R_choice = "DR",
+  L_choice = "L_choice",
+  R_choice = "R_choice",
   # 被试序号列, 列名
   sub = "Subject",
   # 被试选择刺激列, 列名
@@ -47,10 +50,14 @@ loop_action_c <- function(
   seed = 123,
   # 是否使用softmax, 还是说value谁大选谁
   softmax = TRUE,
+  # 多少次之前是随机选的
+  threshold = 20,
+  # 多大概率进行探索
+  epsilon = NA,
   # softmax的固有参数, 默认为1
-  tau = 1,
-  # 如果你的softmax含有别的参数, 就放在这里
-  lambda = NA,
+  tau = 0.5,
+  # 示例探索函数
+  expl_func = func_epsilon,
   # 示例softmax函数
   prob_func = func_tau,
   # 小数位数
@@ -75,8 +82,10 @@ loop_action_c <- function(
       var2 = var2,
       seed = seed,
       softmax = softmax,
+      threshold = threshold,
+      epsilon = epsilon,
       tau = tau,
-      lambda = lambda,
+      expl_func = expl_func,
       prob_func = prob_func,
       digits = digits
     )

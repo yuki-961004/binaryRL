@@ -12,7 +12,7 @@ func_gamma(
   var1 = NA,
   var2 = NA,
   gamma = 1,
-  epsilon = NA
+  lambda = NA
 )
 }
 \arguments{
@@ -30,10 +30,10 @@ func_gamma(
 
 \item{gamma}{In the utility model, it is assumed that all rewards will be discounted}
 
-\item{epsilon}{In the Prospect theory, the discount is divided into different intervals.}
+\item{lambda}{the eta or gamma could be divided into different intervals.}
 }
 \value{
-Discount rate and temp value
+Discount rate and utility
 }
 \description{
 func_gamma

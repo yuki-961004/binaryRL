@@ -10,8 +10,10 @@
 #' @param var2 extra variable 2
 #' @param seed seed
 #' @param softmax use softmax or not, defaulting to TRUE
+#' @param threshold How many trials ago were subjects randomly selected?
+#' @param epsilon How much the subjects like to try
 #' @param tau The τ parameter in the soft-max function, with a default value of 1
-#' @param lambda Other parameters that you think might influence the softmax function
+#' @param expl_func The exploration function, which you can customize.
 #' @param prob_func The soft-max function, which you can customize.
 #' @param digits digits
 #'
@@ -19,11 +21,11 @@
 #' @export
 #'
 rl_action_c <- function(
-    # update_v数据集
+  # update_v数据集
   data,
   # 左右选项是什么, 对应的列名
-  L_choice = "DL",
-  R_choice = "DR",
+  L_choice = "L_choice",
+  R_choice = "R_choice",
   # 被试选择列的列名
   choose = "Choose",
   # 被试心中价值列的列名
@@ -38,17 +40,21 @@ rl_action_c <- function(
   seed = 123,
   # 是否使用softmax, 还是说value谁大选谁
   softmax = TRUE,
+  # 多少试次前都是随机选择的
+  threshold = 20,
+  # 多大概率进行探索
+  epsilon = NA,
   # softmax的固有参数, 默认为1
-  tau,
-  # 如果你的softmax含有别的参数, 就放在这里
-  lambda = NA,
+  tau = 0.5,
+  # 示例探索函数
+  expl_func = func_epsilon,
   # 示例softmax函数
   prob_func = func_tau,
   # 小数位数
   digits = 5
   ################################# [function start] #############################
 ){
-  
+  ################################# [function start] #############################
   # 为了保证choose和value在长转宽中这两列不消失. 所以复制一次
   data$names <- data[[choose]]
   data$values <- data[[value]]
@@ -68,6 +74,8 @@ rl_action_c <- function(
   # 左右选项对应的价值
   df_wider$L_value <- NA
   df_wider$R_value <- NA
+  # 是否随机探索
+  df_wider$Try <- NA
   # 基于左右选项价值算出来的选左或右的概率
   df_wider$L_prob <- NA
   df_wider$R_prob <- NA
@@ -108,24 +116,35 @@ rl_action_c <- function(
     df_wider$R_value[i] <- df_wider[[R_name]][i]
     
     ################################ [ CORE CODE ] #################################
+    # 设置随机种子
+    set.seed(seed = seed + i)
+    
+    df_wider$Try[i] <- expl_func(
+      i = i,
+      var1 = df_wider[[var1]][i],
+      var2 = df_wider[[var2]][i],
+      threshold = threshold,
+      epsilon = epsilon
+    )
+    
     # 基于prob函数计算选择左边和右边的概率
     df_wider$L_prob[i] <- prob_func(
       L_value = df_wider$L_value[i],
       R_value = df_wider$R_value[i],
+      try = df_wider$Try[i],
       var1 = df_wider[[var1]][i],
       var2 = df_wider[[var2]][i],
       LR = "L", 
-      tau = tau,
-      lambda = lambda
+      tau = tau
     )
     df_wider$R_prob[i] <- prob_func(
       L_value = df_wider$L_value[i],
       R_value = df_wider$R_value[i],
+      try = df_wider$Try[i],
       var1 = df_wider[[var1]][i],
       var2 = df_wider[[var2]][i],
       LR = "R", 
-      tau = tau,
-      lambda = lambda
+      tau = tau
     )
     ################################ [ CORE CODE ] #################################
     
