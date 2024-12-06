@@ -100,7 +100,8 @@ Make sure the global environment contains the raw data.
 Your dataset needs to include the following columns.   
 `Block` and `Trial` columns are not mandatory, but there must be a column that represents the sequence of the experiment.
 You can also add two additional variables as factors that the model needs to consider.
-```
+
+```r
 | Subject | Block | Trial | L_choice | R_choice | Choose | Reward |-| var1 | var2 |
 |---------|-------|-------|----------|----------|--------|--------|-|------|------|
 | 1       | 1     | 1     | A        | B        | A      | 5      |-|  ..  |  ..  |
@@ -323,7 +324,7 @@ sa_result <- GenSA::GenSA(
   fn = obj_func,
   lower = c(0, 0, 0),
   upper = c(1, 1, 1),
-  control=list(
+  control = list(
     maxit = 10,
     seed = 123
   )
@@ -403,26 +404,27 @@ summary(binaryRL_res)
 <!---------------------------------------------------------->
 
 ## Generate Decisions
-Unlike the previous dataset, this time the input dataset requires the rewards for both the left and right options.
-```
-| Subject | Block | Trial | L_choice | R_choice | L_reward | R_reward | Sub_Choose |
-|---------|-------|-------|----------|----------|----------|----------|------==----|
-| 1       | 1     | 1     | A        | B        | 1        | 5        | A          |
-| 1       | 1     | 2     | A        | B        | 2        | 3        | B          |
-| 2       | 2     | 1     | X        | Y        | 3        | 4        | X          |
-| 2       | 2     | 2     | X        | Y        | 4        | 2        | Y          |
-| ...     | ...   | ...   | ...      | ...      | ...      | ...      | ...        |
+Unlike the previous dataset, this time the input dataset requires the rewards for both the left and right options. (The "Choose" column, as before, represents how the human made their choice in this context.)
+
+```r
+| Subject | Block | Trial | L_choice | R_choice | Choose | L_reward | R_reward |
+|---------|-------|-------|----------|----------|--------|----------|--------- |
+| 1       | 1     | 1     | A        | B        | A      | 1        | 5        |
+| 1       | 1     | 2     | A        | B        | B      | 2        | 3        |
+| 2       | 2     | 1     | X        | Y        | X      | 3        | 4        |
+| 2       | 2     | 2     | X        | Y        | Y      | 4        | 2        |
+| ...     | ...   | ...   | ...      | ...      | ...    | ...      | ...      |
 ```
 
 ```r
-binaryRL::generate_d(
+binaryRL::rl_generate_d(
   data = data,
   eta = c(0.509, 0.319),
   tau = c(0.035)
 )
 ```
 
-The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option.
+The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option. Similarly, it will also calculate the consistency between the robot's and human's decisions, including the log-likelihood (logL) and accuracy.
 
 <!---------------------------------------------------------->
 
