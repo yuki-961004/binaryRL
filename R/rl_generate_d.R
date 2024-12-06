@@ -18,7 +18,7 @@
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
 #' @param epsilon How much the subjects like to try
 #' @param tau The τ parameter in the soft-max function, with a default value of 1
-#' @param utility_func The function for the discount rate β, which you can customize
+#' @param util_func The function for the discount rate β, which you can customize
 #' @param rate_func The function for the learning rate η, which you can customize
 #' @param expl_func Exploration function, which determines how likely the subject is to try randomly
 #' @param prob_func The soft-max function, which you can customize.
@@ -46,7 +46,7 @@ rl_generate_d <- function(
     eta = c(0.6, 0.8),
     epsilon = NA,
     tau = 0.5,
-    utility_func = func_gamma,
+    util_func = func_gamma,
     rate_func = func_eta,
     expl_func = func_epsilon,
     prob_func = func_tau,
@@ -263,8 +263,8 @@ rl_generate_d <- function(
     # 看到奖励前, 对该选项预期的奖励, 去上一行找
     temp_data$V_value[i] <- temp_data[[choose]][i - 1]
     
-    # 看到reward之后的折扣率, 用utility_func选择此时对应的gamma, 计算出R_utility
-    gamma_utility <- utility_func(
+    # 看到reward之后的折扣率, 用util_func选择此时对应的gamma, 计算出R_utility
+    gamma_utility <- util_func(
       value = temp_data$V_value[i],
       utility = temp_data$R_utility[i],
       reward = temp_data$Reward[i],

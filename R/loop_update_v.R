@@ -11,7 +11,7 @@
 #' @param lambda the eta or gamma could be divided into different intervals.
 #' @param gamma In the utility model, it is assumed that all rewards will be discounted
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
-#' @param utility_func The function for the discount rate γ, which you can customize
+#' @param util_func The function for the discount rate γ, which you can customize
 #' @param rate_func The function for the learning rate η, which you can customize
 #' @param digits digits
 #'
@@ -39,7 +39,7 @@ loop_update_v <- function(
   gamma = 1,
   eta,
   # 价值函数选用示例函数
-  utility_func = func_gamma,
+  util_func = func_gamma,
   rate_func = func_eta,
   # 小数位数
   digits = 2
@@ -80,7 +80,7 @@ loop_update_v <- function(
       gamma = gamma,
       eta = eta,
       # 价值函数选用示例函数
-      utility_func = utility_func,
+      util_func = util_func,
       rate_func = rate_func,
       # 小数位数
       digits = digits

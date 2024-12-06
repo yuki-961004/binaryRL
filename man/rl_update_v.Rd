@@ -13,7 +13,7 @@ rl_update_v(
   gamma = 1,
   lambda = NA,
   eta = c(0.3, 0.7),
-  utility_func = func_gamma,
+  util_func = func_gamma,
   rate_func = func_eta,
   digits = 2
 )
@@ -35,7 +35,7 @@ rl_update_v(
 
 \item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
 
-\item{utility_func}{The function for the discount rate β, which you can customize}
+\item{util_func}{The function for the discount rate β, which you can customize}
 
 \item{rate_func}{The function for the learning rate η, which you can customize}
 

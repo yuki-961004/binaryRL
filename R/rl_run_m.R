@@ -22,7 +22,7 @@
 #' @param digits_2 digits in action c, default is 5
 #' @param n_params number of parameters
 #' @param n_trials number of trails
-#' @param utility_func The function for the discount rate β, which you can customize
+#' @param util_func The function for the discount rate β, which you can customize
 #' @param rate_func The function for the learning rate η, which you can customize
 #' @param expl_func Exploration function, which determines how likely the subject is to try randomly
 #' @param prob_func The soft-max function, which you can customize.
@@ -63,7 +63,7 @@ rl_run_m <- function(
     # 示例函数
     n_params,
     n_trials,
-    utility_func = func_gamma,
+    util_func = func_gamma,
     rate_func = func_eta,
     expl_func = func_epsilon,
     prob_func = func_tau 
@@ -83,7 +83,7 @@ rl_run_m <- function(
     lambda = lambda,
     gamma = gamma,
     eta = eta,
-    utility_func = utility_func,
+    util_func = util_func,
     rate_func = rate_func,
     digits = digits_1
   ) 

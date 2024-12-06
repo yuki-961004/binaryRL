@@ -104,19 +104,24 @@ You can also add two additional variables as factors that the model needs to con
 Create a function that contains only the `params` argument.   
   
 If you have already created your `value function` and `action function`, then here you only need to fill in the `[column names]` from your dataset into the corresponding arguments.   
+
 ```r
 > sub = "Subject"
 > choose = "Choose"
+> reward = "Reward"
 > time_line = c("Block", "Trial")
 > ...
 ```
+
 Most importantly, replace the `function` with your custom function. Alternatively, you can just use the default function, which can run the three basic models.
+
 ```r
 > util_func = your_util_func
 > rate_func = your_rate_func  
 > expl_func = your_expl_func
 > prob_func = your_prob_func
  ```
+
 ### Example Function
 
 <details>
@@ -338,7 +343,7 @@ sa_result <- GenSA::GenSA(
 
 ## Output
 ```r
-obj_func(params = as.vector(**_result$params))
+obj_func(params = as.vector(result$params))
 binaryRL::summary(binaryRL_res)
 ```
 ```r

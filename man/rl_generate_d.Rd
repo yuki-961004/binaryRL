@@ -23,7 +23,7 @@ rl_generate_d(
   eta = c(0.6, 0.8),
   epsilon = NA,
   tau = 0.5,
-  utility_func = func_gamma,
+  util_func = func_gamma,
   rate_func = func_eta,
   expl_func = func_epsilon,
   prob_func = func_tau,
@@ -67,7 +67,7 @@ rl_generate_d(
 
 \item{tau}{The τ parameter in the soft-max function, with a default value of 1}
 
-\item{utility_func}{The function for the discount rate β, which you can customize}
+\item{util_func}{The function for the discount rate β, which you can customize}
 
 \item{rate_func}{The function for the learning rate η, which you can customize}
 

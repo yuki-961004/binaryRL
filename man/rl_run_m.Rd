@@ -27,7 +27,7 @@ rl_run_m(
   digits_2 = 5,
   n_params,
   n_trials,
-  utility_func = func_gamma,
+  util_func = func_gamma,
   rate_func = func_eta,
   expl_func = func_epsilon,
   prob_func = func_tau
@@ -78,7 +78,7 @@ rl_run_m(
 
 \item{n_trials}{number of trails}
 
-\item{utility_func}{The function for the discount rate β, which you can customize}
+\item{util_func}{The function for the discount rate β, which you can customize}
 
 \item{rate_func}{The function for the learning rate η, which you can customize}
 
