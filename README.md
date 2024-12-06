@@ -55,8 +55,8 @@ $$
 
 <!---------------------------------------------------------->
 
-## Step 3: Robot vs. Subject Consistency
-**Log Likelihood** representing how similar robot behavior is to subject behavior
+## Step 3: Robot vs. Human Consistency
+**Log Likelihood** representing how similar robot behavior is to human behavior
 
   $$
   LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
@@ -101,13 +101,13 @@ Your dataset needs to include the following columns.
 `Block` and `Trial` columns are not mandatory, but there must be a column that represents the sequence of the experiment.
 You can also add two additional variables as factors that the model needs to consider.
 
-| Subject | Block | Trial | L_choice | R_choice | Choose | Reward |-| var1 | var2 |
-|---------|-------|-------|----------|----------|--------|--------|-|------|------|
-| 1       | 1     | 1     | A        | B        | A      | 5      |-|  ..  |  ..  |
-| 1       | 1     | 2     | A        | B        | B      | 3      |-|  ..  |  ..  |
-| 2       | 2     | 1     | X        | Y        | X      | 4      |-|  ..  |  ..  |
-| 2       | 2     | 2     | X        | Y        | Y      | 2      |-|  ..  |  ..  |
-| ...     | ...   | ...   | ...      | ...      | ...    | ...    |-|  ..  |  ..  |
+| Subject | Block | Trial | L_choice | R_choice | Choose | Reward | var1 | var2 |
+|---------|-------|-------|----------|----------|--------|--------|------|------|
+| 1       | 1     | 1     | A        | B        | A      | 5      |  ..  |  ..  |
+| 1       | 1     | 2     | A        | B        | B      | 3      |  ..  |  ..  |
+| 2       | 2     | 1     | X        | Y        | X      | 4      |  ..  |  ..  |
+| 2       | 2     | 2     | X        | Y        | Y      | 2      |  ..  |  ..  |
+| ...     | ...   | ...   | ...      | ...      | ...    | ...    |  ..  |  ..  |
 
 <!---------------------------------------------------------->
 
@@ -420,7 +420,7 @@ binaryRL::rl_generate_d(
 )
 ```
 
-The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option. Similarly, it will also calculate the consistency between the robot's and human's decisions, including the log-likelihood (logL) and accuracy.
+The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option. Similarly, it will also calculate the consistency between the robot's and human's decisions, including the log-likelihood and accuracy.
 
 <!---------------------------------------------------------->
 
