@@ -92,12 +92,12 @@ Your dataset needs to include the following columns.
 `Block` and `Trial` columns are not mandatory, but there must be a column that represents the sequence of the experiment.
 You can also add two additional variables as factors that the model needs to consider.
 ```
-| Subject | Block | Trial | L_choice | R_choice | Choose | Reward | | var1 | var2 |
-|---------|-------|-------|----------|----------|--------|--------| |------|------|
-| 1       | 1     | 1     | A        | B        | A      | 5      | |  ..  |  ..  |
-| 1       | 1     | 2     | A        | B        | B      | 3      | |  ..  |  ..  |
-| 2       | 2     | 1     | X        | Y        | X      | 4      | |  ..  |  ..  |
-| 2       | 2     | 2     | X        | Y        | Y      | 2      | |  ..  |  ..  |
+| Subject | Block | Trial | L_choice | R_choice | Choose | Reward |-| var1 | var2 |
+|---------|-------|-------|----------|----------|--------|--------|-|------|------|
+| 1       | 1     | 1     | A        | B        | A      | 5      |-|  ..  |  ..  |
+| 1       | 1     | 2     | A        | B        | B      | 3      |-|  ..  |  ..  |
+| 2       | 2     | 1     | X        | Y        | X      | 4      |-|  ..  |  ..  |
+| 2       | 2     | 2     | X        | Y        | Y      | 2      |-|  ..  |  ..  |
 ```
 
 ## Creat a Object Function for Algorithm Packages
@@ -234,12 +234,8 @@ func_tau <- function (
 
 </details>
 
-## Object Function
+### Object Function
 ```r
-library(binaryRL)
-
-###################### RSTD #####################
-
 obj_func <- function(params){
   res <- binaryRL::rl_run_m(
     data = data,
@@ -250,8 +246,6 @@ obj_func <- function(params){
     n_trials = 288
   )
 
-###################### RSTD #####################
-
   binaryRL_res <<- res
   
   return(-res$ll)
@@ -260,10 +254,10 @@ obj_func <- function(params){
 ```
 
 ### Example Algorithms
-There are many methods to estimate the optimal parameters based on likelihood values. Here, I will illustrate four methods: "L-BFGS-B"(`stats::optim`) representing gradient algorithms, `DEoptim` for Differential Evolution, `GA` for Genetic Algorithm, and `GenSA` for Simulated Annealing.
+There are several methods available for estimating the optimal parameters based on likelihood values. In this example, I will demonstrate four methods: the *L-BFGS-B* algorithm (`stats::optim`), a gradient-based method; `DEoptim`, a package for *Differential Evolution*; `GA`, a package for *Genetic Algorithms*; and `GenSA`, a package for *Simulated Annealing*.
 
 <details>
-<summary>L-BFGS-B</summary>
+<summary>L-BFGS-B (stats::optim)</summary>
 
 ```r
 library(stats)
@@ -284,7 +278,7 @@ gb_result <- stats::optim(
 </details>
 
 <details>
-<summary>Differential Evolution</summary>
+<summary>Differential Evolution (DEoptim::DEoptim)</summary>
 
 ```r
 library(DEoptim)
@@ -305,7 +299,7 @@ de_result <- DEoptim::DEoptim(
 </details>
 
 <details>
-<summary>Genetic Algorithm</summary>
+<summary>Genetic Algorithm (GA::ga)</summary>
 
 ```r
 library(GA)
@@ -324,7 +318,7 @@ ga_result <- GA::ga(
 </details>
 
 <details>
-<summary>Simulated Annealing</summary>
+<summary>Simulated Annealing (GenSA::GenSA)</summary>
 
 ```r
 library(GenSA)
