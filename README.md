@@ -11,13 +11,13 @@ If you agree with these three points, I will introduce the process of my package
 
 ## Step 1: Value Function
 
-**Value Function** updating the value you assign to a stimulus based on the current reward.
+**Value Function** independently updating the value associated with each stimulus.
+
+- **Learning Rates ($\eta$)**: This parameter $\eta$ controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.
 
 $$  
 V_{n} = V_{n-1} + \eta \cdot [U(R_{n}) - V_{n-1}]  
 $$  
-
-- **Learning Rates ($\eta$)**: This parameter controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.
 
 - **Utility Function ($\gamma$)**: Some also refer to it as the _discount rate_ (for example, in the R package `ReinforcementLearning`), but I believe expressing it as people's subjective perception of objective rewards is more accurate. This is because the relationship between physical quantities and psychological quantities is not necessarily always a linear discount function; it could also be another type of power function relationship (Stevens' Power Law).   
   - If you believe the relationship between objective value and subjective value is linear, represented by the equation:
@@ -29,18 +29,28 @@ V_{n} = V_{n-1} + \eta \cdot (\gamma \cdot R_{n} - V_{n-1})
 $$  
 
 
-## Step 2: Action Selection
-**Action Selection** calculating the probability of choosing a certain option based on the values of the two available options.  
+## Step 2: Action Function
+**Action Function** reflecting how individuals make choices based on the value of the options.  
 
-  $$
-  P_{L} = \frac{1}{1 + e^{-(V_{L} - V_{R}) \cdot \tau}}
-  \quad \quad
-  P_{R} = \frac{1}{1 + e^{-(V_{R} - V_{L}) \cdot \tau}}
-  $$
-  
- - **Sensitivity of Value Differences ($\tau$)**: This value represents people's sensitivity to value differences. The larger $\tau$, the more sensitive they are to the differences in value between the two options.
+ - **Exploration Function ($\epsilon$)**: The parameter $\epsilon$ represents the probability of participants engaging in exploration (random choosing). In addition A threshold ensures participants always explore during the initial trials, after which the likelihood of exploration is determined by $\epsilon$..   
 
-## Step 3: Calculate the consistency rate between the robot's choices and the human choices.
+$$
+P(x) =
+\begin{cases} 
+\epsilon, &  x = 1 \quad \text{(random choosing)} \\
+1 - \epsilon, &  x = 0 \quad \text{(value-based choosing)}
+\end{cases}
+$$
+
+ - **Soft-Max Function ($\tau$)**: The parameter $\tau$ represents people's sensitivity to value differences. The larger $\tau$, the more sensitive they are to the differences in value between the two options.
+
+$$
+P_{L} = \frac{1}{1 + e^{-(V_{L} - V_{R}) \cdot \tau}}
+\quad \quad
+P_{R} = \frac{1}{1 + e^{-(V_{R} - V_{L}) \cdot \tau}}
+$$
+
+## Step 3: Calculate the consistency rate between the robot's choices and the subject's choices.
 **Log Likelihood** representing how similar human behavior is to robot behavior
 
   $$
@@ -49,13 +59,13 @@ $$
 
   *NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model.   
 
-  - Here, we seek to find the optimal parameters for the model by maximizing the **Log Likelihood (LL)** using Genetic Algorithms (`GA::ga`).
+
 
 ## Step 4: Generate simulated data based on the optimal parameters for each subject.
-**Generate Simulated Data**: Given the **Value Function** and the **Soft-Max function**, along with the optimal parameters, simulate data.  
+**Generate Simulated Data**: Given the **Value Function** and the **Action Selection Function**, along with the optimal parameters, simulate data.  
 
 $$
-binaryRL(\hat\eta, \hat\gamma, \hat\tau) \quad \Rightarrow \quad Y \sim \text{data.frame}
+binaryRL(\hat\lambda, \hat\gamma, \hat\eta, \hat\epsilon, \hat\tau) \quad \Rightarrow \quad Y \sim \text{data.frame}
 $$
 
 # How to cite 
@@ -69,82 +79,13 @@ devtools::install_github("yuki-961004/binaryRL")
 
 # Examples
 ## Load Pacakge
-```{r}
+```r
 library(binaryRL)
-library(GA)
-```
-## Example Function
-
-### Learning Rate ($\eta$)   
-```{r}
-print(binaryRL::func_eta)
-```
-```
-#> func_eta <- function (
-#>   value, temp, reward, var1, var2, occurrence, eta, epsilon = NA
-#> ){
-#>   if (length(eta) == 1) {
-#>     eta <- as.numeric(eta)
-#>   }
-#>   else if (length(eta) > 1 & temp < value) {
-#>     eta <- eta[1]
-#>   }
-#>   else if (length(eta) > 1 & temp >= value) {
-#>     eta <- eta[2]
-#>   }
-#>   else {
-#>     eta <- "ERROR" 
-#>   }
-#>     return(eta)
-#> }
-```
-
-### Subjective Utility ($\gamma$)  
-```{r}
-print(binaryRL::func_gamma)
-```
-```
-#> func_gamma <- function(
-#>   value, temp, reward, var1, var2, occurrence, gamma = 1, epsilon = NA
-#> ){
-#>   if (length(gamma) == 1) {
-#>     gamma <- gamma
-#>     temp <- gamma * reward
-#>   }
-#>   else {
-#>     temp <- "ERROR" 
-#>   }
-#>   return(list(gamma, temp))
-#> }
-```
-
-### Sensitivity of Value Differences ($\tau$)
-```{r}
-print(binaryRL::func_prob)
-```
-```
-#> func_prob <- function (
-#>   L_value, R_value, var1, var2, tau = 1, params, LR 
-#> ){
-#>   if (!(LR %in% c("L", "R"))) {
-#>       stop("LR = 'L' or 'R'")
-#>   }
-#>   else if (LR == "L") {
-#>       prob <- 1/(1 + exp(-(L_value - R_value) * tau))
-#>   }
-#>   else if (LR == "R") {
-#>       prob <- 1/(1 + exp(-(R_value - L_value) * tau))
-#>   }
-#>   else {
-#>       prob <- "ERROR"
-#>   }
-#>   return(prob)
-#> }
 ```
 
 ## Read your Raw Data
-```{r simulated data}
-raw <- [your_raw_data]
+```r
+data <- [your_data]
 ```
 Make sure the global environment contains the raw data.   
 Your dataset needs to include the following columns.   
@@ -159,125 +100,270 @@ You can also add two additional variables as factors that the model needs to con
 | 2       | 2     | 2     | X        | Y        | Y      | 2      |    |  ..  |  ..  |
 ```
 
-## Creat a Object Function for `GA::ga`
-Create a function that contains only the `params` argument, used for `GA::ga` to find the optimal solution.  
+## Creat a Object Function for Algorithm Package
+Create a function that contains only the `params` argument.   
   
-If you have already created your `value function` and `softmax function`, then here you only need to fill in the `[column names]` from your dataset into the corresponding arguments.   
-```
+If you have already created your `value function` and `action function`, then here you only need to fill in the `[column names]` from your dataset into the corresponding arguments.   
+```r
 > sub = "Subject"
 > choose = "Choose"
 > time_line = c("Block", "Trial")
+> ...
 ```
 Most importantly, replace the `function` with your custom function. Alternatively, you can just use the default function, which can run the three basic models.
-```
-> utility_func = your_utility_func
+```r
+> util_func = your_util_func
 > rate_func = your_rate_func  
+> expl_func = your_expl_func
 > prob_func = your_prob_func
  ```
-### Example obj_func
-```{r}
-library(binaryRL)
+## Example Function
 
-obj_func <- function(params){
-################################## [ Raw ] #####################################
-  # The original dataset needs to be in the global environment.
-  data <- raw
-################################## [Step 1] ####################################
-  # Value Function
-  step1 <- binaryRL::loop_update_v(
-    data = data, 
-    sub = <col name [character] of subject id>
-    choose = <col name [character] of subject's choice>,
-    time_line = # <col name [vector], of block and trial>,
-    var1 = <col name [character] of var1>
-    var2 = <col name [character] of var2>
-    n = 1, # subject id that will be analyzed
-    # parameters
-    initial_value = NA, 
-    gamma = 1,
-    epsilon = NA,
-    eta = c(params[1], params[2]),
-    # your value function
-    utility_func = binaryRL::func_gamma,
-    rate_func = binaryRL::func_eta
-  ) 
-################################## [Step 2] ####################################
-  # Soft-Max Function
-  step2 <- binaryRL::loop_action_c(
-    data = step1,
-    L_choice = <col name [character] of left choice>,
-    R_choice = <col name [character] of right choice>,
-    sub = <col name [character] of subject id>
-    var1 = <col name [character] of var1>
-    var2 = <col name [character] of var2>
-    initial_value = NA,
-    n = 1, # the params of subjects should be calculated one by one
-    seed = 123,
-    softmax = TRUE,
-    # your soft-max function
-    prob_func = binaryRL::func_prob,  
-    # params in your soft-max function
-    tau = c(params[3]),
-    params = NA
-  )
-################################## [Step 3] ####################################  
-  mean_ACC <- round(mean(step2$ACC), 4) * 100
-  cat("Mean Accuracy:", mean_ACC, "%", "\n")
-  
-  Log_Likelihood <- sum(step2$L_logl) + sum(step2$R_logl)
-  return(Log_Likelihood)
+<details>
+<summary>Learning Rate Function (η)</summary>
+
+```r
+print(binaryRL::func_eta)
+```
+
+```r
+func_eta <- function (
+  value, utility, reward, occurrence, var1, var2, eta, lambda
+){
+  if (length(eta) == 1) {
+    eta <- as.numeric(eta)
+  }
+  else if (length(eta) > 1 & utility < value) {
+    eta <- eta[1]
+  }
+  else if (length(eta) > 1 & utility >= value) {
+    eta <- eta[2]
+  }
+  else {
+    eta <- "ERROR" 
+  }
+    return(eta)
+}
+```
+</details>
+
+<details>
+<summary>Utility Function (γ)</summary>
+
+### Utility Function ($\gamma$)  
+
+```r
+print(binaryRL::func_gamma)
+```
+
+```r
+func_gamma <- function(
+  value, utility, reward, occurrence, var1, var2, gamma, lambda
+){
+  if (length(gamma) == 1) {
+    gamma <- gamma
+    utility <- gamma * reward
+  }
+  else {
+    utility <- "ERROR" 
+  }
+  return(list(gamma, utility))
+}
+```
+</details>
+
+<details>
+<summary>Exploration Function (ε)</summary>
+
+```r
+print(binaryRL::func_epsilon)
+```
+
+```r
+func_epsilon <- function(
+  i, var1, var2, threshold, epsilon
+){
+  if (i <= threshold) {
+    try <- 1
+  } 
+  else if (i > threshold & !(is.na(epsilon))){
+    try <- sample(
+      c(1, 0),
+      prob = c(epsilon, 1 - epsilon),
+      size = 1
+    )
+  } 
+  else if (i > threshold & is.na(epsilon)) {
+    try <- 0
+  } 
+  else {
+    try <- "ERROR"
+  }
+  return(try)
+}
+```
+</details>
+
+<details>
+<summary>Soft-Max Function (τ)</summary>
+
+```r
+print(binaryRL::func_tau)
+```
+
+```r
+func_tau <- function (
+  try, L_value, R_value, var1, var2, tau = 1, params, LR 
+){
+  if (!(LR %in% c("L", "R"))) {
+    stop("LR = 'L' or 'R'")
+  }
+  else if (try == 0 & LR == "L") {
+    prob <- 1 / (1 + exp(-(L_value - R_value) * tau))
+  }
+  else if (try == 0 & LR == "R") {
+    prob <- 1 / (1 + exp(-(R_value - L_value) * tau))
+  }
+  else if (try == 1) {
+    prob <- 0.5
+  } 
+  else {
+    prob <- "ERROR"
+  } 
+  return(prob)
 }
 ```
 
-## Genetic Algorithms
-```{r}
-library(GA)
+</details>
 
-cl <- parallel::makeCluster(parallel::detectCores() - 2)
-doParallel::registerDoParallel(cores = cl)
+### Example obj_func
+```r
+library(binaryRL)
+
+###################### RSTD #####################
+
+obj_func <- function(params){
+  res <- binaryRL::rl_run_m(
+    data = data,
+    id = 18,
+    eta = c(params[1], params[2]),
+    tau = c(params[3]),
+    n_params = 3,
+    n_trials = 288
+  )
+
+###################### RSTD #####################
+
+  binaryRL_res <<- res
+  
+  return(-res$ll)
+}
+
+```
+
+## Algorithm Examples
+There are many methods to estimate the optimal parameters based on likelihood values. Here, I will illustrate four methods: "L-BFGS-B"(`stats::optim`) representing gradient algorithms, `DEoptim` for Differential Evolution, `GA` for Genetic Algorithm, and `GenSA` for Simulated Annealing.
+
+<details>
+<summary>L-BFGS-B</summary>
+
+```r
+library(stats)
+
+set.seed(123)
+gb_result <- stats::optim(
+  par = c(0.5, 0.5, 0.5),
+  method = "L-BFGS-B",
+  fn = obj_func,
+  lower = c(0, 0, 0),
+  upper = c(1, 1, 1),
+  control = list(
+    maxit = 10
+  )
+)
+```
+
+</details>
+
+<details>
+<summary>Differential Evolution</summary>
+
+```r
+library(DEoptim)
+
+de_result <- DEoptim::DEoptim(
+  fn = obj_func,
+  lower = c(0, 0, 0),
+  upper = c(1, 1, 1),
+  control = DEoptim::DEoptim.control(
+    itermax = 10,
+    parallelType = c("parallel"),
+    packages = c("binaryRL"),
+    parVar = c("data")
+  )
+)
+```
+
+</details>
+
+<details>
+<summary>Genetic Algorithm</summary>
+
+```r
+library(GA)
 
 ga_result <- GA::ga(
   type = "real-valued",
-  fitness = function(x) obj_func(x), 
-  lower = c(0, 0, 0), # lower bounds of parameters
-  upper = c(1, 1, 1), # upper bounds of parameters
-  popSize = 50,       # Initial population size
-  maxiter = 999,      # Maximum number of iterations
-  run = 20,           # Number of iterations without improvement before stopping
+  fitness = function(x) obj_func(x),
+  lower = c(0, 0, 0),
+  upper = c(1, 1, 1),
+  maxiter = 10,                     
   parallel = TRUE,          
   seed = 123                
 )
-
-parallel::stopCluster(cl)
-foreach::registerDoSEQ()
-rm(cl)
 ```
 
-## Output
-```{r}
-binaryRL::output(
-  ga_result = ga_result, 
-  obj_func = obj_func,
-  n_trials = 288,
-  params_name = c("eta_neg", "eta_pos", "tau"),
-  digits = 5
+</details>
+
+<details>
+<summary>Simulated Annealing</summary>
+
+```r
+library(GenSA)
+
+sa_result <- GenSA::GenSA(
+  fn = obj_func,
+  lower = c(0, 0, 0),
+  upper = c(1, 1, 1),
+  control=list(
+    maxit = 10,
+    seed = 123
+  )
 )
 ```
-```
-|                 name|   value|
-|---------------------|--------|
-| Number of Parameters|    3.00|
-|     Number of Trials|  288.00|
-|             Accuracy|   85.42|
-|       Log-Likelihood| -105.88|
-|                  AIC|  215.76|
-|                  BIC|  223.09|
 
-|       name|    value|
-|-----------|---------|
-|  eta_neg  | 0.30344 |
-|  eta_pos  | 0.57334 |
-|    tau    | 0.03575 |
+</details>
+
+## Output
+```r
+obj_func(params = as.vector(**_result$params))
+binaryRL::summary(binaryRL_res)
+```
+```r
+#> Results of the Reinforcement Learning Model:
+#> 
+#> Parameters:
+#>    ε:  NA 
+#>    γ:  1 
+#>    η:  0.509 0.319 
+#>    τ:  0.035 
+#>    λ:  NA 
+
+#> Model Fit:
+#>    Accuracy:  74.31 %
+#>    LogL:  -122.1 
+#>    AIC:  250.2 
+#>    BIC:  261.19 
 ```
 
 ## Generate Decisions
@@ -291,32 +377,21 @@ Unlike the previous dataset, this time the input dataset requires the rewards fo
 | 2       | 2     | 2     | X        | Y        | 4        | 2        |
 ```
 
-```
+```r
 ################################## [Step 4] #################################### 
 binaryRL::generate_d(
-  data = <your data>,
-  L_choice = <col_name [character] of left choice>,
-  R_choice = <col_name [character] of right choice>,
-  L_reward = <col_name [character] of left reward>,
-  R_reward = <col_name [character] of right reward>,
-  time_line = <col name [vector], of block and trial>,
-  var1 = <col name [character] of var1>
-  var2 = <col name [character] of var2>
-  initial_value = 0,
-  softmax = TRUE,
-  seed = 123,
-  gamma = 1,
-  epsilon = NA,
-  eta = c(0.30344, 0.57334),
-  tau = c(0.03575),
-  params = NA,
-  utility_func = binaryRL::func_gamma,
-  rate_func = binaryRL::func_eta,
-  prob_func = binaryRL::func_prob
+  data = data,
+  eta = c(0.509, 0.319),
+  tau = c(0.035)
 )
 ```
 
 The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option.
+
+<br>
+<hr style="border: 5px solid;"/>
+<br>
+<br>
 
 # Classic Models
 
@@ -381,3 +456,5 @@ $$
 ## Initial Value
 - Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
 
+## Exploration Function
+- Participants will always make a choice when encountering a new stimulus. Additionally, if a threshold is set, participants will make random choices until the specified number of trials is reached.
