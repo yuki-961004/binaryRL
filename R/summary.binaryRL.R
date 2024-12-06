@@ -6,7 +6,7 @@
 #' @return summary
 #' @export
 #'
-summary <- function(object, ...) {
+summary.binaryRL <- function(object, ...) {
   cat("Results of the Reinforcement Learning Model:\n")
   
   object$data <- NULL

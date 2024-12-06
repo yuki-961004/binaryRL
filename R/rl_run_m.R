@@ -132,5 +132,7 @@ rl_run_m <- function(
     bic = BIC
   )
   
+  class(res) <- c("binaryRL")
+  
   return(res)
 }
