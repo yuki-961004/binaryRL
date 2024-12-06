@@ -9,6 +9,8 @@ Before using this package, please make sure you agree with these assumptions.
 
 If you agree with these three points, I will introduce the process of my package.
 
+<!---------------------------------------------------------->
+
 ## Step 1: Value Function
 
 **Value Function** independently updating the value associated with each stimulus.
@@ -28,6 +30,7 @@ U(R) = \gamma \cdot R
 V_{n} = V_{n-1} + \eta \cdot (\gamma \cdot R_{n} - V_{n-1})  
 $$  
 
+<!---------------------------------------------------------->
 
 ## Step 2: Action Function
 **Action Function** reflecting how individuals make choices based on the value of the options.  
@@ -50,8 +53,10 @@ P_{L} = \frac{1}{1 + e^{-(V_{L} - V_{R}) \cdot \tau}}
 P_{R} = \frac{1}{1 + e^{-(V_{R} - V_{L}) \cdot \tau}}
 $$
 
-## Step 3: Calculate the consistency rate between the robot's choices and the subject's choices.
-**Log Likelihood** representing how similar human behavior is to robot behavior
+<!---------------------------------------------------------->
+
+## Step 3: Robot vs. Subject Consistency
+**Log Likelihood** representing how similar robot behavior is to subject behavior
 
   $$
   LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
@@ -59,17 +64,19 @@ $$
 
   *NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model.   
 
+<!---------------------------------------------------------->
 
-
-## Step 4: Generate simulated data based on the optimal parameters for each subject.
+## Step 4: Simulated Data Generation
 **Generate Simulated Data**: Given the **Value Function** and the **Action Selection Function**, along with the optimal parameters, simulate data.  
 
 $$
 binaryRL(\hat\lambda, \hat\gamma, \hat\eta, \hat\epsilon, \hat\tau) \quad \Rightarrow \quad Y \sim \text{data.frame}
 $$
 
+<!---------------------------------------------------------->
+
 # How to cite 
-Hu, M., & L, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal*(7), 123-123. https://doi.org/
+Hu, M., & L, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal*(7), 100-123. https://doi.org/
 
 
 # Install
@@ -82,6 +89,8 @@ devtools::install_github("yuki-961004/binaryRL")
 ```r
 library(binaryRL)
 ```
+
+<!---------------------------------------------------------->
 
 ## Read your Raw Data
 ```r
@@ -98,7 +107,10 @@ You can also add two additional variables as factors that the model needs to con
 | 1       | 1     | 2     | A        | B        | B      | 3      |-|  ..  |  ..  |
 | 2       | 2     | 1     | X        | Y        | X      | 4      |-|  ..  |  ..  |
 | 2       | 2     | 2     | X        | Y        | Y      | 2      |-|  ..  |  ..  |
+| ...     | ...   | ...   | ...      | ...      | ...    | ...    |-|  ..  |  ..  |
 ```
+
+<!---------------------------------------------------------->
 
 ## Creat a Object Function for Algorithm Packages
 Create a function that contains only the `params` argument.   
@@ -122,7 +134,11 @@ Most importantly, replace the `function` with your custom function. Alternativel
 > prob_func = your_prob_func
  ```
 
+<!---------------------------------------------------------->
+
 ### Example Function
+
+<!---------------------------------------------------------->
 
 <details>
 <summary>Learning Rate Function (η)</summary>
@@ -152,6 +168,8 @@ func_eta <- function (
 ```
 </details>
 
+<!---------------------------------------------------------->
+
 <details>
 <summary>Utility Function (γ)</summary>
 
@@ -174,6 +192,8 @@ func_gamma <- function(
 }
 ```
 </details>
+
+<!---------------------------------------------------------->
 
 <details>
 <summary>Exploration Function (ε)</summary>
@@ -207,6 +227,8 @@ func_epsilon <- function(
 ```
 </details>
 
+<!---------------------------------------------------------->
+
 <details>
 <summary>Soft-Max Function (τ)</summary>
 
@@ -239,6 +261,8 @@ func_tau <- function (
 
 </details>
 
+<!---------------------------------------------------------->
+
 ### Object Function
 ```r
 obj_func <- function(params){
@@ -255,13 +279,16 @@ obj_func <- function(params){
   
   invisible(-res$ll)
 }
-
 ```
+
+<!---------------------------------------------------------->
 
 ### Example Algorithms
 There are several methods available for estimating the optimal parameters based on likelihood values. In this example, I will demonstrate four methods: the "L-BFGS-B" algorithm (`stats::optim`), a gradient-based method; `GenSA`, a package for Simulated Annealing; `GA`, a package for Genetic Algorithms; and `DEoptim`, a package for Differential Evolution.
 
 The first two methods, L-BFGS-B and GenSA, are single-threaded algorithms, while the latter two, GA and DEoptim, are multi-threaded algorithms. Among them, DEoptim has the shortest runtime and produces the smallest value of -logL.
+
+<!---------------------------------------------------------->
 
 <details>
 <summary>L-BFGS-B (stats::optim)</summary>
@@ -284,6 +311,8 @@ gb_result <- stats::optim(
 
 </details>
 
+<!---------------------------------------------------------->
+
 <details>
 <summary>Simulated Annealing (GenSA::GenSA)</summary>
 
@@ -303,6 +332,8 @@ sa_result <- GenSA::GenSA(
 
 </details>
 
+<!---------------------------------------------------------->
+
 <details>
 <summary>Genetic Algorithm (GA::ga)</summary>
 
@@ -321,6 +352,8 @@ ga_result <- GA::ga(
 ```
 
 </details>
+
+<!---------------------------------------------------------->
 
 <details>
 <summary>Differential Evolution (DEoptim::DEoptim)</summary>
@@ -343,9 +376,7 @@ de_result <- DEoptim::DEoptim(
 
 </details>
 
-
-
-
+<!---------------------------------------------------------->
 
 ## Output
 ```r
@@ -369,15 +400,18 @@ summary(binaryRL_res)
 #>    BIC:  261.19 
 ```
 
+<!---------------------------------------------------------->
+
 ## Generate Decisions
 Unlike the previous dataset, this time the input dataset requires the rewards for both the left and right options.
 ```
-| Subject | Block | Trial | L_choice | R_choice | L_reward | R_reward |
-|---------|-------|-------|----------|----------|----------|----------|
-| 1       | 1     | 1     | A        | B        | 1        | 5        |
-| 1       | 1     | 2     | A        | B        | 2        | 3        |
-| 2       | 2     | 1     | X        | Y        | 3        | 4        |
-| 2       | 2     | 2     | X        | Y        | 4        | 2        |
+| Subject | Block | Trial | L_choice | R_choice | L_reward | R_reward | Sub_Choose |
+|---------|-------|-------|----------|----------|----------|----------|------==----|
+| 1       | 1     | 1     | A        | B        | 1        | 5        | A          |
+| 1       | 1     | 2     | A        | B        | 2        | 3        | B          |
+| 2       | 2     | 1     | X        | Y        | 3        | 4        | X          |
+| 2       | 2     | 2     | X        | Y        | 4        | 2        | Y          |
+| ...     | ...   | ...   | ...      | ...      | ...      | ...      | ...        |
 ```
 
 ```r
@@ -390,9 +424,13 @@ binaryRL::generate_d(
 
 The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option.
 
+<!---------------------------------------------------------->
+
 ---
 
 # Classic Models
+
+<!---------------------------------------------------------->
 
 ## 1. TD Model ($\eta$, $\tau$)
 > "The TD model is a standard temporal difference learning model (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998)."  
@@ -408,6 +446,8 @@ The reinforcement learning model will generate a column called `Rob_Choose`, ind
 ### References
 Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
 
+<!---------------------------------------------------------->
+
 ## Initial Value
 
 > "Comparisons between the two learning rates generally revealed a positivity bias ($\alpha_{+} > \alpha_{-}$)"  
@@ -416,6 +456,8 @@ Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction 
 
 ### References
 Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and confirmation biases in reinforcement learning. *Trends in Cognitive Sciences, 26*(7), 607-621. https://doi.org/10.1016/j.tics.2022.04.005
+
+<!---------------------------------------------------------->
 
 ## Model Fit
 $$
@@ -434,6 +476,8 @@ $$
 ### References
 
 Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventromedial prefrontal cortex in abstract state-based inference during decision making in humans. *Journal of Neuroscience, 26*(32), 8360-8367. https://doi.org/10.1523/JNEUROSCI.1010-06.2006
+
+<!---------------------------------------------------------->
 
 ---
 
