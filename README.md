@@ -101,7 +101,6 @@ Your dataset needs to include the following columns.
 `Block` and `Trial` columns are not mandatory, but there must be a column that represents the sequence of the experiment.
 You can also add two additional variables as factors that the model needs to consider.
 
-```r
 | Subject | Block | Trial | L_choice | R_choice | Choose | Reward |-| var1 | var2 |
 |---------|-------|-------|----------|----------|--------|--------|-|------|------|
 | 1       | 1     | 1     | A        | B        | A      | 5      |-|  ..  |  ..  |
@@ -109,7 +108,6 @@ You can also add two additional variables as factors that the model needs to con
 | 2       | 2     | 1     | X        | Y        | X      | 4      |-|  ..  |  ..  |
 | 2       | 2     | 2     | X        | Y        | Y      | 2      |-|  ..  |  ..  |
 | ...     | ...   | ...   | ...      | ...      | ...    | ...    |-|  ..  |  ..  |
-```
 
 <!---------------------------------------------------------->
 
@@ -388,11 +386,11 @@ summary(binaryRL_res)
 #> Results of the Reinforcement Learning Model:
 #> 
 #> Parameters:
-#>    ε:  NA 
+#>    λ:  NA  
 #>    γ:  1 
 #>    η:  0.509 0.319 
-#>    τ:  0.035 
-#>    λ:  NA 
+#>    ε:  NA 
+#>    τ:  0.035
 
 #> Model Fit:
 #>    Accuracy:  74.31 %
@@ -406,7 +404,6 @@ summary(binaryRL_res)
 ## Generate Decisions
 Unlike the previous dataset, this time the input dataset requires the rewards for both the left and right options. (The "Choose" column, as before, represents how the human made their choice in this context.)
 
-```r
 | Subject | Block | Trial | L_choice | R_choice | Choose | L_reward | R_reward |
 |---------|-------|-------|----------|----------|--------|----------|--------- |
 | 1       | 1     | 1     | A        | B        | A      | 1        | 5        |
@@ -414,7 +411,6 @@ Unlike the previous dataset, this time the input dataset requires the rewards fo
 | 2       | 2     | 1     | X        | Y        | X      | 3        | 4        |
 | 2       | 2     | 2     | X        | Y        | Y      | 4        | 2        |
 | ...     | ...   | ...   | ...      | ...      | ...    | ...      | ...      |
-```
 
 ```r
 binaryRL::rl_generate_d(
