@@ -92,15 +92,15 @@ Your dataset needs to include the following columns.
 `Block` and `Trial` columns are not mandatory, but there must be a column that represents the sequence of the experiment.
 You can also add two additional variables as factors that the model needs to consider.
 ```
-| Subject | Block | Trial | L_choice | R_choice | Choose | Reward |    | var1 | var2 |
-|---------|-------|-------|----------|----------|--------|--------|    |------|------|
-| 1       | 1     | 1     | A        | B        | A      | 5      |    |  ..  |  ..  |
-| 1       | 1     | 2     | A        | B        | B      | 3      |    |  ..  |  ..  |
-| 2       | 2     | 1     | X        | Y        | X      | 4      |    |  ..  |  ..  |
-| 2       | 2     | 2     | X        | Y        | Y      | 2      |    |  ..  |  ..  |
+| Subject | Block | Trial | L_choice | R_choice | Choose | Reward | | var1 | var2 |
+|---------|-------|-------|----------|----------|--------|--------| |------|------|
+| 1       | 1     | 1     | A        | B        | A      | 5      | |  ..  |  ..  |
+| 1       | 1     | 2     | A        | B        | B      | 3      | |  ..  |  ..  |
+| 2       | 2     | 1     | X        | Y        | X      | 4      | |  ..  |  ..  |
+| 2       | 2     | 2     | X        | Y        | Y      | 2      | |  ..  |  ..  |
 ```
 
-## Creat a Object Function for Algorithm Package
+## Creat a Object Function for Algorithm Packages
 Create a function that contains only the `params` argument.   
   
 If you have already created your `value function` and `action function`, then here you only need to fill in the `[column names]` from your dataset into the corresponding arguments.   
@@ -117,7 +117,7 @@ Most importantly, replace the `function` with your custom function. Alternativel
 > expl_func = your_expl_func
 > prob_func = your_prob_func
  ```
-## Example Function
+### Example Function
 
 <details>
 <summary>Learning Rate Function (η)</summary>
@@ -149,8 +149,6 @@ func_eta <- function (
 
 <details>
 <summary>Utility Function (γ)</summary>
-
-### Utility Function ($\gamma$)  
 
 ```r
 print(binaryRL::func_gamma)
@@ -236,7 +234,7 @@ func_tau <- function (
 
 </details>
 
-### Example obj_func
+## Object Function
 ```r
 library(binaryRL)
 
@@ -261,7 +259,7 @@ obj_func <- function(params){
 
 ```
 
-## Algorithm Examples
+### Example Algorithms
 There are many methods to estimate the optimal parameters based on likelihood values. Here, I will illustrate four methods: "L-BFGS-B"(`stats::optim`) representing gradient algorithms, `DEoptim` for Differential Evolution, `GA` for Genetic Algorithm, and `GenSA` for Simulated Annealing.
 
 <details>
@@ -388,10 +386,7 @@ binaryRL::generate_d(
 
 The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option.
 
-<br>
-<hr style="border: 5px solid;"/>
-<br>
-<br>
+---
 
 # Classic Models
 
@@ -401,7 +396,6 @@ The reinforcement learning model will generate a column called `Rob_Choose`, ind
 > "In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, 2002)."  
 ## 3. Utility Model ($\eta$, $\gamma$, $\tau$)
 > "The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, 1954)"
-
 
 <p align="center">
     <img src="./fig/rl_models.png" alt="RL Models" width="70%">
