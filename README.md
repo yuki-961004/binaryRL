@@ -253,13 +253,15 @@ obj_func <- function(params){
 
   binaryRL_res <<- res
   
-  return(-res$ll)
+  invisible(-res$ll)
 }
 
 ```
 
 ### Example Algorithms
-There are several methods available for estimating the optimal parameters based on likelihood values. In this example, I will demonstrate four methods: the *L-BFGS-B* algorithm (`stats::optim`), a gradient-based method; `DEoptim`, a package for *Differential Evolution*; `GA`, a package for *Genetic Algorithms*; and `GenSA`, a package for *Simulated Annealing*.
+There are several methods available for estimating the optimal parameters based on likelihood values. In this example, I will demonstrate four methods: the "L-BFGS-B" algorithm (`stats::optim`), a gradient-based method; `GenSA`, a package for Simulated Annealing; `GA`, a package for Genetic Algorithms; and `DEoptim`, a package for Differential Evolution.
+
+The first two methods, L-BFGS-B and GenSA, are single-threaded algorithms, while the latter two, GA and DEoptim, are multi-threaded algorithms. Among them, DEoptim has the shortest runtime and produces the smallest value of -logL.
 
 <details>
 <summary>L-BFGS-B (stats::optim)</summary>
@@ -283,20 +285,18 @@ gb_result <- stats::optim(
 </details>
 
 <details>
-<summary>Differential Evolution (DEoptim::DEoptim)</summary>
+<summary>Simulated Annealing (GenSA::GenSA)</summary>
 
 ```r
-library(DEoptim)
+library(GenSA)
 
-de_result <- DEoptim::DEoptim(
+sa_result <- GenSA::GenSA(
   fn = obj_func,
   lower = c(0, 0, 0),
   upper = c(1, 1, 1),
-  control = DEoptim::DEoptim.control(
-    itermax = 10,
-    parallelType = c("parallel"),
-    packages = c("binaryRL"),
-    parVar = c("data")
+  control=list(
+    maxit = 10,
+    seed = 123
   )
 )
 ```
@@ -323,28 +323,34 @@ ga_result <- GA::ga(
 </details>
 
 <details>
-<summary>Simulated Annealing (GenSA::GenSA)</summary>
+<summary>Differential Evolution (DEoptim::DEoptim)</summary>
 
 ```r
-library(GenSA)
+library(DEoptim)
 
-sa_result <- GenSA::GenSA(
+de_result <- DEoptim::DEoptim(
   fn = obj_func,
   lower = c(0, 0, 0),
   upper = c(1, 1, 1),
-  control=list(
-    maxit = 10,
-    seed = 123
+  control = DEoptim::DEoptim.control(
+    itermax = 10,
+    parallelType = c("parallel"),
+    packages = c("binaryRL"),
+    parVar = c("data")
   )
 )
 ```
 
 </details>
 
+
+
+
+
 ## Output
 ```r
 obj_func(params = as.vector(result$params))
-binaryRL::summary(binaryRL_res)
+summary(binaryRL_res)
 ```
 ```r
 #> Results of the Reinforcement Learning Model:
@@ -375,7 +381,6 @@ Unlike the previous dataset, this time the input dataset requires the rewards fo
 ```
 
 ```r
-################################## [Step 4] #################################### 
 binaryRL::generate_d(
   data = data,
   eta = c(0.509, 0.319),
