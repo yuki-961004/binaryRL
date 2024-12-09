@@ -103,11 +103,11 @@ You can also add two additional variables as factors that the model needs to con
 
 | Subject | Block | Trial | L_choice | R_choice | Choose | Reward | var1 | var2 |
 |---------|-------|-------|----------|----------|--------|--------|------|------|
-| 1       | 1     | 1     | A        | B        | A      | 5      |  ..  |  ..  |
-| 1       | 1     | 2     | A        | B        | B      | 3      |  ..  |  ..  |
-| 2       | 2     | 1     | X        | Y        | X      | 4      |  ..  |  ..  |
-| 2       | 2     | 2     | X        | Y        | Y      | 2      |  ..  |  ..  |
-| ...     | ...   | ...   | ...      | ...      | ...    | ...    |  ..  |  ..  |
+| 1       | 1     | 1     | A        | B        | A      | 5      |...   |...   |
+| 1       | 1     | 2     | A        | B        | B      | 3      |...   |...   |
+| 2       | 2     | 1     | X        | Y        | X      | 4      |...   |...   |
+| 2       | 2     | 2     | X        | Y        | Y      | 2      |...   |...   | 
+| ...     | ...   | ...   | ...      | ...      | ...    | ...    |...   |...   |
 
 <!---------------------------------------------------------->
 
@@ -421,6 +421,14 @@ binaryRL::rl_generate_d(
 ```
 
 The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option. Similarly, it will also calculate the consistency between the robot's and human's decisions, including the log-likelihood and accuracy.
+
+| ... | Sub_Choose | L_value | R_value  | L_orob | R_orob | Rob_Choose | ACC |
+|-----|------------|---------|----------|--------|--------|------------|-----|
+| ... | A          | 0       | 1        | 0.50   | 0.50   | B          | 0   |
+| ... | B          | 1       | 2        | 0.50   | 0.50   | B          | 1   |
+| ... | X          | 2       | 3        | 0.50   | 0.50   | Y          | 0   |
+| ... | Y          | 3       | 4        | 0.50   | 0.50   | Y          | 1   |
+| ... | ...        | ...     | ...      | ...    | ...    | ...        | ... |
 
 <!---------------------------------------------------------->
 
