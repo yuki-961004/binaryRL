@@ -6,14 +6,16 @@
 \usage{
 rl_generate_d(
   data,
-  L_choice,
-  R_choice,
-  L_reward,
-  R_reward,
-  time_line,
+  sub = "Subject",
+  L_choice = "LC",
+  R_choice = "LC",
+  L_reward = "LC",
+  R_reward = "LC",
+  time_line = c("Block", "Trial"),
   sub_choose,
   var1 = NA,
   var2 = NA,
+  id,
   initial_value = NA,
   softmax = TRUE,
   seed = 123,
@@ -23,18 +25,20 @@ rl_generate_d(
   eta = c(0.6, 0.8),
   epsilon = NA,
   tau = 0.5,
-  digits_1 = 2,
-  digits_2 = 5,
-  n_params = 3,
-  n_trials = 288,
   util_func = func_gamma,
   rate_func = func_eta,
   expl_func = func_epsilon,
-  prob_func = func_tau
+  prob_func = func_tau,
+  digits_1 = 2,
+  digits_2 = 5,
+  n_params = 3,
+  n_trials = 288
 )
 }
 \arguments{
 \item{data}{Data for each subject}
+
+\item{sub}{The column name for the subject ID}
 
 \item{L_choice}{The column name for the left option}
 
@@ -51,6 +55,8 @@ rl_generate_d(
 \item{var1}{extra variable 1}
 
 \item{var2}{extra variable 2}
+
+\item{id}{the subject being analysised}
 
 \item{initial_value}{The initial value you assign to a stimulus, defaulting to 0}
 
@@ -70,14 +76,6 @@ rl_generate_d(
 
 \item{tau}{The τ parameter in the soft-max function, with a default value of 1}
 
-\item{digits_1}{digits}
-
-\item{digits_2}{digits}
-
-\item{n_params}{number of parameters}
-
-\item{n_trials}{number of trails}
-
 \item{util_func}{The function for the discount rate β, which you can customize}
 
 \item{rate_func}{The function for the learning rate η, which you can customize}
@@ -85,6 +83,14 @@ rl_generate_d(
 \item{expl_func}{Exploration function, which determines how likely the subject is to try randomly}
 
 \item{prob_func}{The soft-max function, which you can customize.}
+
+\item{digits_1}{digits}
+
+\item{digits_2}{digits}
+
+\item{n_params}{number of parameters}
+
+\item{n_trials}{number of trails}
 }
 \value{
 generated data

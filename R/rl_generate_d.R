@@ -1,6 +1,7 @@
 #' rl_generate_d
 #'
 #' @param data Data for each subject
+#' @param sub The column name for the subject ID
 #' @param L_choice The column name for the left option
 #' @param R_choice The column name for the right option
 #' @param L_reward The column name for the reward of right option
@@ -9,6 +10,7 @@
 #' @param sub_choose subject choose
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
+#' @param id the subject being analysised
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
 #' @param softmax use softmax or not, defaulting to TRUE
 #' @param seed seed
@@ -32,14 +34,16 @@
 #' 
 rl_generate_d <- function(
     data,
-    L_choice,
-    R_choice,
-    L_reward,
-    R_reward,
-    time_line,
+    sub = "Subject",
+    L_choice = "LC",
+    R_choice = "LC",
+    L_reward = "LC",
+    R_reward = "LC",
+    time_line = c("Block", "Trial"),
     sub_choose,
     var1 = NA,
     var2 = NA,
+    id,
     initial_value = NA,
     softmax = TRUE,
     seed = 123,
@@ -49,15 +53,18 @@ rl_generate_d <- function(
     eta = c(0.6, 0.8),
     epsilon = NA,
     tau = 0.5,
-    digits_1 = 2,
-    digits_2 = 5,
-    n_params = 3,
-    n_trials = 288,
     util_func = func_gamma,
     rate_func = func_eta,
     expl_func = func_epsilon,
-    prob_func = func_tau
+    prob_func = func_tau,
+    digits_1 = 2,
+    digits_2 = 5,
+    n_params = 3,
+    n_trials = 288
 ){
+  # 选择被试
+  data <- data[data[[sub]] == id, ]
+  
   # 获取 L_choice 和 R_choice 的唯一值
   unique_L <- unique(data[[L_choice]])
   unique_R <- unique(data[[R_choice]])
@@ -379,9 +386,9 @@ rl_generate_d <- function(
     res_data$R_dir * log(res_data$R_prob + 1e-10), 
     digits_2
   )
-
-################################# [output] #####################################
-
+  
+  ################################# [output] #####################################
+  
   params <- list(
     lambda = c(lambda),
     gamma = c(gamma),
