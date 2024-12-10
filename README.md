@@ -402,21 +402,23 @@ summary(binaryRL_res)
 <!---------------------------------------------------------->
 
 ## Generate Decisions
-Unlike the previous dataset, this time the input dataset requires the rewards for both the left and right options. (The "Choose" column, as before, represents how the human made their choice in this context.)
+Unlike the previous dataset, this time the input dataset requires the rewards for both the left and right options. (The "Choose" column, as before, represents how the human made their choice in this context.) In addition, when generating simulation data, only one subject's data can be input at a time.
 
 | Subject | Block | Trial | L_choice | R_choice | Choose | L_reward | R_reward |
 |---------|-------|-------|----------|----------|--------|----------|--------- |
 | 1       | 1     | 1     | A        | B        | A      | 1        | 5        |
 | 1       | 1     | 2     | A        | B        | B      | 2        | 3        |
-| 2       | 2     | 1     | X        | Y        | X      | 3        | 4        |
-| 2       | 2     | 2     | X        | Y        | Y      | 4        | 2        |
+| 1       | 2     | 1     | X        | Y        | X      | 3        | 4        |
+| 1       | 2     | 2     | X        | Y        | Y      | 4        | 2        |
 | ...     | ...   | ...   | ...      | ...      | ...    | ...      | ...      |
 
 ```r
 binaryRL::rl_generate_d(
   data = data,
   eta = c(0.509, 0.319),
-  tau = c(0.035)
+  tau = c(0.035),
+  n_params = 3,
+  n_trials = 288
 )
 ```
 
