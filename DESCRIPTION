@@ -1,7 +1,7 @@
 Package: binaryRL
 Type: Package
 Title: reinforcement learning tools for binary-choice decision tasks
-Version: 0.2.2
+Version: 0.2.3
 Author: yuki <hmz1969a@gmail.com>
 Maintainer: yuki <hmz1969a@gmail.com>
 Description: reinforcement learning tools for binary-choice decision tasks.

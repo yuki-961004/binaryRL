@@ -18,11 +18,14 @@
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
 #' @param epsilon How much the subjects like to try
 #' @param tau The τ parameter in the soft-max function, with a default value of 1
+#' @param digits_1 digits
+#' @param digits_2 digits
+#' @param n_params number of parameters
+#' @param n_trials number of trails
 #' @param util_func The function for the discount rate β, which you can customize
 #' @param rate_func The function for the learning rate η, which you can customize
 #' @param expl_func Exploration function, which determines how likely the subject is to try randomly
 #' @param prob_func The soft-max function, which you can customize.
-#' @param digits digits
 #'
 #' @return generated data
 #' @export
@@ -46,11 +49,14 @@ rl_generate_d <- function(
     eta = c(0.6, 0.8),
     epsilon = NA,
     tau = 0.5,
+    digits_1 = 2,
+    digits_2 = 5,
+    n_params = 3,
+    n_trials = 288,
     util_func = func_gamma,
     rate_func = func_eta,
     expl_func = func_epsilon,
-    prob_func = func_tau,
-    digits = 2
+    prob_func = func_tau
 ){
   # 获取 L_choice 和 R_choice 的唯一值
   unique_L <- unique(data[[L_choice]])
@@ -306,17 +312,17 @@ rl_generate_d <- function(
   # 删除第一行赋予的初始值
   res_data <- temp_data[-1, ]
   # round
-  res_data$L_prob <- round(res_data$L_prob, digits + 3)
-  res_data$R_prob <- round(res_data$R_prob, digits + 3)
+  res_data$L_prob <- round(res_data$L_prob, digits_2)
+  res_data$R_prob <- round(res_data$R_prob, digits_2)
   
-  res_data$L_value <- round(res_data$L_value, digits)
-  res_data$R_value <- round(res_data$R_value, digits)
+  res_data$L_value <- round(res_data$L_value, digits_1)
+  res_data$R_value <- round(res_data$R_value, digits_1)
   
-  res_data$V_value <- round(res_data$V_value, digits)
-  res_data$V_update <- round(res_data$V_update, digits)
+  res_data$V_value <- round(res_data$V_value, digits_1)
+  res_data$V_update <- round(res_data$V_update, digits_1)
   
   for (name in alternative_choice) {
-    res_data[[name]] <- round(res_data[[name]], digits)
+    res_data[[name]] <- round(res_data[[name]], digits_1)
   }
   
   # 如果输入了sub_choose, 就计算rob_choose和sub_choose的匹配度
@@ -337,5 +343,68 @@ rl_generate_d <- function(
     }
   }
   
-  return(res_data)
+  res_data$L_dir <- NA
+  res_data$R_dir <- NA
+  
+  for (i in 1:nrow(res_data)){
+    if (
+      res_data$Sub_Choose[i] == res_data$LC[i] & 
+      res_data$Sub_Choose[i] != res_data$RC[i]
+    ) {
+      res_data$L_dir[i] <- 1
+      res_data$R_dir[i] <- 0
+    } else if (
+      res_data$Sub_Choose[i] != res_data$LC[i] & 
+      res_data$Sub_Choose[i] == res_data$RC[i]
+    ) {
+      res_data$L_dir[i] <- 0
+      res_data$R_dir[i] <- 1
+    } else if (
+      res_data$Sub_Choose[i] == res_data$LC[i] & 
+      res_data$Sub_Choose[i] == res_data$RC[i]
+    ) {
+      res_data$L_dir[i] <- 0
+      res_data$R_dir[i] <- 0
+    } else {
+      res_data$L_dir[i] <- "ERROR"
+      res_data$R_dir[i] <- "ERROR"
+    }
+  }
+  
+  res_data$L_logl <- round(
+    res_data$L_dir * log(res_data$L_prob + 1e-10), 
+    digits_2
+  )
+  res_data$R_logl <- round(
+    res_data$R_dir * log(res_data$R_prob + 1e-10), 
+    digits_2
+  )
+
+################################# [output] #####################################
+
+  params <- list(
+    lambda = c(lambda),
+    gamma = c(gamma),
+    eta = c(eta), 
+    epsilon = c(epsilon),
+    tau = c(tau)
+  )
+  
+  mean_ACC <- round(mean(res_data$ACC), 4) * 100
+  sum_LL <- round(sum(res_data$L_logl) + sum(res_data$R_logl), digits = 2)
+  AIC <- round(2 * n_params - 2 * sum_LL, digits = 2)
+  BIC <- round(n_params * log(n_trials) - 2 * sum_LL, digits = 2)
+  
+  res <- list(
+    data = res_data,
+    params = params,
+    acc = mean_ACC,
+    ll = sum_LL,
+    aic = AIC,
+    bic = BIC
+  )
+  
+  class(res) <- c("binaryRL")
+  
+  return(res)
 }
