@@ -422,13 +422,13 @@ binaryRL::rl_generate_d(
 
 The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option. Similarly, it will also calculate the consistency between the robot's and human's decisions, including the log-likelihood and accuracy.
 
-| ... | Sub_Choose | L_value | R_value  | L_orob | R_orob | Rob_Choose | ACC |
-|-----|------------|---------|----------|--------|--------|------------|-----|
-| ... | A          | 0       | 1        | 0.50   | 0.50   | B          | 0   |
-| ... | B          | 1       | 2        | 0.50   | 0.50   | B          | 1   |
-| ... | X          | 2       | 3        | 0.50   | 0.50   | Y          | 0   |
-| ... | Y          | 3       | 4        | 0.50   | 0.50   | Y          | 1   |
-| ... | ...        | ...     | ...      | ...    | ...    | ...        | ... |
+| ... | A | B | X | Y | Sub_Choose | Rob_Choose | ACC | L_logl | R_logl |
+|-----|---|---|---|---|------------|------------|-----|--------|--------|
+| ... | 2 | 0 | 0 | 0 | A          | B          | 0   | -0.3   | 0      |
+| ... | 2 | 4 | 0 | 0 | B          | B          | 1   | 0      | 0      |
+| ... | 2 | 4 | 1 | 0 | X          | Y          | 0   | 0      | -0.3   |
+| ... | 2 | 4 | 1 | 3 | Y          | Y          | 1   | 0      | 0      |
+| ... |...|...|...|...| ...        | ...        | ... | ...    | ...    |
 
 <!---------------------------------------------------------->
 
