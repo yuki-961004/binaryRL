@@ -6,6 +6,7 @@
 #' @param L_choice The column name for the left option
 #' @param R_choice The column name for the right option
 #' @param choose The column name indicating which option the subject chose
+#' @param reward the reward of the option
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
 #' @param id the subject being analysised
@@ -37,10 +38,12 @@ rl_run_m <- function(
     # 价值更新的时间线, 基于的列
     time_line = c("Block", "Trial"),
     # 左右选项
-    L_choice = "L_choice",
-    R_choice = "R_choice",
+    L_choice = "LC",
+    R_choice = "RC",
     # 被试选择列
     choose = "Choose",
+    # 被试得到的奖励
+    reward = "Reward",
     # 决策时情景对应的期望价值
     var1 = NA,
     # 决策时情景对应的框架名称
@@ -75,6 +78,7 @@ rl_run_m <- function(
     data = step0, 
     sub = sub,
     choose = choose,
+    reward = reward,
     time_line = time_line,
     var1 = var1,
     var2 = var2,
@@ -132,7 +136,7 @@ rl_run_m <- function(
     bic = BIC
   )
   
-  class(res) <- c("binaryRL")
+  class(res) <- c("binaryRL") 
   
   return(res)
 }

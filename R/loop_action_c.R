@@ -4,9 +4,9 @@
 #' @param L_choice The column name for the left option
 #' @param R_choice The column name for the right option
 #' @param sub The column name for the subject ID
+#' @param time_line Variables used to represent the experimental timeline, such as block and trial
 #' @param choose The column name for the option chosen by the subject
 #' @param value The column name for the stimulate's current value
-#' @param time_line Variables used to represent the experimental timeline, such as block and trial
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
@@ -25,11 +25,11 @@
 #' @export
 #'
 loop_action_c <- function(
-  # update_v数据集
+    # update_v数据集
   data,
   # 左右选项列名
-  L_choice = "L_choice",
-  R_choice = "R_choice",
+  L_choice = "LC",
+  R_choice = "RC",
   # 被试序号列, 列名
   sub = "Subject",
   # 被试选择刺激列, 列名

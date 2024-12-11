@@ -2,9 +2,10 @@
 #'
 #' @param data Data containing only one type of stimulus
 #' @param time_line Variables used to represent the experimental timeline, such as block and trial
-#' @param initial_value The initial value you assign to a stimulus, defaulting to NA
+#' @param reward the reward of the option
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
+#' @param initial_value The initial value you assign to a stimulus, defaulting to NA
 #' @param lambda the eta or gamma could be divided into different intervals.
 #' @param gamma In the utility model, it is assumed that all rewards will be discounted
 #' @param eta In the RSTD model, the learning rate is different for positive and negative conditions.
@@ -20,6 +21,8 @@ rl_update_v <- function(
   data,
   # 价值更新的时间线, 基于的列
   time_line = c("Block", "Trial"),
+  # 奖励所在的列
+  reward = "Reward",
   # 额外需要用到的变量1
   var1 = NA,
   # 额外需要用到的变量2
@@ -68,9 +71,9 @@ rl_update_v <- function(
     # 之后才回根据学习率对这个值进行矫正. 
     if (i == 1 & is.na(initial_value)) {
       # 奖励是第一行(i = 2)的奖励
-      temp_data$Reward[i] <- temp_data$Reward[i+1]
+      temp_data[[reward]][i] <- temp_data[[reward]][i+1]
       # Value是100%学习到了奖励, 所以直接赋值
-      temp_data$V_value[i] <- temp_data$Reward[i+1]
+      temp_data$V_value[i] <- temp_data[[reward]][i+1]
       # 如果输入了var1, 就赋值
       if (is.character(var1)) {
         temp_data[[var1]][i] <- temp_data[[var1]][i+1]
@@ -84,7 +87,7 @@ rl_update_v <- function(
       gamma_utility <- util_func(
         value = temp_data$V_value[i],
         utility = temp_data$R_utility[i],
-        reward = temp_data$Reward[i],
+        reward = temp_data[[reward]][i],
         var1 = temp_data[[var1]][i],
         var2 = temp_data[[var2]][i],
         occurrence = temp_data$Time_Line[i],
@@ -100,7 +103,7 @@ rl_update_v <- function(
       
       # 如果是第一次, 但是给了初始值, 那么就赋予上初始值, 给予正常的奖励 
     } else if (i == 1 & !(is.na(initial_value))) {
-      temp_data$Reward[i] <- temp_data$Reward[i+1]
+      temp_data[[reward]][i] <- temp_data[[reward]][i+1]
       # 如果输入了var1, 就赋值
       if (is.character(var1)) {
         temp_data[[var1]][i] <- temp_data[[var1]][i+1]
@@ -122,7 +125,7 @@ rl_update_v <- function(
     gamma_utility <- util_func(
       value = temp_data$V_value[i],
       utility = temp_data$R_utility[i],
-      reward = temp_data$Reward[i],
+      reward = temp_data[[reward]][i],
       var1 = temp_data[[var1]][i],
       var2 = temp_data[[var2]][i],
       occurrence = temp_data$Time_Line[i],

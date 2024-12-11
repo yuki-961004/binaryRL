@@ -6,8 +6,8 @@
 \usage{
 rl_action_c(
   data,
-  L_choice = "L_choice",
-  R_choice = "R_choice",
+  L_choice = "LC",
+  R_choice = "RC",
   choose = "Choose",
   value = "V_value",
   var1 = NA,

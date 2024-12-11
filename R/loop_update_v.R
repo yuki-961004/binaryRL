@@ -2,8 +2,9 @@
 #'
 #' @param data raw data
 #' @param sub The column name for the subject ID
-#' @param choose The column name indicating which option the subject chose
 #' @param time_line Variables used to represent the experimental timeline, such as block and trial
+#' @param choose The column name indicating which option the subject chose
+#' @param reward the reward of the option
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
 #' @param initial_value The initial value you assign to a stimulus, defaulting to 0
@@ -19,31 +20,33 @@
 #' @export 
 #'
 loop_update_v <- function(
-  data,
-  # 被试序号列, 列名
-  sub = "Subject",
-  # 被试选择列
-  choose = "Choose",
-  # 价值更新的时间线, 基于的列
-  time_line = c("Block", "Trial"),
-  # 额外需要用到的变量1
-  var1 = NA,
-  # 额外需要用到的变量2
-  var2 = NA,
-  # 被试心中价值初始值
-  initial_value = NA,
-  # 要处理多少个被试. 由于估计时候是对被试分别进行, 所以这里也是被试序号
-  n = 1,
-  # parameters
-  lambda = NA,
-  gamma = 1,
-  eta,
-  # 价值函数选用示例函数
-  util_func = func_gamma,
-  rate_func = func_eta,
-  # 小数位数
-  digits = 2
-  ################################# [function start] #############################
+    data,
+    # 被试序号列, 列名
+    sub = "Subject",
+    # 价值更新的时间线, 基于的列
+    time_line = c("Block", "Trial"),
+    # 被试选择列
+    choose = "Choose",
+    # 奖励所在的列
+    reward = "Reward",
+    # 额外需要用到的变量1
+    var1 = NA,
+    # 额外需要用到的变量2
+    var2 = NA,
+    # 被试心中价值初始值
+    initial_value = NA,
+    # 要处理多少个被试. 由于估计时候是对被试分别进行, 所以这里也是被试序号
+    n = 1,
+    # parameters
+    lambda = NA,
+    gamma = 1,
+    eta,
+    # 价值函数选用示例函数
+    util_func = func_gamma,
+    rate_func = func_eta,
+    # 小数位数
+    digits = 2
+    ################################# [function start] #############################
 ){
   ################################# [split sub data] #############################
   # 按照[被试序号列][sub]分裂原始数据
@@ -69,6 +72,8 @@ loop_update_v <- function(
       .f = rl_update_v,
       # 价值更新的时间线, 基于的列
       time_line = time_line,
+      # 奖励所在的列
+      reward = reward,
       # 额外需要用到的变量1
       var1 = var1,
       # 额外需要用到的变量2

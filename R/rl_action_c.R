@@ -5,9 +5,9 @@
 #' @param R_choice The column name for the right option
 #' @param choose The column name for the option chosen by the subject
 #' @param value The column name for the stimulate's current value
-#' @param initial_value The initial value you assign to a stimulus, defaulting to 0
 #' @param var1 extra variable 1
 #' @param var2 extra variable 2
+#' @param initial_value The initial value you assign to a stimulus, defaulting to 0
 #' @param seed seed
 #' @param softmax use softmax or not, defaulting to TRUE
 #' @param threshold How many trials ago were subjects randomly selected?
@@ -21,11 +21,11 @@
 #' @export
 #'
 rl_action_c <- function(
-  # update_v数据集
+    # update_v数据集
   data,
   # 左右选项是什么, 对应的列名
-  L_choice = "L_choice",
-  R_choice = "R_choice",
+  L_choice = "LC",
+  R_choice = "RC",
   # 被试选择列的列名
   choose = "Choose",
   # 被试心中价值列的列名
@@ -40,7 +40,7 @@ rl_action_c <- function(
   seed = 123,
   # 是否使用softmax, 还是说value谁大选谁
   softmax = TRUE,
-  # 多少试次前都是随机选择的
+  # 多少次之前是随机选的
   threshold = 20,
   # 多大概率进行探索
   epsilon = NA,

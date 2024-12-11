@@ -7,8 +7,9 @@
 loop_update_v(
   data,
   sub = "Subject",
-  choose = "Choose",
   time_line = c("Block", "Trial"),
+  choose = "Choose",
+  reward = "Reward",
   var1 = NA,
   var2 = NA,
   initial_value = NA,
@@ -26,9 +27,11 @@ loop_update_v(
 
 \item{sub}{The column name for the subject ID}
 
+\item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
+
 \item{choose}{The column name indicating which option the subject chose}
 
-\item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
+\item{reward}{the reward of the option}
 
 \item{var1}{extra variable 1}
 

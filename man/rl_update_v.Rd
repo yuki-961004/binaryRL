@@ -7,6 +7,7 @@
 rl_update_v(
   data,
   time_line = c("Block", "Trial"),
+  reward = "Reward",
   var1 = NA,
   var2 = NA,
   initial_value = NA,
@@ -22,6 +23,8 @@ rl_update_v(
 \item{data}{Data containing only one type of stimulus}
 
 \item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
+
+\item{reward}{the reward of the option}
 
 \item{var1}{extra variable 1}
 

@@ -8,9 +8,10 @@ rl_run_m(
   data,
   sub = "Subject",
   time_line = c("Block", "Trial"),
-  L_choice = "L_choice",
-  R_choice = "R_choice",
+  L_choice = "LC",
+  R_choice = "RC",
   choose = "Choose",
+  reward = "Reward",
   var1 = NA,
   var2 = NA,
   id = 11,
@@ -45,6 +46,8 @@ rl_run_m(
 \item{R_choice}{The column name for the right option}
 
 \item{choose}{The column name indicating which option the subject chose}
+
+\item{reward}{the reward of the option}
 
 \item{var1}{extra variable 1}
 

@@ -12,7 +12,7 @@ rl_generate_d(
   L_reward = "LC",
   R_reward = "LC",
   time_line = c("Block", "Trial"),
-  sub_choose,
+  sub_choose = "Choose",
   var1 = NA,
   var2 = NA,
   id,
