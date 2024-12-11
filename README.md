@@ -1,13 +1,11 @@
 # binaryRL
 This package is designed to simplify the process of building reinforcement learning models. It allows beginners to easily construct a model with just an `if-else` statement, making model creation more accessible.
 
-Before using this package, please make sure you agree with these assumptions.
+Before using this package, please make sure you agree with this assumptions.
 
-1. The paradigm is a binary choice decision task.
-2. When decision-makers encounter a new stimulus, they will try it once. 
-3. Learning for different stimuli is independent, meaning rewards for one stimulus do not influence the learning process for others.
+> The paradigm is a binary choice decision task. And the learning for different stimuli is independent, meaning rewards for one stimulus do not influence the learning process for others.
 
-If you agree with these three points, I will introduce the process of my package.
+If you agree with this assumptions, I will introduce the process of my package.
 
 <!---------------------------------------------------------->
 
@@ -22,7 +20,7 @@ V_{n} = V_{n-1} + \eta \cdot [U(R_{n}) - V_{n-1}]
 $$  
 
 - **Utility Function ($\gamma$)**: Some also refer to it as the _discount rate_ (for example, in the R package `ReinforcementLearning`), but I believe expressing it as people's subjective perception of objective rewards is more accurate. This is because the relationship between physical quantities and psychological quantities is not necessarily always a linear discount function; it could also be another type of power function relationship (Stevens' Power Law).   
-  - If you believe the relationship between objective value and subjective value is linear, represented by the equation:
+  - If you agree the relationship between objective value and subjective value is linear, represented by the equation:
 
 $$  
 U(R) = \gamma \cdot R  
@@ -452,11 +450,11 @@ summary(simulated)
 
 <!---------------------------------------------------------->
 
-## 1. TD Model ($\eta$, $\tau$)
+## 1. TD Model ($\eta$)
 > "The TD model is a standard temporal difference learning model (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998)."  
-## 2. Risk-Sensitive TD Model ($\eta_{-}$, $\eta_{+}$, $\tau$)
+## 2. Risk-Sensitive TD Model ($\eta_{-}$, $\eta_{+}$)
 > "In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, 2002)."  
-## 3. Utility Model ($\eta$, $\gamma$, $\tau$)
+## 3. Utility Model ($\eta$, $\gamma$)
 > "The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, 1954)"
 
 <p align="center">
@@ -512,11 +510,24 @@ $$
 - The `Risk-Sensitive TD model` is based on `TD model` and assumes that the **learning rates ($\eta$)** are different for gains and losses.
 - The `Utility model` introduces a **utility function ($\gamma$)** for rewards based on this foundation. 
 
-## Utility Function
-- I assume that there is a linear relationship between subjective value and objective value ($U(R) = \gamma \cdot R$). In fact, it may be in other forms. 
-
-## Initial Value
+## Learning Rates ($\eta$)
 - Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
 
-## Exploration Function
-- Participants will always make a choice when encountering a new stimulus. Additionally, if a threshold is set, participants will make random choices until the specified number of trials is reached.
+## Utility Function ($\gamma$)
+- I assume that there is a linear relationship between subjective value and objective value. In fact, it may be in other forms. This is why I allow you to customize your own utility function. 
+$$
+U(R) = \gamma \cdot R
+\quad | \quad
+U(R) = \gamma \cdot R^2
+\quad | \quad
+U(R) = R ^ \gamma
+\quad | \quad
+U(R) = log_\gamma R
+$$
+
+## Exploration Function ($\epsilon$)
+- I think the subjects will randomly select options at the beginning of the experiment. Users can set the `threshold` argument in the package to control how many trials before the subjects will randomly select.  
+- In addition, I also think that when the subjects encounter stimuli they have never seen before, they will try it. These assumptions basically only affect the choices of the first block and have little effect on the overall choice preference.
+
+## Soft-Max Function ($\tau$)
+- The closer $\tau$ is to 1, the more sensitive the subjects become to the values of the left and right options. In other words, even a slight difference in value will lead the subjects to choose the option with the higher value.
