@@ -514,7 +514,8 @@ $$
 - Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
 
 ## Utility Function ($\gamma$)
-- I assume that there is a linear relationship between subjective value and objective value. In fact, it may be in other forms. This is why I allow you to customize your own utility function. 
+- I assume that there is a linear relationship between subjective value and objective value. In fact, it may be in other forms. This is why I allow you to customize your own utility function.  
+
 $$
 U(R) = \gamma \cdot R
 \quad | \quad
