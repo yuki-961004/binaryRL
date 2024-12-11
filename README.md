@@ -382,21 +382,22 @@ de_result <- DEoptim::DEoptim(
 obj_func(params = as.vector(result$params))
 summary(binaryRL_res)
 ```
+
 ```r
 #> Results of the Reinforcement Learning Model:
 #> 
 #> Parameters:
 #>    λ:  NA  
 #>    γ:  1 
-#>    η:  0.509 0.319 
+#>    η:  0.016 0.446 
 #>    ε:  NA 
-#>    τ:  0.035
+#>    τ:  0.056
 
 #> Model Fit:
-#>    Accuracy:  74.31 %
-#>    LogL:  -122.1 
-#>    AIC:  250.2 
-#>    BIC:  261.19 
+#>    Accuracy:  82.64 %
+#>    LogL:  -115.30 
+#>    AIC:  236.60 
+#>    BIC:  247.59 
 ```
 
 <!---------------------------------------------------------->
@@ -412,25 +413,36 @@ Unlike the previous dataset, this time the input dataset requires the rewards fo
 | 1       | 2     | 2     | X        | Y        | Y      | 4        | 2        |
 | ...     | ...   | ...   | ...      | ...      | ...    | ...      | ...      |
 
+The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option. 
+
 ```r
-binaryRL::rl_generate_d(
+simulated <- binaryRL::rl_generate_d(
   data = data,
-  eta = c(0.509, 0.319),
-  tau = c(0.035),
-  n_params = 3,
+  id = 18,
+  eta = c(0.016, 0.446),
+  tau = c(0.056),
+  n_params = 3, 
   n_trials = 288
 )
+summary(simulated)
 ```
 
-The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option. Similarly, it will also calculate the consistency between the robot's and human's decisions, including the log-likelihood and accuracy.
+```r
+#> Results of the Reinforcement Learning Model:
+#> 
+#> Parameters:
+#>    λ:  NA  
+#>    γ:  1 
+#>    η:  0.016 0.446 
+#>    ε:  NA 
+#>    τ:  0.056
 
-| ... | A | B | X | Y | Sub_Choose | Rob_Choose | ACC | L_logl | R_logl |
-|-----|---|---|---|---|------------|------------|-----|--------|--------|
-| ... | 2 | 0 | 0 | 0 | A          | B          | 0   | -0.3   | 0      |
-| ... | 2 | 4 | 0 | 0 | B          | B          | 1   | 0      | 0      |
-| ... | 2 | 4 | 1 | 0 | X          | Y          | 0   | 0      | -0.3   |
-| ... | 2 | 4 | 1 | 3 | Y          | Y          | 1   | 0      | 0      |
-| ... |...|...|...|...| ...        | ...        | ... | ...    | ...    |
+#> Model Fit:
+#>    Accuracy:  73.26 %
+#>    LogL:  -197.80 
+#>    AIC:  401.60  
+#>    BIC:  412.59 
+```
 
 <!---------------------------------------------------------->
 
