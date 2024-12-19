@@ -13,12 +13,6 @@ If you agree with this assumptions, I will introduce the process of my package.
 
 **Value Function** independently updating the value associated with each stimulus.
 
-- **Learning Rates ($\eta$)**: This parameter $\eta$ controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.
-
-$$  
-V_{n} = V_{n-1} + \eta \cdot [U(R_{n}) - V_{n-1}]  
-$$  
-
 - **Utility Function ($\gamma$)**: Some also refer to it as the _discount rate_ (for example, in the R package `ReinforcementLearning`), but I believe expressing it as people's subjective perception of objective rewards is more accurate. This is because the relationship between physical quantities and psychological quantities is not necessarily always a linear discount function; it could also be another type of power function relationship (Stevens' Power Law).   
   - If you agree the relationship between objective value and subjective value is linear, represented by the equation:
 
@@ -26,6 +20,12 @@ $$
 U(R) = \gamma \cdot R  
 \quad \quad \Rightarrow \quad \quad
 V_{n} = V_{n-1} + \eta \cdot (\gamma \cdot R_{n} - V_{n-1})  
+$$  
+
+- **Learning Rates ($\eta$)**: This parameter $\eta$ controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.
+
+$$  
+V_{n} = V_{n-1} + \eta \cdot [U(R_{n}) - V_{n-1}]  
 $$  
 
 <!---------------------------------------------------------->
@@ -126,9 +126,14 @@ obj_func <- function(params){
     n_trials = 288                  # the number of total trials
   )
 
+  # pass the result out of the function (global environment)
+  # make it easier to get the best parameters later
   binaryRL_res <<- res
   
+  # if the algorithm is solving a minimization problem, return -ll
   invisible(-res$ll)
+  # if the algorithm is solving a maximization problem, return ll
+  # invisible(res$ll)
 }
 ```
 
@@ -159,15 +164,18 @@ obj_func <- function(params){
     var2 = "extra_Var2"
   )
 
+  # pass the result out of the function (global environment)
+  # make it easier to get the best parameters later
   binaryRL_res <<- res
   
+  # if the algorithm is solving a minimization problem, return -ll
   invisible(-res$ll)
+  # if the algorithm is solving a maximization problem, return ll
+  # invisible(res$ll)
 }
 ```
 
 </details>  
-
-<br>
 
 <!---------------------------------------------------------->
 
@@ -202,19 +210,47 @@ obj_func <- function(params){
     prob_func = your_prob_func
   )
 
+  # pass the result out of the function (global environment)
+  # make it easier to get the best parameters later
   binaryRL_res <<- res
   
+  # if the algorithm is solving a minimization problem, return -ll
   invisible(-res$ll)
+  # if the algorithm is solving a maximization problem, return ll
+  # invisible(res$ll)
 }
 ```
 
 </details>  
 
-<br>
-
 <!---------------------------------------------------------->
 
 The following are the four basic functions used by default in the program. You can customize them based on this
+
+<!---------------------------------------------------------->
+
+<details>
+<summary>Utility Function (γ)</summary>
+
+```r
+print(binaryRL::func_gamma)
+```
+
+```r
+func_gamma <- function(
+  value, utility, reward, occurrence, var1, var2, gamma, lambda
+){
+  if (length(gamma) == 1) {
+    gamma <- gamma
+    utility <- gamma * reward
+  }
+  else {
+    utility <- "ERROR" 
+  }
+  return(list(gamma, utility))
+}
+```
+</details>
 
 <!---------------------------------------------------------->
 
@@ -242,31 +278,6 @@ func_eta <- function (
     eta <- "ERROR" 
   }
     return(eta)
-}
-```
-</details>
-
-<!---------------------------------------------------------->
-
-<details>
-<summary>Utility Function (γ)</summary>
-
-```r
-print(binaryRL::func_gamma)
-```
-
-```r
-func_gamma <- function(
-  value, utility, reward, occurrence, var1, var2, gamma, lambda
-){
-  if (length(gamma) == 1) {
-    gamma <- gamma
-    utility <- gamma * reward
-  }
-  else {
-    utility <- "ERROR" 
-  }
-  return(list(gamma, utility))
 }
 ```
 </details>
@@ -343,6 +354,7 @@ func_tau <- function (
 
 ### Example Algorithms
 Here is an example using `optim` from the `stats` (which is a default package in R), though it has some issues with both speed and accuracy.
+
 <!---------------------------------------------------------->
 
 ```r
@@ -533,8 +545,6 @@ summary(simulated)
 
 </details>  
 
-<br>
-
 <!---------------------------------------------------------->
 
 You can also customize the `value function` and `action function`. The default function is applicable to three basic models. 
@@ -572,8 +582,6 @@ summary(simulated)
 ```
 
 </details>  
-
-<br>
 
 ---
 
