@@ -77,14 +77,10 @@ $$
 Hu, M., & L, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal*(7), 100-123. https://doi.org/
 
 
-# Install
-```{r}
-devtools::install_github("yuki-961004/binaryRL") 
-```
-
 # Examples
-## Load Pacakge
+## Install and Load Pacakge
 ```r
+devtools::install_github("yuki-961004/binaryRL") 
 library(binaryRL)
 ```
 
@@ -92,12 +88,9 @@ library(binaryRL)
 
 ## Read your Raw Data
 ```r
+# a data frame including these columns
 data <- [your_data]
 ```
-Make sure the global environment contains the raw data.   
-Your dataset needs to include the following columns.   
-`Block` and `Trial` columns are not mandatory, but there must be a column that represents the sequence of the experiment.
-You can also add two additional variables as factors that the model needs to consider.
 
 | Subject | Block | Trial | L_choice | R_choice | Choose | Reward | var1 | var2 |
 |---------|-------|-------|----------|----------|--------|--------|------|------|
@@ -107,33 +100,121 @@ You can also add two additional variables as factors that the model needs to con
 | 2       | 2     | 2     | X        | Y        | Y      | 2      |...   |...   | 
 | ...     | ...   | ...   | ...      | ...      | ...    | ...    |...   |...   |
 
+<details>
+<summary>NOTES</summary>
+
+1. Your dataset needs to include these **columns**.  
+2. Make sure the **global environment** contains the raw data.   
+3. `Block` and `Trial` columns are not mandatory, but there must be a column that represents the sequence of the experiment.  
+4. You can also add two **additional variables** (var1, var2) as factors that the model needs to consider.
+
+</details>
+
 <!---------------------------------------------------------->
 
 ## Creat a Object Function for Algorithm Packages
 Create a function that contains only the `params` argument.   
+
+### Object Function
+```r
+obj_func <- function(params){
+  res <- binaryRL::rl_run_m(
+    data = data,                    # your data
+    id = 18,                        # Subject ID
+    eta = c(params[1], params[2]),  # RSTD parameters
+    n_params = 2,                   # the number of model parameters
+    n_trials = 288                  # the number of total trials
+  )
+
+  binaryRL_res <<- res
   
-If you have already created your `value function` and `action function`, then here you only need to fill in the `[column names]` from your dataset into the corresponding arguments.   
-
-```r
-> sub = "Subject"
-> choose = "Choose"
-> reward = "Reward"
-> time_line = c("Block", "Trial")
-> ...
+  invisible(-res$ll)
+}
 ```
-
-Most importantly, replace the `function` with your custom function. Alternatively, you can just use the default function, which can run the three basic models.
-
-```r
-> util_func = your_util_func
-> rate_func = your_rate_func  
-> expl_func = your_expl_func
-> prob_func = your_prob_func
- ```
 
 <!---------------------------------------------------------->
 
-### Example Function
+If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::rl_run_m`
+
+<details>
+<summary>Custom Column Names</summary>
+
+```r
+obj_func <- function(params){
+  res <- binaryRL::rl_run_m(
+    data = data,                    # your data
+    id = 18,                        # Subject ID
+    eta = c(params[1], params[2]),  # RSTD parameters
+    n_params = 2,                   # the number of model parameters
+    n_trials = 288,                 # the number of total trials
+
+    # column names
+    sub = "Subject",
+    L_choice = "LC",
+    R_choice = "RC",
+    choose = "Choose",
+    reward = "Reward",
+    time_line = c("Block", "Trial"),
+    var1 = "extra_Var1",
+    var2 = "extra_Var2"
+  )
+
+  binaryRL_res <<- res
+  
+  invisible(-res$ll)
+}
+```
+
+</details>  
+
+<br>
+
+<!---------------------------------------------------------->
+
+You can also customize the `value function` and `action function`. The default function is applicable to three basic models. 
+
+<details>
+<summary>Custom Functions</summary>
+
+```r
+obj_func <- function(params){
+  res <- binaryRL::rl_run_m(
+    data = data,                    # your data
+    id = 18,                        # Subject ID
+    eta = c(params[1], params[2]),  # RSTD parameters
+    n_params = 2,                   # the number of model parameters
+    n_trials = 288,                 # the number of total trials
+
+    # column names
+    sub = "Subject",
+    L_choice = "LC",
+    R_choice = "RC",
+    choose = "Choose",
+    reward = "Reward",
+    time_line = c("Block", "Trial"),
+    var1 = "extra_Var1",
+    var2 = "extra_Var2",
+
+    # functions
+    util_func = your_util_func,
+    rate_func = your_rate_func,  
+    expl_func = your_expl_func,
+    prob_func = your_prob_func
+  )
+
+  binaryRL_res <<- res
+  
+  invisible(-res$ll)
+}
+```
+
+</details>  
+
+<br>
+
+<!---------------------------------------------------------->
+
+The following are the four basic functions used by default in the program. You can customize them based on this
 
 <!---------------------------------------------------------->
 
@@ -260,53 +341,47 @@ func_tau <- function (
 
 <!---------------------------------------------------------->
 
-### Object Function
-```r
-obj_func <- function(params){
-  res <- binaryRL::rl_run_m(
-    data = data,
-    id = 18,
-    eta = c(params[1], params[2]),
-    tau = c(params[3]),
-    n_params = 3,
-    n_trials = 288
-  )
-
-  binaryRL_res <<- res
-  
-  invisible(-res$ll)
-}
-```
-
-<!---------------------------------------------------------->
-
 ### Example Algorithms
-There are several methods available for estimating the optimal parameters based on likelihood values. In this example, I will demonstrate four methods: the "L-BFGS-B" algorithm (`stats::optim`), a gradient-based method; `GenSA`, a package for Simulated Annealing; `GA`, a package for Genetic Algorithms; and `DEoptim`, a package for Differential Evolution.
-
-The first two methods, L-BFGS-B and GenSA, are single-threaded algorithms, while the latter two, GA and DEoptim, are multi-threaded algorithms. Among them, DEoptim has the shortest runtime and produces the smallest value of -logL.
-
+Here is an example using `optim` from the `stats` (which is a default package in R), though it has some issues with both speed and accuracy.
 <!---------------------------------------------------------->
-
-<details>
-<summary>L-BFGS-B (stats::optim)</summary>
 
 ```r
 library(stats)
 
 set.seed(123)
-gb_result <- stats::optim(
-  par = c(0.5, 0.5, 0.5),
+result <- stats::optim(
+  par = c(0.5, 0.5),
   method = "L-BFGS-B",
   fn = obj_func,
-  lower = c(0, 0, 0),
-  upper = c(1, 1, 1),
+  lower = c(0, 0),
+  upper = c(1, 1),
   control = list(
     maxit = 10
   )
 )
+
+obj_func(params = as.vector(result$par))
+summary(binaryRL_res)
 ```
 
-</details>
+```r
+#> Results of the Reinforcement Learning Model:
+#> 
+#> Parameters:
+#>    λ:  NA  
+#>    γ:  1 
+#>    η:  0.321 0.765 
+#>    ε:  NA 
+#>    τ:  0.5
+
+#> Model Fit:
+#>    Accuracy:  82.64 %
+#>    LogL:  -115.30 
+#>    AIC:  236.60 
+#>    BIC:  247.59 
+```
+
+The following three algorithms require additional packages to run. You can click to check them out if you're interested.
 
 <!---------------------------------------------------------->
 
@@ -316,15 +391,18 @@ gb_result <- stats::optim(
 ```r
 library(GenSA)
 
-sa_result <- GenSA::GenSA(
+result <- GenSA::GenSA(
   fn = obj_func,
-  lower = c(0, 0, 0),
-  upper = c(1, 1, 1),
+  lower = c(0, 0),
+  upper = c(1, 1),
   control = list(
     maxit = 10,
     seed = 123
   )
 )
+
+obj_func(params = as.vector(result$par))
+summary(binaryRL_res)
 ```
 
 </details>
@@ -337,15 +415,18 @@ sa_result <- GenSA::GenSA(
 ```r
 library(GA)
 
-ga_result <- GA::ga(
+result <- GA::ga(
   type = "real-valued",
   fitness = function(x) obj_func(x),
-  lower = c(0, 0, 0),
-  upper = c(1, 1, 1),
+  lower = c(0, 0),
+  upper = c(1, 1),
   maxiter = 10,                     
   parallel = TRUE,          
   seed = 123                
 )
+
+obj_func(params = as.vector(result@solution))
+summary(binaryRL_res)
 ```
 
 </details>
@@ -358,10 +439,10 @@ ga_result <- GA::ga(
 ```r
 library(DEoptim)
 
-de_result <- DEoptim::DEoptim(
+result <- DEoptim::DEoptim(
   fn = obj_func,
-  lower = c(0, 0, 0),
-  upper = c(1, 1, 1),
+  lower = c(0, 0),
+  upper = c(1, 1),
   control = DEoptim::DEoptim.control(
     itermax = 10,
     parallelType = c("parallel"),
@@ -369,34 +450,12 @@ de_result <- DEoptim::DEoptim(
     parVar = c("data")
   )
 )
-```
 
-</details>
-
-<!---------------------------------------------------------->
-
-## Output
-```r
-obj_func(params = as.vector(result$params))
+obj_func(params = as.vector(result$optim$bestmem))
 summary(binaryRL_res)
 ```
 
-```r
-#> Results of the Reinforcement Learning Model:
-#> 
-#> Parameters:
-#>    λ:  NA  
-#>    γ:  1 
-#>    η:  0.016 0.446 
-#>    ε:  NA 
-#>    τ:  0.056
-
-#> Model Fit:
-#>    Accuracy:  82.64 %
-#>    LogL:  -115.30 
-#>    AIC:  236.60 
-#>    BIC:  247.59 
-```
+</details>
 
 <!---------------------------------------------------------->
 
@@ -417,9 +476,8 @@ The reinforcement learning model will generate a column called `Rob_Choose`, ind
 simulated <- binaryRL::rl_generate_d(
   data = data,
   id = 18,
-  eta = c(0.016, 0.446),
-  tau = c(0.056),
-  n_params = 3, 
+  eta = c(0.321, 0.765),
+  n_params = 2, 
   n_trials = 288
 )
 summary(simulated)
@@ -431,9 +489,9 @@ summary(simulated)
 #> Parameters:
 #>    λ:  NA  
 #>    γ:  1 
-#>    η:  0.016 0.446 
+#>    η:  0.321 0.765 
 #>    ε:  NA 
-#>    τ:  0.056
+#>    τ:  0.5
 
 #> Model Fit:
 #>    Accuracy:  73.26 %
@@ -444,9 +502,87 @@ summary(simulated)
 
 <!---------------------------------------------------------->
 
+If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::rl_generate_d`
+
+<details>
+<summary>Custom Column Names</summary>
+
+```r
+simulated <- binaryRL::rl_generate_d(
+  data = data,                    # your data
+  id = 18,                        # Subject ID
+  eta = c(params[1], params[2]),  # RSTD parameters
+  n_params = 2,                   # the number of model parameters
+  n_trials = 288,                 # the number of total trials
+
+  # column names
+  sub = "Subject",
+  L_choice = "LC",
+  R_choice = "RC",
+  L_reward = "LR",
+  R_reward = "RR",
+  time_line = c("Block", "Trial"),
+  sub_choose = "Choose",
+  var1 = "extra_Var1",
+  var2 = "extra_Var2"
+)
+
+summary(simulated)
+
+```
+
+</details>  
+
+<br>
+
+<!---------------------------------------------------------->
+
+You can also customize the `value function` and `action function`. The default function is applicable to three basic models. 
+
+<details>
+<summary>Custom Functions</summary>
+
+```r
+simulated <- binaryRL::rl_generate_d(
+  data = data,                    # your data
+  id = 18,                        # Subject ID
+  eta = c(params[1], params[2]),  # RSTD parameters
+  n_params = 2,                   # the number of model parameters
+  n_trials = 288,                 # the number of total trials
+
+  # column names
+  sub = "Subject",
+  L_choice = "LC",
+  R_choice = "RC",
+  L_reward = "LR",
+  R_reward = "RR",
+  time_line = c("Block", "Trial"),
+  sub_choose = "Choose",
+  var1 = "extra_Var1",
+  var2 = "extra_Var2",
+
+  # functions
+  util_func = your_util_func,
+  rate_func = your_rate_func,  
+  expl_func = your_expl_func,
+  prob_func = your_prob_func
+)
+
+summary(simulated)
+```
+
+</details>  
+
+<br>
+
 ---
 
 # Classic Models
+
+The default function can run the three classic models here. 
+1. if only one $\eta$ is set as a free paramters, it represents the TD model. 
+2. If two $\eta$ are set as free parameters, it represents the RSTD model. 
+3. If one $\eta$ and one $\gamma$ are set as free parameters, it represents the utility model.
 
 <!---------------------------------------------------------->
 
@@ -467,6 +603,7 @@ Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction 
 <!---------------------------------------------------------->
 
 ## Initial Value
+In `rl_run_m`, there is an argument called initial_value. Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
 
 > "Comparisons between the two learning rates generally revealed a positivity bias ($\alpha_{+} > \alpha_{-}$)"  
 > "However, that on some occasions, studies failed to find a positivity bias or even reported a negativity bias ($\alpha_{+} < \alpha_{-}$)."  
@@ -474,6 +611,35 @@ Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction 
 
 ### References
 Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and confirmation biases in reinforcement learning. *Trends in Cognitive Sciences, 26*(7), 607-621. https://doi.org/10.1016/j.tics.2022.04.005
+
+<!---------------------------------------------------------->
+## Utility Function
+The subjective value of objective rewards is a topic that requires discussion, as different scholars may have different perspectives. This can be traced back to the `Weber-Fechner Law`. In this model, you can customize your utility function. By default, I believe there is a linear relationship between subjective value and objective value.
+
+$$
+U(R) = \gamma \cdot R
+\quad | \quad
+U(R) = \gamma \cdot R^2
+\quad | \quad
+U(R) = R ^ \gamma
+\quad | \quad
+U(R) = log_\gamma R
+$$
+
+<!---------------------------------------------------------->
+
+## $\epsilon$-Greedy
+Participants in the experiment may not always choose based on the value of the options, but instead select randomly on some trials. This is known as $\epsilon$-greedy.
+
+- I think the subjects will randomly select options at the beginning of the experiment. Users can set the `threshold` argument in the `rl_run_m` and `rl_generate_d` to control how many trials before the subjects will randomly select.  
+
+### References
+Ganger, M., Duryea, E., & Hu, W. (2016). Double Sarsa and double expected Sarsa with shallow and deep learning. Journal of Data Analysis and Information Processing, 4(04), 159. https://doi.org/10.4236/jdaip.2016.44014
+
+<!---------------------------------------------------------->
+
+## Soft-Max Function
+The closer $\tau$ is to 1, the more sensitive the subjects become to the values of the left and right options. In other words, even a slight difference in value will lead the subjects to choose the option with the higher value.
 
 <!---------------------------------------------------------->
 
@@ -491,44 +657,7 @@ BIC =  - 2 LL + k \times \log n
 $$ 
 
 *NOTE:* ${k}$ the number of free parameters in the model; ${n}$ represents the total number of trials in the paradigm.
-### References
 
+### References
 Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventromedial prefrontal cortex in abstract state-based inference during decision making in humans. *Journal of Neuroscience, 26*(32), 8360-8367. https://doi.org/10.1523/JNEUROSCI.1010-06.2006
 
-<!---------------------------------------------------------->
-
----
-
-# My understanding
-In my understanding, the value function in reinforcement learning for a two-alternative decision task can be written as:
-
-$$
-V_{n} = V_{n-1} + \eta \cdot [U(R_{n}) - V_{n-1}]
-$$
-
-- The `TD model` only consider **learning rates ($\eta$)** as a free parameter.   
-- The `Risk-Sensitive TD model` is based on `TD model` and assumes that the **learning rates ($\eta$)** are different for gains and losses.
-- The `Utility model` introduces a **utility function ($\gamma$)** for rewards based on this foundation. 
-
-## Learning Rates ($\eta$)
-- Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
-
-## Utility Function ($\gamma$)
-- I assume that there is a linear relationship between subjective value and objective value. In fact, it may be in other forms. This is why I allow you to customize your own utility function.  
-
-$$
-U(R) = \gamma \cdot R
-\quad | \quad
-U(R) = \gamma \cdot R^2
-\quad | \quad
-U(R) = R ^ \gamma
-\quad | \quad
-U(R) = log_\gamma R
-$$
-
-## Exploration Function ($\epsilon$)
-- I think the subjects will randomly select options at the beginning of the experiment. Users can set the `threshold` argument in the package to control how many trials before the subjects will randomly select.  
-- In addition, I also think that when the subjects encounter stimuli they have never seen before, they will try it. These assumptions basically only affect the choices of the first block and have little effect on the overall choice preference.
-
-## Soft-Max Function ($\tau$)
-- The closer $\tau$ is to 1, the more sensitive the subjects become to the values of the left and right options. In other words, even a slight difference in value will lead the subjects to choose the option with the higher value.
