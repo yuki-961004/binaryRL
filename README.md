@@ -48,10 +48,9 @@ data <- [your_data]
 
 <!---------------------------------------------------------->
 
-## Creat a Object Function for Algorithm Packages
+## Creating an Objective Function for Algorithm Packages
 Create a function that contains only the `params` argument.   
 
-### Object Function
 ```r
 obj_func <- function(params){
   res <- binaryRL::rl_run_m(
@@ -288,6 +287,7 @@ func_tau <- function (
 
 <!---------------------------------------------------------->
 
+## Using Algorithm Packages to Search for Optimal Parameters
 ### Example Algorithms
 Here is an example using `optim` from the `stats` (which is a default package in R), though it has issues with both runtime and accuracy.
 
@@ -410,7 +410,7 @@ summary(binaryRL_res)
 
 <!---------------------------------------------------------->
 
-## Generate Decisions
+## Applying Optimal Parameters to Generate a Simulated Data Frame
 Unlike the previous dataset, this time the input dataset requires the rewards for both the left and right options. (The "Choose" column, as before, represents how the human made their choice in this context.) In addition, when generating simulation data, only one subject's data can be input at a time.
 
 | Subject | Block | Trial | L_choice | R_choice | Choose | L_reward | R_reward |
@@ -525,7 +525,7 @@ summary(simulated)
 <!---------------------------------------------------------->
 
 ---
-# Arguments
+# Other Arguments
 ## Classic Models
 
 The default function can run the three classic models here. Setting different parameters in `rl_run_m` means running different RL models.
