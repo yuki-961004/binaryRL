@@ -526,7 +526,7 @@ summary(simulated)
 
 ---
 # Other Arguments
-## Classic Models
+## How to run Classic Models
 
 The default function can run the three classic models here. Setting different parameters in `rl_run_m` means running different RL models.
 <!---------------------------------------------------------->
