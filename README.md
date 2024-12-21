@@ -122,12 +122,12 @@ obj_func <- function(params){
     data = data,                    # your data
     id = 18,                        # Subject ID
     eta = c(params[1], params[2]),  # RSTD parameters
-    n_params = 2,                   # the number of model parameters
+    n_params = 2,                   # the number of free parameters
     n_trials = 288                  # the number of total trials
   )
 
   # pass the result out of the function (global environment)
-  # make it easier to get the best parameters later
+  # make it easier to get the optimal parameters later
   binaryRL_res <<- res
   
   # if the algorithm is solving a minimization problem, return -ll
@@ -150,7 +150,7 @@ obj_func <- function(params){
     data = data,                    # your data
     id = 18,                        # Subject ID
     eta = c(params[1], params[2]),  # RSTD parameters
-    n_params = 2,                   # the number of model parameters
+    n_params = 2,                   # the number of free parameters
     n_trials = 288,                 # the number of total trials
 
     # column names
@@ -190,7 +190,7 @@ obj_func <- function(params){
     data = data,                    # your data
     id = 18,                        # Subject ID
     eta = c(params[1], params[2]),  # RSTD parameters
-    n_params = 2,                   # the number of model parameters
+    n_params = 2,                   # the number of free parameters
     n_trials = 288,                 # the number of total trials
 
     # column names
@@ -524,7 +524,7 @@ simulated <- binaryRL::rl_generate_d(
   data = data,                    # your data
   id = 18,                        # Subject ID
   eta = c(params[1], params[2]),  # RSTD parameters
-  n_params = 2,                   # the number of model parameters
+  n_params = 2,                   # the number of free parameters
   n_trials = 288,                 # the number of total trials
 
   # column names
@@ -557,7 +557,7 @@ simulated <- binaryRL::rl_generate_d(
   data = data,                    # your data
   id = 18,                        # Subject ID
   eta = c(params[1], params[2]),  # RSTD parameters
-  n_params = 2,                   # the number of model parameters
+  n_params = 2,                   # the number of free parameters
   n_trials = 288,                 # the number of total trials
 
   # column names
@@ -587,19 +587,56 @@ summary(simulated)
 
 # Classic Models
 
-The default function can run the three classic models here. 
-1. if only one $\eta$ is set as a free paramters, it represents the TD model. 
-2. If two $\eta$ are set as free parameters, it represents the RSTD model. 
-3. If one $\eta$ and one $\gamma$ are set as free parameters, it represents the utility model.
-
+The default function can run the three classic models here. Setting different parameters in `rl_run_m` means running different RL models.
 <!---------------------------------------------------------->
 
 ## 1. TD Model ($\eta$)
 > "The TD model is a standard temporal difference learning model (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998)."  
+
+**if only ONE $\eta$ is set as a free paramters, it represents the TD model.**
+
+```r
+# TD Model
+binaryRL::rl_run_m(
+  ...,
+  eta = c(params[1]),              # free parameter: learning rate
+  gamma = 1,                       # fixed parameter: utility, default as 1
+  n_params = 1,                    # the number of free parameters
+  ...
+)
+```
+
 ## 2. Risk-Sensitive TD Model ($\eta_{-}$, $\eta_{+}$)
 > "In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, 2002)."  
+
+**If TWO $\eta$ are set as free parameters, it represents the RSTD model.**
+
+```r
+# RSTD Model
+binaryRL::rl_run_m(
+  ...,
+  eta = c(params[1], params[2]),   # free parameter: learning rate
+  gamma = 1,                       # fixed parameter: utility, default as 1
+  n_params = 2,                    # the number of free parameters
+  ...
+)
+```
+
 ## 3. Utility Model ($\eta$, $\gamma$)
 > "The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, 1954)"
+
+**If ONE $\eta$ and ONE $\gamma$ are set as free parameters, it represents the utility model.**
+
+```r
+# Utility Model
+binaryRL::rl_run_m(
+  ...,
+  eta = c(params[1]),              # free parameter: learning rate
+  gamma = c(params[2]),            # free parameter: utility
+  n_params = 1,                    # the number of free parameters
+  ...
+)
+```
 
 <p align="center">
     <img src="./fig/rl_models.png" alt="RL Models" width="70%">
@@ -616,6 +653,14 @@ In `rl_run_m`, there is an argument called initial_value. Considering that the i
 > "Comparisons between the two learning rates generally revealed a positivity bias ($\alpha_{+} > \alpha_{-}$)"  
 > "However, that on some occasions, studies failed to find a positivity bias or even reported a negativity bias ($\alpha_{+} < \alpha_{-}$)."  
 > "Because Q-values initialization markedly affect learning rate and learning bias estimates."
+
+```r
+binaryRL::rl_run_m(
+  ...,
+  initial_value = NA,
+  ...
+)
+```
 
 ### References
 Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and confirmation biases in reinforcement learning. *Trends in Cognitive Sciences, 26*(7), 607-621. https://doi.org/10.1016/j.tics.2022.04.005
@@ -634,12 +679,36 @@ U(R) = R ^ \gamma
 U(R) = log_\gamma R
 $$
 
+```r
+func_gamma <- function(
+  value, utility, reward, occurrence, var1, var2, gamma, lambda
+){
+  if (length(gamma) == 1) {
+    gamma <- gamma
+    utility <- reward ^ gamma
+  }
+  else {
+    utility <- "ERROR" 
+  }
+  return(list(gamma, utility))
+}
+```
+
 <!---------------------------------------------------------->
 
 ## $\epsilon$-Greedy
-Participants in the experiment may not always choose based on the value of the options, but instead select randomly on some trials. This is known as $\epsilon$-greedy.
+Participants in the experiment may not always choose based on the value of the options, but instead select randomly on some trials. This is known as $\epsilon$-greedy. (e.g., when epsilon = 0.1 (*default: NA*), it means that the participant has a 10% probability of randomly selecting an option and a 90% probability of choosing based on the currently learned value of the options.)
 
-- I think the subjects will randomly select options at the beginning of the experiment. Users can set the `threshold` argument in the `rl_run_m` and `rl_generate_d` to control how many trials before the subjects will randomly select.  
+- In my opinion, I think that participants tend to randomly select options during the early stages of the experiment to estimate the value of each option. Therefore, I added an argument called `threshold`, which specifies the number of trials during which participants will make completely random choices. The default value is set to 20. **(if you disagree with my assumption, you can modify this value to 0)**. 
+
+```r
+binaryRL::rl_run_m(
+  ...,
+  threshold = 20,      
+  epsilon = 0.1,
+  ...
+)
+```
 
 ### References
 Ganger, M., Duryea, E., & Hu, W. (2016). Double Sarsa and double expected Sarsa with shallow and deep learning. Journal of Data Analysis and Information Processing, 4(04), 159. https://doi.org/10.4236/jdaip.2016.44014
@@ -647,7 +716,7 @@ Ganger, M., Duryea, E., & Hu, W. (2016). Double Sarsa and double expected Sarsa 
 <!---------------------------------------------------------->
 
 ## Soft-Max Function
-The closer $\tau$ is to 1, the more sensitive the subjects become to the values of the left and right options. In other words, even a slight difference in value will lead the subjects to choose the option with the higher value.
+The closer $\tau$ is to 1 (*default: 0.5*), the more sensitive the subjects become to the values of the left and right options. In other words, even a slight difference in value will lead the subjects to choose the option with the higher value.
 
 <!---------------------------------------------------------->
 
