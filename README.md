@@ -57,7 +57,7 @@ obj_func <- function(params){
   res <- binaryRL::rl_run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
-    eta = c(params[1], params[2]),  # RSTD parameters
+    eta = c(params[1], params[2]),  # free parameters (RSTD)
     n_params = 2,                   # the number of free parameters
     n_trials = 288                  # the number of total trials
   )
@@ -85,7 +85,7 @@ obj_func <- function(params){
   res <- binaryRL::rl_run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
-    eta = c(params[1], params[2]),  # RSTD parameters
+    eta = c(params[1], params[2]),  # free parameters (RSTD)
     n_params = 2,                   # the number of free parameters
     n_trials = 288,                 # the number of total trials
 
@@ -125,7 +125,7 @@ obj_func <- function(params){
   res <- binaryRL::rl_run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
-    eta = c(params[1], params[2]),  # RSTD parameters
+    eta = c(params[1], params[2]),  # free parameters (RSTD)
     n_params = 2,                   # the number of free parameters
     n_trials = 288,                 # the number of total trials
 
@@ -460,11 +460,11 @@ If your column names are different from my example, you need to fill in the colu
 
 ```r
 simulated <- binaryRL::rl_generate_d(
-  data = data,                    # your data
-  id = 18,                        # Subject ID
-  eta = c(params[1], params[2]),  # RSTD parameters
-  n_params = 2,                   # the number of free parameters
-  n_trials = 288,                 # the number of total trials
+  data = data,
+  id = 18,
+  eta = c(0.321, 0.765),
+  n_params = 2, 
+  n_trials = 288,
 
   # column names
   sub = "Subject",
@@ -493,11 +493,11 @@ You can also customize the `value function` and `action function`. The default f
 
 ```r
 simulated <- binaryRL::rl_generate_d(
-  data = data,                    # your data
-  id = 18,                        # Subject ID
-  eta = c(params[1], params[2]),  # RSTD parameters
-  n_params = 2,                   # the number of free parameters
-  n_trials = 288,                 # the number of total trials
+  data = data,
+  id = 18,
+  eta = c(0.321, 0.765),
+  n_params = 2, 
+  n_trials = 288,
 
   # column names
   sub = "Subject",
@@ -589,7 +589,7 @@ Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction 
 <!---------------------------------------------------------->
 
 ## Initial Value
-In `rl_run_m`, there is an argument called initial_value. Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
+In `rl_run_m`, there is an argument called `initial_value`. Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
 
 > "Comparisons between the two learning rates generally revealed a positivity bias ($\alpha_{+} > \alpha_{-}$)"  
 > "However, that on some occasions, studies failed to find a positivity bias or even reported a negativity bias ($\alpha_{+} < \alpha_{-}$)."  
@@ -706,9 +706,12 @@ Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventro
 ---
 
 <!---------------------------------------------------------->
-# How the Package Works
 
-## Step 1: Value Function
+# Functions
+
+<!---------------------------------------------------------->
+
+## Value Function
 
 **Value Function** independently updating the value associated with each stimulus.
 
@@ -727,7 +730,9 @@ $$
 V_{n} = V_{n-1} + \eta \cdot [U(R_{n}) - V_{n-1}]  
 $$  
 
-## Step 2: Action Function
+<!---------------------------------------------------------->
+
+## Action Function
 **Action Function** reflecting how individuals make choices based on the value of the options.  
 
  - **Exploration Function ($\epsilon$)**: The parameter $\epsilon$ represents the probability of participants engaging in exploration (random choosing). In addition A threshold ensures participants always explore during the initial trials, after which the likelihood of exploration is determined by $\epsilon$..   
@@ -750,8 +755,8 @@ $$
 
 <!---------------------------------------------------------->
 
-## Step 3: Robot vs. Human Consistency
-**Log Likelihood** representing how similar robot behavior is to human behavior
+## Log Likelihood Function
+**Log Likelihood Function** representing how similar robot behavior is to human behavior
 
   $$
   LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
@@ -760,10 +765,3 @@ $$
   *NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model.   
 
 <!---------------------------------------------------------->
-
-## Step 4: Simulated Data Generation
-**Generate Simulated Data**: Given the **Value Function** and the **Action Selection Function**, along with the optimal parameters, simulate data.  
-
-$$
-binaryRL(\hat\lambda, \hat\gamma, \hat\eta, \hat\epsilon, \hat\tau) \quad \Rightarrow \quad Y \sim \text{data.frame}
-$$
