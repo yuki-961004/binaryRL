@@ -353,7 +353,7 @@ func_tau <- function (
 <!---------------------------------------------------------->
 
 ### Example Algorithms
-Here is an example using `optim` from the `stats` (which is a default package in R), though it has some issues with both speed and accuracy.
+Here is an example using `optim` from the `stats` (which is a default package in R), though it has issues with both runtime and accuracy.
 
 <!---------------------------------------------------------->
 
@@ -398,9 +398,10 @@ The following three algorithms require additional packages to run. You can click
 <!---------------------------------------------------------->
 
 <details>
-<summary>Simulated Annealing (GenSA::GenSA)</summary>
+<summary>Simulated Annealing (GenSA)</summary>
 
 ```r
+install.packages("GenSA")
 library(GenSA)
 
 result <- GenSA::GenSA(
@@ -422,9 +423,10 @@ summary(binaryRL_res)
 <!---------------------------------------------------------->
 
 <details>
-<summary>Genetic Algorithm (GA::ga)</summary>
+<summary>Genetic Algorithm (GA)</summary>
 
 ```r
+install.packages("GA")
 library(GA)
 
 result <- GA::ga(
@@ -446,9 +448,10 @@ summary(binaryRL_res)
 <!---------------------------------------------------------->
 
 <details>
-<summary>Differential Evolution (DEoptim::DEoptim)</summary>
+<summary>Differential Evolution (DEoptim)</summary>
 
 ```r
+install.packages("DEoptim")
 library(DEoptim)
 
 result <- DEoptim::DEoptim(
@@ -633,7 +636,7 @@ binaryRL::rl_run_m(
   ...,
   eta = c(params[1]),              # free parameter: learning rate
   gamma = c(params[2]),            # free parameter: utility
-  n_params = 1,                    # the number of free parameters
+  n_params = 2,                    # the number of free parameters
   ...
 )
 ```
@@ -685,7 +688,12 @@ func_gamma <- function(
 ){
   if (length(gamma) == 1) {
     gamma <- gamma
-    utility <- reward ^ gamma
+    utility <- reward * gamma
+    # cumstum your utility function
+    # utility <- (reward ^ 2) * gamma
+    # utility <- reward ^ gamma
+    # utility <- log(reward, base = gamma)
+    # ...
   }
   else {
     utility <- "ERROR" 
@@ -716,7 +724,25 @@ Ganger, M., Duryea, E., & Hu, W. (2016). Double Sarsa and double expected Sarsa 
 <!---------------------------------------------------------->
 
 ## Soft-Max Function
-The closer $\tau$ is to 1 (*default: 0.5*), the more sensitive the subjects become to the values of the left and right options. In other words, even a slight difference in value will lead the subjects to choose the option with the higher value.
+The closer $\tau$ is to 1 (*default: 0.5*), the more sensitive the subjects become to the values of the left and right options. In other words, even a slight difference in value will lead the subjects to choose the option with the higher value.  
+
+If you add $\tau$ to your model as a extra free parameter, you will generally achieve better model fit. In fact, some articles have already incorporated the parameter in the softmax function into reinforcement learning models (e.g., Niv et al., 2012; Rosenbaum et al.,2022).
+
+```r
+# RSTD Model
+binaryRL::rl_run_m(
+  ...,
+  eta = c(params[1], params[2]),   # free parameter: learning rate
+  gamma = 1,                       # fixed parameter: utility, default as 1
+  tau = c(params[3]),              # free paramters: sensitivity to value differences
+  n_params = 3,                    # the number of free parameters
+  ...
+)
+```
+
+### References
+Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012  
+Rosenbaum, G. M., Grassie, H. L., & Hartley, C. A. (2022). Valence biases in reinforcement learning shift across adolescence and modulate subsequent memory. *ELife, 11*, e64620. https://doi.org/10.7554/eLife.64620
 
 <!---------------------------------------------------------->
 
