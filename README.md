@@ -5,73 +5,7 @@ Before using this package, please make sure you agree with this assumptions.
 
 > The paradigm is a binary choice decision task. And the learning for different stimuli is independent, meaning rewards for one stimulus do not influence the learning process for others.
 
-If you agree with this assumptions, I will introduce the process of my package.
-
-<!---------------------------------------------------------->
-
----
-
-## Step 1: Value Function
-
-**Value Function** independently updating the value associated with each stimulus.
-
-- **Utility Function ($\gamma$)**: Some also refer to it as the _discount rate_ (for example, in the R package `ReinforcementLearning`), but I believe expressing it as people's subjective perception of objective rewards is more accurate. This is because the relationship between physical quantities and psychological quantities is not necessarily always a linear discount function; it could also be another type of power function relationship (Stevens' Power Law).   
-  - If you agree the relationship between objective value and subjective value is linear, represented by the equation:
-
-$$  
-U(R) = \gamma \cdot R  
-\quad \quad \Rightarrow \quad \quad
-V_{n} = V_{n-1} + \eta \cdot (\gamma \cdot R_{n} - V_{n-1})  
-$$  
-
-- **Learning Rates ($\eta$)**: This parameter $\eta$ controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.
-
-$$  
-V_{n} = V_{n-1} + \eta \cdot [U(R_{n}) - V_{n-1}]  
-$$  
-
-<!---------------------------------------------------------->
-
-## Step 2: Action Function
-**Action Function** reflecting how individuals make choices based on the value of the options.  
-
- - **Exploration Function ($\epsilon$)**: The parameter $\epsilon$ represents the probability of participants engaging in exploration (random choosing). In addition A threshold ensures participants always explore during the initial trials, after which the likelihood of exploration is determined by $\epsilon$..   
-
-$$
-P(x) =
-\begin{cases} 
-\epsilon, &  x = 1 \quad \text{(random choosing)} \\
-1 - \epsilon, &  x = 0 \quad \text{(value-based choosing)}
-\end{cases}
-$$
-
- - **Soft-Max Function ($\tau$)**: The parameter $\tau$ represents people's sensitivity to value differences. The larger $\tau$, the more sensitive they are to the differences in value between the two options.
-
-$$
-P_{L} = \frac{1}{1 + e^{-(V_{L} - V_{R}) \cdot \tau}}
-\quad \quad
-P_{R} = \frac{1}{1 + e^{-(V_{R} - V_{L}) \cdot \tau}}
-$$
-
-<!---------------------------------------------------------->
-
-## Step 3: Robot vs. Human Consistency
-**Log Likelihood** representing how similar robot behavior is to human behavior
-
-  $$
-  LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
-  $$   
-
-  *NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model.   
-
-<!---------------------------------------------------------->
-
-## Step 4: Simulated Data Generation
-**Generate Simulated Data**: Given the **Value Function** and the **Action Selection Function**, along with the optimal parameters, simulate data.  
-
-$$
-binaryRL(\hat\lambda, \hat\gamma, \hat\eta, \hat\epsilon, \hat\tau) \quad \Rightarrow \quad Y \sim \text{data.frame}
-$$
+If you agree with this assumptions, I will introduce how to use this package.
 
 <!---------------------------------------------------------->
 
@@ -587,6 +521,73 @@ summary(simulated)
 ```
 
 </details>  
+
+<!---------------------------------------------------------->
+
+---
+
+<!---------------------------------------------------------->
+# How the Package Works
+
+## Step 1: Value Function
+
+**Value Function** independently updating the value associated with each stimulus.
+
+- **Utility Function ($\gamma$)**: Some also refer to it as the _discount rate_ (for example, in the R package `ReinforcementLearning`), but I believe expressing it as people's subjective perception of objective rewards is more accurate. This is because the relationship between physical quantities and psychological quantities is not necessarily always a linear discount function; it could also be another type of power function relationship (Stevens' Power Law).   
+  - If you agree the relationship between objective value and subjective value is linear, represented by the equation:
+
+$$  
+U(R) = \gamma \cdot R  
+\quad \quad \Rightarrow \quad \quad
+V_{n} = V_{n-1} + \eta \cdot (\gamma \cdot R_{n} - V_{n-1})  
+$$  
+
+- **Learning Rates ($\eta$)**: This parameter $\eta$ controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.
+
+$$  
+V_{n} = V_{n-1} + \eta \cdot [U(R_{n}) - V_{n-1}]  
+$$  
+
+## Step 2: Action Function
+**Action Function** reflecting how individuals make choices based on the value of the options.  
+
+ - **Exploration Function ($\epsilon$)**: The parameter $\epsilon$ represents the probability of participants engaging in exploration (random choosing). In addition A threshold ensures participants always explore during the initial trials, after which the likelihood of exploration is determined by $\epsilon$..   
+
+$$
+P(x) =
+\begin{cases} 
+\epsilon, &  x = 1 \quad \text{(random choosing)} \\
+1 - \epsilon, &  x = 0 \quad \text{(value-based choosing)}
+\end{cases}
+$$
+
+ - **Soft-Max Function ($\tau$)**: The parameter $\tau$ represents people's sensitivity to value differences. The larger $\tau$, the more sensitive they are to the differences in value between the two options.
+
+$$
+P_{L} = \frac{1}{1 + e^{-(V_{L} - V_{R}) \cdot \tau}}
+\quad \quad
+P_{R} = \frac{1}{1 + e^{-(V_{R} - V_{L}) \cdot \tau}}
+$$
+
+<!---------------------------------------------------------->
+
+## Step 3: Robot vs. Human Consistency
+**Log Likelihood** representing how similar robot behavior is to human behavior
+
+  $$
+  LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
+  $$   
+
+  *NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model.   
+
+<!---------------------------------------------------------->
+
+## Step 4: Simulated Data Generation
+**Generate Simulated Data**: Given the **Value Function** and the **Action Selection Function**, along with the optimal parameters, simulate data.  
+
+$$
+binaryRL(\hat\lambda, \hat\gamma, \hat\eta, \hat\epsilon, \hat\tau) \quad \Rightarrow \quad Y \sim \text{data.frame}
+$$
 
 ---
 
