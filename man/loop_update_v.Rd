@@ -6,50 +6,90 @@
 \usage{
 loop_update_v(
   data,
+  n,
+  initial_value = NA,
+  lambda = NA,
+  gamma = 1,
+  eta,
+  util_func = func_gamma,
+  rate_func = func_eta,
   sub = "Subject",
   time_line = c("Block", "Trial"),
   choose = "Choose",
   reward = "Reward",
   var1 = NA,
   var2 = NA,
-  initial_value = NA,
-  n = 1,
-  lambda = NA,
-  gamma = 1,
-  eta,
-  util_func = func_gamma,
-  rate_func = func_eta,
   digits = 2
 )
 }
 \arguments{
-\item{data}{raw data}
+\item{data}{A data frame containing the raw data. 
+This data should include the following mandatory columns: 
+- "sub", "time_line", "L_choice", "R_choice", "choose", "reward". 
+The following arguments allow you to customize the column names used for processing}
 
-\item{sub}{The column name for the subject ID}
+\item{n}{A numeric value specifying the subject ID for which the model is being analyzed. 
+The value should correspond to an entry in the "sub" column, which must contain the subject IDs. 
+Provide the subject ID as a number.
+e.g., `n = 18`}
 
-\item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
+\item{initial_value}{A numeric value representing the subject's initial expected value for each stimulus's reward. 
+If this value is not set, the subject will use the reward received after the first trial as the initial value for that stimulus. 
+In other words, the learning rate for the first trial is 100%. 
+Provide the initial value as a number 
+default: `initial_value = NA`
+e.g., `initial_value = 0`
 
-\item{choose}{The column name indicating which option the subject chose}
+## Parameters and Functions}
 
-\item{reward}{the reward of the option}
+\item{lambda}{An additional parameter that may be used in these functions. 
+Provide the value as a vector 
+e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 
-\item{var1}{extra variable 1}
+\item{gamma}{A parameter used in the `util_func` (Utility Function), often 
+referred to as the discount rate. For example, in the utility equation 
+`utility = gamma * reward`, if gamma < 1, it indicates that people discount 
+the objective reward. 
+Provide the value as a vector 
+e.g., `gamma = c(0.7)`}
 
-\item{var2}{extra variable 2}
+\item{eta}{A parameter used in the `rate_func` (Learning Rate Function), 
+representing the rate at which the subject updates the difference between the reward and the expected value in the subject's mind. 
+In the TD model, there is a single learning rate throughout the experiment. 
+In the RSTD model, two different learning rates are used when the reward is higher or lower than the expected value.
+Provide the value as a vector 
+e.g., `eta = c(0.3, 0.7)`}
 
-\item{initial_value}{The initial value you assign to a stimulus, defaulting to 0}
+\item{util_func}{The function for the utility gamma, which you can customize}
 
-\item{n}{How many subjects' data do you need to run?}
+\item{rate_func}{The function for the learning rate eta, which you can customize
 
-\item{lambda}{the eta or gamma could be divided into different intervals.}
+## Column Names}
 
-\item{gamma}{In the utility model, it is assumed that all rewards will be discounted}
+\item{sub}{A string specifying the name of the column that contains the subject ID.
+Provide the name of the column as a character string  
+e.g., `sub = "Subject_ID"`}
 
-\item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
+\item{time_line}{A vector specifying the name of the column that the sequence of the experiment. 
+This argument defines how the experiment is structured, such as whether it is organized by "Block" with breaks in between, and multiple trials within each block. 
+Provide the sequence as a character vector, 
+e.g., `time_line = c("Block", "Trial")`}
 
-\item{util_func}{The function for the discount rate γ, which you can customize}
+\item{choose}{A string specifying the name of the column that represents the choice made by the subject. 
+Provide the name of the column as a character string 
+e.g., `choose = "Choose"`}
 
-\item{rate_func}{The function for the learning rate η, which you can customize}
+\item{reward}{A string specifying the name of the column that represents the reward associated with the subject's choice. 
+Provide the name of the column as a character string 
+e.g., `reward = "Reward"`}
+
+\item{var1}{A string specifying the name of an additional variable that can be used in the model. 
+Provide the name of the column as a character string 
+e.g., `var1 = "Extra_Var1"`}
+
+\item{var2}{A string specifying the name of an additional variable that can be used in the model. 
+Provide the name of the column as a character string 
+e.g., `var2 = "Extra_Var2"`}
 
 \item{digits}{digits}
 }

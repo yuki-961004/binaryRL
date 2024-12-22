@@ -1,7 +1,7 @@
 Package: binaryRL
 Type: Package
 Title: reinforcement learning tools for binary-choice decision tasks
-Version: 0.2.5
+Version: 0.2.6
 Author: yuki <hmz1969a@gmail.com>
 Maintainer: yuki <hmz1969a@gmail.com>
 Description: reinforcement learning tools for binary-choice decision tasks.
@@ -9,5 +9,5 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: TRUE
 Imports: dplyr, tidyr, purrr, utils
-RoxygenNote: 7.3.2
+RoxygenNote: 7.2.3
 Standardizable: FALSE

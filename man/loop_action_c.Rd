@@ -6,6 +6,14 @@
 \usage{
 loop_action_c(
   data,
+  n = 1,
+  initial_value = 0,
+  threshold = 20,
+  lambda,
+  epsilon = NA,
+  tau = 1,
+  expl_func = func_epsilon,
+  prob_func = func_tau,
   L_choice = "LC",
   R_choice = "RC",
   sub = "Subject",
@@ -14,54 +22,100 @@ loop_action_c(
   time_line = c("Block", "Trial"),
   var1 = NA,
   var2 = NA,
-  initial_value = 0,
-  n = 1,
-  seed = 123,
   softmax = TRUE,
-  threshold = 20,
-  epsilon = NA,
-  tau = 0.5,
-  expl_func = func_epsilon,
-  prob_func = func_tau,
+  seed = 123,
   digits = 5
 )
 }
 \arguments{
-\item{data}{raw data}
+\item{data}{A dataset that has been processed through the `loop_update_v` function,}
 
-\item{L_choice}{The column name for the left option}
+\item{n}{A numeric value specifying the subject ID for which the model is being analyzed. 
+The value should correspond to an entry in the "sub" column, which must contain the subject IDs. 
+Provide the subject ID as a number.
+default, `n = 1`}
 
-\item{R_choice}{The column name for the right option}
+\item{initial_value}{A numeric value representing the subject's initial expected value for each stimulus's reward. 
+If this value is not set, the subject will use the reward received after the first trial as the initial value for that stimulus. 
+In other words, the learning rate for the first trial is 100%. 
+Provide the initial value as a number 
+default: `initial_value = NA`
+e.g., `initial_value = 0`}
 
-\item{sub}{The column name for the subject ID}
+\item{threshold}{A numeric value specifying the number of initial trials during which the subject makes random choices 
+rather than choosing based on the values of the options. This occurs because the subject has not yet learned the values of the options. 
+For example, threshold = 20 means the subject will make completely random choices for the first 20 trials.
+Provide the value as a number. 
+default: `threshold = 1`
 
-\item{choose}{The column name for the option chosen by the subject}
+## Parameters and Functions}
 
-\item{value}{The column name for the stimulate's current value}
+\item{lambda}{An additional parameter that may be used in these functions. 
+Provide the value as a vector 
+e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 
-\item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
+\item{epsilon}{A parameter used in the `expl_func` (Exploration Function), 
+determining whether the subject makes decisions based on the relative values of the left and right options, 
+or chooses completely randomly. 
+For example, when epsilon = 0.1, it means the subject has a 10% chance of making a completely random choice 
+and a 90% chance of choosing based on the values of the options.
+Provide the value as a vector 
+e.g., `epsilon = c(0.1)`}
 
-\item{var1}{extra variable 1}
+\item{tau}{A parameter used in the `prob_func` (Soft-Max Function), representing the sensitivity of the subject to the value difference when making decisions. 
+It determines the probability of selecting the left option versus the right option based on their values. A larger value of tau indicates greater sensitivity 
+to the value difference between the options. In other words, even a small difference in value will make the subject more likely to choose the higher-value option. 
+Provide the value as a vector 
+e.g., `tau = c(0.5)`}
 
-\item{var2}{extra variable 2}
+\item{expl_func}{The function for the epsilon greedy, which you can customize}
 
-\item{initial_value}{The initial value you assign to a stimulus, defaulting to 0}
+\item{prob_func}{The function for the temperature tau, which you can customize.
 
-\item{n}{How many subjects' data do you need to run? default = 1}
+## Column Names}
 
-\item{seed}{seed}
+\item{L_choice}{A string specifying the name of the column that represents the left choice. 
+Provide the name of the column as a character string 
+e.g., `L_choice = "Left_Choice"`}
 
-\item{softmax}{use softmax or not, defaulting to TRUE}
+\item{R_choice}{A string specifying the name of the column that represents the right choice. 
+Provide the name of the column as a character string 
+e.g., `R_choice = "Right_Choice"`}
 
-\item{threshold}{How many trials ago were subjects randomly selected?}
+\item{sub}{A string specifying the name of the column that contains the subject ID.
+Provide the name of the column as a character string  
+e.g., `sub = "Subject_ID"`}
 
-\item{epsilon}{How much the subjects like to try}
+\item{choose}{A string specifying the name of the column that represents the choice made by the subject. 
+Provide the name of the column as a character string 
+e.g., `choose = "Choose"`}
 
-\item{tau}{The τ parameter in the soft-max function}
+\item{value}{A column derived from the `update_v` function, representing the updated values.}
 
-\item{expl_func}{The exploration function, which you can customize.}
+\item{time_line}{A vector specifying the name of the column that the sequence of the experiment. 
+This argument defines how the experiment is structured, such as whether it is organized by "Block" with breaks in between, and multiple trials within each block. 
+Provide the sequence as a character vector, 
+e.g., `time_line = c("Block", "Trial")`}
 
-\item{prob_func}{The soft-max function, which you can customize.}
+\item{var1}{A string specifying the name of an additional variable that can be used in the model. 
+Provide the name of the column as a character string 
+e.g., `var1 = "Extra_Var1"`}
+
+\item{var2}{A string specifying the name of an additional variable that can be used in the model. 
+Provide the name of the column as a character string 
+e.g., `var2 = "Extra_Var2"`}
+
+\item{softmax}{A logical value indicating whether to use the softmax function. 
+When softmax = TRUE, the value of each option influences the probability of selecting that option. 
+Higher values increase the probability of selecting that option. 
+When softmax = FALSE, the subject will always choose the option with the higher value, with no possibility of selecting the lower-value option.
+Provide the value as a logical (TRUE or FALSE).
+default: `softmax = TRUE`}
+
+\item{seed}{A numeric value to set the random seed. 
+This ensures that the results are reproducible and remain the same each time the function is run.
+Provide the value as a number. 
+default: `seed = 123`}
 
 \item{digits}{digits}
 }

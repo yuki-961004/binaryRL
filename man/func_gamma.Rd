@@ -12,29 +12,44 @@ func_gamma(
   var1 = NA,
   var2 = NA,
   gamma = 1,
-  lambda = NA
+  lambda
 )
 }
 \arguments{
-\item{value}{The value you assign to this stimulus at this moment}
+\item{value}{The expected value of the stimulus in the subject's mind at this point in time.}
 
-\item{utility}{Subjects' subjective value of the reward}
+\item{utility}{The subjective value that the subject assigns to the objective reward.}
 
-\item{reward}{The reward given to you by the experimental procedure after choosing this stimulus}
+\item{reward}{The objective reward received by the subject after selecting a stimulus.}
 
-\item{occurrence}{The number of times this stimulus is encountered}
+\item{occurrence}{The number of times the same stimulus has appeared.}
 
-\item{var1}{extra variable 1}
+\item{var1}{A string specifying the name of an additional variable that can be used in the model. 
+Provide the name of the column as a character string 
+e.g., `var1 = "Extra_Var1"`}
 
-\item{var2}{extra variable 2}
+\item{var2}{A string specifying the name of an additional variable that can be used in the model. 
+Provide the name of the column as a character string 
+e.g., `var2 = "Extra_Var2"`}
 
-\item{gamma}{In the utility model, it is assumed that all rewards will be discounted}
+\item{gamma}{A parameter used in the `util_func` (Utility Function), often 
+referred to as the discount rate. For example, in the utility equation 
+`utility = gamma * reward`, if gamma < 1, it indicates that people discount 
+the objective reward. 
+Provide the value as a vector 
+e.g., `gamma = c(0.7)`}
 
-\item{lambda}{the eta or gamma could be divided into different intervals.}
+\item{lambda}{An additional parameter that may be used in these functions. 
+Provide the value as a vector 
+e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 }
 \value{
 Discount rate and utility
 }
 \description{
 func_gamma
+}
+\note{
+When customizing these functions, please ensure that you do not modify the arguments. 
+Instead, only modify the `if-else` statements or the internal logic to adapt the function to your needs.
 }

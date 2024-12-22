@@ -6,41 +6,70 @@
 \usage{
 rl_update_v(
   data,
-  time_line = c("Block", "Trial"),
-  reward = "Reward",
-  var1 = NA,
-  var2 = NA,
-  initial_value = NA,
+  initial_value,
   gamma = 1,
+  eta,
   lambda = NA,
-  eta = c(0.3, 0.7),
   util_func = func_gamma,
   rate_func = func_eta,
+  time_line,
+  reward,
+  var1 = NA,
+  var2 = NA,
   digits = 2
 )
 }
 \arguments{
-\item{data}{Data containing only one type of stimulus}
+\item{data}{A data frame containing only one stimulate. 
+This data should include the following mandatory columns: 
+"time_line", "L_choice", "R_choice", "choose", "reward". 
+The following arguments allow you to customize the column names used for processing}
 
-\item{time_line}{Variables used to represent the experimental timeline, such as block and trial}
+\item{initial_value}{A numeric value representing the subject's initial expected value for each stimulus's reward. 
+If this value is not set, the subject will use the reward received after the first trial as the initial value for that stimulus. 
+In other words, the learning rate for the first trial is 100%. 
+Provide the initial value as a number 
+default: `initial_value = NA`
+e.g., `initial_value = 0`}
 
-\item{reward}{the reward of the option}
+\item{gamma}{A parameter used in the `util_func` (Utility Function), often 
+referred to as the discount rate. For example, in the utility equation 
+`utility = gamma * reward`, if gamma < 1, it indicates that people discount 
+the objective reward. 
+Provide the value as a vector 
+e.g., `gamma = c(0.7)`}
 
-\item{var1}{extra variable 1}
+\item{eta}{A parameter used in the `rate_func` (Learning Rate Function), 
+representing the rate at which the subject updates the difference between the reward and the expected value in the subject's mind. 
+In the TD model, there is a single learning rate throughout the experiment. 
+In the RSTD model, two different learning rates are used when the reward is higher or lower than the expected value.
+Provide the value as a vector 
+e.g., `eta = c(0.3, 0.7)`}
 
-\item{var2}{extra variable 2}
+\item{lambda}{An additional parameter that may be used in these functions. 
+Provide the value as a vector 
+e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 
-\item{initial_value}{The initial value you assign to a stimulus, defaulting to NA}
+\item{util_func}{The function for the utility gamma, which you can customize}
 
-\item{gamma}{In the utility model, it is assumed that all rewards will be discounted}
+\item{rate_func}{The function for the learning rate eta, which you can customize}
 
-\item{lambda}{the eta or gamma could be divided into different intervals.}
+\item{time_line}{A vector specifying the name of the column that the sequence of the experiment. 
+This argument defines how the experiment is structured, such as whether it is organized by "Block" with breaks in between, and multiple trials within each block. 
+Provide the sequence as a character vector, 
+e.g., `time_line = c("Block", "Trial")`}
 
-\item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
+\item{reward}{A string specifying the name of the column that represents the reward associated with the subject's choice. 
+Provide the name of the column as a character string 
+e.g., `reward = "Reward"`}
 
-\item{util_func}{The function for the discount rate β, which you can customize}
+\item{var1}{A string specifying the name of an additional variable that can be used in the model. 
+Provide the name of the column as a character string 
+e.g., `var1 = "Extra_Var1"`}
 
-\item{rate_func}{The function for the learning rate η, which you can customize}
+\item{var2}{A string specifying the name of an additional variable that can be used in the model. 
+Provide the name of the column as a character string 
+e.g., `var2 = "Extra_Var2"`}
 
 \item{digits}{digits}
 }

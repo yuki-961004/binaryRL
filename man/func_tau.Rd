@@ -4,22 +4,34 @@
 \alias{func_tau}
 \title{func_prob}
 \usage{
-func_tau(try, L_value, R_value, var1 = NA, var2 = NA, tau = 1, LR)
+func_tau(LR, try, L_value, R_value, var1 = NA, var2 = NA, tau = 1, lambda)
 }
 \arguments{
-\item{try}{random choose one or based on the values}
+\item{LR}{Are you calculating the probability for the left option or the right option?}
+
+\item{try}{If the choice was random, the value is 1; if the choice was based on value, the value is 0.}
 
 \item{L_value}{The value of the left option}
 
 \item{R_value}{The value of the right option}
 
-\item{var1}{extra variable 1}
+\item{var1}{A string specifying the name of an additional variable that can be used in the model. 
+Provide the name of the column as a character string 
+e.g., `var1 = "Extra_Var1"`}
 
-\item{var2}{extra variable 2}
+\item{var2}{A string specifying the name of an additional variable that can be used in the model. 
+Provide the name of the column as a character string 
+e.g., `var2 = "Extra_Var2"`}
 
-\item{tau}{The τ parameter in the soft-max function, with a default value of 1}
+\item{tau}{A parameter used in the `prob_func` (Soft-Max Function), representing the sensitivity of the subject to the value difference when making decisions. 
+It determines the probability of selecting the left option versus the right option based on their values. A larger value of tau indicates greater sensitivity 
+to the value difference between the options. In other words, even a small difference in value will make the subject more likely to choose the higher-value option. 
+Provide the value as a vector 
+e.g., `tau = c(0.5)`}
 
-\item{LR}{Are you calculating the probability for the left option or the right option?}
+\item{lambda}{An additional parameter that may be used in these functions. 
+Provide the value as a vector 
+e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 }
 \value{
 The probability of choosing this option

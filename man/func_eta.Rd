@@ -7,25 +7,40 @@
 func_eta(value, utility, reward, occurrence, var1 = NA, var2 = NA, eta, lambda)
 }
 \arguments{
-\item{value}{The value you assign to this stimulus at this moment}
+\item{value}{The expected value of the stimulus in the subject's mind at this point in time.}
 
-\item{utility}{Subjects' subjective value of the reward}
+\item{utility}{The subjective value that the subject assigns to the objective reward.}
 
-\item{reward}{The reward given to you by the experimental procedure after choosing this stimulus}
+\item{reward}{The objective reward received by the subject after selecting a stimulus.}
 
-\item{occurrence}{The number of times this stimulus is encountered}
+\item{occurrence}{The number of times the same stimulus has appeared.}
 
-\item{var1}{extra variable 1}
+\item{var1}{A string specifying the name of an additional variable that can be used in the model. 
+Provide the name of the column as a character string 
+e.g., `var1 = "Extra_Var1"`}
 
-\item{var2}{extra variable 2}
+\item{var2}{A string specifying the name of an additional variable that can be used in the model. 
+Provide the name of the column as a character string 
+e.g., `var2 = "Extra_Var2"`}
 
-\item{eta}{In the RSTD model, the learning rate is different for positive and negative conditions.}
+\item{eta}{A parameter used in the `rate_func` (Learning Rate Function), 
+representing the rate at which the subject updates the difference between the reward and the expected value in the subject's mind. 
+In the TD model, there is a single learning rate throughout the experiment. 
+In the RSTD model, two different learning rates are used when the reward is higher or lower than the expected value.
+Provide the value as a vector 
+e.g., `eta = c(0.3, 0.7)`}
 
-\item{lambda}{the eta or gamma could be divided into different intervals.}
+\item{lambda}{An additional parameter that may be used in these functions. 
+Provide the value as a vector 
+e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 }
 \value{
 learning rate eta
 }
 \description{
 func_eta
+}
+\note{
+When customizing these functions, please ensure that you do not modify the arguments. 
+Instead, only modify the `if-else` statements or the internal logic to adapt the function to your needs.
 }
