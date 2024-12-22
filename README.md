@@ -228,7 +228,7 @@ print(binaryRL::func_epsilon)
 
 ```r
 func_epsilon <- function(
-  i, var1, var2, threshold, epsilon
+  i, var1, var2, threshold, epsilon, lambda
 ){
   if (i <= threshold) {
     try <- 1
@@ -262,7 +262,7 @@ print(binaryRL::func_tau)
 
 ```r
 func_tau <- function (
-  try, L_value, R_value, var1, var2, tau = 1, params, LR 
+  LR, try, L_value, R_value, var1, var2, tau = 1, lambda 
 ){
   if (!(LR %in% c("L", "R"))) {
     stop("LR = 'L' or 'R'")
