@@ -1,7 +1,6 @@
 importFrom("dplyr", "%>%", "bind_rows")
 importFrom("tidyr", "pivot_wider")
 importFrom("purrr", "map")
-importFrom("utils", "capture.output")
 export(func_gamma)
 export(func_eta)
 export(func_epsilon)

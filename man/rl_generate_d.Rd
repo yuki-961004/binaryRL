@@ -15,7 +15,7 @@ rl_generate_d(
   eta,
   epsilon = NA,
   tau = 1,
-  lambda,
+  lambda = NA,
   util_func = func_gamma,
   rate_func = func_eta,
   expl_func = func_epsilon,
@@ -61,8 +61,7 @@ default: `threshold = 1`}
 
 \item{n_params}{The number of free parameters in the model.}
 
-\item{n_trials}{The total number of trials in the experiment.
-## Parameters and Functions}
+\item{n_trials}{The total number of trials in the experiment.}
 
 \item{gamma}{A parameter used in the `util_func` (Utility Function), often 
 referred to as the discount rate. For example, in the utility equation 
@@ -102,8 +101,7 @@ e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 
 \item{expl_func}{The function for the epsilon greedy, which you can customize}
 
-\item{prob_func}{The function for the temperature tau, which you can customize.
-## Column Names}
+\item{prob_func}{The function for the temperature tau, which you can customize.}
 
 \item{sub}{A string specifying the name of the column that contains the subject ID.
 Provide the name of the column as a character string  
@@ -140,8 +138,7 @@ e.g., `var1 = "Extra_Var1"`}
 
 \item{var2}{A string specifying the name of an additional variable that can be used in the model. 
 Provide the name of the column as a character string 
-e.g., `var2 = "Extra_Var2"`
-## Other Arguments}
+e.g., `var2 = "Extra_Var2"`}
 
 \item{softmax}{A logical value indicating whether to use the softmax function. 
 When softmax = TRUE, the value of each option influences the probability of selecting that option. 
@@ -165,5 +162,12 @@ The default is 5.}
 generated data
 }
 \description{
-rl_generate_d
+This function requires the optimal parameter values obtained through the 
+`algorithm` package. Once the best parameter values are solved for, they 
+are incorporated into the reinforcement learning model, allowing the model 
+to simulate human-like decision-making. The function leverages these optimized 
+parameters to generate choices that mimic the decision-making process of subjects, 
+enabling the study of behavior under varying conditions. By integrating the best-fit 
+parameters from the `algorithm` package, this function offers a powerful tool for 
+simulating human choices in reinforcement learning contexts.
 }

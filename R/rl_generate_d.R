@@ -1,5 +1,14 @@
 #' rl_generate_d
-#'
+#' @description
+#' This function requires the optimal parameter values obtained through the 
+#' `algorithm` package. Once the best parameter values are solved for, they 
+#' are incorporated into the reinforcement learning model, allowing the model 
+#' to simulate human-like decision-making. The function leverages these optimized 
+#' parameters to generate choices that mimic the decision-making process of subjects, 
+#' enabling the study of behavior under varying conditions. By integrating the best-fit 
+#' parameters from the `algorithm` package, this function offers a powerful tool for 
+#' simulating human choices in reinforcement learning contexts.
+#' 
 #' @param data A data frame containing the raw data. 
 #' This data should include the following mandatory columns: 
 #' - "sub", "time_line", "L_choice", "R_choice", "choose", "L_reward", "R_reward". 
@@ -25,7 +34,8 @@
 #' 
 #' @param n_params The number of free parameters in the model. 
 #' @param n_trials The total number of trials in the experiment.
-#' ## Parameters and Functions
+#'
+#' 
 #' 
 #' @param lambda An additional parameter that may be used in these functions. 
 #' Provide the value as a vector 
@@ -63,7 +73,6 @@
 #' @param rate_func The function for the learning rate eta, which you can customize
 #' @param expl_func The function for the epsilon greedy, which you can customize
 #' @param prob_func The function for the temperature tau, which you can customize.
-#' ## Column Names
 #' 
 #' @param sub A string specifying the name of the column that contains the subject ID.  
 #' Provide the name of the column as a character string  
@@ -99,13 +108,8 @@
 #' @param var2 A string specifying the name of an additional variable that can be used in the model. 
 #' Provide the name of the column as a character string 
 #' e.g., `var2 = "Extra_Var2"`
-#' ## Other Arguments
+#'
 #' 
-#' @param digits_1 The number of decimal places to retain for values related to the value function. 
-#' The default is 2.
-#' 
-#' @param digits_2 The number of decimal places to retain for values related to the action function. 
-#' The default is 5.
 #' 
 #' @param softmax A logical value indicating whether to use the softmax function. 
 #' When softmax = TRUE, the value of each option influences the probability of selecting that option. 
@@ -118,7 +122,13 @@
 #' This ensures that the results are reproducible and remain the same each time the function is run.
 #' Provide the value as a number. 
 #' default: `seed = 123`
-#'
+#' 
+#' @param digits_1 The number of decimal places to retain for values related to the value function. 
+#' The default is 2.
+#' 
+#' @param digits_2 The number of decimal places to retain for values related to the action function. 
+#' The default is 5.
+#' 
 #' @return generated data
 #' @export
 #' 
@@ -134,7 +144,7 @@ rl_generate_d <- function(
     eta,
     epsilon = NA,
     tau = 1,
-    lambda,
+    lambda = NA,
     util_func = func_gamma,
     rate_func = func_eta,
     expl_func = func_epsilon,

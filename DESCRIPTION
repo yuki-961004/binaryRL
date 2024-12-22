@@ -8,6 +8,6 @@ Description: reinforcement learning tools for binary-choice decision tasks.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: TRUE
-Imports: dplyr, tidyr, purrr, utils
+Imports: dplyr, tidyr, purrr
 RoxygenNote: 7.2.3
 Standardizable: FALSE

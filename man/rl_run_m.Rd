@@ -60,9 +60,7 @@ default: `threshold = 1`}
 
 \item{n_params}{The number of free parameters in the model.}
 
-\item{n_trials}{The total number of trials in the experiment.
-
-## Parameters and Functions}
+\item{n_trials}{The total number of trials in the experiment.}
 
 \item{gamma}{A parameter used in the `util_func` (Utility Function), often 
 referred to as the discount rate. For example, in the utility equation 
@@ -102,9 +100,7 @@ e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 
 \item{expl_func}{The function for the epsilon greedy, which you can customize}
 
-\item{prob_func}{The function for the temperature tau, which you can customize.
-
-## Column Names}
+\item{prob_func}{The function for the temperature tau, which you can customize.}
 
 \item{sub}{A string specifying the name of the column that contains the subject ID.
 Provide the name of the column as a character string  
@@ -137,9 +133,7 @@ e.g., `var1 = "Extra_Var1"`}
 
 \item{var2}{A string specifying the name of an additional variable that can be used in the model. 
 Provide the name of the column as a character string 
-e.g., `var2 = "Extra_Var2"`
-
-## Other Arguments}
+e.g., `var2 = "Extra_Var2"`}
 
 \item{softmax}{A logical value indicating whether to use the softmax function. 
 When softmax = TRUE, the value of each option influences the probability of selecting that option. 
@@ -163,5 +157,13 @@ The default is 5.}
 A table showing how participants updated their values ​​and selected
 }
 \description{
-rl_run_m
+This function is designed to be used in conjunction with the `algorithm` 
+package. Users can define their own `value function` and `action function` 
+to model the decision-making process. The function allows users to set 
+certain parameters as free parameters, which will be optimized during the 
+algorithm's execution. By integrating this function with the `algorithm` 
+package, users can apply advanced optimization techniques to solve for the 
+values of these free parameters. This approach facilitates flexible and 
+customizable modeling of decision-making tasks, where the parameters' optimal 
+values are learned through computational algorithms.
 }
