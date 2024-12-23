@@ -22,8 +22,8 @@ rl_run_m(
   prob_func = func_tau,
   sub = "Subject",
   time_line = c("Block", "Trial"),
-  L_choice = "LC",
-  R_choice = "RC",
+  L_choice = "L_choice",
+  R_choice = "R_choice",
   choose = "Choose",
   reward = "Reward",
   var1 = NA,
@@ -166,4 +166,17 @@ package, users can apply advanced optimization techniques to solve for the
 values of these free parameters. This approach facilitates flexible and 
 customizable modeling of decision-making tasks, where the parameters' optimal 
 values are learned through computational algorithms.
+}
+\examples{
+data <- BCT
+
+binaryRL_res <- binaryRL::rl_run_m(
+  data = data,                    
+  id = 18,                       
+  eta = c(0.321, 0.765),          
+  n_params = 2,                   
+  n_trials = 288                 
+)
+
+summary(binaryRL_res)
 }

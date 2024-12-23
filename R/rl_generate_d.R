@@ -131,7 +131,19 @@
 #' 
 #' @return generated data
 #' @export
+#' @examples
+#' data <- BCT
 #' 
+#' simulated <- binaryRL::rl_generate_d(
+#'   data = data,
+#'   id = 18,
+#'   eta = c(0.321, 0.765),
+#'   n_params = 2, 
+#'   n_trials = 288
+#' )
+#' 
+#' summary(simulated)
+
 rl_generate_d <- function(
     data,
     id,
@@ -152,10 +164,10 @@ rl_generate_d <- function(
 
     sub = "Subject",
     time_line = c("Block", "Trial"),
-    L_choice = "LC",
-    R_choice = "RC",
-    L_reward = "LR",
-    R_reward = "RR",
+    L_choice = "L_choice",
+    R_choice = "R_choice",
+    L_reward = "L_reward",
+    R_reward = "R_reward",
     sub_choose = "Choose",
     var1 = NA,
     var2 = NA,
@@ -462,20 +474,20 @@ rl_generate_d <- function(
   
   for (i in 1:nrow(res_data)){
     if (
-      res_data$Sub_Choose[i] == res_data$LC[i] & 
-      res_data$Sub_Choose[i] != res_data$RC[i]
+      res_data$Sub_Choose[i] == res_data[[L_choice]][i] & 
+      res_data$Sub_Choose[i] != res_data[[R_choice]][i]
     ) {
       res_data$L_dir[i] <- 1
       res_data$R_dir[i] <- 0
     } else if (
-      res_data$Sub_Choose[i] != res_data$LC[i] & 
-      res_data$Sub_Choose[i] == res_data$RC[i]
+      res_data$Sub_Choose[i] != res_data[[L_choice]][i] & 
+      res_data$Sub_Choose[i] == res_data[[R_choice]][i]
     ) {
       res_data$L_dir[i] <- 0
       res_data$R_dir[i] <- 1
     } else if (
-      res_data$Sub_Choose[i] == res_data$LC[i] & 
-      res_data$Sub_Choose[i] == res_data$RC[i]
+      res_data$Sub_Choose[i] == res_data[[L_choice]][i] & 
+      res_data$Sub_Choose[i] == res_data[[R_choice]][i]
     ) {
       res_data$L_dir[i] <- 0
       res_data$R_dir[i] <- 0

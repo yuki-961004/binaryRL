@@ -22,10 +22,10 @@ rl_generate_d(
   prob_func = func_tau,
   sub = "Subject",
   time_line = c("Block", "Trial"),
-  L_choice = "LC",
-  R_choice = "RC",
-  L_reward = "LR",
-  R_reward = "RR",
+  L_choice = "L_choice",
+  R_choice = "R_choice",
+  L_reward = "L_reward",
+  R_reward = "R_reward",
   sub_choose = "Choose",
   var1 = NA,
   var2 = NA,
@@ -170,4 +170,17 @@ parameters to generate choices that mimic the decision-making process of subject
 enabling the study of behavior under varying conditions. By integrating the best-fit 
 parameters from the `algorithm` package, this function offers a powerful tool for 
 simulating human choices in reinforcement learning contexts.
+}
+\examples{
+data <- BCT
+
+simulated <- binaryRL::rl_generate_d(
+  data = data,
+  id = 18,
+  eta = c(0.321, 0.765),
+  n_params = 2, 
+  n_trials = 288
+)
+
+summary(simulated)
 }

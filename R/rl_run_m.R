@@ -132,7 +132,18 @@
 #' 
 #' @return A table showing how participants updated their values ​​and selected
 #' @export
-#'
+#' @examples
+#' data <- BCT
+#' 
+#' binaryRL_res <- binaryRL::rl_run_m(
+#'   data = data,                    
+#'   id = 18,                       
+#'   eta = c(0.321, 0.765),          
+#'   n_params = 2,                   
+#'   n_trials = 288                 
+#' )
+#' 
+#' summary(binaryRL_res)
 rl_run_m <- function(
   data, 
   id,
@@ -153,8 +164,8 @@ rl_run_m <- function(
   
   sub = "Subject",
   time_line = c("Block", "Trial"),
-  L_choice = "LC",
-  R_choice = "RC",
+  L_choice = "L_choice",
+  R_choice = "R_choice",
   choose = "Choose",
   reward = "Reward",
   var1 = NA,
