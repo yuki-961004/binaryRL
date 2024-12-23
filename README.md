@@ -25,16 +25,16 @@ library(binaryRL)
 ## Read your Raw Data
 ```r
 # a data frame including these columns
-data <- [your_data]
+data <- BCT
 ```
 
-| Subject | Block | Trial | L_choice | R_choice | Choose | Reward | var1 | var2 |
-|---------|-------|-------|----------|----------|--------|--------|------|------|
-| 1       | 1     | 1     | A        | B        | A      | 5      |...   |...   |
-| 1       | 1     | 2     | A        | B        | B      | 3      |...   |...   |
-| 2       | 2     | 1     | X        | Y        | X      | 4      |...   |...   |
-| 2       | 2     | 2     | X        | Y        | Y      | 2      |...   |...   | 
-| ...     | ...   | ...   | ...      | ...      | ...    | ...    |...   |...   |
+| Subject | Block | Trial | L_choice | R_choice | L_reward | R_reward | Choose | Reward |
+|---------|-------|-------|----------|----------|----------|----------|--------|--------|
+| 1       | 1     | 1     | A        | B        | 20       | 0        | A      | 20     |
+| 1       | 1     | 2     | B        | A        | 40       | 20       | B      | 0      |
+| 1       | 1     | 3     | C        | D        | -20      | -40      | C      | -20    |
+| 1       | 1     | 4     | D        | C        | 0        | -20      | D      | -40    |
+| ...     | ...   | ...   | ...      | ...      | ...      | ...      | ...    | ...    |
 
 <details>
 <summary>NOTES</summary>
@@ -43,6 +43,7 @@ data <- [your_data]
 2. Make sure the **global environment** contains the raw data.   
 3. `Block` and `Trial` columns are not mandatory, but there must be a column that represents the sequence of the experiment.  
 4. You can also add two **additional variables** (var1, var2) as factors that the model needs to consider.
+5. In `rl_run_m`, the columns `L_reward` and `R_reward` are not required, but in `rl_generate_d`, these two columns need to be included.
 
 </details>
 
@@ -411,16 +412,6 @@ summary(binaryRL_res)
 <!---------------------------------------------------------->
 
 ## Applying Optimal Parameters to Generate a Simulated Data Frame
-Unlike the previous dataset, this time the input dataset requires the rewards for both the left and right options. (The "Choose" column, as before, represents how the human made their choice in this context.) In addition, when generating simulation data, only one subject's data can be input at a time.
-
-| Subject | Block | Trial | L_choice | R_choice | Choose | L_reward | R_reward |
-|---------|-------|-------|----------|----------|--------|----------|--------- |
-| 1       | 1     | 1     | A        | B        | A      | 1        | 5        |
-| 1       | 1     | 2     | A        | B        | B      | 2        | 3        |
-| 1       | 2     | 1     | X        | Y        | X      | 3        | 4        |
-| 1       | 2     | 2     | X        | Y        | Y      | 4        | 2        |
-| ...     | ...   | ...   | ...      | ...      | ...    | ...      | ...      |
-
 The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option. 
 
 ```r
@@ -645,7 +636,7 @@ func_gamma <- function(
 ## $\epsilon$-Greedy
 Participants in the experiment may not always choose based on the value of the options, but instead select randomly on some trials. This is known as $\epsilon$-greedy. (e.g., when epsilon = 0.1 (*default: NA*), it means that the participant has a 10% probability of randomly selecting an option and a 90% probability of choosing based on the currently learned value of the options.)
 
-- In my opinion, I think that participants tend to randomly select options during the early stages of the experiment to estimate the value of each option. Therefore, I added an argument called `threshold`, which specifies the number of trials during which participants will make completely random choices. The default value is set to 20. **(if you disagree with my assumption, you can set `threshold = 0`)**. 
+- In my opinion, I think that participants tend to randomly select options during the early stages of the experiment to estimate the value of each option. Therefore, I added an argument called `threshold`, which specifies the number of trials during which participants will make completely random choices. The default value is set to 1.
 
 ```r
 binaryRL::rl_run_m(
