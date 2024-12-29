@@ -43,7 +43,8 @@ data <- BCT
 
 <!---------------------------------------------------------->
 
-## Creating an Objective Function for Algorithm Packages
+## 1. Creating an <span style="color:#FFCFB3; font-weight:bold;">*Objective Function*</span> for <span style="color:#FFF5CD;">*Algorithm Packages*</span>
+
 Create a function that contains only ONE argument: `params`.   
 
 ```r
@@ -298,7 +299,7 @@ func_tau <- function (
 
 <!---------------------------------------------------------->
 
-## Using Algorithm Packages to Search for Optimal Parameters
+## 2. Using <span style="color:#FFF5CD; font-weight:bold;">*Algorithm Packages*</span> to Search for <span style="color:#A1EEBD;">*Optimal Parameters*</span>
 
 Here is an example using `optim` from the `stats` (which is a default package in R), though it has issues with both runtime and accuracy.
 
@@ -421,7 +422,7 @@ summary(binaryRL_res)
 
 <!---------------------------------------------------------->
 
-## Applying Optimal Parameters to Generate a Simulated Data Frame
+## 3. Applying <span style="color:#A1EEBD; font-weight:bold;">*Optimal Parameters*</span> to Generate a <span style="color:#B7E0FF;">*Simulated Data Frame*</span>
 
 The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option. 
 
