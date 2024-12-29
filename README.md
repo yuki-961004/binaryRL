@@ -36,21 +36,15 @@ data <- BCT
 | 1       | 1     | 4     | D        | C        | 0        | -20      | D      | -40    |
 | ...     | ...   | ...   | ...      | ...      | ...      | ...      | ...    | ...    |
 
-<details>
-<summary>NOTES</summary>
+*NOTES*
 
-1. Your dataset needs to include these **columns**.  
-2. Make sure the **global environment** contains the raw data.   
-3. `Block` and `Trial` columns are not mandatory, but there must be a column that represents the sequence of the experiment.  
-4. You can also add two **additional variables** (var1, var2) as factors that the model needs to consider.
-5. In `rl_run_m`, the columns `L_reward` and `R_reward` are not required, but in `rl_generate_d`, these two columns need to be included.
-
-</details>
+1. Your dataset needs to include these **columns**.   
+2. You can also add two **additional variables** as factors that the model needs to consider.
 
 <!---------------------------------------------------------->
 
 ## Creating an Objective Function for Algorithm Packages
-Create a function that contains only the `params` argument.   
+Create a function that contains only ONE argument: `params`.   
 
 ```r
 obj_func <- function(params){
@@ -67,15 +61,13 @@ obj_func <- function(params){
   binaryRL_res <<- res
   
   # if the algorithm is solving a minimization problem, return -ll
-  invisible(-res$ll)
+  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim ...
   # if the algorithm is solving a maximization problem, return ll
-  # invisible(res$ll)
+  # invisible(res$ll) # GA ...
 }
 ```
 
 <!---------------------------------------------------------->
-
-If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::rl_run_m`
 
 <details>
 <summary>Custom Column Names</summary>
@@ -91,8 +83,8 @@ obj_func <- function(params){
 
     # column names
     sub = "Subject",
-    L_choice = "LC",
-    R_choice = "RC",
+    L_choice = "L_choice",
+    R_choice = "R_choice",
     choose = "Choose",
     reward = "Reward",
     time_line = c("Block", "Trial"),
@@ -105,9 +97,9 @@ obj_func <- function(params){
   binaryRL_res <<- res
   
   # if the algorithm is solving a minimization problem, return -ll
-  invisible(-res$ll)
+  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim ...
   # if the algorithm is solving a maximization problem, return ll
-  # invisible(res$ll)
+  # invisible(res$ll) # GA ...
 }
 ```
 
@@ -115,7 +107,9 @@ obj_func <- function(params){
 
 <!---------------------------------------------------------->
 
-You can also customize the `value function` and `action function`. The default function is applicable to three basic models. 
+If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::rl_run_m`
+
+<!---------------------------------------------------------->
 
 <details>
 <summary>Custom Functions</summary>
@@ -131,11 +125,11 @@ obj_func <- function(params){
 
     # column names
     sub = "Subject",
-    L_choice = "LC",
-    R_choice = "RC",
+    time_line = c("Block", "Trial"),
+    L_choice = "L_choice",
+    R_choice = "R_choice",
     choose = "Choose",
     reward = "Reward",
-    time_line = c("Block", "Trial"),
     var1 = "extra_Var1",
     var2 = "extra_Var2",
 
@@ -151,13 +145,17 @@ obj_func <- function(params){
   binaryRL_res <<- res
   
   # if the algorithm is solving a minimization problem, return -ll
-  invisible(-res$ll)
+  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim ...
   # if the algorithm is solving a maximization problem, return ll
-  # invisible(res$ll)
+  # invisible(res$ll) # GA ...
 }
 ```
 
 </details>  
+
+<!---------------------------------------------------------->
+
+You can also customize the `value function` and `action function`. The default function is applicable to three basic models. 
 
 <!---------------------------------------------------------->
 
@@ -174,7 +172,10 @@ print(binaryRL::func_gamma)
 
 ```r
 func_gamma <- function(
-  value, utility, reward, occurrence, var1, var2, gamma, lambda
+  # variables
+  value, utility, reward, occurrence, var1, var2, 
+  # parameters
+  gamma, lambda
 ){
   if (length(gamma) == 1) {
     gamma <- gamma
@@ -199,12 +200,15 @@ print(binaryRL::func_eta)
 
 ```r
 func_eta <- function (
-  value, utility, reward, occurrence, var1, var2, eta, lambda
+  # variables
+  value, utility, reward, occurrence, var1, var2, 
+  # parameters
+  eta, lambda
 ){
   if (length(eta) == 1) {
     eta <- as.numeric(eta)
   }
-  else if (length(eta) > 1 & utility < value) {
+  else if (length(eta) > 1 & utility <  value) {
     eta <- eta[1]
   }
   else if (length(eta) > 1 & utility >= value) {
@@ -229,10 +233,16 @@ print(binaryRL::func_epsilon)
 
 ```r
 func_epsilon <- function(
-  i, var1, var2, threshold, epsilon, lambda
+  # variables
+  i, var1, var2, 
+  # parameters
+  threshold, epsilon, lambda
 ){
   if (i <= threshold) {
     try <- 1
+  } 
+  else if (i > threshold & is.na(epsilon)) {
+    try <- 0
   } 
   else if (i > threshold & !(is.na(epsilon))){
     try <- sample(
@@ -240,10 +250,7 @@ func_epsilon <- function(
       prob = c(epsilon, 1 - epsilon),
       size = 1
     )
-  } 
-  else if (i > threshold & is.na(epsilon)) {
-    try <- 0
-  } 
+  }
   else {
     try <- "ERROR"
   }
@@ -263,7 +270,10 @@ print(binaryRL::func_tau)
 
 ```r
 func_tau <- function (
-  LR, try, L_value, R_value, var1, var2, tau = 1, lambda 
+  # variables
+  LR, try, L_value, R_value, var1, var2, 
+  # parameters
+  tau, lambda 
 ){
   if (!(LR %in% c("L", "R"))) {
     stop("LR = 'L' or 'R'")
@@ -289,7 +299,7 @@ func_tau <- function (
 <!---------------------------------------------------------->
 
 ## Using Algorithm Packages to Search for Optimal Parameters
-### Example Algorithms
+
 Here is an example using `optim` from the `stats` (which is a default package in R), though it has issues with both runtime and accuracy.
 
 <!---------------------------------------------------------->
@@ -412,6 +422,7 @@ summary(binaryRL_res)
 <!---------------------------------------------------------->
 
 ## Applying Optimal Parameters to Generate a Simulated Data Frame
+
 The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option. 
 
 ```r
@@ -444,8 +455,6 @@ summary(simulated)
 
 <!---------------------------------------------------------->
 
-If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::rl_generate_d`
-
 <details>
 <summary>Custom Column Names</summary>
 
@@ -459,11 +468,11 @@ simulated <- binaryRL::rl_generate_d(
 
   # column names
   sub = "Subject",
-  L_choice = "LC",
-  R_choice = "RC",
-  L_reward = "LR",
-  R_reward = "RR",
   time_line = c("Block", "Trial"),
+  L_choice = "L_choice",
+  R_choice = "R_choice",
+  L_reward = "L_reward",
+  R_reward = "R_reward",
   sub_choose = "Choose",
   var1 = "extra_Var1",
   var2 = "extra_Var2"
@@ -477,7 +486,9 @@ summary(simulated)
 
 <!---------------------------------------------------------->
 
-You can also customize the `value function` and `action function`. The default function is applicable to three basic models. 
+If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::rl_generate_d`
+
+<!---------------------------------------------------------->
 
 <details>
 <summary>Custom Functions</summary>
@@ -492,11 +503,11 @@ simulated <- binaryRL::rl_generate_d(
 
   # column names
   sub = "Subject",
-  L_choice = "LC",
-  R_choice = "RC",
-  L_reward = "LR",
-  R_reward = "RR",
   time_line = c("Block", "Trial"),
+  L_choice = "L_choice",
+  R_choice = "R_choice",
+  L_reward = "L_reward",
+  R_reward = "R_reward",
   sub_choose = "Choose",
   var1 = "extra_Var1",
   var2 = "extra_Var2",
@@ -515,14 +526,20 @@ summary(simulated)
 
 <!---------------------------------------------------------->
 
+You can also customize the `value function` and `action function`. The default function is applicable to three basic models. 
+
+<!---------------------------------------------------------->
+
 ---
 # Other Arguments
 ## How to run Classic Models
 
 The default function can run the three classic models here. Setting different parameters in `rl_run_m` means running different RL models.
+
 <!---------------------------------------------------------->
 
 ### 1. TD Model ($\eta$)
+
 > "The TD model is a standard temporal difference learning model (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998)."  
 
 **if only ONE $\eta$ is set as a free paramters, it represents the TD model.**
@@ -539,6 +556,7 @@ binaryRL::rl_run_m(
 ```
 
 ### 2. Risk-Sensitive TD Model ($\eta_{-}$, $\eta_{+}$)
+
 > "In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, 2002)."  
 
 **If TWO $\eta$ are set as free parameters, it represents the RSTD model.**
@@ -555,6 +573,7 @@ binaryRL::rl_run_m(
 ```
 
 ### 3. Utility Model ($\eta$, $\gamma$)
+
 > "The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, 1954)"
 
 **If ONE $\eta$ and ONE $\gamma$ are set as free parameters, it represents the utility model.**
@@ -676,6 +695,9 @@ Rosenbaum, G. M., Grassie, H. L., & Hartley, C. A. (2022). Valence biases in rei
 <!---------------------------------------------------------->
 
 ## Model Fit
+
+LL represents the similarity between the model's choices and human choices. The larger this value, the better the model.
+
 $$
 LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
 $$   
