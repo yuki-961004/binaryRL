@@ -101,7 +101,11 @@ generate_BCT_data <- function(n_subjects = 30, n_blocks = 6, n_trials_per_block 
 }
 
 # 生成数据集
-BCT <- generate_BCT_data()
+BCT <- generate_BCT_data(n_trials_per_block = 96) %>%
+  dplyr::filter(Frame == "Gain") %>%
+  dplyr::group_by(Subject, Block) %>%
+  dplyr::mutate(Trial = dplyr::row_number()) %>%
+  dplyr::ungroup()
 
 # 在R目录下创建一个脚本来保存数据集
 usethis::use_data(BCT, overwrite = TRUE)
