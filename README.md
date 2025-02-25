@@ -1,9 +1,9 @@
 # binaryRL
-This package is designed to simplify the process of building reinforcement learning models. It allows beginners to easily construct a model with just an `if-else` statement, making model creation more accessible.
+This package is designed to simplify the process of building **model-free** reinforcement learning models. It allows beginners to easily construct a model with just an `if-else` statement, making model creation more accessible.
 
 Before using this package, please make sure you agree with this assumptions.
 
-> The paradigm is a Two-alternative Forced Choice(TAFC) task. And the learning for different stimuli is independent, meaning rewards for one stimulus do not influence the learning process for others.
+> This experiment employs a Two-Alternative Forced Choice (TAFC) paradigm. Learning for each stimulus is independent, meaning reward outcomes for one stimulus do not affect learning for other stimuli.
 
 If you agree with this assumptions, I will introduce how to use this package.
 
@@ -769,8 +769,10 @@ $$
 
 <!---------------------------------------------------------->
 
-## Log Likelihood Function
-**Log Likelihood Function** representing how similar robot behavior is to human behavior
+## Loss Function
+**Loss Function** quantifies the error between predicted and actual values in a machine learning model. It guides the model's training by indicating how well it's performing.  
+
+- **Log Likelihood Function** representing how similar robot behavior is to human behavior
 
   $$
   LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
