@@ -168,7 +168,7 @@ customizable modeling of decision-making tasks, where the parameters' optimal
 values are learned through computational algorithms.
 }
 \examples{
-data <- BCT
+data <- TAFC
 
 binaryRL_res <- binaryRL::rl_run_m(
   data = data,                    

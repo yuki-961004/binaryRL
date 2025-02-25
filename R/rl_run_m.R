@@ -133,7 +133,7 @@
 #' @return A table showing how participants updated their values ​​and selected
 #' @export
 #' @examples
-#' data <- BCT
+#' data <- TAFC
 #' 
 #' binaryRL_res <- binaryRL::rl_run_m(
 #'   data = data,                    

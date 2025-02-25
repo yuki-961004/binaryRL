@@ -132,7 +132,7 @@
 #' @return generated data
 #' @export
 #' @examples
-#' data <- BCT
+#' data <- TAFC
 #' 
 #' simulated <- binaryRL::rl_generate_d(
 #'   data = data,

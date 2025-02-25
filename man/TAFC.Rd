@@ -1,5 +1,5 @@
-\name{BCT}
-\alias{BCT}
+\name{TAFC}
+\alias{TAFC}
 \title{A Simulated Dataset for Reinforcement Learning Task}
 \description{
   This is a simulated dataset for a reinforcement learning task.
@@ -24,7 +24,7 @@
   }
 }
 \examples{
-  # Load the BCT dataset
-  data(BCT)
-  head(BCT)
+  # Load the TAFC dataset
+  data(TAFC)
+  head(TAFC)
 }

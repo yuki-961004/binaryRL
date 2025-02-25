@@ -172,7 +172,7 @@ parameters from the `algorithm` package, this function offers a powerful tool fo
 simulating human choices in reinforcement learning contexts.
 }
 \examples{
-data <- BCT
+data <- TAFC
 
 simulated <- binaryRL::rl_generate_d(
   data = data,

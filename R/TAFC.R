@@ -2,10 +2,10 @@
 set.seed(123)
 
 # 定义函数来生成数据集
-generate_BCT_data <- function(n_subjects = 30, n_blocks = 6, n_trials_per_block = 48) {
+generate_TAFC_data <- function(n_subjects = 30, n_blocks = 6, n_trials_per_block = 48) {
   
   # 初始化空的结果数据框
-  BCT <- data.frame()
+  TAFC <- data.frame()
   
   # 循环遍历每个被试
   for (subject in 1:n_subjects) {
@@ -81,7 +81,7 @@ generate_BCT_data <- function(n_subjects = 30, n_blocks = 6, n_trials_per_block 
       }
       
       # 将数据添加到结果数据框
-      BCT <- rbind(BCT, data.frame(
+      TAFC <- rbind(TAFC, data.frame(
           Subject = subject,
           Block = block,
           Trial = trials,
@@ -97,15 +97,15 @@ generate_BCT_data <- function(n_subjects = 30, n_blocks = 6, n_trials_per_block 
     }
   }
   
-  return(BCT)
+  return(TAFC)
 }
 
 # 生成数据集
-BCT <- generate_BCT_data(n_trials_per_block = 96) %>%
+TAFC <- generate_TAFC_data(n_trials_per_block = 96) %>%
   dplyr::filter(Frame == "Gain") %>%
   dplyr::group_by(Subject, Block) %>%
   dplyr::mutate(Trial = dplyr::row_number()) %>%
   dplyr::ungroup()
 
 # 在R目录下创建一个脚本来保存数据集
-usethis::use_data(BCT, overwrite = TRUE)
+usethis::use_data(TAFC, overwrite = TRUE)

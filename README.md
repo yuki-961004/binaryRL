@@ -3,7 +3,7 @@ This package is designed to simplify the process of building reinforcement learn
 
 Before using this package, please make sure you agree with this assumptions.
 
-> The paradigm is a binary choice decision task. And the learning for different stimuli is independent, meaning rewards for one stimulus do not influence the learning process for others.
+> The paradigm is a Two-alternative Forced Choice(TAFC) task. And the learning for different stimuli is independent, meaning rewards for one stimulus do not influence the learning process for others.
 
 If you agree with this assumptions, I will introduce how to use this package.
 
@@ -25,7 +25,7 @@ library(binaryRL)
 ## Read your Raw Data
 ```r
 # a data frame including these columns
-data <- BCT
+data <- TAFC
 ```
 
 | Subject | Block | Trial | L_choice | R_choice | L_reward | R_reward | Choose | Reward |
