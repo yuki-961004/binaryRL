@@ -774,10 +774,10 @@ $$
 
 - **Log Likelihood Function** representing how similar robot behavior is to human behavior
 
-  $$
-  LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
-  $$   
+$$
+LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
+$$   
 
-  *NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model.   
+*NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model.   
 
 <!---------------------------------------------------------->
