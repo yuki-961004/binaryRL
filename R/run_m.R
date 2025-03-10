@@ -1,18 +1,18 @@
-#' rl_run_m
+#' run_m
+#'
 #' @description
-#' This function is designed to be used in conjunction with the `algorithm` 
-#' package. Users can define their own `value function` and `action function` 
-#' to model the decision-making process. The function allows users to set 
-#' certain parameters as free parameters, which will be optimized during the 
-#' algorithm's execution. By integrating this function with the `algorithm` 
-#' package, users can apply advanced optimization techniques to solve for the 
-#' values of these free parameters. This approach facilitates flexible and 
-#' customizable modeling of decision-making tasks, where the parameters' optimal 
-#' values are learned through computational algorithms.
+#' This function requires the optimal parameter values obtained through the 
+#' `algorithm` package. Once the best parameter values are solved for, they 
+#' are incorporated into the reinforcement learning model, allowing the model 
+#' to simulate human-like decision-making. The function leverages these optimized 
+#' parameters to generate choices that mimic the decision-making process of subjects, 
+#' enabling the study of behavior under varying conditions. By integrating the best-fit 
+#' parameters from the `algorithm` package, this function offers a powerful tool for 
+#' simulating human choices in reinforcement learning contexts.
 #' 
 #' @param data A data frame containing the raw data. 
 #' This data should include the following mandatory columns: 
-#' - "sub", "time_line", "L_choice", "R_choice", "choose", "reward". 
+#' - "sub", "time_line", "L_choice", "R_choice", "choose", "L_reward", "R_reward". 
 #' The following arguments allow you to customize the column names used for processing
 #' 
 #' @param id A numeric value specifying the subject ID for which the model is being analyzed. 
@@ -74,8 +74,6 @@
 #' @param rate_func The function for the learning rate eta, which you can customize
 #' @param expl_func The function for the epsilon greedy, which you can customize
 #' @param prob_func The function for the temperature tau, which you can customize.
-#'
-#' 
 #' 
 #' @param sub A string specifying the name of the column that contains the subject ID.  
 #' Provide the name of the column as a character string  
@@ -94,13 +92,15 @@
 #' Provide the name of the column as a character string 
 #' e.g., `R_choice = "Right_Choice"`
 #' 
-#' @param choose A string specifying the name of the column that represents the choice made by the subject. 
+#' @param sub_choose A string specifying the name of the column that represents the choice made by the subject. 
 #' Provide the name of the column as a character string 
-#' e.g., `choose = "Choose"`
-#' 
-#' @param reward A string specifying the name of the column that represents the reward associated with the subject's choice. 
+#' e.g., `sub_choose = "Choose"`
+#' @param L_reward A string specifying the name of the left column. 
 #' Provide the name of the column as a character string 
-#' e.g., `reward = "Reward"`
+#' e.g., `L_reward = "Left_reward"`
+#' @param R_reward A string specifying the name of the right column. 
+#' Provide the name of the column as a character string 
+#' e.g., `R_reward = "Right_reward"`
 #' 
 #' @param var1 A string specifying the name of an additional variable that can be used in the model. 
 #' Provide the name of the column as a character string 
@@ -129,129 +129,122 @@
 #' 
 #' @param digits_2 The number of decimal places to retain for values related to the action function. 
 #' The default is 5.
-#' 
-#' @return A table showing how participants updated their values ​​and selected
+#'
+#' @returns RL result
 #' @export
+#'
 #' @examples
 #' data <- TAFC
 #' 
-#' binaryRL_res <- binaryRL::rl_run_m(
-#'   data = data,                    
-#'   id = 18,                       
-#'   eta = c(0.321, 0.765),          
-#'   n_params = 2,                   
-#'   n_trials = 288                 
+#' simulated <- binaryRL::run_m(
+#'   data = data,
+#'   id = 18,
+#'   eta = c(0.321, 0.765),
+#'   n_params = 2, 
+#'   n_trials = 288
 #' )
 #' 
-#' summary(binaryRL_res)
-rl_run_m <- function(
-  data, 
-  id,
-  initial_value = NA,
-  threshold = 1,
-  n_params,
-  n_trials,
+#' summary(simulated)
+#' 
+run_m <- function(
+    data,
+    id,
+    initial_value = NA,
+    threshold = 1,
+    n_params,
+    n_trials,
+    
+    gamma = 1,
+    eta,
+    epsilon = NA,
+    tau = 1,
+    lambda = NA,
+    util_func = func_gamma,
+    rate_func = func_eta,
+    expl_func = func_epsilon,
+    prob_func = func_tau,
+    
+    sub = "Subject",
+    time_line = c("Block", "Trial"),
+    L_choice = "L_choice",
+    R_choice = "R_choice",
+    L_reward = "L_reward",
+    R_reward = "R_reward",
+    sub_choose = "Choose",
+    var1 = NA,
+    var2 = NA,
+    
+    softmax = TRUE,
+    seed = 123,
+    
+    digits_1 = 2,
+    digits_2 = 5
+){
+  # 选择被试
+  data <- data[data[[sub]] == id, ]
   
-  gamma = 1,
-  eta,
-  epsilon = NA,
-  tau = 1,
-  lambda = NA,
-  util_func = func_gamma,
-  rate_func = func_eta,
-  expl_func = func_epsilon,
-  prob_func = func_tau, 
+  step1 <- unique_choice(
+    data = data,
+    L_choice = L_choice, 
+    R_choice = R_choice
+  )
   
-  sub = "Subject",
-  time_line = c("Block", "Trial"),
-  L_choice = "L_choice",
-  R_choice = "R_choice",
-  choose = "Choose",
-  reward = "Reward",
-  var1 = NA,
-  var2 = NA,
+  step2 <- arrange_data(
+    data = step1[["data"]],
+    time_line = time_line
+  )
   
-  softmax = TRUE,
-  seed = 123,
-
-  digits_1 = 2, 
-  digits_2 = 5
-) {
-  step0 <- data
+  step3 <- add_NA(
+    data = step2
+  )
   
-  # 第一步, 基于奖励, 不同刺激独立更新价值
-  step1 <- loop_update_v(
-    data = step0, 
-    n = id,
+  step4 <- set_initial_value(
+    data = step3, 
+    options = step1[["options"]], 
+    initial_value = initial_value
+  )
+  
+  step5 <- decision_making(
+    data = step4,
+    options = step1[["options"]],
+    L_choice = "L_choice", R_choice = "R_choice",
+    L_reward = "L_reward", R_reward = "R_reward",
+    softmax = softmax,
+    threshold = threshold,
     initial_value = initial_value,
-
+    
     lambda = lambda,
     gamma = gamma,
     eta = eta,
-    
-    util_func = util_func,
-    rate_func = rate_func,
-
-    sub = sub,
-    choose = choose,
-    reward = reward,
-    time_line = time_line,
-    var1 = var1,
-    var2 = var2,
-
-    digits = digits_1
-  ) 
-  
-  # 第二步, 基于左右选项价值, 进行选择
-  step2 <- loop_action_c(
-    data = step1,
-    n = 1,
-    initial_value = 0,
-    threshold = threshold,
-
-    lambda = lambda,
     epsilon = epsilon,
-    tau = tau,
-    expl_func = expl_func,
-    prob_func = prob_func,
-
-    sub = sub,
-    L_choice = L_choice,
-    R_choice = R_choice,
-    choose = choose,
-    value = "V_value",
-    var1 = var1,
-    var2 = var2,
+    tau = tau
+  )
+  
+  step6 <- model_fit(
+    data = step5, 
+    L_choice = L_choice, 
+    R_choice = R_choice, 
+    sub_choose = sub_choose
+  )
+  
+  step7 <- digits(
+    data = step6, 
+    options = step1[["options"]],
+    digits_1 = digits_1, 
+    digits_2 = digits_2
+  )
+  
+  step8 <- output(
+    data = step7,
+    n_params = n_params,
+    n_trials = n_trials,
     
-    seed = seed,
-    softmax = softmax,
-    
-    digits = digits_2
+    lambda = lambda,
+    gamma = gamma,
+    eta = eta,
+    epsilon = epsilon,
+    tau = tau
   )
   
-  params <- list(
-    lambda = c(lambda),
-    gamma = c(gamma),
-    eta = c(eta), 
-    epsilon = c(epsilon),
-    tau = c(tau)
-  )
-  
-  mean_ACC <- round(mean(step2$ACC), 4) * 100
-  sum_LL <- round(sum(step2$L_logl) + sum(step2$R_logl), digits = 2)
-  AIC <- round(2 * n_params - 2 * sum_LL, digits = 2)
-  BIC <- round(n_params * log(n_trials) - 2 * sum_LL, digits = 2)
-  
-  res <- list(
-    data = step2,
-    params = params,
-    acc = mean_ACC,
-    ll = sum_LL,
-    aic = AIC,
-    bic = BIC
-  )
-  
-  class(res) <- c("binaryRL") 
-  
-  return(res)
+  return(step8)
 }
