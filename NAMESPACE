@@ -17,6 +17,7 @@ export(decision_making)
 export(model_fit)
 export(digits)
 export(output)
+export(back)
 
 S3method(summary, binaryRL)
 export(summary.binaryRL)

@@ -95,9 +95,18 @@
 #' @param sub_choose A string specifying the name of the column that represents the choice made by the subject. 
 #' Provide the name of the column as a character string 
 #' e.g., `sub_choose = "Choose"`
+#' 
+#' @param rob_choose A string specifying the name of the column that represents the choice made by the model(robot). 
+#' Provide the name of the column as a character string 
+#' e.g., `rob_choose = "Rob_Choose"`
+#' 
+#' @param raw_cols c("Subject", "Block", "Trial", "L_choice", "R_choice", "L_reward", "R_reward", "Choose", "Reward")
+#' the column names of raw data
+#' 
 #' @param L_reward A string specifying the name of the left column. 
 #' Provide the name of the column as a character string 
 #' e.g., `L_reward = "Left_reward"`
+#' 
 #' @param R_reward A string specifying the name of the right column. 
 #' Provide the name of the column as a character string 
 #' e.g., `R_reward = "Right_reward"`
@@ -110,8 +119,6 @@
 #' Provide the name of the column as a character string 
 #' e.g., `var2 = "Extra_Var2"`
 #'
-#' 
-#' 
 #' @param softmax A logical value indicating whether to use the softmax function. 
 #' When softmax = TRUE, the value of each option influences the probability of selecting that option. 
 #' Higher values increase the probability of selecting that option. 
@@ -123,6 +130,8 @@
 #' This ensures that the results are reproducible and remain the same each time the function is run.
 #' Provide the value as a number. 
 #' default: `seed = 123`
+#' 
+#' @param back TRUE or FALSE, for model recovery. if 'back = TRUE', then generate a raw data
 #' 
 #' @param digits_1 The number of decimal places to retain for values related to the value function. 
 #' The default is 2.
@@ -171,11 +180,18 @@ run_m <- function(
     L_reward = "L_reward",
     R_reward = "R_reward",
     sub_choose = "Choose",
+    rob_choose = "Rob_Choose",
+    raw_cols = c(
+      "Subject", "Block", "Trial",
+      "L_choice", "R_choice", "L_reward", "R_reward",
+      "Choose", "Reward"
+    ),
     var1 = NA,
     var2 = NA,
     
     softmax = TRUE,
     seed = 123,
+    back = FALSE,
     
     digits_1 = 2,
     digits_2 = 5
@@ -246,5 +262,15 @@ run_m <- function(
     tau = tau
   )
   
-  return(step8)
+  step9 <- back(
+    data = step8,
+    back = back,
+    sub_choose = sub_choose,
+    rob_choose = rob_choose,
+    raw_cols = raw_cols
+  )
+  
+  final <- step9
+  
+  return(step9)
 }

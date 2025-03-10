@@ -27,10 +27,14 @@ run_m(
   L_reward = "L_reward",
   R_reward = "R_reward",
   sub_choose = "Choose",
+  rob_choose = "Rob_Choose",
+  raw_cols = c("Subject", "Block", "Trial", "L_choice", "R_choice", "L_reward",
+    "R_reward", "Choose", "Reward"),
   var1 = NA,
   var2 = NA,
   softmax = TRUE,
   seed = 123,
+  back = FALSE,
   digits_1 = 2,
   digits_2 = 5
 )
@@ -132,6 +136,13 @@ e.g., `R_reward = "Right_reward"`}
 Provide the name of the column as a character string 
 e.g., `sub_choose = "Choose"`}
 
+\item{rob_choose}{A string specifying the name of the column that represents the choice made by the model(robot). 
+Provide the name of the column as a character string 
+e.g., `rob_choose = "Rob_Choose"`}
+
+\item{raw_cols}{c("Subject", "Block", "Trial", "L_choice", "R_choice", "L_reward", "R_reward", "Choose", "Reward")
+the column names of raw data}
+
 \item{var1}{A string specifying the name of an additional variable that can be used in the model. 
 Provide the name of the column as a character string 
 e.g., `var1 = "Extra_Var1"`}
@@ -151,6 +162,8 @@ default: `softmax = TRUE`}
 This ensures that the results are reproducible and remain the same each time the function is run.
 Provide the value as a number. 
 default: `seed = 123`}
+
+\item{back}{TRUE or FALSE, for model recovery. if 'back = TRUE', then generate a raw data}
 
 \item{digits_1}{The number of decimal places to retain for values related to the value function. 
 The default is 2.}
