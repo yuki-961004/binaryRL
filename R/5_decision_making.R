@@ -329,7 +329,7 @@ decision_making <- function(
       data[[choose]][i] <- data$V_update[i]  
     }
   }
-############################## [delete first row] ############################## 
+  
   # 删除第一行赋予的初始值
   data <- data[-1, ]
   

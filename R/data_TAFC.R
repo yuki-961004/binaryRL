@@ -1,8 +1,4 @@
-# 设置随机种子以便复现结果
-set.seed(123)
-
-# 定义函数来生成数据集
-generate_TAFC_data <- function(n_subjects = 30, n_blocks = 6, n_trials_per_block = 48) {
+generate_d <- function(n_subjects = 30, n_blocks = 6, n_trials_per_block = 48) {
   
   # 初始化空的结果数据框
   TAFC <- data.frame()
@@ -82,17 +78,17 @@ generate_TAFC_data <- function(n_subjects = 30, n_blocks = 6, n_trials_per_block
       
       # 将数据添加到结果数据框
       TAFC <- rbind(TAFC, data.frame(
-          Subject = subject,
-          Block = block,
-          Trial = trials,
-          Frame = frame,
-          L_choice = l_choice,
-          R_choice = r_choice,
-          L_reward = l_reward,
-          R_reward = r_reward,
-          Choose = choose,
-          Reward = reward
-        )
+        Subject = subject,
+        Block = block,
+        Trial = trials,
+        Frame = frame,
+        L_choice = l_choice,
+        R_choice = r_choice,
+        L_reward = l_reward,
+        R_reward = r_reward,
+        Choose = choose,
+        Reward = reward
+      )
       )
     }
   }
@@ -100,12 +96,16 @@ generate_TAFC_data <- function(n_subjects = 30, n_blocks = 6, n_trials_per_block
   return(TAFC)
 }
 
+################################################################################
+
 # 生成数据集
-TAFC <- generate_TAFC_data(n_trials_per_block = 96) %>%
+data <- generate_d(n_subjects = 30, n_blocks = 6, n_trials_per_block = 96) %>%
   dplyr::filter(Frame == "Gain") %>%
   dplyr::group_by(Subject, Block) %>%
   dplyr::mutate(Trial = dplyr::row_number()) %>%
   dplyr::ungroup()
+
+TAFC <- data
 
 # 在R目录下创建一个脚本来保存数据集
 usethis::use_data(TAFC, overwrite = TRUE)

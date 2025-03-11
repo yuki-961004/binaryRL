@@ -9,12 +9,12 @@
   left and right choices, corresponding rewards, and the selected choice.
 }
 \format{
-  A data frame with 1800 rows and 10 columns:
+  A data frame with 8640 rows and 10 columns:
   \describe{
     \item{Subject}{Subject ID, an integer (1 to 30)}
     \item{Block}{Block number, an integer (1 to 6)}
     \item{Trial}{Trial number, an integer (1 to 48)}
-    \item{Frame}{Type of frame, either "Gain" or "Loss"}
+    \item{Frame}{Type of frame, "Gain" or "Loss"}
     \item{L_choice}{Left choice, one of "A", "B", "C", or "D"}
     \item{R_choice}{Right choice, one of "A", "B", "C", or "D"}
     \item{L_reward}{Reward associated with the left choice}
