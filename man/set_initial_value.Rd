@@ -7,7 +7,7 @@
 set_initial_value(data, options, initial_value = NA)
 }
 \arguments{
-\item{data}{A dataframe resulting from the 'step3' process of the `add_NA` function.}
+\item{data}{A data frame resulting from the 'step3' process of the `add_NA` function.}
 
 \item{options}{all alternative options}
 
@@ -19,7 +19,10 @@ default: `initial_value = NA`
 e.g., `initial_value = 0`}
 }
 \value{
-step4
+data frame:
+  \itemize{
+    \item{\code{data}: step3 + row[0] with initial value.}
+  }
 }
 \description{
 set_initial_value

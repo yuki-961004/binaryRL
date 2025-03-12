@@ -21,7 +21,11 @@ Provide the name of the column as a character string
 e.g., `R_choice = "Right_Choice"`}
 }
 \value{
-step1
+list:
+  \itemize{
+    \item{\code{data}: raw data frame + null cols [options].}
+    \item{\code{options}: a vector containing all options.}
+  }
 }
 \description{
 unique_choice

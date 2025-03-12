@@ -1,8 +1,11 @@
 #' add_NA
 #'
-#' @param data A dataframe resulting from the 'step2' process of the `arrange_data` function. 
+#' @param data A data frame resulting from the 'step2' process of the `arrange_data` function. 
 #'
-#' @returns step3
+#' @returns data frame:
+#'   \itemize{
+#'     \item{\code{data}: step2 + row[0] for initial value + null cols [Reward, gamma, R_utility, ...].}
+#'   }
 #' @export
 #'
 #' @examples

@@ -7,10 +7,13 @@
 add_NA(data)
 }
 \arguments{
-\item{data}{A dataframe resulting from the 'step2' process of the `arrange_data` function.}
+\item{data}{A data frame resulting from the 'step2' process of the `arrange_data` function.}
 }
 \value{
-step3
+data frame:
+  \itemize{
+    \item{\code{data}: step2 + row[0] for initial value + null cols [Reward, gamma, R_utility, ...].}
+  }
 }
 \description{
 add_NA

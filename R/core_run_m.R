@@ -20,6 +20,8 @@
 #' Provide the subject ID as a number.
 #' e.g., `id = 18`
 #' 
+#' @param back TRUE or FALSE, for model recovery. if 'back = TRUE', then generate a raw data
+#' 
 #' @param initial_value A numeric value representing the subject's initial expected value for each stimulus's reward. 
 #' If this value is not set, the subject will use the reward received after the first trial as the initial value for that stimulus. 
 #' In other words, the learning rate for the first trial is 100%. 
@@ -27,17 +29,27 @@
 #' default: `initial_value = NA`
 #' e.g., `initial_value = 0`
 #' 
+#' @param softmax A logical value indicating whether to use the softmax function. 
+#' When softmax = TRUE, the value of each option influences the probability of selecting that option. 
+#' Higher values increase the probability of selecting that option. 
+#' When softmax = FALSE, the subject will always choose the option with the higher value, with no possibility of selecting the lower-value option.
+#' Provide the value as a logical (TRUE or FALSE).
+#' default: `softmax = TRUE`
+#' 
 #' @param threshold A numeric value specifying the number of initial trials during which the subject makes random choices 
 #' rather than choosing based on the values of the options. This occurs because the subject has not yet learned the values of the options. 
 #' For example, threshold = 20 means the subject will make completely random choices for the first 20 trials.
 #' Provide the value as a number. 
 #' default: `threshold = 1`
 #' 
+#' @param seed A numeric value to set the random seed. 
+#' This ensures that the results are reproducible and remain the same each time the function is run.
+#' Provide the value as a number. 
+#' default: `seed = 123` 
+#' 
 #' @param n_params The number of free parameters in the model. 
 #' @param n_trials The total number of trials in the experiment.
 #'
-#' 
-#' 
 #' @param lambda An additional parameter that may be used in these functions. 
 #' Provide the value as a vector 
 #' e.g., `lambda = c(0.4, 0.7, 20, 60)`
@@ -119,20 +131,6 @@
 #' Provide the name of the column as a character string 
 #' e.g., `var2 = "Extra_Var2"`
 #'
-#' @param softmax A logical value indicating whether to use the softmax function. 
-#' When softmax = TRUE, the value of each option influences the probability of selecting that option. 
-#' Higher values increase the probability of selecting that option. 
-#' When softmax = FALSE, the subject will always choose the option with the higher value, with no possibility of selecting the lower-value option.
-#' Provide the value as a logical (TRUE or FALSE).
-#' default: `softmax = TRUE`
-#' 
-#' @param seed A numeric value to set the random seed. 
-#' This ensures that the results are reproducible and remain the same each time the function is run.
-#' Provide the value as a number. 
-#' default: `seed = 123`
-#' 
-#' @param back TRUE or FALSE, for model recovery. if 'back = TRUE', then generate a raw data
-#' 
 #' @param digits_1 The number of decimal places to retain for values related to the value function. 
 #' The default is 2.
 #' 
@@ -158,8 +156,11 @@
 run_m <- function(
     data,
     id,
+    back = FALSE,
     initial_value = NA,
+    softmax = TRUE,
     threshold = 1,
+    seed = 123,
     n_params,
     n_trials,
     
@@ -168,6 +169,7 @@ run_m <- function(
     epsilon = NA,
     tau = 1,
     lambda = NA,
+    
     util_func = func_gamma,
     rate_func = func_eta,
     expl_func = func_epsilon,
@@ -184,14 +186,10 @@ run_m <- function(
     raw_cols = c(
       "Subject", "Block", "Trial",
       "L_choice", "R_choice", "L_reward", "R_reward",
-      "Choose", "Reward"
+      "Choose"
     ),
     var1 = NA,
     var2 = NA,
-    
-    softmax = TRUE,
-    seed = 123,
-    back = FALSE,
     
     digits_1 = 2,
     digits_2 = 5

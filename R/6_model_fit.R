@@ -1,6 +1,6 @@
 #' model_fit
 #'
-#' @param data A dataframe resulting from the 'step5' process of the `decision_making` function. 
+#' @param data A data frame resulting from the 'step5' process of the `decision_making` function. 
 #' 
 #' @param L_choice A string specifying the name of the column that represents the left choice. 
 #' Provide the name of the column as a character string 
@@ -12,9 +12,12 @@
 #' 
 #' @param sub_choose A string specifying the name of the column that represents the choice made by the subject. 
 #' Provide the name of the column as a character string 
-#' e.g., `sub_choose = "Choose"`
+#' e.g., `sub_choose = "Sub_Choose"`
 #'
-#' @returns step6
+#' @returns data frame:
+#'   \itemize{
+#'     \item{\code{data}: step5 + ACC + logL.}
+#'   }
 #' @export
 #'
 #' @examples
@@ -67,7 +70,7 @@ model_fit <- function(
   data, 
   L_choice = "L_choice", 
   R_choice = "R_choice", 
-  sub_choose = "Choose"
+  sub_choose = "Sub_Choose"
 ){
   # 如果输入了sub_choose, 就计算rob_choose和sub_choose的匹配度
   if (is.character(sub_choose)) {

@@ -7,18 +7,23 @@
 digits(data, options, digits_1 = 2, digits_2 = 5)
 }
 \arguments{
-\item{data}{A dataframe resulting from the 'step6' process of the `model_fit` function.}
+\item{data}{A data frame resulting from the 'step6' process of the `model_fit` function.}
 
-\item{options}{all alternative options}
+\item{options}{all alternative options from 'step1' `unique_choice`}
 
 \item{digits_1}{The number of decimal places to retain for values related to the value function. 
-The default is 2.}
+The default is 2.
+e.g., `Value_Option_A = 20.00`}
 
 \item{digits_2}{The number of decimal places to retain for values related to the action function. 
-The default is 5.}
+The default is 5.
+e.g., `L_logl = -123.12345`}
 }
 \value{
-step7
+data frame:
+  \itemize{
+    \item{\code{data}: step6 + round(col, digits).}
+  }
 }
 \description{
 digits
@@ -66,7 +71,7 @@ step6 <- model_fit(
   data = step5, 
   L_choice = "L_choice",
   R_choice = "R_choice",
-  sub_choose = "Choose"
+  sub_choose = "Sub_Choose"
 )
 
 step7 <- digits(

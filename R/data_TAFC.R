@@ -86,8 +86,7 @@ generate_d <- function(n_subjects = 30, n_blocks = 6, n_trials_per_block = 48) {
         R_choice = r_choice,
         L_reward = l_reward,
         R_reward = r_reward,
-        Choose = choose,
-        Reward = reward
+        Sub_Choose = choose
       )
       )
     }

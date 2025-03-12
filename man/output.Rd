@@ -7,7 +7,7 @@
 output(data, n_params, n_trials, gamma, eta, epsilon, tau, lambda)
 }
 \arguments{
-\item{data}{data A dataframe resulting from the 'step7' process of the `digits` function.}
+\item{data}{A data frame resulting from the 'step7' process of the `digits` function.}
 
 \item{n_params}{The number of free parameters in the model.}
 
@@ -46,7 +46,15 @@ Provide the value as a vector
 e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 }
 \value{
-step8
+binaryRL[list]:
+  \itemize{
+    \item{\code{data}: output data frame with all information}
+    \item{\code{params}: all parameters value}
+    \item{\code{numeric}: ACC}
+    \item{\code{numeric}: LogL}
+    \item{\code{numeric}: AIC}
+    \item{\code{numeric}: BIC}
+  }
 }
 \description{
 output
@@ -94,7 +102,7 @@ step6 <- model_fit(
   data = step5, 
   L_choice = "L_choice",
   R_choice = "R_choice",
-  sub_choose = "Choose"
+  sub_choose = "Sub_Choose"
 )
 
 step7 <- digits(

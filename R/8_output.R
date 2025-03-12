@@ -1,8 +1,11 @@
 #' output
 #'
-#' @param data data A dataframe resulting from the 'step7' process of the `digits` function. 
+#' @param data A data frame resulting from the 'step7' process of the `digits` function. 
+#' 
 #' @param n_params The number of free parameters in the model. 
+#' 
 #' @param n_trials The total number of trials in the experiment.
+#' 
 #' @param lambda An additional parameter that may be used in these functions. 
 #' Provide the value as a vector 
 #' e.g., `lambda = c(0.4, 0.7, 20, 60)`
@@ -35,7 +38,15 @@
 #' Provide the value as a vector 
 #' e.g., `tau = c(0.5)`
 #'
-#' @returns step8
+#' @returns binaryRL[list]:
+#'   \itemize{
+#'     \item{\code{data}: output data frame with all information}
+#'     \item{\code{params}: all parameters value}
+#'     \item{\code{numeric}: ACC}
+#'     \item{\code{numeric}: LogL}
+#'     \item{\code{numeric}: AIC}
+#'     \item{\code{numeric}: BIC}
+#'   }
 #' @export
 #'
 #' @examples
@@ -81,7 +92,7 @@
 #'   data = step5, 
 #'   L_choice = "L_choice",
 #'   R_choice = "R_choice",
-#'   sub_choose = "Choose"
+#'   sub_choose = "Sub_Choose"
 #' )
 #' 
 #' step7 <- digits(

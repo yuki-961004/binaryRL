@@ -15,13 +15,13 @@ decision_making(
   var2 = NA,
   seed = 123,
   initial_value,
+  softmax = TRUE,
+  threshold = 1,
   gamma,
   eta,
   epsilon,
   tau,
   lambda,
-  softmax = TRUE,
-  threshold = 1,
   expl_func = func_epsilon,
   prob_func = func_tau,
   util_func = func_gamma,
@@ -29,9 +29,9 @@ decision_making(
 )
 }
 \arguments{
-\item{data}{A dataframe resulting from the 'step4' process of the `set_initial_value` function.}
+\item{data}{A data frame resulting from the 'step4' process of the `set_initial_value` function.}
 
-\item{options}{all alternative options}
+\item{options}{all alternative options from 'step1' `unique_choice`}
 
 \item{L_choice}{A string specifying the name of the column that represents the left choice. 
 Provide the name of the column as a character string 
@@ -70,6 +70,19 @@ Provide the initial value as a number
 default: `initial_value = NA`
 e.g., `initial_value = 0`}
 
+\item{softmax}{A logical value indicating whether to use the softmax function. 
+When softmax = TRUE, the value of each option influences the probability of selecting that option. 
+Higher values increase the probability of selecting that option. 
+When softmax = FALSE, the subject will always choose the option with the higher value, with no possibility of selecting the lower-value option.
+Provide the value as a logical (TRUE or FALSE).
+default: `softmax = TRUE`}
+
+\item{threshold}{A numeric value specifying the number of initial trials during which the subject makes random choices 
+rather than choosing based on the values of the options. This occurs because the subject has not yet learned the values of the options. 
+For example, threshold = 20 means the subject will make completely random choices for the first 20 trials.
+Provide the value as a number. 
+default: `threshold = 1`}
+
 \item{gamma}{A parameter used in the `util_func` (Utility Function), often 
 referred to as the discount rate. For example, in the utility equation 
 `utility = gamma * reward`, if gamma < 1, it indicates that people discount 
@@ -102,19 +115,6 @@ e.g., `tau = c(0.5)`}
 Provide the value as a vector 
 e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 
-\item{softmax}{A logical value indicating whether to use the softmax function. 
-When softmax = TRUE, the value of each option influences the probability of selecting that option. 
-Higher values increase the probability of selecting that option. 
-When softmax = FALSE, the subject will always choose the option with the higher value, with no possibility of selecting the lower-value option.
-Provide the value as a logical (TRUE or FALSE).
-default: `softmax = TRUE`}
-
-\item{threshold}{A numeric value specifying the number of initial trials during which the subject makes random choices 
-rather than choosing based on the values of the options. This occurs because the subject has not yet learned the values of the options. 
-For example, threshold = 20 means the subject will make completely random choices for the first 20 trials.
-Provide the value as a number. 
-default: `threshold = 1`}
-
 \item{expl_func}{The function for the epsilon greedy, which you can customize}
 
 \item{prob_func}{The function for the temperature tau, which you can customize.}
@@ -124,7 +124,10 @@ default: `threshold = 1`}
 \item{rate_func}{The function for the learning rate eta, which you can customize}
 }
 \value{
-step5
+data frame:
+  \itemize{
+    \item{\code{data}: step4 + all decisions.}
+  }
 }
 \description{
 decision_making

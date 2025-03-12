@@ -19,8 +19,7 @@
     \item{R_choice}{Right choice, one of "A", "B", "C", or "D"}
     \item{L_reward}{Reward associated with the left choice}
     \item{R_reward}{Reward associated with the right choice}
-    \item{Choose}{The chosen option, either L_choice or R_choice}
-    \item{Reward}{Reward corresponding to the chosen option}
+    \item{Sub_Choose}{The chosen option, either L_choice or R_choice}
   }
 }
 \examples{

@@ -8,11 +8,11 @@ model_fit(
   data,
   L_choice = "L_choice",
   R_choice = "R_choice",
-  sub_choose = "Choose"
+  sub_choose = "Sub_Choose"
 )
 }
 \arguments{
-\item{data}{A dataframe resulting from the 'step5' process of the `decision_making` function.}
+\item{data}{A data frame resulting from the 'step5' process of the `decision_making` function.}
 
 \item{L_choice}{A string specifying the name of the column that represents the left choice. 
 Provide the name of the column as a character string 
@@ -24,10 +24,13 @@ e.g., `R_choice = "Right_Choice"`}
 
 \item{sub_choose}{A string specifying the name of the column that represents the choice made by the subject. 
 Provide the name of the column as a character string 
-e.g., `sub_choose = "Choose"`}
+e.g., `sub_choose = "Sub_Choose"`}
 }
 \value{
-step6
+data frame:
+  \itemize{
+    \item{\code{data}: step5 + ACC + logL.}
+  }
 }
 \description{
 model_fit

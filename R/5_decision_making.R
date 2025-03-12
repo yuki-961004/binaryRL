@@ -1,8 +1,8 @@
 #' decision_making
 #'
-#' @param data A dataframe resulting from the 'step4' process of the `set_initial_value` function. 
+#' @param data A data frame resulting from the 'step4' process of the `set_initial_value` function. 
 #' 
-#' @param options all alternative options
+#' @param options all alternative options from 'step1' `unique_choice`
 #' 
 #' @param L_choice A string specifying the name of the column that represents the left choice. 
 #' Provide the name of the column as a character string 
@@ -85,12 +85,16 @@
 #' to the value difference between the options. In other words, even a small difference in value will make the subject more likely to choose the higher-value option. 
 #' Provide the value as a vector 
 #' e.g., `tau = c(0.5)`
+#' 
 #' @param util_func The function for the utility gamma, which you can customize
 #' @param rate_func The function for the learning rate eta, which you can customize
 #' @param expl_func The function for the epsilon greedy, which you can customize
 #' @param prob_func The function for the temperature tau, which you can customize.
 #'
-#' @returns step5
+#' @returns data frame:
+#'   \itemize{
+#'     \item{\code{data}: step4 + all decisions.}
+#'   }
 #' @export
 #'
 #' @examples
@@ -135,12 +139,16 @@
 decision_making <- function(
     data, 
     options,
+    
     L_choice = "L_choice", R_choice = "R_choice",
     L_reward = "L_reward", R_reward = "R_reward", 
     var1 = NA, var2 = NA,
+    
     seed = 123, initial_value,
-    gamma, eta, epsilon, tau, lambda, 
     softmax = TRUE, threshold = 1,
+    
+    gamma, eta, epsilon, tau, lambda, 
+    
     expl_func = func_epsilon,
     prob_func = func_tau,
     util_func = func_gamma,

@@ -4,6 +4,7 @@
 #' This data should include the following mandatory columns: 
 #' - "sub", "time_line", "L_choice", "R_choice", "choose", "reward". 
 #' The following arguments allow you to customize the column names used for processing
+#' 
 #' @param L_choice A string specifying the name of the column that represents the left choice. 
 #' Provide the name of the column as a character string 
 #' e.g., `L_choice = "Left_Choice"`
@@ -12,7 +13,11 @@
 #' Provide the name of the column as a character string 
 #' e.g., `R_choice = "Right_Choice"`
 #'
-#' @returns step1
+#' @returns list:
+#'   \itemize{
+#'     \item{\code{data}: raw data frame + null cols [options].}
+#'     \item{\code{options}: a vector containing all options.}
+#'   }
 #' @export
 #'
 #' @examples

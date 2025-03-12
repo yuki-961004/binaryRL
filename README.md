@@ -28,13 +28,13 @@ library(binaryRL)
 data <- TAFC
 ```
 
-| Subject | Block | Trial | L_choice | R_choice | L_reward | R_reward | Choose | Reward |
-|---------|-------|-------|----------|----------|----------|----------|--------|--------|
-| 1       | 1     | 1     | A        | B        | 20       | 0        | A      | 20     |
-| 1       | 1     | 2     | B        | A        | 40       | 20       | B      | 40     |
-| 1       | 1     | 1     | A        | B        | 20       | 0        | B      | 0      |
-| 1       | 1     | 2     | B        | A        | 40       | 20       | A      | 20     |
-| ...     | ...   | ...   | ...      | ...      | ...      | ...      | ...    | ...    |
+| Subject | Block | Trial | L_choice | R_choice | L_reward | R_reward | Sub_Choose |
+|---------|-------|-------|----------|----------|----------|----------|------------|
+| 1       | 1     | 1     | A        | B        | 20       | 0        | A          |
+| 1       | 1     | 2     | B        | A        | 40       | 20       | B          |
+| 1       | 1     | 1     | A        | B        | 20       | 0        | B          |
+| 1       | 1     | 2     | B        | A        | 40       | 20       | A          |
+| ...     | ...   | ...   | ...      | ...      | ...      | ...      | ...        |
 
 *NOTES*
 
@@ -49,7 +49,7 @@ Create a function that contains only ONE argument: `params`.
 
 ```r
 obj_func <- function(params){
-  res <- binaryRL::rl_run_m(
+  res <- binaryRL::run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
     eta = c(params[1], params[2]),  # free parameters (RSTD)
@@ -75,7 +75,7 @@ obj_func <- function(params){
 
 ```r
 obj_func <- function(params){
-  res <- binaryRL::rl_run_m(
+  res <- binaryRL::run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
     eta = c(params[1], params[2]),  # free parameters (RSTD)
@@ -108,7 +108,7 @@ obj_func <- function(params){
 
 <!---------------------------------------------------------->
 
-If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::rl_run_m`
+If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::run_m`
 
 <!---------------------------------------------------------->
 
@@ -117,7 +117,7 @@ If your column names are different from my example, you need to fill in the colu
 
 ```r
 obj_func <- function(params){
-  res <- binaryRL::rl_run_m(
+  res <- binaryRL::run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
     eta = c(params[1], params[2]),  # free parameters (RSTD)
@@ -396,7 +396,7 @@ summary(binaryRL_res)
 <!---------------------------------------------------------->
 
 <details>
-<summary>Differential Evolution (DEoptim)</summary>
+<summary>Differential Evolution (DEoptim) <b>[Recommend]</b></summary>
 
 ```r
 install.packages("DEoptim")
@@ -422,112 +422,279 @@ summary(binaryRL_res)
 
 <!---------------------------------------------------------->
 
-## 3. Applying <span style="color:#A1EEBD; font-weight:bold;">*Optimal Parameters*</span> to Generate a <span style="color:#B7E0FF;">*Simulated Data Frame*</span>
+## 3. Generating <span style="color:#A1EEBD; font-weight:bold;">*Random Parameters*</span> to Generate a <span style="color:#B7E0FF;">*Simulated Data Frame*</span>
 
 The reinforcement learning model will generate a column called `Rob_Choose`, indicating what the reinforcement learning algorithm would choose when faced with this option. 
 
 ```r
-simulated <- binaryRL::rl_generate_d(
-  data = data,
-  id = 18,
-  eta = c(0.321, 0.765),
+obj_func <- function(params){
+  res <- binaryRL::run_m(
+    back = TRUE,                    # simulate raw data
+    data = data,                    # your data
+    id = 18,                        # Subject ID
+    eta = c(params[1], params[2]),  # free parameters (RSTD)
+    n_params = 2,                   # the number of free parameters
+    n_trials = 288                  # the number of total trials
+  )
+
+  return(res)
+}
+
+list_simulated <- binaryRL::simulate_l(
+  obj_func = obj_func,
   n_params = 2, 
-  n_trials = 288
+  iteration = 10
 )
-summary(simulated)
-```
-
-```r
-#> Results of the Reinforcement Learning Model:
-#> 
-#> Parameters:
-#>    λ:  NA  
-#>    γ:  1 
-#>    η:  0.321 0.765 
-#>    ε:  NA 
-#>    τ:  0.5
-
-#> Model Fit:
-#>    Accuracy:  73.26 %
-#>    LogL:  -197.80 
-#>    AIC:  401.60  
-#>    BIC:  412.59 
 ```
 
 <!---------------------------------------------------------->
 
 <details>
-<summary>Custom Column Names</summary>
+<summary>Recovery</summary>
 
 ```r
-simulated <- binaryRL::rl_generate_d(
-  data = data,
-  id = 18,
-  eta = c(0.321, 0.765),
-  n_params = 2, 
-  n_trials = 288,
-
-  # column names
-  sub = "Subject",
-  time_line = c("Block", "Trial"),
-  L_choice = "L_choice",
-  R_choice = "R_choice",
-  L_reward = "L_reward",
-  R_reward = "R_reward",
-  sub_choose = "Choose",
-  var1 = "extra_Var1",
-  var2 = "extra_Var2"
-)
-
-summary(simulated)
-
+list_recovery <- list()
 ```
 
-</details>  
+### TD
+```r
+obj_func <- function(params){
+  res <- binaryRL::run_m(
+    data = data,                    # your data
+    id = 18,                        # Subject ID
+    eta = c(params[1]),             # free parameters (TD)
+    tau = 1,
+    threshold = 20,
+    n_params = 1,                   # the number of free parameters
+    n_trials = 288                  # the number of total trials
+  )
+
+  binaryRL_res <<- res
+  
+  invisible(-res$ll)
+}
+
+#install.packages("DEoptim")
+library(DEoptim)
+
+recovery <- data.frame(
+  model = rep("TD", length(list_simulated)),
+  ACC = NA,
+  LL = NA,
+  AIC = NA,
+  BIC = NA,
+  input_param_1 = NA, 
+  input_param_2 = NA, 
+  output_param_1 = NA,
+  output_param_2 = NA
+)
+
+for (i in 1:length(list_simulated)){
+  data <- list_simulated[[i]][[1]]
+  
+  result <- DEoptim::DEoptim(
+    fn = obj_func,
+    lower = c(0),
+    upper = c(1),
+    control = DEoptim::DEoptim.control(
+      itermax = 10,
+      parallelType = c("parallel"),
+      packages = c("binaryRL"),
+      parVar = c("data")
+    )
+  )
+  
+  obj_func(params = as.vector(result$optim$bestmem))
+  
+  recovery[i, 2] <- binaryRL_res$acc
+  recovery[i, 3] <- binaryRL_res$ll
+  recovery[i, 4] <- binaryRL_res$aic
+  recovery[i, 5] <- binaryRL_res$bic
+  
+  recovery[i, 6] <- list_simulated[[i]]$input[1]
+  recovery[i, 7] <- list_simulated[[i]]$input[2]
+  recovery[i, 8] <- binaryRL_res$params$eta[1]
+  recovery[i, 9] <- binaryRL_res$params$eta[2]
+}
+
+list_recovery[[1]] <- recovery
+```
 
 <!---------------------------------------------------------->
 
-If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::rl_generate_d`
+### RSTD
+```r
+obj_func <- function(params){
+  res <- binaryRL::run_m(
+    data = data,                    # your data
+    id = 18,                        # Subject ID
+    eta = c(params[1], params[2]),  # free parameters (RSTD)
+    tau = 1,
+    threshold = 20,
+    n_params = 2,                   # the number of free parameters
+    n_trials = 288                  # the number of total trials
+  )
+
+  binaryRL_res <<- res
+  
+  invisible(-res$ll)
+}
+
+#install.packages("DEoptim")
+library(DEoptim)
+
+recovery <- data.frame(
+  model = rep("RSTD", length(list_simulated)),
+  ACC = NA,
+  LL = NA,
+  AIC = NA,
+  BIC = NA,
+  input_param_1 = NA, 
+  input_param_2 = NA, 
+  output_param_1 = NA,
+  output_param_2 = NA
+)
+
+for (i in 1:length(list_simulated)){
+  data <- list_simulated[[i]][[1]]
+  
+  result <- DEoptim::DEoptim(
+    fn = obj_func,
+    lower = c(0, 0),
+    upper = c(1, 1),
+    control = DEoptim::DEoptim.control(
+      itermax = 10,
+      parallelType = c("parallel"),
+      packages = c("binaryRL"),
+      parVar = c("data")
+    )
+  )
+  
+  obj_func(params = as.vector(result$optim$bestmem))
+  
+  recovery[i, 2] <- binaryRL_res$acc
+  recovery[i, 3] <- binaryRL_res$ll
+  recovery[i, 4] <- binaryRL_res$aic
+  recovery[i, 5] <- binaryRL_res$bic
+  
+  recovery[i, 6] <- list_simulated[[i]]$input[1]
+  recovery[i, 7] <- list_simulated[[i]]$input[2]
+  recovery[i, 8] <- binaryRL_res$params$eta[1]
+  recovery[i, 9] <- binaryRL_res$params$eta[2]
+}
+
+list_recovery[[2]] <- recovery
+```
+
+<!---------------------------------------------------------->
+
+### Utility
+```r
+obj_func <- function(params){
+  res <- binaryRL::run_m(
+    data = data,                    # your data
+    id = 18,                        # Subject ID
+    eta = c(params[1]),             # free parameters (Utility)
+    gamma = c(params[2]),
+    tau = 1,
+    threshold = 20,
+    n_params = 2,                   # the number of free parameters
+    n_trials = 288                  # the number of total trials
+  )
+
+  binaryRL_res <<- res
+  
+  invisible(-res$ll)
+}
+
+#install.packages("DEoptim")
+library(DEoptim)
+
+recovery <- data.frame(
+  model = rep("Utility", length(list_simulated)),
+  ACC = NA,
+  LL = NA,
+  AIC = NA,
+  BIC = NA,
+  input_param_1 = NA, 
+  input_param_2 = NA, 
+  output_param_1 = NA,
+  output_param_2 = NA
+)
+
+for (i in 1:length(list_simulated)){
+  data <- list_simulated[[i]][[1]]
+  
+  result <- DEoptim::DEoptim(
+    fn = obj_func,
+    lower = c(0, 0),
+    upper = c(1, 2),
+    control = DEoptim::DEoptim.control(
+      itermax = 10,
+      parallelType = c("parallel"),
+      packages = c("binaryRL"),
+      parVar = c("data")
+    )
+  )
+  
+  obj_func(params = as.vector(result$optim$bestmem))
+  
+  recovery[i, 2] <- binaryRL_res$acc
+  recovery[i, 3] <- binaryRL_res$ll
+  recovery[i, 4] <- binaryRL_res$aic
+  recovery[i, 5] <- binaryRL_res$bic
+  
+  recovery[i, 6] <- list_simulated[[i]]$input[1]
+  recovery[i, 7] <- list_simulated[[i]]$input[2]
+  recovery[i, 8] <- binaryRL_res$params$eta[1]
+  recovery[i, 9] <- binaryRL_res$params$gamma[1]
+}
+
+list_recovery[[3]] <- recovery
+```
+</details>
+<!---------------------------------------------------------->
+
+<details>
+<summary>Parameter Recovery</summary>
+
+```r
+data <- list_recovery[[2]]
+
+cor(data$input_param_1, data$output_param_1)
+cor(data$input_param_2, data$output_param_2)
+
+cor(data$output_param_1, data$output_param_2)
+```
+
+</details>
 
 <!---------------------------------------------------------->
 
 <details>
-<summary>Custom Functions</summary>
+<summary>Model Recovery</summary>
 
 ```r
-simulated <- binaryRL::rl_generate_d(
-  data = data,
-  id = 18,
-  eta = c(0.321, 0.765),
-  n_params = 2, 
-  n_trials = 288,
+data <- bind_rows(list_recovery) %>%
+  dplyr::group_by(model) %>%
+  dplyr::mutate(dataset = dplyr::row_number()) %>%
+  dplyr::ungroup() %>%
+  dplyr::select(model, dataset, BIC) %>%
+  tidyr::pivot_wider(
+    names_from = model,
+    values_from = BIC
+  ) %>%
+  dplyr::mutate(
+    win_rate = case_when(
+      RSTD < TD & RSTD < Utility ~ 1,
+      TRUE ~ 0
+    )
+  )
 
-  # column names
-  sub = "Subject",
-  time_line = c("Block", "Trial"),
-  L_choice = "L_choice",
-  R_choice = "R_choice",
-  L_reward = "L_reward",
-  R_reward = "R_reward",
-  sub_choose = "Choose",
-  var1 = "extra_Var1",
-  var2 = "extra_Var2",
-
-  # functions
-  util_func = your_util_func,
-  rate_func = your_rate_func,  
-  expl_func = your_expl_func,
-  prob_func = your_prob_func
-)
-
-summary(simulated)
+mean(data$win_rate)
 ```
 
-</details>  
-
-<!---------------------------------------------------------->
-
-You can also customize the `value function` and `action function`. The default function is applicable to three basic models. 
+</details>
 
 <!---------------------------------------------------------->
 
@@ -535,7 +702,7 @@ You can also customize the `value function` and `action function`. The default f
 # Other Arguments
 ## How to run Classic Models
 
-The default function can run the three classic models here. Setting different parameters in `rl_run_m` means running different RL models.
+The default function can run the three classic models here. Setting different parameters in `run_m` means running different RL models.
 
 <!---------------------------------------------------------->
 
@@ -547,7 +714,7 @@ The default function can run the three classic models here. Setting different pa
 
 ```r
 # TD Model
-binaryRL::rl_run_m(
+binaryRL::run_m(
   ...,
   eta = c(params[1]),              # free parameter: learning rate
   gamma = 1,                       # fixed parameter: utility, default as 1
@@ -564,7 +731,7 @@ binaryRL::rl_run_m(
 
 ```r
 # RSTD Model
-binaryRL::rl_run_m(
+binaryRL::run_m(
   ...,
   eta = c(params[1], params[2]),   # free parameter: learning rate
   gamma = 1,                       # fixed parameter: utility, default as 1
@@ -581,7 +748,7 @@ binaryRL::rl_run_m(
 
 ```r
 # Utility Model
-binaryRL::rl_run_m(
+binaryRL::run_m(
   ...,
   eta = c(params[1]),              # free parameter: learning rate
   gamma = c(params[2]),            # free parameter: utility
@@ -600,14 +767,14 @@ Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction 
 <!---------------------------------------------------------->
 
 ## Initial Value
-In `rl_run_m`, there is an argument called `initial_value`. Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
+In `run_m`, there is an argument called `initial_value`. Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
 
 > "Comparisons between the two learning rates generally revealed a positivity bias ($\alpha_{+} > \alpha_{-}$)"  
 > "However, that on some occasions, studies failed to find a positivity bias or even reported a negativity bias ($\alpha_{+} < \alpha_{-}$)."  
 > "Because Q-values initialization markedly affect learning rate and learning bias estimates."
 
 ```r
-binaryRL::rl_run_m(
+binaryRL::run_m(
   ...,
   initial_value = NA,
   ...
@@ -659,7 +826,7 @@ Participants in the experiment may not always choose based on the value of the o
 - In my opinion, I think that participants tend to randomly select options during the early stages of the experiment to estimate the value of each option. Therefore, I added an argument called `threshold`, which specifies the number of trials during which participants will make completely random choices. The default value is set to 1.
 
 ```r
-binaryRL::rl_run_m(
+binaryRL::run_m(
   ...,
   threshold = 20,      
   epsilon = 0.1,
@@ -679,7 +846,7 @@ If you add $\tau$ to your model as a extra free parameter, you will generally ac
 
 ```r
 # RSTD Model
-binaryRL::rl_run_m(
+binaryRL::run_m(
   ...,
   eta = c(params[1], params[2]),   # free parameter: learning rate
   gamma = 1,                       # fixed parameter: utility, default as 1

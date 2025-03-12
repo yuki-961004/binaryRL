@@ -1,6 +1,6 @@
 #' set_initial_value
 #'
-#' @param data A dataframe resulting from the 'step3' process of the `add_NA` function. 
+#' @param data A data frame resulting from the 'step3' process of the `add_NA` function. 
 #' 
 #' @param options all alternative options
 #' 
@@ -11,7 +11,10 @@
 #' default: `initial_value = NA`
 #' e.g., `initial_value = 0` 
 #'
-#' @returns step4
+#' @returns data frame:
+#'   \itemize{
+#'     \item{\code{data}: step3 + row[0] with initial value.}
+#'   }
 #' @export
 #'
 #' @examples

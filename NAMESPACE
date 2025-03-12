@@ -1,6 +1,4 @@
-importFrom("dplyr", "%>%", "bind_rows")
-importFrom("tidyr", "pivot_wider")
-importFrom("purrr", "map")
+importFrom("dplyr", "%>%")
 importFrom("stats", "runif")
 importFrom("usethis", "use_data")
 export(func_gamma)

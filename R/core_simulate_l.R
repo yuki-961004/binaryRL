@@ -1,5 +1,14 @@
 #' simulate_l
-#'
+#' 
+#' @description
+#' 
+#' This function generates simulated datasets using a
+#' user-defined objective function. You can specify the number of
+#' iterations to control how many datasets are generated.
+#' These datasets can be used for parameter recovery and model
+#' recovery. For more information, please refer to the GitHub repository:
+#' https://github.com/yuki-961004/binaryRL
+#' 
 #' @param obj_func object function
 #' @param n_params number of model free parameters
 #' @param iteration iteration

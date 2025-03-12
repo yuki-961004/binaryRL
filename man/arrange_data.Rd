@@ -7,7 +7,7 @@
 arrange_data(data, time_line = c("Block", "Trial"))
 }
 \arguments{
-\item{data}{A dataframe resulting from the 'step1' process of the `unique_choice` function.}
+\item{data}{A data frame resulting from the 'step1' process of the `unique_choice` function.}
 
 \item{time_line}{A vector specifying the name of the column that the sequence of the experiment. 
 This argument defines how the experiment is structured, such as whether it is organized by "Block" with breaks in between, and multiple trials within each block. 
@@ -15,7 +15,10 @@ Provide the sequence as a character vector,
 e.g., `time_line = c("Block", "Trial")`}
 }
 \value{
-step2
+data frame:
+  \itemize{
+    \item{\code{data}: step1 arranged by 'time_line'.}
+  }
 }
 \description{
 arrange_data
