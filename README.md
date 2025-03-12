@@ -84,11 +84,18 @@ obj_func <- function(params){
 
     # column names
     sub = "Subject",
+    time_line = c("Block", "Trial"),
     L_choice = "L_choice",
     R_choice = "R_choice",
-    choose = "Choose",
-    reward = "Reward",
-    time_line = c("Block", "Trial"),
+    L_reward = "L_reward",
+    R_reward = "R_reward",
+    sub_choose = "Sub_Choose",
+    rob_choose = "Rob_Choose",
+    raw_cols = c(
+      "Subject", "Block", "Trial",
+      "L_choice", "R_choice", "L_reward", "R_reward",
+      "Sub_Choose"
+    ),
     var1 = "extra_Var1",
     var2 = "extra_Var2"
   )
@@ -129,10 +136,17 @@ obj_func <- function(params){
     time_line = c("Block", "Trial"),
     L_choice = "L_choice",
     R_choice = "R_choice",
-    choose = "Choose",
-    reward = "Reward",
+    L_reward = "L_reward",
+    R_reward = "R_reward",
+    sub_choose = "Sub_Choose",
+    rob_choose = "Rob_Choose",
+    raw_cols = c(
+      "Subject", "Block", "Trial",
+      "L_choice", "R_choice", "L_reward", "R_reward",
+      "Sub_Choose"
+    ),
     var1 = "extra_Var1",
-    var2 = "extra_Var2",
+    var2 = "extra_Var2"
 
     # functions
     util_func = your_util_func,
