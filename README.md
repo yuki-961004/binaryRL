@@ -315,27 +315,23 @@ func_tau <- function (
 
 ## 2. <span style="color:#FFF5CD; font-weight:bold;">*Algorithm Packages*</span> 
 
-Here is an example using `optim` from the `stats` (which is a default package in R), though it has issues with both runtime and accuracy.
+This package includes four optimization algorithms: L-BFGS-B (from `stats::optim`), Simulated Annealing (`GenSA::GenSA`), Genetic Algorithm (`GA::ga`), and Differential Evolution (`DEoptim::DEoptim`). You can use any of these algorithms to find the optimal parameters. We recommend using Differential Evolution (`DEoptim`) as it offers the fastest performance and the closest approximation to the true values.
 
 <!---------------------------------------------------------->
 
 ```r
-library(stats)
-
-set.seed(123)
-result <- stats::optim(
-  par = c(0.5, 0.5),
-  method = "L-BFGS-B",
-  fn = obj_func,
+binaryRL_res <- binaryRL::search_p(
+  data = data,
+  obj_func = obj_func,
+  #algorithm = "stats",  # L-BFGS-B(stats::optim),
+  #algorithm = "GenSA",  # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "GA",     # Genetic Algorithm (GA::ga)
+  algorithm = "DEoptim", # Differential Evolution (DEoptim)
   lower = c(0, 0),
   upper = c(1, 1),
-  control = list(
-    maxit = 10
-  )
+  iteration = 10,
+  seed = 123
 )
-
-obj_func(params = as.vector(result$par))
-summary(binaryRL_res)
 ```
 
 ```r
@@ -354,85 +350,6 @@ summary(binaryRL_res)
 #>    AIC:  236.60 
 #>    BIC:  247.59 
 ```
-
-The following three algorithms require additional packages to run. You can click to check them out if you're interested.
-
-<!---------------------------------------------------------->
-
-<details>
-<summary>Simulated Annealing (GenSA)</summary>
-
-```r
-install.packages("GenSA")
-library(GenSA)
-
-result <- GenSA::GenSA(
-  fn = obj_func,
-  lower = c(0, 0),
-  upper = c(1, 1),
-  control = list(
-    maxit = 10,
-    seed = 123
-  )
-)
-
-obj_func(params = as.vector(result$par))
-summary(binaryRL_res)
-```
-
-</details>
-
-<!---------------------------------------------------------->
-
-<details>
-<summary>Genetic Algorithm (GA)</summary>
-
-```r
-install.packages("GA")
-library(GA)
-
-result <- GA::ga(
-  type = "real-valued",
-  fitness = function(x) obj_func(x),
-  lower = c(0, 0),
-  upper = c(1, 1),
-  maxiter = 10,                     
-  parallel = TRUE,          
-  seed = 123                
-)
-
-obj_func(params = as.vector(result@solution))
-summary(binaryRL_res)
-```
-
-</details>
-
-<!---------------------------------------------------------->
-
-<details>
-<summary>Differential Evolution (DEoptim) <b>[Recommend]</b></summary>
-
-```r
-install.packages("DEoptim")
-library(DEoptim)
-
-result <- DEoptim::DEoptim(
-  fn = obj_func,
-  lower = c(0, 0),
-  upper = c(1, 1),
-  control = DEoptim::DEoptim.control(
-    itermax = 10,
-    parallelType = c("parallel"),
-    packages = c("binaryRL"),
-    parVar = c("data")
-  )
-)
-
-obj_func(params = as.vector(result$optim$bestmem))
-summary(binaryRL_res)
-```
-
-</details>
 
 <!---------------------------------------------------------->
 
