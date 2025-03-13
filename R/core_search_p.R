@@ -7,7 +7,7 @@
 #' 
 #' @param obj_func object function, be sure that you write 'binaryRL_res <<- res'
 #' 
-#' @param algorithm Choose a algorithm pacakge from `stats`, `GA`, `GenSA`, `DEoptim`
+#' @param algorithm Choose a algorithm pacakge from `L-BFGS-B`, `GA`, `GenSA`, `DEoptim`
 #' 
 #' @param initial initial value for searching parameters, only needed in stats
 #' 
@@ -37,7 +37,7 @@ search_p <- function(
   set.seed(123)
   
   result <- switch(algorithm,
-   "stats" = {
+   "L-BFGS-B" = {
      stats::optim(
        par = initial,
        method = "L-BFGS-B",
@@ -82,12 +82,12 @@ search_p <- function(
      )
    },
    { # 默认情况（如果 algorithm 不匹配任何已知值）
-     stop("Choose a algorithm pacakge from `stats`, `GA`, `GenSA`, `DEoptim`")
+     stop("Choose a algorithm from `L-BFGS-B`, `GA`, `GenSA`, `DEoptim`")
    }
   )
   
   switch(algorithm,
-   "stats" = {
+   "L-BFGS-B" = {
      obj_func(params = as.vector(result$par))
    },
    "GA" = {
@@ -100,7 +100,7 @@ search_p <- function(
      obj_func(params = as.vector(result$optim$bestmem))
    },
    {
-     stop("Choose a algorithm pacakge from `stats`, `GA`, `GenSA`, `DEoptim`") 
+     stop("Choose a algorithm from `L-BFGS-B`, `GA`, `GenSA`, `DEoptim`") 
    }
   )
   

@@ -323,10 +323,10 @@ This package includes four optimization algorithms: L-BFGS-B (from `stats::optim
 binaryRL_res <- binaryRL::search_p(
   data = data,
   obj_func = obj_func,
-  #algorithm = "stats",  # L-BFGS-B(stats::optim),
-  #algorithm = "GenSA",  # Simulated Annealing (GenSA::GenSA)
-  #algorithm = "GA",     # Genetic Algorithm (GA::ga)
-  algorithm = "DEoptim", # Differential Evolution (DEoptim)
+  #algorithm = "L-BFGS-B",  # Gradient-Based (stats::optim),
+  #algorithm = "GenSA",     # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "GA",        # Genetic Algorithm (GA::ga)
+  algorithm = "DEoptim",    # Differential Evolution (DEoptim)
   lower = c(0, 0),
   upper = c(1, 1),
   iteration = 10,

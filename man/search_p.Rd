@@ -23,7 +23,7 @@ The following arguments allow you to customize the column names used for process
 
 \item{obj_func}{object function, be sure that you write 'binaryRL_res <<- res'}
 
-\item{algorithm}{Choose a algorithm pacakge from `stats`, `GA`, `GenSA`, `DEoptim`}
+\item{algorithm}{Choose a algorithm pacakge from `L-BFGS-B`, `GA`, `GenSA`, `DEoptim`}
 
 \item{initial}{initial value for searching parameters, only needed in stats}
 
