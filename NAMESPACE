@@ -1,6 +1,12 @@
 importFrom("dplyr", "%>%")
-importFrom("stats", "runif")
 importFrom("usethis", "use_data")
+importFrom("stats", "runif")
+
+importFrom("stats", "optim")
+importFrom("GenSA", "GenSA")
+importFrom("GA", "ga")
+importFrom("DEoptim", "DEoptim")
+
 export(func_gamma)
 export(func_eta)
 export(func_epsilon)
@@ -17,6 +23,7 @@ export(digits)
 export(output)
 export(back)
 
+export(search_p)
 export(simulate_l)
 
 S3method(summary, binaryRL)
