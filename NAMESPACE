@@ -17,5 +17,7 @@ export(digits)
 export(output)
 export(back)
 
+export(simulate_l)
+
 S3method(summary, binaryRL)
 export(summary.binaryRL)

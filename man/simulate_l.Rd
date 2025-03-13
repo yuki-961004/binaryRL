@@ -4,12 +4,16 @@
 \alias{simulate_l}
 \title{simulate_l}
 \usage{
-simulate_l(obj_func, n_params, iteration = 10)
+simulate_l(obj_func, n_params, lower, upper, iteration = 10)
 }
 \arguments{
 \item{obj_func}{object function}
 
 \item{n_params}{number of model free parameters}
+
+\item{lower}{lower bounds of parameters}
+
+\item{upper}{upper bounds of parameters}
 
 \item{iteration}{iteration}
 }
