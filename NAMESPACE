@@ -25,6 +25,7 @@ export(back)
 
 export(search_p)
 export(simulate_l)
+export(recovery_d)
 
 S3method(summary, binaryRL)
 export(summary.binaryRL)

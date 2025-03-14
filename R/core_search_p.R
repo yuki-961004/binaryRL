@@ -27,10 +27,10 @@
 search_p <- function(
     data,
     obj_func,
-    algorithm,
     initial,
     lower,
     upper,
+    algorithm,
     iteration = 10,
     seed = 123
 ){
@@ -89,15 +89,19 @@ search_p <- function(
   switch(algorithm,
    "L-BFGS-B" = {
      obj_func(params = as.vector(result$par))
+     binaryRL_res$output <- as.vector(result$par)
    },
    "GA" = {
      obj_func(params = as.vector(result@solution))
+     binaryRL_res$output <- as.vector(result@solution)
    },
    "GenSA" = {
      obj_func(params = as.vector(result$par))
+     binaryRL_res$output <-as.vector(result$par)
    },
    "DEoptim" = {
      obj_func(params = as.vector(result$optim$bestmem))
+     binaryRL_res$output <-as.vector(result$optim$bestmem)
    },
    {
      stop("Choose a algorithm from `L-BFGS-B`, `GA`, `GenSA`, `DEoptim`") 

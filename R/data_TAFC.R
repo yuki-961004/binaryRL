@@ -97,6 +97,8 @@ generate_d <- function(n_subjects = 30, n_blocks = 6, n_trials_per_block = 48) {
 
 ################################################################################
 
+set.seed(123)
+
 # 生成数据集
 data <- generate_d(n_subjects = 30, n_blocks = 6, n_trials_per_block = 96) %>%
   dplyr::filter(Frame == "Gain") %>%
