@@ -317,6 +317,8 @@ func_tau <- function (
 
 This package includes four optimization algorithms: L-BFGS-B (from `stats::optim`), Simulated Annealing (`GenSA::GenSA`), Genetic Algorithm (`GA::ga`), and Differential Evolution (`DEoptim::DEoptim`). You can use any of these algorithms to find the optimal parameters. We recommend using Differential Evolution (`DEoptim`) as it offers the fastest performance and the closest approximation to the true values.
 
+> Please let me know if you have any recommendations for good algorithm packages. I'd be happy to incorporate them into the search_p function.
+
 <!---------------------------------------------------------->
 
 ```r
@@ -459,7 +461,7 @@ list_simulated
 ```
 
 ## 4. Recovery Data
-To demonstrate parameter and model recovery, we will utilize these simulated datasets (`list_simulated`). Specifically, we will show how the **RSTD** model can be recovered using the **TD** model as an example. Following the recommendations of Wilson & Collins (2019), it is necessary to simulate datasets using each of the alternative models. Subsequently, each model should be used to fit all of these simulated datasets, resulting in the creation of a confusion matrix. This implies that the following steps will be repeated many times.
+To demonstrate parameter and model recovery, we will utilize these simulated datasets (`list_simulated`). Specifically, we will show how the **RSTD** model can be recovered using the **TD** model as an example. 
 <!---------------------------------------------------------->
 
 ```r
@@ -503,14 +505,14 @@ df_recovery <- binaryRL::recovery_d(
 <!---------------------------------------------------------->
 
 ### Parameter Recovery
-When the model used to simulate data and the model used to fit data are the **same**, we can compare the consistency of input and output parameters (correlation, plot, ...). High consistency indicates that the model's parameters can be reliably recovered.
+> Before reading too much into the best-fitting parameter values, $\theta_{m}^{MLE}$,  it is important to check whether the fitting procedure gives meaningful parameter values in the best case scenario, -that is, when fitting fake data where the ‘true’ parameter values are known (Nilsson et al., 2011). Such a procedure is known as ‘Parameter Recovery’, and is a crucial part of any model-based analysis.
 
 <p align="center">
     <img src="./fig/parameter_recovery.png" alt="RL Models" width="70%">
 </p>
 
 ### Model Recovery
-Repeat this process: use each model to simulate data and then fit the data with all candidate models. If model A consistently provides the best fit for its own simulated data, for example, having the highest BIC in 90% of iterations, it indicates good model recovery.
+> More specifically, model recovery involves simulating data from all models (with a range of parameter values carefully selected as in the case of parameter recovery) and then fitting that data with all models to determine the extent to which fake data generated from model A is best fit by model A as opposed to model B. This process can be summarized in a confusion matrix that quantifies the probability that each model is the best fit to data generated from the other models, that is, *p*(*fit model* = B | *simulated model* = A).
 
 <p align="center">
     <img src="./fig/model_recovery.png" alt="RL Models" width="70%">
