@@ -43,7 +43,7 @@ data <- TAFC
 
 <!---------------------------------------------------------->
 
-## 1. Objective Function
+## 1. Run Model
 
 Create a function that contains only ONE argument: `params`.   
 
