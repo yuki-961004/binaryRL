@@ -380,14 +380,6 @@ list_simulated <- binaryRL::simulate_l(
 
 <!---------------------------------------------------------->
 
-<details>
-<summary>Recovery</summary>
-
-```r
-list_recovery <- list()
-```
-
-### TD
 ```r
 obj_func <- function(params){
   res <- binaryRL::run_m(
@@ -405,235 +397,45 @@ obj_func <- function(params){
   invisible(-res$ll)
 }
 
-#install.packages("DEoptim")
-library(DEoptim)
-
-recovery <- data.frame(
-  model = rep("TD", length(list_simulated)),
-  ACC = NA,
-  LL = NA,
-  AIC = NA,
-  BIC = NA,
-  input_param_1 = NA, 
-  input_param_2 = NA, 
-  output_param_1 = NA,
-  output_param_2 = NA
+binaryRL::recovery_d(
+  list = list_simulated,
+  obj_func,
+  model_name = "TD",
+  initial,
+  lower = c(0),
+  upper = c(1),
+  iteration = 3,
+  seed = 123,
+  algorithm = "DEoptim"
 )
-
-for (i in 1:length(list_simulated)){
-  data <- list_simulated[[i]][[1]]
-  
-  result <- DEoptim::DEoptim(
-    fn = obj_func,
-    lower = c(0),
-    upper = c(1),
-    control = DEoptim::DEoptim.control(
-      itermax = 10,
-      parallelType = c("parallel"),
-      packages = c("binaryRL"),
-      parVar = c("data")
-    )
-  )
-  
-  obj_func(params = as.vector(result$optim$bestmem))
-  
-  recovery[i, 2] <- binaryRL_res$acc
-  recovery[i, 3] <- binaryRL_res$ll
-  recovery[i, 4] <- binaryRL_res$aic
-  recovery[i, 5] <- binaryRL_res$bic
-  
-  recovery[i, 6] <- list_simulated[[i]]$input[1]
-  recovery[i, 7] <- list_simulated[[i]]$input[2]
-  recovery[i, 8] <- binaryRL_res$params$eta[1]
-  recovery[i, 9] <- binaryRL_res$params$eta[2]
-}
-
-list_recovery[[1]] <- recovery
 ```
+
+| model | ACC | LL | AIC | BIC | imput_param_1 | imput_param_2 | output_param_1 |
+|-------|-----|----|-----|-----|---------------|---------------|----------------|
+| TD    | ... | ...| ... | ... |      ...      |       ...     |       ...      |
+| TD    | ... | ...| ... | ... |      ...      |       ...     |       ...      |
+| TD    | ... | ...| ... | ... |      ...      |       ...     |       ...      |
+| TD    | ... | ...| ... | ... |      ...      |       ...     |       ...      |
+| TD    | ... | ...| ... | ... |      ...      |       ...     |       ...      |
 
 <!---------------------------------------------------------->
 
-### RSTD
-```r
-obj_func <- function(params){
-  res <- binaryRL::run_m(
-    data = data,                    # your data
-    id = 18,                        # Subject ID
-    eta = c(params[1], params[2]),  # free parameters (RSTD)
-    tau = 1,
-    threshold = 20,
-    n_params = 2,                   # the number of free parameters
-    n_trials = 288                  # the number of total trials
-  )
+### Parameter Recovery
+When the model used to simulate data and the model used to fit data are the same, we can compare the consistency of input and output parameters. Techniques like correlation analysis and scatter plots can be used. High consistency indicates that the model's parameters can be reliably recovered.
 
-  binaryRL_res <<- res
-  
-  invisible(-res$ll)
-}
+<p align="center">
+    <img src="./fig/parameter_recovery.png" alt="RL Models" width="70%">
+</p>
 
-#install.packages("DEoptim")
-library(DEoptim)
+### Model Recovery
+Repeat this process: use each model to simulate data and then fit the data with all candidate models. If model A consistently provides the best fit for its own simulated data, for example, having the highest BIC in 90% of iterations, it indicates good model recovery.
 
-recovery <- data.frame(
-  model = rep("RSTD", length(list_simulated)),
-  ACC = NA,
-  LL = NA,
-  AIC = NA,
-  BIC = NA,
-  input_param_1 = NA, 
-  input_param_2 = NA, 
-  output_param_1 = NA,
-  output_param_2 = NA
-)
+<p align="center">
+    <img src="./fig/model_recovery.png" alt="RL Models" width="70%">
+</p>
 
-for (i in 1:length(list_simulated)){
-  data <- list_simulated[[i]][[1]]
-  
-  result <- DEoptim::DEoptim(
-    fn = obj_func,
-    lower = c(0, 0),
-    upper = c(1, 1),
-    control = DEoptim::DEoptim.control(
-      itermax = 10,
-      parallelType = c("parallel"),
-      packages = c("binaryRL"),
-      parVar = c("data")
-    )
-  )
-  
-  obj_func(params = as.vector(result$optim$bestmem))
-  
-  recovery[i, 2] <- binaryRL_res$acc
-  recovery[i, 3] <- binaryRL_res$ll
-  recovery[i, 4] <- binaryRL_res$aic
-  recovery[i, 5] <- binaryRL_res$bic
-  
-  recovery[i, 6] <- list_simulated[[i]]$input[1]
-  recovery[i, 7] <- list_simulated[[i]]$input[2]
-  recovery[i, 8] <- binaryRL_res$params$eta[1]
-  recovery[i, 9] <- binaryRL_res$params$eta[2]
-}
-
-list_recovery[[2]] <- recovery
-```
-
-<!---------------------------------------------------------->
-
-### Utility
-```r
-obj_func <- function(params){
-  res <- binaryRL::run_m(
-    data = data,                    # your data
-    id = 18,                        # Subject ID
-    eta = c(params[1]),             # free parameters (Utility)
-    gamma = c(params[2]),
-    tau = 1,
-    threshold = 20,
-    n_params = 2,                   # the number of free parameters
-    n_trials = 288                  # the number of total trials
-  )
-
-  binaryRL_res <<- res
-  
-  invisible(-res$ll)
-}
-
-#install.packages("DEoptim")
-library(DEoptim)
-
-recovery <- data.frame(
-  model = rep("Utility", length(list_simulated)),
-  ACC = NA,
-  LL = NA,
-  AIC = NA,
-  BIC = NA,
-  input_param_1 = NA, 
-  input_param_2 = NA, 
-  output_param_1 = NA,
-  output_param_2 = NA
-)
-
-for (i in 1:length(list_simulated)){
-  data <- list_simulated[[i]][[1]]
-  
-  result <- DEoptim::DEoptim(
-    fn = obj_func,
-    lower = c(0, 0),
-    upper = c(1, 2),
-    control = DEoptim::DEoptim.control(
-      itermax = 10,
-      parallelType = c("parallel"),
-      packages = c("binaryRL"),
-      parVar = c("data")
-    )
-  )
-  
-  obj_func(params = as.vector(result$optim$bestmem))
-  
-  recovery[i, 2] <- binaryRL_res$acc
-  recovery[i, 3] <- binaryRL_res$ll
-  recovery[i, 4] <- binaryRL_res$aic
-  recovery[i, 5] <- binaryRL_res$bic
-  
-  recovery[i, 6] <- list_simulated[[i]]$input[1]
-  recovery[i, 7] <- list_simulated[[i]]$input[2]
-  recovery[i, 8] <- binaryRL_res$params$eta[1]
-  recovery[i, 9] <- binaryRL_res$params$gamma[1]
-}
-
-list_recovery[[3]] <- recovery
-```
-</details>
-<!---------------------------------------------------------->
-
-<details>
-<summary>Parameter Recovery</summary>
-
-```r
-data <- list_recovery[[2]]
-
-# Should be HIGH: simulated params (input_param) <-> fit params 
-cor(data$input_param_1, data$output_param_1)
-cor(data$input_param_2, data$output_param_2)
-# Should be LOW: fit param_1 <-> fit param_2
-cor(data$output_param_1, data$output_param_2)
-```
-
-</details>
-
-Parameter recovery involves setting random parameters within a model to generate a series of data frames. Subsequently, the same model is used to fit this generated dataset. The input parameters should ideally align closely with the output parameters obtained from the fitting process. A higher correlation between these input and output parameters indicates better parameter recovery performance.
-
-<!---------------------------------------------------------->
-
-<details>
-<summary>Model Recovery</summary>
-
-```r
-data <- bind_rows(list_recovery) %>%
-  dplyr::group_by(model) %>%
-  dplyr::mutate(dataset = dplyr::row_number()) %>%
-  dplyr::ungroup() %>%
-  dplyr::select(model, dataset, BIC) %>%
-  tidyr::pivot_wider(
-    names_from = model,
-    values_from = BIC
-  ) %>%
-  dplyr::mutate(
-    win_rate = case_when(
-      RSTD < TD & RSTD < Utility ~ 1,
-      TRUE ~ 0
-    )
-  )
-# Should be HIGH:
-mean(data$win_rate)
-```
-
-</details>
-
-Model recovery involves setting random parameters within a model to generate a series of data frames. Then, all available models are used to fit this dataset. If a model is robust, its goodness-of-fit metric, such as BIC (Bayesian Information Criterion), should be the lowest among all models. When RSTD model is used to fit data generated by RSTD model, the frequency with which its BIC is the lowest should be as high as possible.
-
-<!---------------------------------------------------------->
-
+### References
+Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547
 ---
 # Other Arguments
 ## How to run Classic Models
