@@ -1,4 +1,4 @@
-#' search_p
+#' fit_p
 #'
 #' @param data A data frame containing the raw data. 
 #' This data should include the following mandatory columns: 
@@ -24,7 +24,7 @@
 #' @returns binaryRL_res
 #' @export
 #'
-search_p <- function(
+fit_p <- function(
     data,
     obj_func,
     initial,

@@ -313,13 +313,14 @@ func_tau <- function (
 
 <!---------------------------------------------------------->
 
-## 2. Search Parameters
+## 2. Fit Parameters
 
 This package includes **4** algorithms:   
 1. L-BFGS-B (from `stats::optim`)  
 2. Simulated Annealing (`GenSA::GenSA`)  
 3. Genetic Algorithm (`GA::ga`)  
 4. Differential Evolution (`DEoptim::DEoptim`).   
+
 You can use any of these algorithms to find the optimal parameters. But we recommend using Differential Evolution (`DEoptim`) as it offers the fastest performance and the closest approximation to the true values.
 
 > Please let me know if you know any other great algorithm package. I'd be happy to incorporate them into this package. 
@@ -327,7 +328,7 @@ You can use any of these algorithms to find the optimal parameters. But we recom
 <!---------------------------------------------------------->
 
 ```r
-binaryRL_res <- binaryRL::search_p(
+binaryRL_res <- binaryRL::fit_p(
   data = data,
   obj_func = obj_func,
   lower = c(0, 0),

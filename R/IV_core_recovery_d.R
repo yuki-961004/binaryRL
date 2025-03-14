@@ -55,7 +55,7 @@ recovery_d <- function(
   for (i in 1:length(list)){
     data <- list[[i]][[1]]
     
-    binaryRL_res <- binaryRL::search_p(
+    binaryRL_res <- binaryRL::fit_p(
       data = data,
       obj_func = obj_func,
       algorithm = algorithm,

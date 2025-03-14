@@ -12,7 +12,6 @@ export(func_eta)
 export(func_epsilon)
 export(func_tau)
 
-export(run_m)
 export(unique_choice)
 export(arrange_data)
 export(add_NA)
@@ -23,7 +22,9 @@ export(digits)
 export(output)
 export(back)
 
-export(search_p)
+export(run_m)
+export(fit_p)
+
 export(simulate_l)
 export(recovery_d)
 
