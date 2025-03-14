@@ -315,9 +315,14 @@ func_tau <- function (
 
 ## 2. Search Parameters
 
-This package includes four optimization algorithms: L-BFGS-B (from `stats::optim`), Simulated Annealing (`GenSA::GenSA`), Genetic Algorithm (`GA::ga`), and Differential Evolution (`DEoptim::DEoptim`). You can use any of these algorithms to find the optimal parameters. We recommend using Differential Evolution (`DEoptim`) as it offers the fastest performance and the closest approximation to the true values.
+This package includes **4** algorithms:   
+1. L-BFGS-B (from `stats::optim`)  
+2. Simulated Annealing (`GenSA::GenSA`)  
+3. Genetic Algorithm (`GA::ga`)  
+4. Differential Evolution (`DEoptim::DEoptim`).   
+You can use any of these algorithms to find the optimal parameters. But we recommend using Differential Evolution (`DEoptim`) as it offers the fastest performance and the closest approximation to the true values.
 
-> Please let me know if you have any recommendations for good algorithm packages. I'd be happy to incorporate them into the search_p function.
+> Please let me know if you know any other great algorithm package. I'd be happy to incorporate them into this package. 
 
 <!---------------------------------------------------------->
 
@@ -441,23 +446,25 @@ obj_func <- function(params){
 list_simulated <- binaryRL::simulate_l(
   obj_func = obj_func,
   n_params = 2, 
+  lower = c(0, 0),
+  upper = c(1, 1),
   iteration = 10
 )
 ```
 
 ```
 list_simulated
-├── [[1]]
-│   ├── data    | [data.frame] simulated raw data
-│   ├── params  | [list] all parameters' value
-│   ├── acc     | [vector] accuracy with input params
-│   ├── ll      | [vector] logL with input params
-│   ├── aic     | [vector] AIC with input params
-│   ├── bic     | [vector] BIC with input params
-│   ├── input   | [vector] input params
-├── [[2]]
-├── [[3]]
-├── [[...]]
+├── [[1]]       |   [binaryRL] iteration = 1 
+│   ├── data    |     | [data.frame] simulated raw data
+│   ├── params  |     | [list] all parameters' value
+│   ├── acc     |     | [vector] accuracy with input params
+│   ├── ll      |     | [vector] logL with input params
+│   ├── aic     |     | [vector] AIC with input params
+│   ├── bic     |     | [vector] BIC with input params
+│   ├── input   |     | [vector] input params
+├── [[2]]       |   [binaryRL] iteration = 2 
+├── [[3]]       |   [binaryRL] iteration = 3 
+├── [[...]]     |   [binaryRL] iteration = ... 
 ```
 
 ## 4. Recovery Data
@@ -505,14 +512,14 @@ df_recovery <- binaryRL::recovery_d(
 <!---------------------------------------------------------->
 
 ### Parameter Recovery
-> Before reading too much into the best-fitting parameter values, $\theta_{m}^{MLE}$,  it is important to check whether the fitting procedure gives meaningful parameter values in the best case scenario, -that is, when fitting fake data where the ‘true’ parameter values are known (Nilsson et al., 2011). Such a procedure is known as ‘Parameter Recovery’, and is a crucial part of any model-based analysis.
+> "Before reading too much into the best-fitting parameter values, $\theta_{m}^{MLE}$,  it is important to check whether the fitting procedure gives meaningful parameter values in the best case scenario, -that is, when fitting fake data where the ‘true’ parameter values are known (Nilsson et al., 2011). Such a procedure is known as ‘Parameter Recovery’, and is a crucial part of any model-based analysis."
 
 <p align="center">
     <img src="./fig/parameter_recovery.png" alt="RL Models" width="70%">
 </p>
 
 ### Model Recovery
-> More specifically, model recovery involves simulating data from all models (with a range of parameter values carefully selected as in the case of parameter recovery) and then fitting that data with all models to determine the extent to which fake data generated from model A is best fit by model A as opposed to model B. This process can be summarized in a confusion matrix that quantifies the probability that each model is the best fit to data generated from the other models, that is, *p*(*fit model* = B | *simulated model* = A).
+> "More specifically, model recovery involves simulating data from all models (with a range of parameter values carefully selected as in the case of parameter recovery) and then fitting that data with all models to determine the extent to which fake data generated from model A is best fit by model A as opposed to model B. This process can be summarized in a confusion matrix that quantifies the probability that each model is the best fit to data generated from the other models, that is, *p*(*fit model* = B | *simulated model* = A)."
 
 <p align="center">
     <img src="./fig/model_recovery.png" alt="RL Models" width="70%">
