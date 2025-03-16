@@ -45,10 +45,10 @@ data <- TAFC
 
 ## 1. Run Model
 
-Create a function that contains only ONE argument: `params`.   
+Create a model function that contains only ONE argument: `params`.   
 
 ```r
-RSTD <- function(params){
+model <- function(params){
   res <- binaryRL::run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
@@ -74,7 +74,7 @@ RSTD <- function(params){
 <summary>Custom Column Names</summary>
 
 ```r
-RSTD <- function(params){
+model <- function(params){
   res <- binaryRL::run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
@@ -123,7 +123,7 @@ If your column names are different from my example, you need to fill in the colu
 <summary>Custom Functions</summary>
 
 ```r
-RSTD <- function(params){
+model <- function(params){
   res <- binaryRL::run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
@@ -330,7 +330,7 @@ You can use any of these algorithms to find the optimal parameters. But we recom
 ```r
 binaryRL_res <- binaryRL::fit_p(
   data = data,
-  obj_func = RSTD,
+  obj_func = model,
   lower = c(0, 0),
   upper = c(1, 1),
   iteration = 10,
