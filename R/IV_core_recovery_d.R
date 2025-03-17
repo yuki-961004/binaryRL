@@ -53,7 +53,7 @@ recovery_d <- function(
   
   # 用解题模型求解参数
   for (i in 1:length(list)){
-    data <- list[[i]][[1]]
+    data <<- list[[i]][[1]]
     
     binaryRL_res <- binaryRL::fit_p(
       data = data,
