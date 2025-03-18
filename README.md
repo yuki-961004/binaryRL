@@ -49,6 +49,11 @@ Create a model function that contains only ONE argument: `params`.
 
 ```r
 model <- function(params){
+  # since `obj_func`(model) can only be one argument, `params`, 
+  # the data must be retrieved from the parent environment.
+  data <- get("data", envir = parent.frame()) 
+
+  # build a RL model
   res <- binaryRL::run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
@@ -57,9 +62,9 @@ model <- function(params){
     n_trials = 288                  # the number of total trials
   )
 
-  # pass the result out of the function (global environment)
+  # pass the result to the parent environment
   # make it easier to get the optimal parameters later
-  binaryRL_res <<- res
+  assign("binaryRL_res", res, envir = parent.frame())
   
   # if the algorithm is solving a minimization problem, return -ll
   invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim ...
@@ -75,6 +80,11 @@ model <- function(params){
 
 ```r
 model <- function(params){
+  # since `obj_func`(model) can only be one argument, `params`, 
+  # the data must be retrieved from the parent environment.
+  data <- get("data", envir = parent.frame()) 
+
+  # build a RL model
   res <- binaryRL::run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
@@ -100,9 +110,9 @@ model <- function(params){
     var2 = "extra_Var2"
   )
 
-  # pass the result out of the function (global environment)
-  # make it easier to get the best parameters later
-  binaryRL_res <<- res
+  # pass the result to the parent environment
+  # make it easier to get the optimal parameters later
+  assign("binaryRL_res", res, envir = parent.frame())
   
   # if the algorithm is solving a minimization problem, return -ll
   invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim ...
@@ -124,6 +134,11 @@ If your column names are different from my example, you need to fill in the colu
 
 ```r
 model <- function(params){
+  # since `obj_func`(model) can only be one argument, `params`, 
+  # the data must be retrieved from the parent environment.
+  data <- get("data", envir = parent.frame()) 
+
+  # build a RL model
   res <- binaryRL::run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
@@ -155,9 +170,9 @@ model <- function(params){
     prob_func = your_prob_func
   )
 
-  # pass the result out of the function (global environment)
-  # make it easier to get the best parameters later
-  binaryRL_res <<- res
+  # pass the result to the parent environment
+  # make it easier to get the optimal parameters later
+  assign("binaryRL_res", res, envir = parent.frame())
   
   # if the algorithm is solving a minimization problem, return -ll
   invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim ...
@@ -432,6 +447,8 @@ Use your `obj_func` and set its `back = TRUE`. This will allow you to obtain a s
 
 ```r
 RSTD <- function(params){
+  data <- get("data", envir = parent.frame()) 
+  
   res <- binaryRL::run_m(
     back = TRUE,                    # simulate raw data
     data = data,                    # your data
@@ -474,6 +491,8 @@ To demonstrate parameter and model recovery, we will utilize these simulated dat
 
 ```r
 TD <- function(params){
+  data <- get("data", envir = parent.frame()) 
+  
   res <- binaryRL::run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
@@ -482,7 +501,7 @@ TD <- function(params){
     n_trials = 288                  # the number of total trials
   )
 
-  binaryRL_res <<- res
+  assign("binaryRL_res", res, envir = parent.frame())
   
   invisible(-res$ll)
 }
