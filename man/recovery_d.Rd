@@ -42,5 +42,11 @@ default: `seed = 123`}
 data frame for parameter recovery and model recovery
 }
 \description{
-recovery_d
+This function applies `fit_p` to each fake dataset in the list generated 
+by `simulate_l`. The results can be used for parameter recovery and 
+model recovery, helping evaluate the consistency and validity of the 
+reinforcement learning model.
+
+For more information, please refer to the GitHub repository:
+https://github.com/yuki-961004/binaryRL
 }

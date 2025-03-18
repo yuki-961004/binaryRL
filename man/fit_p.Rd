@@ -39,8 +39,24 @@ Provide the value as a number.
 default: `seed = 123`}
 }
 \value{
-binaryRL_res
+binaryRL_res with optimal parameters
 }
 \description{
-fit_p
+This function optimizes free parameters of reinforcement learning 
+models built with the `run_m` function. After constructing a 
+reinforcement learning model (a function with only ONE argument, 
+`params`), the `fit_p` function searches for the optimal values of 
+these free parameters.
+
+The package provides four optimization algorithms:
+
+* L-BFGS-B (`stats::optim`)
+* Simulated Annealing (`GenSA::GenSA`)
+* Genetic Algorithm (`GA::ga`)
+* Differential Evolution (`DEoptim::DEoptim`)
+
+We recommend Differential Evolution (`DEoptim::DEoptim`) for its speed.
+
+For more information, please refer to the GitHub repository:
+https://github.com/yuki-961004/binaryRL
 }

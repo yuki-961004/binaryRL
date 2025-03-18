@@ -10,6 +10,9 @@
 #' parameters from the `algorithm` package, this function offers a powerful tool for 
 #' simulating human choices in reinforcement learning contexts.
 #' 
+#' For more information, please refer to the GitHub repository:
+#' https://github.com/yuki-961004/binaryRL
+#' 
 #' @param data A data frame containing the raw data. 
 #' This data should include the following mandatory columns: 
 #' - "sub", "time_line", "L_choice", "R_choice", "choose", "L_reward", "R_reward". 
@@ -137,7 +140,7 @@
 #' @param digits_2 The number of decimal places to retain for values related to the action function. 
 #' The default is 5.
 #'
-#' @returns RL result
+#' @returns binaryRL_res with input parameters
 #' @export
 #'
 #' @examples

@@ -1,10 +1,15 @@
 Package: binaryRL
 Type: Package
 Title: Reinforcement Learning tools for Two-Alternative Forced Choice tasks
-Version: 0.4.8
+Version: 0.4.9
 Author: yuki <hmz1969a@gmail.com>
 Maintainer: yuki <hmz1969a@gmail.com>
-Description: Reinforcement Learning tools for Two-Alternative Forced Choice tasks.
+Description: This package provides tools for fitting reinforcement learning 
+  models to Two-Alternative Forced Choice (TAFC) decision-making tasks. 
+  Users first construct a reinforcement learning model using the `run_m` 
+  function and then optimize its free parameters with `fit_p`. Additionally, 
+  the package includes `simulate_l` and `recovery_d` functions for parameter 
+  recovery and model recovery, enabling users to assess model performance.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: TRUE

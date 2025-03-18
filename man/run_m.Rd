@@ -172,7 +172,7 @@ The default is 2.}
 The default is 5.}
 }
 \value{
-RL result
+binaryRL_res with input parameters
 }
 \description{
 This function requires the optimal parameter values obtained through the 
@@ -183,6 +183,9 @@ parameters to generate choices that mimic the decision-making process of subject
 enabling the study of behavior under varying conditions. By integrating the best-fit 
 parameters from the `algorithm` package, this function offers a powerful tool for 
 simulating human choices in reinforcement learning contexts.
+
+For more information, please refer to the GitHub repository:
+https://github.com/yuki-961004/binaryRL
 }
 \examples{
 data <- TAFC
