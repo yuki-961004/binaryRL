@@ -106,7 +106,42 @@ data <- generate_d(n_subjects = 30, n_blocks = 6, n_trials_per_block = 96) %>%
   dplyr::mutate(Trial = dplyr::row_number()) %>%
   dplyr::ungroup()
 
-TAFC <- data
+list <- list()
+
+for (i in (1:length(unique(data$Subject)))){
+  RSTD <- function(params){
+    data <- get("data", envir = parent.frame()) 
+    
+    res <- binaryRL::run_m(
+      back = TRUE,                    # simulate raw data
+      data = data,                    # your data
+      raw_cols = c(
+        "Subject", "Block", "Trial", "Frame",
+        "L_choice", "R_choice", "L_reward", "R_reward",
+        "Sub_Choose"
+      ),
+      id = i,                         # Subject ID
+      eta = c(params[1], params[2]),  # free parameters (RSTD)
+      tau = c(params[3]),
+      n_params = 2,                   # the number of free parameters
+      n_trials = 288                  # the number of total trials
+    )
+    
+    return(res)
+  }
+  
+  list[[i]] <- simulate_l(
+    data = data,
+    obj_func = RSTD, 
+    n_params = 3, 
+    lower = c(0, 0, 0), 
+    upper = c(1, 1, 1),
+    iteration = 1,
+    seed = i
+  )[[1]][[1]]
+}
+
+TAFC <- dplyr::bind_rows(list)
 
 # 在R目录下创建一个脚本来保存数据集
 usethis::use_data(TAFC, overwrite = TRUE)

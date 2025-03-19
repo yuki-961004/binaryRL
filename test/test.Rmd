@@ -1,0 +1,114 @@
+---
+title: "Untitled"
+author: "yuki"
+date: "2025-03-19"
+output: html_document
+---
+```{r}
+install.packages("../../binaryRL_0.4.10.tar.gz")
+```
+
+```{r}
+library(binaryRL)
+data <- TAFC
+```
+
+```{r}
+model <- function(params){
+  # since `obj_func`(model) can only be one argument, `params`, 
+  # the data must be retrieved from the parent environment.
+  data <- get("data", envir = parent.frame()) 
+
+  # build a RL model
+  res <- binaryRL::run_m(
+    data = data,                    # your data
+    id = 18,                        # Subject ID
+    eta = c(params[1], params[2]),  # free parameters (RSTD)
+    n_params = 2,                   # the number of free parameters
+    n_trials = 288                  # the number of total trials
+  )
+
+  # pass the result to the parent environment
+  # make it easier to get the optimal parameters later
+  assign("binaryRL_res", res, envir = parent.frame())
+  
+  # if the algorithm is solving a minimization problem, return -ll
+  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim ...
+  # if the algorithm is solving a maximization problem, return ll
+  # invisible(res$ll) # GA ...
+}
+```
+
+```{r}
+binaryRL_res <- binaryRL::fit_p(
+  data = data,
+  obj_func = model,
+  lower = c(0, 0),
+  upper = c(1, 1),
+  iteration = 10,
+  seed = 123,
+  algorithm = "DEoptim"    # Differential Evolution (DEoptim)
+  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
+  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim),
+)
+```
+
+```{r}
+RSTD <- function(params){
+  data <- get("data", envir = parent.frame()) 
+  
+  res <- binaryRL::run_m(
+    back = TRUE,                    # simulate raw data
+    data = data,                    # your data
+    id = 18,                        # Subject ID
+    eta = c(params[1], params[2]),  # free parameters (RSTD)
+    tau = c(params[3]),
+    n_params = 2,                   # the number of free parameters
+    n_trials = 288                  # the number of total trials
+  )
+
+  return(res)
+}
+
+list_simulated <- binaryRL::simulate_l(
+  data = data,
+  obj_func = RSTD,
+  n_params = 3, 
+  lower = c(0, 0, 0),
+  upper = c(1, 1, 0.5),
+  seed = 123,
+  iteration = 3
+)
+```
+
+```{r}
+RSTD <- function(params){
+  data <- get("data", envir = parent.frame()) 
+  
+  res <- binaryRL::run_m(
+    data = data,                    # your data
+    id = 18,                        # Subject ID
+    eta = c(params[1], params[2]),  # free parameters (RSTD)
+    tau = c(params[3]),
+    n_params = 3,                   # the number of free parameters
+    n_trials = 288                  # the number of total trials
+  )
+
+  assign("binaryRL_res", res, envir = parent.frame())
+  
+  invisible(-res$ll)
+}
+
+df_recovery <- binaryRL::recovery_d(
+  list = list_simulated,
+  obj_func = RSTD,
+  model_name = "RSTD",
+  lower = c(0, 0, 0),
+  upper = c(1, 1, 0.5),
+  seed = 123,
+  iteration = 3,
+  algorithm = "DEoptim"
+)
+```
+

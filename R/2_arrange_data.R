@@ -13,19 +13,6 @@
 #'   }
 #' @export
 #'
-#' @examples
-#' data <- TAFC[TAFC$Subject == 1, ]
-#' 
-#' step1 <- unique_choice(
-#'   data = data,
-#'   L_choice = "L_choice", 
-#'   R_choice = "R_choice"
-#'  )
-#'  
-#' step2 <- arrange_data(
-#'   data = step1[[1]],
-#'   time_line = c("Block", "Trial")
-#' )
 #' 
 arrange_data <- function(data, time_line = c("Block", "Trial")){
   # 基于time_line这个向量, 录入排序向量

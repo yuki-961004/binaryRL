@@ -20,14 +20,6 @@
 #'   }
 #' @export
 #'
-#' @examples
-#' data <- TAFC[TAFC$Subject == 1, ]
-#' 
-#' step1 <- unique_choice(
-#'   data = data,
-#'   L_choice = "L_choice", 
-#'   R_choice = "R_choice"
-#'  )
 #' 
 unique_choice <- function(data, L_choice = "L_choice", R_choice = "R_choice"){
   # 用于获取左右选项中的备选项.

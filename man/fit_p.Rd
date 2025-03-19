@@ -10,36 +10,40 @@ fit_p(
   initial,
   lower,
   upper,
-  algorithm,
   iteration = 10,
-  seed = 123
+  seed = 123,
+  algorithm
 )
 }
 \arguments{
-\item{data}{A data frame containing the raw data. 
+\item{data}{[data.frame] raw data. 
 This data should include the following mandatory columns: 
-- "sub", "time_line", "L_choice", "R_choice", "choose", "L_reward", "R_reward". 
-The following arguments allow you to customize the column names used for processing}
+- "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward".}
 
-\item{obj_func}{object function, be sure that you write 'binaryRL_res <<- res'}
+\item{obj_func}{[function] a function with only ONE argument `params`. 
+Additionally, it is important to note that the data needs to be retrieved 
+from parent.frame() and the results passed back to parent.frame(). 
+This function returns the log likelihood (logL).}
 
-\item{initial}{initial value for searching parameters, only needed in stats}
+\item{initial}{[vector] Initial values for the free parameters. 
+These need to be set only when using L-BFGS-B. Other algorithms 
+automatically generate initial values.}
 
-\item{lower}{lower bounds of parameters}
+\item{lower}{[vector] lower bounds of free parameters}
 
-\item{upper}{upper bounds of parameters}
+\item{upper}{[vector] upper bounds of free parameters}
 
-\item{algorithm}{Choose a algorithm pacakge from `L-BFGS-B`, `GA`, `GenSA`, `DEoptim`}
+\item{iteration}{[integer] the number of iteration}
 
-\item{iteration}{iteration}
-
-\item{seed}{A numeric value to set the random seed. 
-This ensures that the results are reproducible and remain the same each time the function is run.
-Provide the value as a number. 
+\item{seed}{[integer] random seed. This ensures that the results are 
+reproducible and remain the same each time the function is run. 
 default: `seed = 123`}
+
+\item{algorithm}{[character] Choose a algorithm package from 
+`L-BFGS-B`, `GA`, `GenSA`, `DEoptim`}
 }
 \value{
-binaryRL_res with optimal parameters
+the result of binaryRL with optimal parameters
 }
 \description{
 This function optimizes free parameters of reinforcement learning 

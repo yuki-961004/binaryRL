@@ -12,19 +12,8 @@ export(func_eta)
 export(func_epsilon)
 export(func_tau)
 
-export(unique_choice)
-export(arrange_data)
-export(add_NA)
-export(set_initial_value)
-export(decision_making)
-export(model_fit)
-export(digits)
-export(output)
-export(back)
-
 export(run_m)
 export(fit_p)
-
 export(simulate_l)
 export(recovery_d)
 

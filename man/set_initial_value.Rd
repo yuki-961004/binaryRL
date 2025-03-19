@@ -27,27 +27,3 @@ data frame:
 \description{
 set_initial_value
 }
-\examples{
-data <- TAFC[TAFC$Subject == 1, ]
-
-step1 <- unique_choice(
-  data = data,
-  L_choice = "L_choice", 
-  R_choice = "R_choice"
- )
- 
-step2 <- arrange_data(
-  data = step1[[1]],
-  time_line = c("Block", "Trial")
-)
-
-step3 <- add_NA(
-  data = step2
-)
-
-step4 <- set_initial_value(
-  data = step3, 
-  options = step1[["options"]], 
-  initial_value = NA
-)
-}

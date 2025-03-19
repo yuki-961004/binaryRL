@@ -19,29 +19,33 @@
 #' For more information, please refer to the GitHub repository:
 #' https://github.com/yuki-961004/binaryRL
 #' 
-#' @param data A data frame containing the raw data. 
-#' This data should include the following mandatory columns: 
-#' - "sub", "time_line", "L_choice", "R_choice", "choose", "L_reward", "R_reward". 
-#' The following arguments allow you to customize the column names used for processing
+#' @param data [data.frame] raw data. 
+#'  This data should include the following mandatory columns: 
+#'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
 #' 
-#' @param obj_func object function, be sure that you write 'binaryRL_res <<- res'
+#' @param obj_func [function] a function with only ONE argument `params`. 
+#'  Additionally, it is important to note that the data needs to be retrieved 
+#'  from parent.frame() and the results passed back to parent.frame(). 
+#'  This function returns the log likelihood (logL).
 #' 
-#' @param algorithm Choose a algorithm pacakge from `L-BFGS-B`, `GA`, `GenSA`, `DEoptim`
+#' @param initial [vector] Initial values for the free parameters. 
+#'  These need to be set only when using L-BFGS-B. Other algorithms 
+#'  automatically generate initial values.
 #' 
-#' @param initial initial value for searching parameters, only needed in stats
+#' @param lower [vector] lower bounds of free parameters
 #' 
-#' @param lower lower bounds of parameters
+#' @param upper [vector] upper bounds of free parameters
 #' 
-#' @param upper upper bounds of parameters
+#' @param iteration [integer] the number of iteration
 #' 
-#' @param iteration iteration
-#' 
-#' @param seed A numeric value to set the random seed. 
-#' This ensures that the results are reproducible and remain the same each time the function is run.
-#' Provide the value as a number. 
-#' default: `seed = 123` 
+#' @param seed [integer] random seed. This ensures that the results are 
+#'  reproducible and remain the same each time the function is run. 
+#'  default: `seed = 123` 
+#'  
+#' @param algorithm [character] Choose a algorithm package from 
+#'  `L-BFGS-B`, `GA`, `GenSA`, `DEoptim`
 #'
-#' @returns binaryRL_res with optimal parameters
+#' @returns the result of binaryRL with optimal parameters
 #' @export
 #'
 fit_p <- function(
@@ -50,9 +54,9 @@ fit_p <- function(
     initial,
     lower,
     upper,
-    algorithm,
     iteration = 10,
-    seed = 123
+    seed = 123,
+    algorithm
 ){
   data <- data
   

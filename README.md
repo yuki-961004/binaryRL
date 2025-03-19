@@ -462,10 +462,12 @@ RSTD <- function(params){
 }
 
 list_simulated <- binaryRL::simulate_l(
+  data = data,
   obj_func = RSTD,
   n_params = 2, 
   lower = c(0, 0),
   upper = c(1, 1),
+  seed = 123,
   iteration = 10
 )
 ```

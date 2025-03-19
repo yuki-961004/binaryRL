@@ -9,9 +9,5 @@
 # Windows
 desktop.ini
 
-# Sensitive Files
-*lastrun.py
-
 # temp
 ~*
-test/

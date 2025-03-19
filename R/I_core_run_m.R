@@ -1,146 +1,156 @@
 #' run_m
 #'
 #' @description
-#' This function requires the optimal parameter values obtained through the 
-#' `algorithm` package. Once the best parameter values are solved for, they 
-#' are incorporated into the reinforcement learning model, allowing the model 
-#' to simulate human-like decision-making. The function leverages these optimized 
-#' parameters to generate choices that mimic the decision-making process of subjects, 
-#' enabling the study of behavior under varying conditions. By integrating the best-fit 
-#' parameters from the `algorithm` package, this function offers a powerful tool for 
-#' simulating human choices in reinforcement learning contexts.
+#'  This function requires the optimal parameter values obtained through the 
+#'  `algorithm` package. Once the best parameter values are solved for, they 
+#'  are incorporated into the reinforcement learning model, allowing the model 
+#'  to simulate human-like decision-making. The function leverages these 
+#'  optimized parameters to generate choices that mimic the decision-making 
+#'  process of subjects, enabling the study of behavior under varying 
+#'  conditions. By integrating the best-fit parameters from the `algorithm` 
+#'  package, this function offers a powerful tool for simulating human choices 
+#'  in reinforcement learning contexts.
 #' 
-#' For more information, please refer to the GitHub repository:
-#' https://github.com/yuki-961004/binaryRL
+#'  For more information, please refer to the GitHub repository:
+#'  https://github.com/yuki-961004/binaryRL
 #' 
-#' @param data A data frame containing the raw data. 
-#' This data should include the following mandatory columns: 
-#' - "sub", "time_line", "L_choice", "R_choice", "choose", "L_reward", "R_reward". 
-#' The following arguments allow you to customize the column names used for processing
+#' @param data [data.frame] raw data. 
+#'  This data should include the following mandatory columns: 
+#'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
+#'  
+#' @param back [logical] whether to generate raw data.
+#'  Defaults to FALSE. Set to TRUE to generate fake data.
+#'  This produces a data frame with the same format as
+#'  the actual raw data.
+#'  
+#' @param raw_cols [vector] default: c("Subject", "Block", "Trial", 
+#'  "L_choice", "R_choice", "L_reward", "R_reward", "Choose", "Reward")
+#'  These are the column names of the raw data. 
+#'  Only required when `back = TRUE`.
 #' 
-#' @param id A numeric value specifying the subject ID for which the model is being analyzed. 
-#' The value should correspond to an entry in the "sub" column, which must contain the subject IDs. 
-#' Provide the subject ID as a number.
-#' e.g., `id = 18`
+#' @param id [integer] which subject is going to be analyzed.
+#'  is being analyzed. The value should correspond to an entry in the "sub" 
+#'  column, which must contain the subject IDs. 
+#'  e.g., `id = 18`
 #' 
-#' @param back TRUE or FALSE, for model recovery. if 'back = TRUE', then generate a raw data
+#' @param initial_value [numeric] subject's initial expected value for each 
+#'  stimulus's reward. If this value is not set (`initial_value = NA`), 
+#'  the subject will use the reward received after the first trial as the 
+#'  initial value for that stimulus. In other words, the learning rate for the 
+#'  first trial is 100%. default: `initial_value = NA` 
+#'  e.g., `initial_value = 0`
 #' 
-#' @param initial_value A numeric value representing the subject's initial expected value for each stimulus's reward. 
-#' If this value is not set, the subject will use the reward received after the first trial as the initial value for that stimulus. 
-#' In other words, the learning rate for the first trial is 100%. 
-#' Provide the initial value as a number 
-#' default: `initial_value = NA`
-#' e.g., `initial_value = 0`
+#' @param softmax [logical] whether to use the softmax function. 
+#'  When softmax = TRUE, the value of each option influences the probability 
+#'  of selecting that option. Higher values increase the probability of 
+#'  selecting that option. When softmax = FALSE, the subject will always 
+#'  choose the option with the higher value, with no possibility of selecting 
+#'  the lower-value option. default: `softmax = TRUE`
 #' 
-#' @param softmax A logical value indicating whether to use the softmax function. 
-#' When softmax = TRUE, the value of each option influences the probability of selecting that option. 
-#' Higher values increase the probability of selecting that option. 
-#' When softmax = FALSE, the subject will always choose the option with the higher value, with no possibility of selecting the lower-value option.
-#' Provide the value as a logical (TRUE or FALSE).
-#' default: `softmax = TRUE`
+#' @param threshold [integer] the number of initial trials during which the 
+#'  subject makes random choices rather than choosing based on the values of 
+#'  the options. This occurs because the subject has not yet learned the values 
+#'  of the options. For example, threshold = 20 means the subject will make 
+#'  completely random choices for the first 20 trials. default: `threshold = 1`
 #' 
-#' @param threshold A numeric value specifying the number of initial trials during which the subject makes random choices 
-#' rather than choosing based on the values of the options. This occurs because the subject has not yet learned the values of the options. 
-#' For example, threshold = 20 means the subject will make completely random choices for the first 20 trials.
-#' Provide the value as a number. 
-#' default: `threshold = 1`
+#' @param seed [integer] random seed. This ensures that the results are 
+#'  reproducible and remain the same each time the function is run. 
+#'  default: `seed = 123` 
 #' 
-#' @param seed A numeric value to set the random seed. 
-#' This ensures that the results are reproducible and remain the same each time the function is run.
-#' Provide the value as a number. 
-#' default: `seed = 123` 
+#' @param n_params [integer] The number of free parameters in your model. 
 #' 
-#' @param n_params The number of free parameters in the model. 
-#' @param n_trials The total number of trials in the experiment.
+#' @param n_trials [integer] The total number of trials in your experiment.
 #'
-#' @param lambda An additional parameter that may be used in these functions. 
-#' Provide the value as a vector 
-#' e.g., `lambda = c(0.4, 0.7, 20, 60)`
+#' @param lambda [vector] Extra parameters that may be used in functions. 
+#'  e.g., `lambda = c(0.4, 0.7, 20, 60)`
 #' 
-#' @param gamma A parameter used in the `util_func` (Utility Function), often 
-#' referred to as the discount rate. For example, in the utility equation 
-#' `utility = gamma * reward`, if gamma < 1, it indicates that people discount 
-#' the objective reward. 
-#' Provide the value as a vector 
-#' e.g., `gamma = c(0.7)`
+#' @param gamma [vector] Parameters used in the `util_func` (Utility Function), 
+#'  often referred to as the discount rate. For example, 
+#'  `utility = gamma * reward`, if gamma < 1, it indicates that people 
+#'  tend to discount the objective reward. Provide the value as a vector 
+#'  e.g., `gamma = c(0.7)`
 #' 
-#' @param eta A parameter used in the `rate_func` (Learning Rate Function), 
-#' representing the rate at which the subject updates the difference between the reward and the expected value in the subject's mind. 
-#' In the TD model, there is a single learning rate throughout the experiment. 
-#' In the RSTD model, two different learning rates are used when the reward is higher or lower than the expected value.
-#' Provide the value as a vector 
-#' e.g., `eta = c(0.3, 0.7)`
+#' @param eta [vector] Parameters used in the `rate_func` (Learning Rate Function), 
+#'  representing the rate at which the subject updates the 
+#'  difference (prediction error) between the reward and the expected value 
+#'  in the subject's mind. In the TD model, there is a single learning rate 
+#'  throughout the experiment. In the RSTD model, two different learning rates 
+#'  are used when the reward is higher or lower than the expected value.
+#'  e.g., `eta = c(0.3, 0.7)`
 #' 
-#' @param epsilon A parameter used in the `expl_func` (Exploration Function), 
-#' determining whether the subject makes decisions based on the relative values of the left and right options, 
-#' or chooses completely randomly. 
-#' For example, when epsilon = 0.1, it means the subject has a 10% chance of making a completely random choice 
-#' and a 90% chance of choosing based on the values of the options.
-#' Provide the value as a vector 
-#' e.g., `epsilon = c(0.1)`
+#' @param epsilon [vector] Parameters used in the `expl_func` (Exploration Function), 
+#'  determining whether the subject makes decisions based on the relative values 
+#'  of the left and right options, or chooses completely randomly. For example, 
+#'  when epsilon = 0.1, it means the subject has a 10% chance of making a 
+#'  completely random choice and a 90% chance of choosing based on the values 
+#'  of the options.
+#'  e.g., `epsilon = c(0.1)`
 #' 
-#' @param tau A parameter used in the `prob_func` (Soft-Max Function), representing the sensitivity of the subject to the value difference when making decisions. 
-#' It determines the probability of selecting the left option versus the right option based on their values. A larger value of tau indicates greater sensitivity 
-#' to the value difference between the options. In other words, even a small difference in value will make the subject more likely to choose the higher-value option. 
-#' Provide the value as a vector 
-#' e.g., `tau = c(0.5)`
+#' @param tau [vector] Parameters used in the `prob_func` (Soft-Max Function), 
+#'  representing the sensitivity of the subject to the value difference when 
+#'  making decisions. It determines the probability of selecting the left option 
+#'  versus the right option based on their values. A larger value of tau 
+#'  indicates greater sensitivity to the value difference between the options. 
+#'  In other words, even a small difference in value will make the subject more 
+#'  likely to choose the higher-value option. 
+#'  e.g., `tau = c(0.5)`
 #' 
-#' @param util_func The function for the utility gamma, which you can customize
-#' @param rate_func The function for the learning rate eta, which you can customize
-#' @param expl_func The function for the epsilon greedy, which you can customize
-#' @param prob_func The function for the temperature tau, which you can customize.
+#' @param util_func [function] Utility Function.
 #' 
-#' @param sub A string specifying the name of the column that contains the subject ID.  
-#' Provide the name of the column as a character string  
-#' e.g., `sub = "Subject_ID"`
+#' @param rate_func [function] Learning Rate Function.
 #' 
-#' @param time_line A vector specifying the name of the column that the sequence of the experiment. 
-#' This argument defines how the experiment is structured, such as whether it is organized by "Block" with breaks in between, and multiple trials within each block. 
-#' Provide the sequence as a character vector, 
-#' e.g., `time_line = c("Block", "Trial")`
+#' @param expl_func [function] Exploration Function.
 #' 
-#' @param L_choice A string specifying the name of the column that represents the left choice. 
-#' Provide the name of the column as a character string 
-#' e.g., `L_choice = "Left_Choice"`
+#' @param prob_func [function] Soft-Max Function.
 #' 
-#' @param R_choice A string specifying the name of the column that represents the right choice. 
-#' Provide the name of the column as a character string 
-#' e.g., `R_choice = "Right_Choice"`
+#' @param sub [character] column name of subject ID
+#'  e.g., `sub = "Subject"`
 #' 
-#' @param sub_choose A string specifying the name of the column that represents the choice made by the subject. 
-#' Provide the name of the column as a character string 
-#' e.g., `sub_choose = "Choose"`
+#' @param time_line [vector] A vector specifying the name of the column that 
+#'  the sequence of the experiment. This argument defines how the experiment is 
+#'  structured, such as whether it is organized by "Block" with breaks in 
+#'  between, and multiple trials within each block. 
+#'  e.g., `time_line = c("Block", "Trial")`
 #' 
-#' @param rob_choose A string specifying the name of the column that represents the choice made by the model(robot). 
-#' Provide the name of the column as a character string 
-#' e.g., `rob_choose = "Rob_Choose"`
+#' @param L_choice [character] column name of left choice. 
+#'  e.g., `L_choice = "Left_Choice"`
 #' 
-#' @param raw_cols c("Subject", "Block", "Trial", "L_choice", "R_choice", "L_reward", "R_reward", "Choose", "Reward")
-#' the column names of raw data
+#' @param R_choice [character] column name of right choice. 
+#'  e.g., `R_choice = "Right_Choice"`
 #' 
-#' @param L_reward A string specifying the name of the left column. 
-#' Provide the name of the column as a character string 
-#' e.g., `L_reward = "Left_reward"`
+#' @param sub_choose [character] column name of choices made by the subject. 
+#'  e.g., `sub_choose = "Choose"`
 #' 
-#' @param R_reward A string specifying the name of the right column. 
-#' Provide the name of the column as a character string 
-#' e.g., `R_reward = "Right_reward"`
+#' @param rob_choose [character] column name of choices made by the model. 
+#'  e.g., `rob_choose = "Rob_Choose"`
+#'  you should ignore this argument
 #' 
-#' @param var1 A string specifying the name of an additional variable that can be used in the model. 
-#' Provide the name of the column as a character string 
-#' e.g., `var1 = "Extra_Var1"`
+#' @param L_reward [character] column name of the reward of left choice 
+#'  e.g., `L_reward = "Left_reward"`
 #' 
-#' @param var2 A string specifying the name of an additional variable that can be used in the model. 
-#' Provide the name of the column as a character string 
-#' e.g., `var2 = "Extra_Var2"`
+#' @param R_reward [character] column name of the reward of right choice 
+#'  e.g., `R_reward = "Right_reward"`
+#' 
+#' @param var1 [character] column name of extra variable 1. If your model uses 
+#'  more than just reward and expected value, and you need other information, 
+#'  such as whether the choice frame is Gain or Loss, then you can input the 
+#'  'Frame' column as var1 into the model.
+#'  e.g., `var1 = "Extra_Var1"`
+#' 
+#' @param var2 [character] column name of extra variable 2. If one additional 
+#'  variable, var1, does not meet your needs, you can add another additional 
+#'  variable, var2, into your model.
+#'  e.g., `var2 = "Extra_Var2"`
+#' 
+#' @param digits_1 The number of decimal places to retain for columns related 
+#'  to the value function 
+#'  The default is 2.
+#' 
+#' @param digits_2 The number of decimal places to retain for columns related 
+#'  to the select function. 
+#'  The default is 5.
 #'
-#' @param digits_1 The number of decimal places to retain for values related to the value function. 
-#' The default is 2.
-#' 
-#' @param digits_2 The number of decimal places to retain for values related to the action function. 
-#' The default is 5.
-#'
-#' @returns binaryRL_res with input parameters
+#' @returns the result of binaryRL with input parameters
 #' @export
 #'
 #' @examples

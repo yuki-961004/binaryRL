@@ -23,18 +23,3 @@ data frame:
 \description{
 arrange_data
 }
-\examples{
-data <- TAFC[TAFC$Subject == 1, ]
-
-step1 <- unique_choice(
-  data = data,
-  L_choice = "L_choice", 
-  R_choice = "R_choice"
- )
- 
-step2 <- arrange_data(
-  data = step1[[1]],
-  time_line = c("Block", "Trial")
-)
-
-}
