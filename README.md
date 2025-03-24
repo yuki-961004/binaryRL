@@ -67,7 +67,7 @@ model <- function(params){
   assign("binaryRL_res", res, envir = parent.frame())
   
   # if the algorithm is solving a minimization problem, return -ll
-  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim ...
+  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim Bayesian ...
   # if the algorithm is solving a maximization problem, return ll
   # invisible(res$ll) # GA ...
 }
@@ -115,7 +115,7 @@ model <- function(params){
   assign("binaryRL_res", res, envir = parent.frame())
   
   # if the algorithm is solving a minimization problem, return -ll
-  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim ...
+  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim Bayesian ...
   # if the algorithm is solving a maximization problem, return ll
   # invisible(res$ll) # GA ...
 }
@@ -175,7 +175,7 @@ model <- function(params){
   assign("binaryRL_res", res, envir = parent.frame())
   
   # if the algorithm is solving a minimization problem, return -ll
-  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim ...
+  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim Bayesian ...
   # if the algorithm is solving a maximization problem, return ll
   # invisible(res$ll) # GA ...
 }
@@ -330,13 +330,12 @@ func_tau <- function (
 
 ## 2. Fit Parameters
 
-This package includes **4** algorithms:   
+This package includes **5** algorithms:   
 1. L-BFGS-B (from `stats::optim`)  
 2. Simulated Annealing (`GenSA::GenSA`)  
 3. Genetic Algorithm (`GA::ga`)  
 4. Differential Evolution (`DEoptim::DEoptim`).   
-
-You can use any of these algorithms to find the optimal parameters. But we recommend using Differential Evolution (`DEoptim`) as it offers the fastest performance and the closest approximation to the true values.
+5. Bayesian Optimization (`mlrMBO::mbo`)
 
 > Please let me know if you know any other great algorithm package. I'd be happy to incorporate them into this package. 
 
@@ -350,7 +349,8 @@ binaryRL_res <- binaryRL::fit_p(
   upper = c(1, 1),
   iteration = 10,
   seed = 123,
-  algorithm = "DEoptim"    # Differential Evolution (DEoptim)
+  algorithm = "Bayesian"   # Bayesian Optimization (mlrMBO)
+  #algorithm = "DEoptim"   # Differential Evolution (DEoptim)
   #algorithm = "GA"        # Genetic Algorithm (GA::ga)
   #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
   #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim),
@@ -516,7 +516,7 @@ df_recovery <- binaryRL::recovery_d(
   upper = c(1),
   iteration = 3,
   seed = 123,
-  algorithm = "DEoptim"
+  algorithm = "Bayesian"
 )
 ```
 
