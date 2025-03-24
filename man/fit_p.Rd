@@ -7,7 +7,7 @@
 fit_p(
   data,
   obj_func,
-  initial,
+  initial = NULL,
   lower,
   upper,
   iteration = 10,
@@ -27,7 +27,9 @@ This function returns the log likelihood (logL).}
 
 \item{initial}{[vector] Initial values for the free parameters. 
 These need to be set only when using L-BFGS-B. Other algorithms 
-automatically generate initial values.}
+automatically generate initial values.
+for `L-BFGS-B`, `GenSA`, set `initial = c(0, 0, ...)`
+for `Bayesian`, `GA`, set `initial = 50`}
 
 \item{lower}{[vector] lower bounds of free parameters}
 
@@ -40,7 +42,7 @@ reproducible and remain the same each time the function is run.
 default: `seed = 123`}
 
 \item{algorithm}{[character] Choose a algorithm package from 
-`L-BFGS-B`, `GA`, `GenSA`, `DEoptim`}
+`L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`}
 }
 \value{
 the result of binaryRL with optimal parameters
