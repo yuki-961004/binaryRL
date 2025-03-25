@@ -64,7 +64,8 @@ fit_p <- function(
   
   set.seed(123)
   
-  # 贝叶斯模型前置准备 #
+  if (algorithm == "Bayesian"){
+    # 贝叶斯模型前置准备 #
     n_params <- length(lower) # 假设 lower 是一个包含参数下界的向量
     
     # 动态生成参数列表
@@ -78,11 +79,11 @@ fit_p <- function(
     
     # 创建一个mlrMBO接受的函数
     bys_func <- smoof::makeSingleObjectiveFunction(
-      name = "RL",
       fn = obj_func,
       par.set = ParamHelpers::makeParamSet(params = param_list) 
     )
-  # 贝叶斯模型前置结束 #
+    # 贝叶斯模型前置结束 #
+  }
   
   result <- switch(algorithm,
    "L-BFGS-B" = {
@@ -136,11 +137,11 @@ fit_p <- function(
        fun = bys_func, 
        design = ParamHelpers::generateDesign(
          n = initial, 
-         ParamHelpers::getParamSet(bys_func), 
+         par.set = ParamHelpers::getParamSet(bys_func), 
          fun = lhs::maximinLHS
        ), 
        control = mlrMBO::setMBOControlTermination(
-         mlrMBO::makeMBOControl(), 
+         control = mlrMBO::makeMBOControl(),
          iters = iteration
        )
      )

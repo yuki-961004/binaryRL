@@ -5,7 +5,7 @@ date: "2025-03-19"
 output: html_document
 ---
 ```{r}
-install.packages("../../binaryRL_0.5.0.tar.gz")
+install.packages("../../binaryRL_0.5.1.tar.gz")
 ```
 
 ```{r}
@@ -38,43 +38,6 @@ model <- function(params){
   # if the algorithm is solving a maximization problem, return ll
   # invisible(res$ll) # GA ...
 }
-```
-
-```{r}
-n_params <- length(lower) # 假设 lower 是一个包含参数下界的向量
-
-# 动态生成参数列表
-param_list <- lapply(1:n_params, function(i) {
-  ParamHelpers::makeNumericParam(
-    id = paste0("param_", i),  # 生成参数 id，如 "param_1", "param_2" 等
-    lower = lower[i],          # 从 lower 向量中获取下界
-    upper = upper[i]           # 从 upper 向量中获取上界 
-  )
-})
-
-# 创建一个mlrMBO接受的函数
-bys_func <- smoof::makeSingleObjectiveFunction(
-  name = "RL",
-  fn = model,
-  par.set = ParamHelpers::makeParamSet(params = param_list) 
-)
-
-result = mlrMBO::mbo(
-  fun = bys_func, 
-  design = ParamHelpers::generateDesign(
-    n = 50L, 
-    ParamHelpers::getParamSet(bys_func), 
-    fun = lhs::maximinLHS
-  ), 
-  control = mlrMBO::setMBOControlTermination(
-    mlrMBO::makeMBOControl(), 
-    iters = 10L
-  )
-)
-
-result$final.opt.state$opt.result$mbo.result$x
-
-model(params = as.vector(as.numeric(res$final.opt.state$opt.result$mbo.result$x)))
 ```
 
 ```{r}
