@@ -45,7 +45,7 @@
 #'  default: `seed = 123` 
 #'  
 #' @param algorithm [character] Choose a algorithm package from 
-#'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`
+#'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`
 #'
 #' @returns the result of binaryRL with optimal parameters
 #' @export
@@ -64,16 +64,21 @@ fit_p <- function(
   
   set.seed(123)
   
+  # 提取参数的数量
+  if (length(lower) == length(upper)) {
+    n_params <- length(lower)
+  } else {
+    stop("The lengths of 'lower' and 'upper' must be equal.")
+  }
+  
+  # 给
   if (algorithm == "Bayesian"){
-    # 贝叶斯模型前置准备 #
-    n_params <- length(lower) # 假设 lower 是一个包含参数下界的向量
-    
     # 动态生成参数列表
     param_list <- lapply(1:n_params, function(i) {
       ParamHelpers::makeNumericParam(
-        id = paste0("param_", i),  # 生成参数 id，如 "param_1", "param_2" 等
-        lower = lower[i],          # 从 lower 向量中获取下界
-        upper = upper[i]           # 从 upper 向量中获取上界 
+        id = paste0("param_", i),  
+        lower = lower[i],          
+        upper = upper[i]           
       )
     })
     
@@ -146,43 +151,64 @@ fit_p <- function(
        )
      )
    },
+   "PSO" = {
+     pso::psoptim(
+       par = rep(NA, n_params),
+       fn = obj_func,
+       lower = lower,
+       upper = upper,
+       control = list(
+         maxit = iteration
+       )
+     )
+   },
    { # 默认情况（如果 algorithm 不匹配任何已知值）
      stop("
           Choose a algorithm from 
           `L-BFGS-B`, `GenSA`, 
           `GA`, `DEoptim`,
-          `Bayesian`
+          `Bayesian`, `PSO`
         ")
    }
   )
   
   switch(algorithm,
    "L-BFGS-B" = {
-     obj_func(params = as.vector(result$par))
-     binaryRL_res$output <- as.vector(result$par)
+     fit_params <- as.vector(result$par)
+     obj_func(params = fit_params)
+     binaryRL_res$output <- fit_params
    },
    "GA" = {
-     obj_func(params = as.vector(result@solution))
-     binaryRL_res$output <- as.vector(result@solution)
+     fit_params <- as.vector(result@solution)
+     obj_func(params = fit_params)
+     binaryRL_res$output <- fit_params
    },
    "GenSA" = {
-     obj_func(params = as.vector(result$par))
-     binaryRL_res$output <- as.vector(result$par)
+     fit_params <- as.vector(result$par)
+     obj_func(params = fit_params)
+     binaryRL_res$output <- fit_params
    },
    "DEoptim" = {
-     obj_func(params = as.vector(result$optim$bestmem))
-     binaryRL_res$output <- as.vector(result$optim$bestmem)
+     fit_params <- as.vector(result$optim$bestmem)
+     obj_func(params = fit_params)
+     binaryRL_res$output <- fit_params
    },
    "Bayesian" = {
-     obj_func(params = as.vector(as.numeric(result$final.opt.state$opt.result$mbo.result$x)))
-     binaryRL_res$output <- as.vector(as.numeric(result$final.opt.state$opt.result$mbo.result$x))
+     fit_params <- as.vector(as.numeric(result$final.opt.state$opt.result$mbo.result$x))
+     obj_func(params = fit_params)
+     binaryRL_res$output <- fit_params
+   },
+   "PSO" = {
+     fit_params <- as.vector(result$par)
+     obj_func(params = fit_params)
+     binaryRL_res$output <- fit_params
    },
    {
      stop("
           Choose a algorithm from 
           `L-BFGS-B`, `GenSA`, 
           `GA`, `DEoptim`,
-          `Bayesian`
+          `Bayesian`, `PSO`
         ")
    }
   )
