@@ -24,7 +24,7 @@ library(binaryRL)
 
 ## Read your Raw Data
 ```r
-# a data frame including these columns
+# An open data from Ludvig et. al. (2014) https://osf.io/eagcd/
 data <- Ludvig_2014_Exp1
 ```
 
@@ -32,14 +32,17 @@ data <- Ludvig_2014_Exp1
 |---------|-------|-------|----------|----------|----------|----------|------------|
 | 1       | 1     | 1     | A        | B        | 20       | 0        | A          |
 | 1       | 1     | 2     | B        | A        | 40       | 20       | B          |
-| 1       | 1     | 1     | C        | D        | -20      | 0        | C          |
-| 1       | 1     | 2     | D        | C        | -40      | -20      | D          |
+| 1       | 1     | 3     | C        | D        | -20      | 0        | C          |
+| 1       | 1     | 4     | D        | C        | -40      | -20      | D          |
 | ...     | ...   | ...   | ...      | ...      | ...      | ...      | ...        |
 
 *NOTES*
 
 1. Your dataset needs to include these **columns**.   
 2. You can also add two **additional variables** as factors that the model needs to consider.
+
+### References
+Ludvig, E. A., Madan, C. R., & Spetch, M. L. (2014). Extreme outcomes sway risky decisions from experience. Journal of Behavioral Decision Making, 27(2), 146-156. https://doi.org/10.1002/bdm.1792
 
 <!---------------------------------------------------------->
 
@@ -56,7 +59,7 @@ model <- function(params){
   # build a RL model
   res <- binaryRL::run_m(
     data = data,                    # your data
-    id = 18,                        # Subject ID
+    id = 1,                         # Subject ID
     eta = c(params[1], params[2]),  # free parameters (RSTD)
     n_params = 2,                   # the number of free parameters
     n_trials = 288                  # the number of total trials
@@ -87,7 +90,7 @@ model <- function(params){
   # build a RL model
   res <- binaryRL::run_m(
     data = data,                    # your data
-    id = 18,                        # Subject ID
+    id = 1,                         # Subject ID
     eta = c(params[1], params[2]),  # free parameters (RSTD)
     n_params = 2,                   # the number of free parameters
     n_trials = 288,                 # the number of total trials
@@ -141,7 +144,7 @@ model <- function(params){
   # build a RL model
   res <- binaryRL::run_m(
     data = data,                    # your data
-    id = 18,                        # Subject ID
+    id = 1,                         # Subject ID
     eta = c(params[1], params[2]),  # free parameters (RSTD)
     n_params = 2,                   # the number of free parameters
     n_trials = 288,                 # the number of total trials
@@ -365,15 +368,15 @@ binaryRL_res <- binaryRL::fit_p(
 #> Parameters:
 #>    λ:  NA  
 #>    γ:  1 
-#>    η:  0.321 0.765 
+#>    η:  0.128 0.081 
 #>    ε:  NA 
-#>    τ:  0.5
+#>    τ:  1
 
 #> Model Fit:
-#>    Accuracy:  82.64 %
-#>    LogL:  -115.30 
-#>    AIC:  236.60 
-#>    BIC:  247.59 
+#>    Accuracy:  76.74 %
+#>    LogL:  -597.92 
+#>    AIC:  1199.84 
+#>    BIC:  1207.17 
 ```
 
 <!---------------------------------------------------------->
@@ -454,7 +457,7 @@ RSTD <- function(params){
   res <- binaryRL::run_m(
     back = TRUE,                    # simulate raw data
     data = data,                    # your data
-    id = 18,                        # Subject ID
+    id = 1,                         # Subject ID
     eta = c(params[1], params[2]),  # free parameters (RSTD)
     n_params = 2,                   # the number of free parameters
     n_trials = 288                  # the number of total trials
@@ -499,7 +502,7 @@ TD <- function(params){
   
   res <- binaryRL::run_m(
     data = data,                    # your data
-    id = 18,                        # Subject ID
+    id = 1,                         # Subject ID
     eta = c(params[1]),             # free parameters (TD)
     n_params = 1,                   # the number of free parameters
     n_trials = 288                  # the number of total trials
