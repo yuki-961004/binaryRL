@@ -25,15 +25,15 @@ library(binaryRL)
 ## Read your Raw Data
 ```r
 # a data frame including these columns
-data <- TAFC
+data <- Ludvig_2014_Exp1
 ```
 
 | Subject | Block | Trial | L_choice | R_choice | L_reward | R_reward | Sub_Choose |
 |---------|-------|-------|----------|----------|----------|----------|------------|
 | 1       | 1     | 1     | A        | B        | 20       | 0        | A          |
 | 1       | 1     | 2     | B        | A        | 40       | 20       | B          |
-| 1       | 1     | 1     | A        | B        | 20       | 0        | B          |
-| 1       | 1     | 2     | B        | A        | 40       | 20       | A          |
+| 1       | 1     | 1     | C        | D        | -20      | 0        | C          |
+| 1       | 1     | 2     | D        | C        | -40      | -20      | D          |
 | ...     | ...   | ...   | ...      | ...      | ...      | ...      | ...        |
 
 *NOTES*
@@ -209,7 +209,7 @@ func_gamma <- function(
 ){
   if (length(gamma) == 1) {
     gamma <- gamma
-    utility <- gamma * reward
+    utility <- reward ^ gamma
   }
   else {
     utility <- "ERROR" 
@@ -336,6 +336,7 @@ This package includes **5** algorithms:
 3. Genetic Algorithm (`GA::ga`)  
 4. Differential Evolution (`DEoptim::DEoptim`).   
 5. Bayesian Optimization (`mlrMBO::mbo`)
+6. Particle Swarm Optimization (`pso::psoptim`)
 
 > Please let me know if you know any other great algorithm package. I'd be happy to incorporate them into this package. 
 
@@ -349,10 +350,11 @@ binaryRL_res <- binaryRL::fit_p(
   upper = c(1, 1),
   iteration = 10,
   seed = 123,
-  algorithm = "Bayesian"   # Bayesian Optimization (mlrMBO)
-  #algorithm = "DEoptim"   # Differential Evolution (DEoptim)
-  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  algorithm = "Bayesian"   # Bayesian Optimization (`mlrMBO`)
+  #algorithm = "PSO"       # Particle Swarm Optimization (`pso`)
+  #algorithm = "DEoptim"   # Differential Evolution (`DEoptim`)
+  #algorithm = "GA"        # Genetic Algorithm (`GA`)
+  #algorithm = "GenSA"     # Simulated Annealing (`GenSA`)
   #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim),
 )
 ```

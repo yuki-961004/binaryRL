@@ -81,147 +81,149 @@ fit_p <- function(
     initial_params <- c(rep(1e-5, n_params))
   }
   
-  # 创建smoof函数
-  if (algorithm == "Bayesian"){
-    param_list <- lapply(1:n_params, function(i) {
-      ParamHelpers::makeNumericParam(
-        id = paste0("param_", i),
-        lower = lower[i],
-        upper = upper[i]
+  result <- switch(
+    algorithm,
+    "L-BFGS-B" = {
+      stats::optim(
+        par = initial_params,
+        method = "L-BFGS-B",
+        fn = obj_func,
+        lower = lower,
+        upper = upper,
+        control = list(
+          maxit = iteration
+        )
       )
-    })
+    },
+    "GenSA" = {
+      GenSA::GenSA(
+        fn = obj_func,
+        par = initial_params,
+        lower = lower,
+        upper = upper,
+        control = list(
+        maxit = iteration,
+          seed = seed
+        )
+      )
+    },
+    "GA" = {
+      GA::ga(
+        type = "real-valued",
+        fitness = function(x) obj_func(x),
+        popSize = initial_size,
+        lower = lower,
+        upper = upper,
+        maxiter = iteration,
+        parallel = TRUE
+      )
+    },
+    "DEoptim" = {
+      DEoptim::DEoptim(
+        fn = obj_func,
+        lower = lower,
+        upper = upper,
+        control = DEoptim::DEoptim.control(
+          NP = initial_size,
+          itermax = iteration,
+          parallelType = c("parallel"),
+          packages = c("binaryRL"),
+          parVar = c("data")
+        )
+      )
+    },
+    "Bayesian" = {
+      param_list <- lapply(
+        1:n_params, function(i) {
+          ParamHelpers::makeNumericParam(
+            id = paste0("param_", i),
+            lower = lower[i],
+            upper = upper[i]
+          )
+        }
+      )
     
-    # 创建一个mlrMBO接受的函数
-    bys_func <- smoof::makeSingleObjectiveFunction(
-      fn = obj_func,
-      par.set = ParamHelpers::makeParamSet(params = param_list)
-    )
-  }
-  
-  result <- switch(algorithm,
-   "L-BFGS-B" = {
-     stats::optim(
-       par = initial_params,
-       method = "L-BFGS-B",
-       fn = obj_func,
-       lower = lower,
-       upper = upper,
-       control = list(
-         maxit = iteration
-       )
-     )
-   },
-   "GenSA" = {
-     GenSA::GenSA(
-       fn = obj_func,
-       par = initial_params,
-       lower = lower,
-       upper = upper,
-       control = list(
-         maxit = iteration,
-         seed = seed
-       )
-     )
-   },
-   "GA" = {
-     GA::ga(
-       type = "real-valued",
-       fitness = function(x) obj_func(x),
-       popSize = initial_size,
-       lower = lower,
-       upper = upper,
-       maxiter = iteration,
-       parallel = TRUE
-     )
-   },
-   "DEoptim" = {
-     DEoptim::DEoptim(
-       fn = obj_func,
-       lower = lower,
-       upper = upper,
-       control = DEoptim::DEoptim.control(
-         NP = initial_size,
-         itermax = iteration,
-         parallelType = c("parallel"),
-         packages = c("binaryRL"),
-         parVar = c("data")
-       )
-     )
-   },
-   "Bayesian" = {
-     mlrMBO::mbo(
-       fun = bys_func, 
-       design = ParamHelpers::generateDesign(
-         n = initial_size, 
-         par.set = ParamHelpers::getParamSet(bys_func), 
-         fun = lhs::maximinLHS
-       ), 
-       control = mlrMBO::setMBOControlTermination(
-         control = mlrMBO::makeMBOControl(),
-         iters = iteration
-       )
-     )
-   },
-   "PSO" = {
-     pso::psoptim(
-       par = initial_params,
-       fn = obj_func,
-       lower = lower,
-       upper = upper,
-       control = list(
-         maxit = iteration
-       )
-     )
-   },
+      bys_func <- smoof::makeSingleObjectiveFunction(
+        fn = obj_func,
+        par.set = ParamHelpers::makeParamSet(params = param_list)
+      )
+    
+      mlrMBO::mbo(
+        fun = bys_func, 
+        design = ParamHelpers::generateDesign(
+          n = initial_size, 
+          par.set = ParamHelpers::getParamSet(bys_func), 
+          fun = lhs::maximinLHS
+        ), 
+        control = mlrMBO::setMBOControlTermination(
+          control = mlrMBO::makeMBOControl(),
+          iters = iteration
+        )
+      )
+    },
+    "PSO" = {
+      pso::psoptim(
+        par = initial_params,
+        fn = obj_func,
+        lower = lower,
+        upper = upper,
+        control = list(
+          maxit = iteration
+        )
+      )
+    },
    { # 默认情况（如果 algorithm 不匹配任何已知值）
-     stop("
-          Choose a algorithm from 
-          `L-BFGS-B`, `GenSA`, 
-          `GA`, `DEoptim`,
-          `Bayesian`, `PSO`
-        ")
-   }
+      stop("
+        Choose a algorithm from 
+        `L-BFGS-B`, `GenSA`, 
+        `GA`, `DEoptim`,
+        `Bayesian`, `PSO`
+      ")
+    }
   )
-  
-  switch(algorithm,
-   "L-BFGS-B" = {
+
+  switch(
+    algorithm,
+    "L-BFGS-B" = {
      fit_params <- as.vector(result$par)
      obj_func(params = fit_params)
      binaryRL_res$output <- fit_params
-   },
-   "GA" = {
-     fit_params <- as.vector(result@solution)
-     obj_func(params = fit_params)
-     binaryRL_res$output <- fit_params
-   },
-   "GenSA" = {
-     fit_params <- as.vector(result$par)
-     obj_func(params = fit_params)
-     binaryRL_res$output <- fit_params
-   },
-   "DEoptim" = {
-     fit_params <- as.vector(result$optim$bestmem)
-     obj_func(params = fit_params)
-     binaryRL_res$output <- fit_params
-   },
-   "Bayesian" = {
-     fit_params <- as.vector(as.numeric(result$final.opt.state$opt.result$mbo.result$x))
-     obj_func(params = fit_params)
-     binaryRL_res$output <- fit_params
-   },
-   "PSO" = {
-     fit_params <- as.vector(result$par)
-     obj_func(params = fit_params)
-     binaryRL_res$output <- fit_params
-   },
-   {
-     stop("
-          Choose a algorithm from 
-          `L-BFGS-B`, `GenSA`, 
-          `GA`, `DEoptim`,
-          `Bayesian`, `PSO`
-        ")
-   }
+    },
+    "GA" = {
+      fit_params <- as.vector(result@solution)
+      obj_func(params = fit_params)
+      binaryRL_res$output <- fit_params
+    },
+    "GenSA" = {
+      fit_params <- as.vector(result$par)
+      obj_func(params = fit_params)
+      binaryRL_res$output <- fit_params
+    },
+    "DEoptim" = {
+      fit_params <- as.vector(result$optim$bestmem)
+      obj_func(params = fit_params)
+      binaryRL_res$output <- fit_params
+    },
+    "Bayesian" = {
+      fit_params <- as.vector(
+        as.numeric(result$final.opt.state$opt.result$mbo.result$x)
+      )
+      obj_func(params = fit_params)
+      binaryRL_res$output <- fit_params
+    },
+    "PSO" = {
+      fit_params <- as.vector(result$par)
+      obj_func(params = fit_params)
+      binaryRL_res$output <- fit_params
+    },
+    {
+    stop("
+        Choose a algorithm from 
+        `L-BFGS-B`, `GenSA`, 
+        `GA`, `DEoptim`,
+        `Bayesian`, `PSO`
+      ")
+    }
   )
   
   summary(binaryRL_res)
