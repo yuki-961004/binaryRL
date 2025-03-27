@@ -5,13 +5,12 @@ date: "2025-03-19"
 output: html_document
 ---
 ```{r}
-install.packages("../../binaryRL_0.5.2.tar.gz")
+install.packages("../../binaryRL_0.5.3.tar.gz")
 ```
 
 ```{r}
 library(binaryRL)
-data <- TAFC
-data <- read.csv("./df_pilot.csv")
+data <- Ludvig_2014_Exp1
 ```
 
 ```{r}
@@ -23,7 +22,7 @@ model <- function(params){
   # build a RL model
   res <- binaryRL::run_m(
     data = data,                    # your data
-    id = 18,                        # Subject ID
+    id = 1,                        # Subject ID
     eta = c(params[1], params[2]),  # free parameters (RSTD)
     n_params = 2,                   # the number of free parameters
     n_trials = 288                  # the number of total trials
@@ -41,25 +40,9 @@ model <- function(params){
 ```
 
 ```{r}
-result <- pso::psoptim(
-  par = c(NA, NA),
-  fn = model,
-  lower = c(0, 0),
-  upper = c(1, 1),
-  control = list(
-    maxit = 10
-  )
-)
-
-result$par
-```
-
-
-```{r}
 binaryRL_res <- binaryRL::fit_p(
   data = data,
   obj_func = model,
-  initial = 50,
   lower = c(0, 0),
   upper = c(1, 1),
   iteration = 10,
@@ -95,13 +78,13 @@ list_simulated <- binaryRL::simulate_l(
   obj_func = RSTD,
   n_params = 3, 
   lower = c(0, 0, 0),
-  upper = c(1, 1, 0.5),
+  upper = c(1, 1, 1),
   seed = 123,
   iteration = 3
 )
 ```
 
-```{r}
+```{r include=FALSE}
 RSTD <- function(params){
   data <- get("data", envir = parent.frame()) 
   
@@ -124,10 +107,130 @@ df_recovery <- binaryRL::recovery_d(
   obj_func = RSTD,
   model_name = "RSTD",
   lower = c(0, 0, 0),
-  upper = c(1, 1, 0.5),
+  upper = c(1, 1, 1),
   seed = 123,
   iteration = 3,
   algorithm = "DEoptim"
 )
+```
+
+```{r}
+fake_parameter_recovery <- function(){
+  # 设置随机种子，确保结果可重复
+  set.seed(123)
+  
+  # 生成 simulated_eta，均匀分布在 0 到 1 之间
+  simulated_eta <- runif(100, 0, 1)
+  
+  # 生成 fit_eta，基于 simulated_eta 增加一些随机噪声
+  fit_eta <- simulated_eta + rnorm(100, 0, 0.1)
+  
+  # 将 fit_eta 限制在 0 到 1 之间
+  fit_eta[fit_eta < 0] <- 0
+  fit_eta[fit_eta > 1] <- 1
+  
+  # 创建数据框
+  data <- data.frame(simulated_eta, fit_eta)
+  
+  return(data)
+}
+
+data <- fake_parameter_recovery()
+
+ggplot2::ggplot(data = data, aes(x = simulated_eta, y = fit_eta)) +
+  ggplot2::geom_point(color = "#053562") +  # 绘制散点
+  ggplot2::geom_abline(intercept = 0, slope = 1, color = "#55c186") +  # 添加 y = x 的直线
+  ggplot2::labs(x = "simulated η", y = "fit η") +  # 添加坐标轴标签
+  papaja::theme_apa() +
+  ggplot2::theme(
+    text = element_text(
+      family = "serif", 
+      face = "bold",
+      size = 15
+    ),
+    axis.text = element_text(
+      color = "black",
+      family = "serif", 
+      face = "bold",
+      size = 10
+    )
+  )
+
+
+ggplot2::ggsave(filename = "./ignore/param_recovery.png", height = 3, width = 4)
+```
+
+```{r}
+fake_model_comparison <- function(n_params, n_trials = 288, seed = 123) {
+  set.seed(seed)
+
+  # 设置模型数量
+  num_models <- 2
+
+  # 生成模型名称
+  models <- paste("Model", 1:num_models)
+
+  # 生成准确率（ACC）
+  ACC <- round(runif(num_models, 70, 100), 2)
+
+  # 生成对数似然值（LogL）
+  LogL <- round(runif(num_models, -120, -80), 2)
+
+  # 设置参数数量
+  n_params <- n_params # 模型1的参数为2，模型2的参数为4
+
+  # 计算 AIC 和 BIC
+  AIC <- 2 * n_params - 2 * LogL
+  BIC <- n_params * log(n_trials) - 2 * LogL
+
+  # 创建数据框
+  data <- data.frame(model = models, ACC = ACC, LogL = -LogL, AIC = AIC, BIC = BIC)
+
+  return(data)
+}
+
+# 调用函数生成数据
+data <- fake_model_comparison(n_params = c(2, 4), n_trials = 288) %>%
+  tidyr::pivot_longer(
+    cols = c(ACC, LogL, AIC, BIC), 
+    names_to = "metric", 
+    values_to = "value"
+  ) %>%
+  dplyr::mutate(
+    metric = factor(
+      metric, 
+      levels = c('ACC', 'LogL', 'AIC', 'BIC'),
+      labels = c('ACC', '-LogL', 'AIC', 'BIC')
+    )
+  )
+
+# 绘制条形图
+ggplot2::ggplot(data, aes(x = metric, y = value, fill = model)) +
+  ggplot2::geom_bar(stat = "identity", position = "dodge") +
+  ggplot2::labs(x = "", y = "", fill = "Model") +
+  papaja::theme_apa() +
+  ggplot2::scale_fill_manual(
+    values = c("#053562", "#55c186")
+  ) +
+  ggplot2::theme(
+    legend.title = element_blank(),
+    text = element_text(
+      family = "serif", 
+      face = "bold",
+      size = 25
+    ),
+    axis.text = element_text(
+      color = "black",
+      family = "serif", 
+      face = "bold",
+      size = 20
+    )
+  )
+
+ggplot2::ggsave(filename = "./ignore/model_comparison.png", height = 6, width = 8)
+```
+
+```{r}
+
 ```
 

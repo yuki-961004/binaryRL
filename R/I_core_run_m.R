@@ -154,7 +154,7 @@
 #' @export
 #'
 #' @examples
-#' data <- TAFC
+#' data <- Ludvig_2014_Exp1
 #' 
 #' simulated <- binaryRL::run_m(
 #'   data = data,

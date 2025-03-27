@@ -194,7 +194,7 @@ This function requires the optimal parameter values obtained through the
  https://github.com/yuki-961004/binaryRL
 }
 \examples{
-data <- TAFC
+data <- Ludvig_2014_Exp1
 
 simulated <- binaryRL::run_m(
   data = data,

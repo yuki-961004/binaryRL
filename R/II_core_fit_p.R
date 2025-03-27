@@ -28,10 +28,14 @@
 #'  from parent.frame() and the results passed back to parent.frame(). 
 #'  This function returns the log likelihood (logL).
 #' 
-#' @param initial [vector] Initial values for the free parameters. 
+#' @param initial_params [vector] Initial values for the free parameters. 
 #'  These need to be set only when using L-BFGS-B. Other algorithms 
 #'  automatically generate initial values.
 #'  for `L-BFGS-B`, `GenSA`, set `initial = c(0, 0, ...)`
+#'  
+#' @param initial_size [integer] Initial values for the free parameters. 
+#'  These need to be set only when using L-BFGS-B. Other algorithms 
+#'  automatically generate initial values.
 #'  for `Bayesian`, `GA`, set `initial = 50`
 #' 
 #' @param lower [vector] lower bounds of free parameters
@@ -53,7 +57,8 @@
 fit_p <- function(
     data,
     obj_func,
-    initial = NULL,
+    initial_params = NA,
+    initial_size = 50,
     lower,
     upper,
     iteration = 10,
@@ -71,45 +76,50 @@ fit_p <- function(
     stop("The lengths of 'lower' and 'upper' must be equal.")
   }
   
-  # 给
+  # 设定初始值
+  if (is.na(initial_params)){
+    initial_params <- c(rep(1e-5, n_params))
+  }
+  
+  # 创建smoof函数
   if (algorithm == "Bayesian"){
-    # 动态生成参数列表
     param_list <- lapply(1:n_params, function(i) {
       ParamHelpers::makeNumericParam(
-        id = paste0("param_", i),  
-        lower = lower[i],          
-        upper = upper[i]           
+        id = paste0("param_", i),
+        lower = lower[i],
+        upper = upper[i]
       )
     })
     
     # 创建一个mlrMBO接受的函数
     bys_func <- smoof::makeSingleObjectiveFunction(
       fn = obj_func,
-      par.set = ParamHelpers::makeParamSet(params = param_list) 
+      par.set = ParamHelpers::makeParamSet(params = param_list)
     )
-    # 贝叶斯模型前置结束 #
   }
   
   result <- switch(algorithm,
    "L-BFGS-B" = {
      stats::optim(
-       par = initial,
+       par = initial_params,
        method = "L-BFGS-B",
        fn = obj_func,
        lower = lower,
        upper = upper,
-       control = list(maxit = iteration)
+       control = list(
+         maxit = iteration
+       )
      )
    },
    "GenSA" = {
      GenSA::GenSA(
        fn = obj_func,
-       par = initial,
+       par = initial_params,
        lower = lower,
        upper = upper,
        control = list(
          maxit = iteration,
-         seed = 123
+         seed = seed
        )
      )
    },
@@ -117,7 +127,7 @@ fit_p <- function(
      GA::ga(
        type = "real-valued",
        fitness = function(x) obj_func(x),
-       popSize = initial,
+       popSize = initial_size,
        lower = lower,
        upper = upper,
        maxiter = iteration,
@@ -130,6 +140,7 @@ fit_p <- function(
        lower = lower,
        upper = upper,
        control = DEoptim::DEoptim.control(
+         NP = initial_size,
          itermax = iteration,
          parallelType = c("parallel"),
          packages = c("binaryRL"),
@@ -141,7 +152,7 @@ fit_p <- function(
      mlrMBO::mbo(
        fun = bys_func, 
        design = ParamHelpers::generateDesign(
-         n = initial, 
+         n = initial_size, 
          par.set = ParamHelpers::getParamSet(bys_func), 
          fun = lhs::maximinLHS
        ), 
@@ -153,7 +164,7 @@ fit_p <- function(
    },
    "PSO" = {
      pso::psoptim(
-       par = rep(NA, n_params),
+       par = initial_params,
        fn = obj_func,
        lower = lower,
        upper = upper,

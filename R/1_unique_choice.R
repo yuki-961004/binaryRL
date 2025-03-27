@@ -26,8 +26,8 @@ unique_choice <- function(data, L_choice = "L_choice", R_choice = "R_choice"){
   # 以选项的名称创建新列, 用于储存每一次决策后的价值更新
   
   # 获取 L_choice 和 R_choice 的唯一值
-  unique_L <- unique(data[[L_choice]])
-  unique_R <- unique(data[[R_choice]])
+  unique_L <- levels(data[[L_choice]])
+  unique_R <- levels(data[[R_choice]])
   
   # 检查L_choice 和R_choice是否包含了一样的选项
   if (!all(unique_L %in% unique_R) || !all(unique_R %in% unique_L)) {

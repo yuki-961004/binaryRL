@@ -53,7 +53,7 @@ func_gamma <- function(
   # 如果gamma只有一种, 则直接用这个gamma计算temp
   if (length(gamma) == 1) {
     gamma <- as.numeric(gamma)
-    utility <- gamma * reward
+    utility <- reward ^ gamma
   }
   ################################# [ Utility ] ##################################
   else {

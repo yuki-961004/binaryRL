@@ -1,0 +1,147 @@
+Ludvig, E. A., Madan, C. R., & Spetch, M. L. (2014). Extreme outcomes sway risky decisions from experience. Journal of Behavioral Decision Making, 27(2), 146-156. https://doi.org/10.1002/bdm.1792
+
+https://osf.io/eagcd/
+
+# 2014_JBDM
+## [5] Exp 1
+```{r message=FALSE, warning=FALSE}
+Ludvig_2014_Exp1 <- read.csv(
+  file = "./ignore/2014_JBDM_Exp_1.csv"
+) %>%
+  dplyr::select(
+    Subject, Block, Trial, 
+    RT = Click.RT, 
+    StimType, 
+    TrialType,
+    Choose = Click.Stim, 
+    L,
+    R,
+    Reward = RewardAmount, 
+    NetWorth = CumulativeReward, 
+  ) %>%
+  dplyr::filter(RT != "NULL") %>% # exclude NULL rows
+  tidyr::separate(
+    StimType, 
+    into = c("DL", "DR"), 
+    sep = "0", 
+    remove = FALSE, 
+    extra = "drop"
+  ) %>%
+  dplyr::mutate(
+    Subject = Subject - 100,
+    Block = (Block + 1) / 2,
+    Frame = case_when(
+      DL %in% c(1, 2) & DR %in% c(1, 2) ~ "Gain",
+      DL %in% c(4, 5) & DR %in% c(4, 5) ~ "Loss",
+      DL %in% c(1, 2) & DR %in% c(4, 5) ~ "Catch",
+      DL %in% c(4, 5) & DR %in% c(1, 2) ~ "Catch",
+      TRUE ~ "Single"
+    ),
+    L_choice = DL,
+    R_choice = case_when(
+      Frame == "Single" ~ DL,
+      TRUE ~ DR,
+    ),
+    L = case_when(
+      L == "Win0" ~ 0,
+      L == "Win20" ~ 20,
+      L == "Win40" ~ 40,
+      L == "Lose0" ~ 0,
+      L == "Lose20" ~ -20,
+      L == "Lose40" ~ -40,
+      L == "Grey" ~ NA
+    ),
+    R = case_when(
+      R == "Win0" ~ 0,
+      R == "Win20" ~ 20,
+      R == "Win40" ~ 40,
+      R == "Lose0" ~ 0,
+      R == "Lose20" ~ -20,
+      R == "Lose40" ~ -40,
+      R == "Grey" ~ NA
+    ),
+    L_reward = case_when(
+      is.na(L) & L_choice == 1 ~ 20,
+      is.na(L) & L_choice == 2 ~ sample(c(0, 40), size = 1, prob = c(0.5, 0.5)),
+      is.na(L) & L_choice == 4 ~ -20,
+      is.na(L) & L_choice == 5 ~ sample(c(0, -40), size = 1, prob = c(0.5, 0.5)),
+      TRUE ~ L
+    ),
+    R_reward = case_when(
+      is.na(R) & R_choice == 1 ~ 20,
+      is.na(R) & R_choice == 2 ~ sample(c(0, 40), size = 1, prob = c(0.5, 0.5)),
+      is.na(R) & R_choice == 4 ~ -20,
+      is.na(R) & R_choice == 5 ~ sample(c(0, -40), size = 1, prob = c(0.5, 0.5)),
+      TRUE ~ R
+    ),
+    Sub_Choose = case_when(
+      Choose == "Door1" ~ 1,
+      Choose == "Door2" ~ 2,
+      Choose == "Door4" ~ 4,
+      Choose == "Door5" ~ 5,
+    )
+  ) %>%
+  dplyr::arrange(Subject, Block, Trial) %>%
+  dplyr::mutate_at(
+    vars(
+      Subject, Block, Trial, 
+      Frame, 
+      L_choice, R_choice, 
+      Sub_Choose
+    ),
+    factor
+  ) %>%
+  dplyr::mutate_at(
+    vars(
+      Reward, NetWorth, RT
+    ),
+    as.numeric
+  ) %>%
+  dplyr::select(
+    Subject, Block, Trial,
+    L_choice, R_choice, 
+    L_reward, R_reward,
+    Sub_Choose, 
+    Frame, NetWorth, RT
+  ) 
+
+  Ludvig_2014_Exp1 <- Ludvig_2014_Exp1 %>%
+    dplyr::mutate(
+      L_choice = case_when(
+        L_choice == 1 ~ 'A',
+        L_choice == 2 ~ 'B',
+        L_choice == 4 ~ 'C',
+        L_choice == 5 ~ 'D',
+      ), 
+      R_choice = case_when(
+        R_choice == 1 ~ 'A',
+        R_choice == 2 ~ 'B',
+        R_choice == 4 ~ 'C',
+        R_choice == 5 ~ 'D',
+      ),  
+      Sub_Choose = case_when(
+        Sub_Choose == 1 ~ 'A',
+        Sub_Choose == 2 ~ 'B',
+        Sub_Choose == 4 ~ 'C',
+        Sub_Choose == 5 ~ 'D',
+      ),
+      L_choice = factor(
+        L_choice, levels = c('A', 'B', 'C', 'D')
+      ),
+      R_choice = factor(
+        R_choice, levels = c('A', 'B', 'C', 'D')
+      ),
+      Sub_Choose = factor(
+        Sub_Choose, levels = c('A', 'B', 'C', 'D')
+      ),
+    ) 
+#################################Save Data######################################
+
+summary(Ludvig_2014_Exp1)
+```
+
+# Rda
+```{r}
+usethis::use_data(Ludvig_2014_Exp1, overwrite = TRUE)
+```
+
