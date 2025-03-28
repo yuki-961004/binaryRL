@@ -18,9 +18,15 @@
 #' 
 #' @param model_name the name of your modal
 #' 
-#' @param initial [vector] Initial values for the free parameters. 
+#' @param initial_params [vector] Initial values for the free parameters. 
 #'  These need to be set only when using L-BFGS-B. Other algorithms 
 #'  automatically generate initial values.
+#'  for `L-BFGS-B`, `GenSA`, set `initial = c(0, 0, ...)`
+#'  
+#' @param initial_size [integer] Initial values for the free parameters. 
+#'  These need to be set only when using L-BFGS-B. Other algorithms 
+#'  automatically generate initial values.
+#'  for `Bayesian`, `GA`, set `initial = 50`
 #' 
 #' @param lower [vector] lower bounds of free parameters
 #' 
@@ -42,7 +48,8 @@ recovery_d <- function(
     list,
     obj_func,
     model_name,
-    initial,
+    initial_params = NA,
+    initial_size = 50,
     lower,
     upper,
     algorithm,
@@ -80,12 +87,13 @@ recovery_d <- function(
     binaryRL_res <- binaryRL::fit_p(
       data = data,
       obj_func = obj_func,
-      algorithm = algorithm,
-      initial = initial,
+      initial_params = initial_params,
+      initial_size = initial_size,
       lower = lower,
       upper = upper,
       iteration = iteration,
-      seed = seed
+      seed = seed,
+      algorithm = algorithm
     )
     
     # 每解完一次题就存一次结果

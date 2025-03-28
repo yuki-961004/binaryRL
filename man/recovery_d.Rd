@@ -8,7 +8,8 @@ recovery_d(
   list,
   obj_func,
   model_name,
-  initial,
+  initial_params = NA,
+  initial_size = 50,
   lower,
   upper,
   algorithm,
@@ -26,9 +27,15 @@ This function returns the log likelihood (logL).}
 
 \item{model_name}{the name of your modal}
 
-\item{initial}{[vector] Initial values for the free parameters. 
+\item{initial_params}{[vector] Initial values for the free parameters. 
 These need to be set only when using L-BFGS-B. Other algorithms 
-automatically generate initial values.}
+automatically generate initial values.
+for `L-BFGS-B`, `GenSA`, set `initial = c(0, 0, ...)`}
+
+\item{initial_size}{[integer] Initial values for the free parameters. 
+These need to be set only when using L-BFGS-B. Other algorithms 
+automatically generate initial values.
+for `Bayesian`, `GA`, set `initial = 50`}
 
 \item{lower}{[vector] lower bounds of free parameters}
 

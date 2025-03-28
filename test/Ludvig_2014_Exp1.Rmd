@@ -85,18 +85,11 @@ Ludvig_2014_Exp1 <- read.csv(
   ) %>%
   dplyr::arrange(Subject, Block, Trial) %>%
   dplyr::mutate_at(
-    vars(
-      Subject, Block, Trial, 
-      Frame, 
-      L_choice, R_choice, 
-      Sub_Choose
-    ),
+    vars(Subject, Block, Trial, L_choice, R_choice, Sub_Choose, Frame),
     factor
   ) %>%
   dplyr::mutate_at(
-    vars(
-      Reward, NetWorth, RT
-    ),
+    vars(L_reward, R_reward, NetWorth, RT),
     as.numeric
   ) %>%
   dplyr::select(

@@ -5,7 +5,7 @@ date: "2025-03-19"
 output: html_document
 ---
 ```{r}
-install.packages("../../binaryRL_0.5.4.tar.gz")
+install.packages("../../binaryRL_0.5.5.tar.gz")
 ```
 
 ```{r}
@@ -22,7 +22,7 @@ model <- function(params){
   # build a RL model
   res <- binaryRL::run_m(
     data = data,                    # your data
-    id = 1,                        # Subject ID
+    id = 18,                        # Subject ID
     eta = c(params[1], params[2]),  # free parameters (RSTD)
     n_params = 2,                   # the number of free parameters
     n_trials = 288                  # the number of total trials
@@ -47,8 +47,8 @@ binaryRL_res <- binaryRL::fit_p(
   upper = c(1, 1),
   iteration = 10,
   seed = 123,
-  algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+  algorithm = "PSO"        # Particle Swarm Optimization (pso::psoptim)
   #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
   #algorithm = "GA"        # Genetic Algorithm (GA::ga)
   #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
@@ -63,7 +63,7 @@ RSTD <- function(params){
   res <- binaryRL::run_m(
     back = TRUE,                    # simulate raw data
     data = data,                    # your data
-    id = 18,                        # Subject ID
+    id = 18,                         # Subject ID
     eta = c(params[1], params[2]),  # free parameters (RSTD)
     tau = c(params[3]),
     n_params = 2,                   # the number of free parameters
@@ -80,7 +80,7 @@ list_simulated <- binaryRL::simulate_l(
   lower = c(0, 0, 0),
   upper = c(1, 1, 1),
   seed = 123,
-  iteration = 3
+  iteration = 10
 )
 ```
 
@@ -109,8 +109,8 @@ df_recovery <- binaryRL::recovery_d(
   lower = c(0, 0, 0),
   upper = c(1, 1, 1),
   seed = 123,
-  iteration = 3,
-  algorithm = "DEoptim"
+  iteration = 10,
+  algorithm = "PSO"
 )
 ```
 
