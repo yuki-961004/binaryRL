@@ -54,6 +54,7 @@
 #' @returns the result of binaryRL with optimal parameters
 #' @export
 #'
+
 fit_p <- function(
     data,
     obj_func,
@@ -65,9 +66,9 @@ fit_p <- function(
     seed = 123,
     algorithm
 ){
-  data <- data
+  assign("fit_data", data, envir = globalenv())
   
-  set.seed(123)
+  set.seed(seed)
   
   # 提取参数的数量
   if (length(lower) == length(upper)) {
@@ -128,7 +129,7 @@ fit_p <- function(
           itermax = iteration,
           parallelType = c("parallel"),
           packages = c("binaryRL"),
-          parVar = c("data")
+          parVar = c("fit_data")
         )
       )
     },
@@ -226,6 +227,7 @@ fit_p <- function(
     }
   )
   
+  rm(fit_data, envir = globalenv())
   summary(binaryRL_res)
   return(binaryRL_res)
 }

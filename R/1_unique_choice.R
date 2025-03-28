@@ -35,7 +35,7 @@ unique_choice <- function(data, L_choice = "L_choice", R_choice = "R_choice"){
   } 
   else {
     # 将所有备选项传输到函数的上一层
-    options <- unique_L
+    options <- sort(unique_L)
   }
   
   # 把所有备选项以列名创建, 方便存放价值更新

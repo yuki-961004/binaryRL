@@ -10,14 +10,14 @@ install.packages("../../binaryRL_0.5.5.tar.gz")
 
 ```{r}
 library(binaryRL)
-data <- Ludvig_2014_Exp1
+head(Ludvig_2014_Exp1)
 ```
 
 ```{r}
 model <- function(params){
   # since `obj_func`(model) can only be one argument, `params`, 
-  # the data must be retrieved from the parent environment.
-  data <- get("data", envir = parent.frame()) 
+  # `fit_p` will pass the fit_data into global environment, then delete it.
+  data <- get("fit_data", envir = globalenv()) 
 
   # build a RL model
   res <- binaryRL::run_m(
@@ -33,22 +33,22 @@ model <- function(params){
   assign("binaryRL_res", res, envir = parent.frame())
   
   # if the algorithm is solving a minimization problem, return -ll
-  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim Bayesian ...
+  return(-res$ll) # L-BFGS-B, GenSA, DEoptim Bayesian ...
   # if the algorithm is solving a maximization problem, return ll
-  # invisible(res$ll) # GA ...
+  # return(res$ll) # GA ...
 }
 ```
 
 ```{r}
 binaryRL_res <- binaryRL::fit_p(
-  data = data,
+  data = Ludvig_2014_Exp1,
   obj_func = model,
   lower = c(0, 0),
   upper = c(1, 1),
   iteration = 10,
   seed = 123,
-  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-  algorithm = "PSO"        # Particle Swarm Optimization (pso::psoptim)
+  algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+  #algorithm = "PSO"      # Particle Swarm Optimization (pso::psoptim)
   #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
   #algorithm = "GA"        # Genetic Algorithm (GA::ga)
   #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
@@ -58,14 +58,14 @@ binaryRL_res <- binaryRL::fit_p(
 
 ```{r}
 RSTD <- function(params){
-  data <- get("data", envir = parent.frame()) 
+  data <- Ludvig_2014_Exp1
   
   res <- binaryRL::run_m(
     back = TRUE,                    # simulate raw data
     data = data,                    # your data
     id = 18,                         # Subject ID
     eta = c(params[1], params[2]),  # free parameters (RSTD)
-    tau = c(params[3]),
+    tau = 1,
     n_params = 2,                   # the number of free parameters
     n_trials = 288                  # the number of total trials
   )
@@ -76,41 +76,43 @@ RSTD <- function(params){
 list_simulated <- binaryRL::simulate_l(
   data = data,
   obj_func = RSTD,
-  n_params = 3, 
-  lower = c(0, 0, 0),
-  upper = c(1, 1, 1),
+  n_params = 2, 
+  lower = c(0, 0),
+  upper = c(1, 1),
   seed = 123,
-  iteration = 10
+  iteration = 3
 )
 ```
 
 ```{r include=FALSE}
 RSTD <- function(params){
-  data <- get("data", envir = parent.frame()) 
+  data <- get("fit_data", envir = globalenv()) 
   
   res <- binaryRL::run_m(
     data = data,                    # your data
     id = 18,                        # Subject ID
     eta = c(params[1], params[2]),  # free parameters (RSTD)
-    tau = c(params[3]),
-    n_params = 3,                   # the number of free parameters
+    tau = 1,
+    n_params = 2,                   # the number of free parameters
     n_trials = 288                  # the number of total trials
   )
 
   assign("binaryRL_res", res, envir = parent.frame())
+  
   
   invisible(-res$ll)
 }
 
 df_recovery <- binaryRL::recovery_d(
   list = list_simulated,
+  initial_size = 50,
   obj_func = RSTD,
   model_name = "RSTD",
-  lower = c(0, 0, 0),
-  upper = c(1, 1, 1),
+  lower = c(0, 0),
+  upper = c(1, 1),
   seed = 123,
   iteration = 10,
-  algorithm = "PSO"
+  algorithm = "DEoptim"
 )
 ```
 
