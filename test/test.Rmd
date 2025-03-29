@@ -5,7 +5,7 @@ date: "2025-03-19"
 output: html_document
 ---
 ```{r}
-install.packages("../../binaryRL_0.5.6.tar.gz")
+install.packages("../../binaryRL_0.5.7.tar.gz")
 ```
 
 ```{r}
@@ -16,6 +16,15 @@ library(binaryRL)
 head(Ludvig_2014_Exp1)
 ```
 
+```{r}
+Ludvig_2014_Exp1 %>%
+  dplyr::select(L_choice, L_reward) %>%
+  dplyr::group_by(L_choice) %>%
+  dplyr::mutate(mean_value = mean(L_reward)) %>%
+  dplyr::ungroup() %>%
+  dplyr::select(L_choice, mean_value) %>%
+  dplyr::distinct()
+```
 
 ```{r}
 model <- function(params){
@@ -83,7 +92,7 @@ list_simulated <- binaryRL::simulate_l(
   lower = c(0, 0),
   upper = c(1, 1),
   seed = 123,
-  iteration = 10
+  iteration = 3
 )
 ```
 
