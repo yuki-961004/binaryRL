@@ -18,7 +18,8 @@ Hu, M., & L, Z. (2025). binaryRL: A Package for Building Reinforcement Learning 
 ```r
 devtools::install_github("yuki-961004/binaryRL") 
 library(binaryRL)
-
+```
+```
                                      +------------------------+
    ___                               |  +---------+           |
   |  _ \                             |  |  RRRR   |   L       |
