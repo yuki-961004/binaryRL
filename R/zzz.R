@@ -4,15 +4,15 @@ binaryRLStartupMessage <- function()
   # > figlet GA
   msg <- c(paste0(
   "
-                                                  .                
-                                                  :                 
-                                            '.___/*\\___.'          
-  A Model-Free Reinforcement Learning Tool    \\* \\ / */         
-                                               >--X--<      
-  for Two-Alternative Force Choice Tasks      /*_/ \\_*\\ 
-                                            .'   \\*/   '.
-                                                  :
-                                                  '
+                                     +------------------------+
+   ___                               |  +---------+           |
+  |  _ \\                             |  |  RRRR   |   L       |
+  | |_) (_)_ __   __ _ _ __ _   _    |  |  R   R  |   L       |
+  |  _ \\| | '_ \\ / _` | '__| | | |   |  |  RRRR   |   L       |
+  | |_) | | | | | (_| | |  | |_| |   |  |  R R    |   L       |
+  |____/|_|_| |_|\\__,_|_|   \\__, |   |  |  R  RR  |   LLLLLL  |
+                            |___/    |  +---------+           |
+                                     +------------------------+  
   "))
   return(msg)
 }

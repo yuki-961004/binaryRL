@@ -18,14 +18,26 @@ Hu, M., & L, Z. (2025). binaryRL: A Package for Building Reinforcement Learning 
 ```r
 devtools::install_github("yuki-961004/binaryRL") 
 library(binaryRL)
+
+                                     +------------------------+
+   ___                               |  +---------+           |
+  |  _ \                             |  |  RRRR   |   L       |
+  | |_) (_)_ __   __ _ _ __ _   _    |  |  R   R  |   L       |
+  |  _ \| | '_ \ / _` | '__| | | |   |  |  RRRR   |   L       |
+  | |_) | | | | | (_| | |  | |_| |   |  |  R R    |   L       |
+  |____/|_|_| |_|\__,_|_|   \__, |   |  |  R  RR  |   LLLLLL  |
+                            |___/    |  +---------+           |
+                                     +------------------------+  
 ```
+
+
 
 <!---------------------------------------------------------->
 
 ## Read your Raw Data
 ```r
 # An open data from Ludvig et. al. (2014) https://osf.io/eagcd/
-data <- Ludvig_2014_Exp1
+head(Ludvig_2014_Exp1)
 ```
 
 | Subject | Block | Trial | L_choice | R_choice | L_reward | R_reward | Sub_Choose |
@@ -53,8 +65,8 @@ Create a model function that contains only ONE argument: `params`.
 ```r
 model <- function(params){
   # since `obj_func`(model) can only be one argument, `params`, 
-  # the data must be retrieved from the parent environment.
-  data <- get("data", envir = parent.frame()) 
+  # `fit_p` will pass the fit_data into global environment, then delete it.
+  data <- get(x = "fit_data", envir = globalenv()) 
 
   # build a RL model
   res <- binaryRL::run_m(
@@ -70,9 +82,9 @@ model <- function(params){
   assign("binaryRL_res", res, envir = parent.frame())
   
   # if the algorithm is solving a minimization problem, return -ll
-  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim Bayesian ...
+  return(-res$ll) # L-BFGS-B, GenSA, DEoptim Bayesian ...
   # if the algorithm is solving a maximization problem, return ll
-  # invisible(res$ll) # GA ...
+  # return(res$ll) # GA ...
 }
 ```
 
@@ -83,17 +95,14 @@ model <- function(params){
 
 ```r
 model <- function(params){
-  # since `obj_func`(model) can only be one argument, `params`, 
-  # the data must be retrieved from the parent environment.
-  data <- get("data", envir = parent.frame()) 
+  data <- get(x = "fit_data", envir = globalenv()) 
 
-  # build a RL model
   res <- binaryRL::run_m(
-    data = data,                    # your data
-    id = 1,                         # Subject ID
-    eta = c(params[1], params[2]),  # free parameters (RSTD)
-    n_params = 2,                   # the number of free parameters
-    n_trials = 288,                 # the number of total trials
+    data = data,                    
+    id = 1,                         
+    eta = c(params[1], params[2]),  
+    n_params = 2,                   
+    n_trials = 288,                 
 
     # column names
     sub = "Subject",
@@ -113,14 +122,10 @@ model <- function(params){
     var2 = "extra_Var2"
   )
 
-  # pass the result to the parent environment
-  # make it easier to get the optimal parameters later
   assign("binaryRL_res", res, envir = parent.frame())
   
-  # if the algorithm is solving a minimization problem, return -ll
-  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim Bayesian ...
-  # if the algorithm is solving a maximization problem, return ll
-  # invisible(res$ll) # GA ...
+  return(-res$ll) 
+  # return(res$ll) 
 }
 ```
 
@@ -137,34 +142,15 @@ If your column names are different from my example, you need to fill in the colu
 
 ```r
 model <- function(params){
-  # since `obj_func`(model) can only be one argument, `params`, 
-  # the data must be retrieved from the parent environment.
-  data <- get("data", envir = parent.frame()) 
+  data <- get(x = "fit_data", envir = globalenv()) 
 
   # build a RL model
   res <- binaryRL::run_m(
-    data = data,                    # your data
-    id = 1,                         # Subject ID
-    eta = c(params[1], params[2]),  # free parameters (RSTD)
-    n_params = 2,                   # the number of free parameters
-    n_trials = 288,                 # the number of total trials
-
-    # column names
-    sub = "Subject",
-    time_line = c("Block", "Trial"),
-    L_choice = "L_choice",
-    R_choice = "R_choice",
-    L_reward = "L_reward",
-    R_reward = "R_reward",
-    sub_choose = "Sub_Choose",
-    rob_choose = "Rob_Choose",
-    raw_cols = c(
-      "Subject", "Block", "Trial",
-      "L_choice", "R_choice", "L_reward", "R_reward",
-      "Sub_Choose"
-    ),
-    var1 = "extra_Var1",
-    var2 = "extra_Var2"
+    data = data,                    
+    id = 1,                         
+    eta = c(params[1], params[2]),  
+    n_params = 2,                   
+    n_trials = 288,                 
 
     # functions
     util_func = your_util_func,
@@ -173,14 +159,10 @@ model <- function(params){
     prob_func = your_prob_func
   )
 
-  # pass the result to the parent environment
-  # make it easier to get the optimal parameters later
   assign("binaryRL_res", res, envir = parent.frame())
   
-  # if the algorithm is solving a minimization problem, return -ll
-  invisible(-res$ll) # L-BFGS-B, GenSA, DEoptim Bayesian ...
-  # if the algorithm is solving a maximization problem, return ll
-  # invisible(res$ll) # GA ...
+  return(-res$ll) 
+  # return(res$ll) 
 }
 ```
 
@@ -347,7 +329,7 @@ This package includes **5** algorithms:
 
 ```r
 binaryRL_res <- binaryRL::fit_p(
-  data = data,
+  data = Ludvig_2014_Exp1,
   obj_func = model,
   lower = c(0, 0),
   upper = c(1, 1),
@@ -452,7 +434,7 @@ Use your `obj_func` and set its `back = TRUE`. This will allow you to obtain a s
 
 ```r
 RSTD <- function(params){
-  data <- get("data", envir = parent.frame()) 
+  data <- Ludvig_2014_Exp1
   
   res <- binaryRL::run_m(
     back = TRUE,                    # simulate raw data
@@ -467,7 +449,6 @@ RSTD <- function(params){
 }
 
 list_simulated <- binaryRL::simulate_l(
-  data = data,
   obj_func = RSTD,
   n_params = 2, 
   lower = c(0, 0),
@@ -493,12 +474,14 @@ list_simulated
 ```
 
 ## 4. Recovery Data
-To demonstrate parameter and model recovery, we will utilize these simulated datasets (`list_simulated`). Specifically, we will show how the **RSTD** model can be recovered using the **TD** model as an example. 
+If the simulated and fitted models are the same, then parameter recovery is being performed.  
+If the simulated model is A, and the fitted model is any of the alternative models, then model recovery is being performed.  
+Here, I will only show the process of performing parameter recovery using the RSTD model.
 <!---------------------------------------------------------->
 
 ```r
 TD <- function(params){
-  data <- get("data", envir = parent.frame()) 
+  data <- get(x = "fit_data", envir = globalenv()) 
   
   res <- binaryRL::run_m(
     data = data,                    # your data
@@ -525,14 +508,18 @@ df_recovery <- binaryRL::recovery_d(
 )
 ```
 
-| model | ACC  | LL  | AIC | BIC | imput_param_1 | imput_param_2 | output_param_1 |
-|-------|------|-----|-----|-----|---------------|---------------|----------------|
-| TD    | 0.50 | -150| 302 | 305 |      0.78     |       0.01    |       0.77     |
-| TD    | 0.60 | -140| 282 | 285 |      0.65     |       0.23    |       0.66     |
-| TD    | 0.70 | -130| 262 | 265 |      0.34     |       0.45    |       0.55     |
-| TD    | 0.80 | -120| 242 | 245 |      0.21     |       0.67    |       0.44     |
-| TD    | 0.90 | -110| 222 | 225 |      0.10     |       0.89    |       0.33     |
-| ...   | ...  | ... | ... | ... |      ...      |       ...     |       ...      |
+| model | ACC   | LL      | AIC    | BIC    | input_param_1 | input_param_2 | output_param_1 | output_param_2 |
+|-------|-------|---------|--------|--------|---------------|---------------|----------------|----------------|
+| RSTD  | 90.62 | -282.94 | 569.88 | 577.21 | 0.64          | 0.29          | 0.59           | 0.21           |
+| RSTD  | 95.49 | -189.03 | 382.06 | 389.39 | 0.72          | 0.13          | 0.71           | 0.10           |
+| RSTD  | 94.79 | -216.34 | 436.68 | 444.01 | 0.95          | 0.21          | 0.59           | 0.21           |
+| RSTD  | 90.28 | -165.03 | 334.06 | 341.39 | 0.68          | 0.54          | 0.51           | 0.32           |
+| RSTD  | 92.01 | -209.80 | 423.60 | 430.93 | 0.20          | 0.33          | 0.17           | 0.24           |
+| RSTD  | 93.06 | -68.39  | 140.78 | 148.11 | 0.32          | 0.65          | 0.23           | 0.26           |
+| RSTD  | 90.28 | -165.03 | 334.06 | 341.39 | 0.57          | 0.53          | 0.51           | 0.32           |
+| RSTD  | 90.28 | -165.03 | 334.06 | 341.39 | 0.97          | 0.70          | 0.51           | 0.32           |
+| RSTD  | 90.28 | -165.03 | 334.06 | 341.39 | 0.90          | 0.94          | 0.51           | 0.32           |
+| RSTD  | 99.65 | -17.41  | 38.82  | 46.15  | 0.05          | 0.75          | 0.14           | 0.44           |
 
 <!---------------------------------------------------------->
 
