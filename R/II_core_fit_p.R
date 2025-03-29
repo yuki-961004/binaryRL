@@ -49,7 +49,7 @@
 #'  default: `seed = 123` 
 #'  
 #' @param algorithm [character] Choose a algorithm package from 
-#'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`
+#'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`
 #' 
 #' @returns the result of binaryRL with optimal parameters
 #' @export
@@ -173,12 +173,24 @@ fit_p <- function(
         )
       )
     },
+    "CMA-ES" = {
+      cmaes::cma_es(
+        par = initial_params,
+        fn = obj_func,
+        lower = lower,
+        upper = upper,
+        control = list(
+          maxit = iteration
+        )
+      )
+    },
    { # 默认情况（如果 algorithm 不匹配任何已知值）
       stop("
         Choose a algorithm from 
         `L-BFGS-B`, `GenSA`, 
         `GA`, `DEoptim`,
-        `Bayesian`, `PSO`
+        `Bayesian`, `PSO`,
+        `CMA-ES`
       ")
     }
   )
@@ -187,45 +199,40 @@ fit_p <- function(
     algorithm,
     "L-BFGS-B" = {
      fit_params <- as.vector(result$par)
-     obj_func(params = fit_params)
-     binaryRL_res$output <- fit_params
     },
     "GA" = {
       fit_params <- as.vector(result@solution)
-      obj_func(params = fit_params)
-      binaryRL_res$output <- fit_params
     },
     "GenSA" = {
       fit_params <- as.vector(result$par)
-      obj_func(params = fit_params)
-      binaryRL_res$output <- fit_params
     },
     "DEoptim" = {
       fit_params <- as.vector(result$optim$bestmem)
-      obj_func(params = fit_params)
-      binaryRL_res$output <- fit_params
     },
     "Bayesian" = {
       fit_params <- as.vector(
         as.numeric(result$final.opt.state$opt.result$mbo.result$x)
       )
-      obj_func(params = fit_params)
-      binaryRL_res$output <- fit_params
     },
     "PSO" = {
       fit_params <- as.vector(result$par)
-      obj_func(params = fit_params)
-      binaryRL_res$output <- fit_params
+    },
+    "CMA-ES" = {
+      fit_params <- as.vector(result$par)
     },
     {
     stop("
         Choose a algorithm from 
         `L-BFGS-B`, `GenSA`, 
         `GA`, `DEoptim`,
-        `Bayesian`, `PSO`
+        `Bayesian`, `PSO`,
+        `CMA-ES`
       ")
     }
   )
+  
+  obj_func(params = fit_params)
+  binaryRL_res$output <- fit_params
   
   rm(fit_data, envir = globalenv())
   summary(binaryRL_res)

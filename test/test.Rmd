@@ -5,7 +5,7 @@ date: "2025-03-19"
 output: html_document
 ---
 ```{r}
-install.packages("../../binaryRL_0.5.7.tar.gz")
+install.packages("../../binaryRL_0.5.8.tar.gz")
 ```
 
 ```{r}
@@ -52,6 +52,7 @@ model <- function(params){
 }
 ```
 
+
 ```{r message=FALSE, warning=FALSE}
 binaryRL_res <- binaryRL::fit_p(
   data = Ludvig_2014_Exp1,
@@ -60,14 +61,16 @@ binaryRL_res <- binaryRL::fit_p(
   upper = c(1, 1),
   iteration = 10,
   seed = 123,
-  algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+  algorithm = "PSO"        # Particle Swarm Optimization (pso::psoptim)
   #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
   #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
+  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
 )
 ```
+
 
 ```{r}
 RSTD <- function(params){

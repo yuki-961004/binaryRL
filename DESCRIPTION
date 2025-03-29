@@ -1,7 +1,7 @@
 Package: binaryRL
 Type: Package
 Title: Reinforcement Learning tools for Two-Alternative Forced Choice tasks
-Version: 0.5.7
+Version: 0.5.8
 Author: yuki <hmz1969a@gmail.com>
 Maintainer: yuki <hmz1969a@gmail.com>
 Description: This package provides tools for fitting reinforcement learning 
@@ -19,8 +19,17 @@ Imports: dplyr, usethis,
          GA, 
          DEoptim, 
          mlrMBO, ParamHelpers, smoof, lhs,
-         pso
+         pso,
+         cmaes
 RoxygenNote: 7.3.2
 Standardizable: FALSE
 Depends:
-  R (>= 2.10)
+  R (>= 2.10),
+  dplyr, usethis, stats,
+Suggests: 
+  GenSA, 
+  GA, 
+  DEoptim, 
+  mlrMBO, ParamHelpers, smoof, lhs,
+  pso,
+  cmaes

@@ -195,7 +195,7 @@ func_gamma <- function(
 ){
   if (length(gamma) == 1) {
     gamma <- gamma
-    utility <- reward ^ gamma
+    utility <- sign(reward) * (abs(reward) ^ gamma)
   }
   else {
     utility <- "ERROR" 
@@ -323,6 +323,7 @@ This package includes **5** algorithms:
 4. Differential Evolution (`DEoptim::DEoptim`).   
 5. Bayesian Optimization (`mlrMBO::mbo`)
 6. Particle Swarm Optimization (`pso::psoptim`)
+7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`)
 
 > Please let me know if you know any other great algorithm package. I'd be happy to incorporate them into this package. 
 
@@ -336,12 +337,13 @@ binaryRL_res <- binaryRL::fit_p(
   upper = c(1, 1),
   iteration = 10,
   seed = 123,
-  algorithm = "Bayesian"   # Bayesian Optimization (`mlrMBO`)
-  #algorithm = "PSO"       # Particle Swarm Optimization (`pso`)
-  #algorithm = "DEoptim"   # Differential Evolution (`DEoptim`)
-  #algorithm = "GA"        # Genetic Algorithm (`GA`)
-  #algorithm = "GenSA"     # Simulated Annealing (`GenSA`)
-  #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim),
+  algorithm = "PSO"        # Particle Swarm Optimization (pso::psoptim)
+  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
+  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+  #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
+  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
 )
 ```
 

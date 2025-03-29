@@ -47,7 +47,7 @@ reproducible and remain the same each time the function is run.
 default: `seed = 123`}
 
 \item{algorithm}{[character] Choose a algorithm package from 
-`L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`}
+`L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`}
 }
 \value{
 the result of binaryRL with optimal parameters
