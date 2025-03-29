@@ -5,7 +5,7 @@ date: "2025-03-19"
 output: html_document
 ---
 ```{r}
-install.packages("../../binaryRL_0.5.5.tar.gz")
+install.packages("../../binaryRL_0.5.6.tar.gz")
 ```
 
 ```{r}
@@ -17,7 +17,7 @@ head(Ludvig_2014_Exp1)
 model <- function(params){
   # since `obj_func`(model) can only be one argument, `params`, 
   # `fit_p` will pass the fit_data into global environment, then delete it.
-  data <- get("fit_data", envir = globalenv()) 
+  data <- get(x = "fit_data", envir = globalenv()) 
 
   # build a RL model
   res <- binaryRL::run_m(
@@ -30,7 +30,7 @@ model <- function(params){
 
   # pass the result to the parent environment
   # make it easier to get the optimal parameters later
-  assign("binaryRL_res", res, envir = parent.frame())
+  assign(x = "binaryRL_res", value = res, envir = parent.frame())
   
   # if the algorithm is solving a minimization problem, return -ll
   return(-res$ll) # L-BFGS-B, GenSA, DEoptim Bayesian ...
@@ -39,7 +39,7 @@ model <- function(params){
 }
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 binaryRL_res <- binaryRL::fit_p(
   data = Ludvig_2014_Exp1,
   obj_func = model,
@@ -48,7 +48,7 @@ binaryRL_res <- binaryRL::fit_p(
   iteration = 10,
   seed = 123,
   algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-  #algorithm = "PSO"      # Particle Swarm Optimization (pso::psoptim)
+  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
   #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
   #algorithm = "GA"        # Genetic Algorithm (GA::ga)
   #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
@@ -74,7 +74,7 @@ RSTD <- function(params){
 }
 
 list_simulated <- binaryRL::simulate_l(
-  data = data,
+  data = NA,
   obj_func = RSTD,
   n_params = 2, 
   lower = c(0, 0),
@@ -86,7 +86,7 @@ list_simulated <- binaryRL::simulate_l(
 
 ```{r include=FALSE}
 RSTD <- function(params){
-  data <- get("fit_data", envir = globalenv()) 
+  data <- get(x = "fit_data", envir = globalenv()) 
   
   res <- binaryRL::run_m(
     data = data,                    # your data
@@ -97,7 +97,7 @@ RSTD <- function(params){
     n_trials = 288                  # the number of total trials
   )
 
-  assign("binaryRL_res", res, envir = parent.frame())
+  assign(x = "binaryRL_res", value = res, envir = parent.frame())
   
   
   invisible(-res$ll)

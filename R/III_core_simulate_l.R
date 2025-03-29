@@ -9,10 +9,6 @@
 #' recovery. 
 #' For more information, please refer to the GitHub repository:
 #' https://github.com/yuki-961004/binaryRL
-#' 
-#' @param data [data.frame] raw data. 
-#'  This data should include the following mandatory columns: 
-#'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
 #'  
 #' @param obj_func [function] a function with only ONE argument `params`. 
 #'  Additionally, it is important to note that the data needs to be retrieved 
@@ -34,7 +30,6 @@
 #' @export
 #'
 simulate_l <- function(
-  data,
   obj_func, 
   n_params, 
   lower, 
@@ -42,7 +37,6 @@ simulate_l <- function(
   iteration = 10,
   seed = 123
 ) {
-  data <- data
   list_simulated <- list()
   
   for (i in 1:iteration) {

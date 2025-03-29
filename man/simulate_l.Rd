@@ -4,13 +4,9 @@
 \alias{simulate_l}
 \title{simulate_l}
 \usage{
-simulate_l(data, obj_func, n_params, lower, upper, iteration = 10, seed = 123)
+simulate_l(obj_func, n_params, lower, upper, iteration = 10, seed = 123)
 }
 \arguments{
-\item{data}{[data.frame] raw data. 
-This data should include the following mandatory columns: 
-- "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward".}
-
 \item{obj_func}{[function] a function with only ONE argument `params`. 
 Additionally, it is important to note that the data needs to be retrieved 
 from parent.frame(). This function returns the binaryRL_res(res).}

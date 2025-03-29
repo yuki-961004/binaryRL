@@ -50,7 +50,7 @@
 #'  
 #' @param algorithm [character] Choose a algorithm package from 
 #'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`
-#'
+#' 
 #' @returns the result of binaryRL with optimal parameters
 #' @export
 #'
@@ -66,7 +66,7 @@ fit_p <- function(
     seed = 123,
     algorithm
 ){
-  assign("fit_data", data, envir = globalenv())
+  assign(x = "fit_data", value = data, envir = globalenv())
   
   set.seed(seed)
   
