@@ -5,7 +5,7 @@ date: "2025-03-19"
 output: html_document
 ---
 ```{r}
-install.packages("../../binaryRL_0.5.10.tar.gz")
+install.packages("../../binaryRL_0.5.11.tar.gz")
 ```
 
 ```{r}
@@ -61,8 +61,8 @@ binaryRL_res <- binaryRL::fit_p(
   upper = c(1, 1),
   iteration = 10,
   seed = 123,
-  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-  algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
+  algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
   #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
   #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
   #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)

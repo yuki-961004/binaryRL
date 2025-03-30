@@ -8,11 +8,15 @@
 #' these free parameters.
 #'
 #' The package provides four optimization algorithms:
-#'
-#' * L-BFGS-B (`stats::optim`)
-#' * Simulated Annealing (`GenSA::GenSA`)
-#' * Genetic Algorithm (`GA::ga`)
-#' * Differential Evolution (`DEoptim::DEoptim`)
+#' 
+#' 1. L-BFGS-B (from `stats::optim`)  
+#' 2. Simulated Annealing (`GenSA::GenSA`)  
+#' 3. Genetic Algorithm (`GA::ga`)  
+#' 4. Differential Evolution (`DEoptim::DEoptim`).   
+#' 5. Bayesian Optimization (`mlrMBO::mbo`)
+#' 6. Particle Swarm Optimization (`pso::psoptim`)
+#' 7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`)
+#' 
 #'
 #' We recommend Differential Evolution (`DEoptim::DEoptim`) for its speed.
 #' 
@@ -25,16 +29,14 @@
 #' 
 #' @param obj_func [function] a function with only ONE argument `params`. 
 #'  Additionally, it is important to note that the data needs to be retrieved 
-#'  from parent.frame() and the results passed back to parent.frame(). 
+#'  from fit_env() and the results passed back to fit_env(). 
 #'  This function returns the log likelihood (logL).
 #' 
 #' @param initial_params [vector] Initial values for the free parameters. 
-#'  These need to be set only when using L-BFGS-B. Other algorithms 
 #'  automatically generate initial values.
 #'  for `L-BFGS-B`, `GenSA`, set `initial = c(0, 0, ...)`
 #'  
-#' @param initial_size [integer] Initial values for the free parameters. 
-#'  These need to be set only when using L-BFGS-B. Other algorithms 
+#' @param initial_size [integer] Initial population size for the free parameters. 
 #'  automatically generate initial values.
 #'  for `Bayesian`, `GA`, set `initial = 50`
 #' 
@@ -103,12 +105,7 @@ fit_p <- function(
     },
     "GenSA" = {
       # 检查所依赖的算法包是否安装
-      if (!requireNamespace("GenSA", quietly = TRUE)) {
-        stop(
-          "The 'GenSA' package is required for this algorithm.\n 
-          Please install it using install.packages('GenSA')."
-        )
-      }
+      check_dependency("GenSA", algorithm_name = "Simulated Annealing")
       
       GenSA::GenSA(
         fn = obj_func,
@@ -123,16 +120,11 @@ fit_p <- function(
     },
     "GA" = {
       # 检查所依赖的算法包是否安装
-      if (!requireNamespace("GA", quietly = TRUE)) {
-        stop(
-          "The 'GA' package is required for this algorithm.\n 
-          Please install it using install.packages('GA')."
-        )
-      }
+      check_dependency("GA", algorithm_name = "Genetic Algorithm")
       
       GA::ga(
         type = "real-valued",
-        fitness = function(x) obj_func(x),
+        fitness = function(x) -obj_func(x),
         popSize = initial_size,
         lower = lower,
         upper = upper,
@@ -142,12 +134,7 @@ fit_p <- function(
     },
     "DEoptim" = {
       # 检查所依赖的算法包是否安装
-      if (!requireNamespace("DEoptim", quietly = TRUE)) {
-        stop(
-          "The 'DEoptim' package is required for this algorithm.\n 
-          Please install it using install.packages('DEoptim')."
-        )
-      }
+      check_dependency("DEoptim", algorithm_name = "Differential Evolution")
       
       DEoptim::DEoptim(
         fn = obj_func,
@@ -164,18 +151,7 @@ fit_p <- function(
     "Bayesian" = {
       # 检查所依赖的算法包是否安装
       required_pkgs <- c("mlrMBO", "ParamHelpers", "smoof")
-      missing_pkgs <- required_pkgs[!sapply(
-        required_pkgs, requireNamespace, quietly = TRUE
-      )]
-      
-      if (length(missing_pkgs) > 0) {
-        stop(
-          "The following packages are required for this algorithm.\n",
-          paste(missing_pkgs, collapse = ", "), "\n",
-          "Please install them using install.packages(c(", 
-          paste0("'", missing_pkgs, "'", collapse = ", "), "))."
-        )
-      }
+      check_dependency(required_pkgs, algorithm_name = "Bayesian Optimization")
       
       param_list <- lapply(
         1:n_params, function(i) {
@@ -207,12 +183,7 @@ fit_p <- function(
     },
     "PSO" = {
       # 检查所依赖的算法包是否安装
-      if (!requireNamespace("pso", quietly = TRUE)) {
-        stop(
-          "The 'PSO' package is required for this algorithm.\n 
-          Please install it using install.packages('pso')."
-        )
-      }
+      check_dependency("pso", algorithm_name = "Particle Swarm Optimization")
       
       pso::psoptim(
         par = initial_params,
@@ -226,12 +197,7 @@ fit_p <- function(
     },
     "CMA-ES" = {
       # 检查所依赖的算法包是否安装
-      if (!requireNamespace("cmaes", quietly = TRUE)) {
-        stop(
-          "The 'CMA-ES' package is required for this algorithm.\n 
-          Please install it using install.packages('cmaes')."
-        )
-      }
+      check_dependency("CMA-ES", algorithm_name = "Covariance Matrix Adapting")
       
       cmaes::cma_es(
         par = initial_params,

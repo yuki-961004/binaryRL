@@ -23,16 +23,14 @@ This data should include the following mandatory columns:
 
 \item{obj_func}{[function] a function with only ONE argument `params`. 
 Additionally, it is important to note that the data needs to be retrieved 
-from parent.frame() and the results passed back to parent.frame(). 
+from fit_env() and the results passed back to fit_env(). 
 This function returns the log likelihood (logL).}
 
 \item{initial_params}{[vector] Initial values for the free parameters. 
-These need to be set only when using L-BFGS-B. Other algorithms 
 automatically generate initial values.
 for `L-BFGS-B`, `GenSA`, set `initial = c(0, 0, ...)`}
 
-\item{initial_size}{[integer] Initial values for the free parameters. 
-These need to be set only when using L-BFGS-B. Other algorithms 
+\item{initial_size}{[integer] Initial population size for the free parameters. 
 automatically generate initial values.
 for `Bayesian`, `GA`, set `initial = 50`}
 
@@ -61,10 +59,14 @@ these free parameters.
 
 The package provides four optimization algorithms:
 
-* L-BFGS-B (`stats::optim`)
-* Simulated Annealing (`GenSA::GenSA`)
-* Genetic Algorithm (`GA::ga`)
-* Differential Evolution (`DEoptim::DEoptim`)
+1. L-BFGS-B (from `stats::optim`)  
+2. Simulated Annealing (`GenSA::GenSA`)  
+3. Genetic Algorithm (`GA::ga`)  
+4. Differential Evolution (`DEoptim::DEoptim`).   
+5. Bayesian Optimization (`mlrMBO::mbo`)
+6. Particle Swarm Optimization (`pso::psoptim`)
+7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`)
+
 
 We recommend Differential Evolution (`DEoptim::DEoptim`) for its speed.
 
