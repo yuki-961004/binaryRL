@@ -68,7 +68,7 @@ Create a model function that contains only ONE argument: `params`.
 model <- function(params){
   # since `obj_func`(model) can only be one argument, `params`, 
   # `fit_p` will pass the fit_data into global environment, then delete it.
-  data <- get(x = "fit_data", envir = globalenv()) 
+  data <- get(x = "fit_data", envir = fit_env) 
 
   # build a RL model
   res <- binaryRL::run_m(
@@ -81,7 +81,7 @@ model <- function(params){
 
   # pass the result to the parent environment
   # make it easier to get the optimal parameters later
-  assign("binaryRL_res", res, envir = parent.frame())
+  assign("binaryRL_res", res, envir = fit_env)
   
   # if the algorithm is solving a minimization problem, return -ll
   return(-res$ll) # L-BFGS-B, GenSA, DEoptim Bayesian ...
@@ -97,7 +97,7 @@ model <- function(params){
 
 ```r
 model <- function(params){
-  data <- get(x = "fit_data", envir = globalenv()) 
+  data <- get(x = "fit_data", envir = fit_env) 
 
   res <- binaryRL::run_m(
     data = data,                    
@@ -124,7 +124,7 @@ model <- function(params){
     var2 = "extra_Var2"
   )
 
-  assign("binaryRL_res", res, envir = parent.frame())
+  assign("binaryRL_res", res, envir = fit_env)
   
   return(-res$ll) 
   # return(res$ll) 
@@ -144,7 +144,7 @@ If your column names are different from my example, you need to fill in the colu
 
 ```r
 model <- function(params){
-  data <- get(x = "fit_data", envir = globalenv()) 
+  data <- get(x = "fit_data", envir = fit_env) 
 
   # build a RL model
   res <- binaryRL::run_m(
@@ -161,7 +161,7 @@ model <- function(params){
     prob_func = your_prob_func
   )
 
-  assign("binaryRL_res", res, envir = parent.frame())
+  assign("binaryRL_res", res, envir = fit_env)
   
   return(-res$ll) 
   # return(res$ll) 
@@ -484,46 +484,45 @@ Here, I will only show the process of performing parameter recovery using the RS
 <!---------------------------------------------------------->
 
 ```r
-TD <- function(params){
-  data <- get(x = "fit_data", envir = globalenv()) 
+RSTD <- function(params){
+  data <- get(x = "fit_data", envir = fit_env) 
   
   res <- binaryRL::run_m(
     data = data,                    # your data
     id = 1,                         # Subject ID
-    eta = c(params[1]),             # free parameters (TD)
-    n_params = 1,                   # the number of free parameters
+    eta = c(params[1], params[2]),  # free parameters (RSTD)
+    n_params = 2,                   # the number of free parameters
     n_trials = 288                  # the number of total trials
   )
 
-  assign("binaryRL_res", res, envir = parent.frame())
+  assign("binaryRL_res", res, envir = fit_env)
   
   invisible(-res$ll)
 }
 
 df_recovery <- binaryRL::recovery_d(
   list = list_simulated,
-  obj_func = TD,
-  model_name = "TD",
-  lower = c(0),
-  upper = c(1),
-  iteration = 3,
-  seed = 123,
-  algorithm = "Bayesian"
+  obj_func = RSTD,
+  model_name = "RSTD",
+  lower = c(0, 0),
+  upper = c(1, 0),
+  iteration = 10,
+  algorithm = "PSO"
 )
 ```
 
-| model | ACC   | LL      | AIC    | BIC    | input_param_1 | input_param_2 | output_param_1 | output_param_2 |
-|-------|-------|---------|--------|--------|---------------|---------------|----------------|----------------|
-| RSTD  | 90.62 | -282.94 | 569.88 | 577.21 | 0.64          | 0.29          | 0.59           | 0.21           |
-| RSTD  | 95.49 | -189.03 | 382.06 | 389.39 | 0.72          | 0.13          | 0.71           | 0.10           |
-| RSTD  | 94.79 | -216.34 | 436.68 | 444.01 | 0.95          | 0.21          | 0.59           | 0.21           |
-| RSTD  | 90.28 | -165.03 | 334.06 | 341.39 | 0.68          | 0.54          | 0.51           | 0.32           |
-| RSTD  | 92.01 | -209.80 | 423.60 | 430.93 | 0.20          | 0.33          | 0.17           | 0.24           |
-| RSTD  | 93.06 | -68.39  | 140.78 | 148.11 | 0.32          | 0.65          | 0.23           | 0.26           |
-| RSTD  | 90.28 | -165.03 | 334.06 | 341.39 | 0.57          | 0.53          | 0.51           | 0.32           |
-| RSTD  | 90.28 | -165.03 | 334.06 | 341.39 | 0.97          | 0.70          | 0.51           | 0.32           |
-| RSTD  | 90.28 | -165.03 | 334.06 | 341.39 | 0.90          | 0.94          | 0.51           | 0.32           |
-| RSTD  | 99.65 | -17.41  | 38.82  | 46.15  | 0.05          | 0.75          | 0.14           | 0.44           |
+| model |   ACC |    LL |   AIC |   BIC |   input_param_1 |   input_param_2 |   output_param_1 |   output_param_2 |
+|:-----:|:-----:|:-----:|:-----:|:-----:|:---------------:|:---------------:|:----------------:|:----------------:|
+| RSTD  |    94 |  -130 |   263 |   270 |            0.64 |            0.29 |             0.31 |             0.20 |
+| RSTD  |    98 |  -100 |   205 |   212 |            0.72 |            0.13 |             0.53 |             0.09 |
+| RSTD  |    96 |  -110 |   225 |   232 |            0.95 |            0.21 |             0.39 |             0.19 |
+| RSTD  |    94 |  -121 |   246 |   253 |            0.68 |            0.54 |             0.52 |             0.41 |
+| RSTD  |    88 |  -176 |   355 |   363 |            0.20 |            0.33 |             0.22 |             0.27 |
+| RSTD  |    91 |  -140 |   285 |   292 |            0.32 |            0.65 |             0.34 |             0.56 |
+| RSTD  |    94 |  -121 |   246 |   253 |            0.57 |            0.53 |             0.52 |             0.41 |
+| RSTD  |    94 |  -121 |   246 |   253 |            0.97 |            0.70 |             0.52 |             0.41 |
+| RSTD  |    94 |  -121 |   246 |   253 |            0.90 |            0.94 |             0.52 |             0.41 |
+| RSTD  |   100 |   -16 |    36 |    43 |            0.05 |            0.75 |             0.06 |             0.31 |
 
 <!---------------------------------------------------------->
 
