@@ -5,7 +5,7 @@ date: "2025-03-19"
 output: html_document
 ---
 ```{r}
-install.packages("../../binaryRL_0.5.9.tar.gz")
+install.packages("../../binaryRL_0.5.10.tar.gz")
 ```
 
 ```{r}
@@ -30,7 +30,7 @@ Ludvig_2014_Exp1 %>%
 model <- function(params){
   # since `obj_func`(model) can only be one argument, `params`, 
   # `fit_p` will pass the fit_data into global environment, then delete it.
-  data <- get(x = "fit_data", envir = globalenv()) 
+  data <- get(x = "fit_data", envir = fit_env) 
 
   # build a RL model
   res <- binaryRL::run_m(
@@ -43,7 +43,7 @@ model <- function(params){
 
   # pass the result to the parent environment
   # make it easier to get the optimal parameters later
-  assign(x = "binaryRL_res", value = res, envir = parent.frame())
+  assign(x = "binaryRL_res", value = res, envir = fit_env)
   
   # if the algorithm is solving a minimization problem, return -ll
   return(-res$ll) # L-BFGS-B, GenSA, DEoptim Bayesian ...
@@ -61,8 +61,8 @@ binaryRL_res <- binaryRL::fit_p(
   upper = c(1, 1),
   iteration = 10,
   seed = 123,
-  algorithm = "PSO"        # Particle Swarm Optimization (pso::psoptim)
-  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
+  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+  algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
   #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
   #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
   #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
@@ -101,7 +101,7 @@ list_simulated <- binaryRL::simulate_l(
 
 ```{r include=FALSE}
 RSTD <- function(params){
-  data <- get(x = "fit_data", envir = globalenv()) 
+  data <- get(x = "fit_data", envir = fit_env) 
   
   res <- binaryRL::run_m(
     data = data,                    
@@ -112,7 +112,7 @@ RSTD <- function(params){
     n_trials = 288                 
   )
 
-  assign(x = "binaryRL_res", value = res, envir = parent.frame())
+  assign(x = "binaryRL_res", value = res, envir = fit_env)
   
   
   invisible(-res$ll)
@@ -120,16 +120,23 @@ RSTD <- function(params){
 
 df_recovery <- binaryRL::recovery_d(
   list = list_simulated,
-  initial_size = 50,
   obj_func = RSTD,
   model_name = "RSTD",
   lower = c(0, 0),
   upper = c(1, 1),
-  seed = 123,
   iteration = 10,
-  algorithm = "Bayesian"
+  algorithm = "DEoptim"
 )
 ```
+
+```{r}
+cor(df_recovery$input_param_1, df_recovery$output_param_1)
+cor(df_recovery$input_param_2, df_recovery$output_param_2)
+
+cor(df_recovery$input_param_1, df_recovery$input_param_2)
+cor(df_recovery$output_param_1, df_recovery$output_param_2)
+```
+
 
 ```{r}
 fake_parameter_recovery <- function(){

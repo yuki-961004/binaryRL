@@ -36,7 +36,3 @@ _.__/  _| _|  _| \\__,_| _|    \\__, |  \u2551 | \u2588\u2588\u2551  \u2588\u258
   
   invisible()
 }
-
-# fit_p会生成一个全局变量fit_data
-utils::globalVariables(c("fit_data"))
-

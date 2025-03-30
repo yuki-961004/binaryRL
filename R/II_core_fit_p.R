@@ -66,7 +66,12 @@ fit_p <- function(
     seed = 123,
     algorithm
 ){
-  assign(x = "fit_data", value = data, envir = globalenv())
+  # 创建临时环境
+  fit_env <- new.env()
+  # 将data传入到临时环境
+  assign(x = "fit_data", value = data, envir = fit_env)
+  # 让obj_func的环境绑定在fit_env中
+  environment(obj_func) <- fit_env
   
   set.seed(seed)
   
@@ -152,8 +157,7 @@ fit_p <- function(
           NP = initial_size,
           itermax = iteration,
           parallelType = c("parallel"),
-          packages = c("binaryRL"),
-          parVar = c("fit_data")
+          packages = c("binaryRL")
         )
       )
     },
@@ -285,11 +289,12 @@ fit_p <- function(
       ")
     }
   )
-  
+  # 用找到的最佳参数带回到obj_func中
   obj_func(params = fit_params)
-  binaryRL_res$output <- fit_params
+  # obj_func产生的binaryRL_res会存入fit_env中
+  fit_env$binaryRL_res$output <- fit_params
+  # summaryfit_env环境中的binaryRL_res
+  summary(fit_env$binaryRL_res)
   
-  on.exit(remove("fit_data", envir = .GlobalEnv))
-  summary(binaryRL_res)
-  return(binaryRL_res)
+  return(fit_env$binaryRL_res)
 }
