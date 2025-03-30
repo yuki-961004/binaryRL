@@ -44,7 +44,7 @@ simulate_l <- function(
     
     for (j in 1:n_params) {
       set.seed(seed + n_params * i + j) # 确保每次迭代种子都不同
-      params[j] <- runif(n = 1, min = lower[j], max = upper[j])
+      params[j] <- stats::runif(n = 1, min = lower[j], max = upper[j])
     }
     
     list_simulated[[i]] <- obj_func(params = params)

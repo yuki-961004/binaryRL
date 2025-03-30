@@ -97,6 +97,14 @@ fit_p <- function(
       )
     },
     "GenSA" = {
+      # 检查所依赖的算法包是否安装
+      if (!requireNamespace("GenSA", quietly = TRUE)) {
+        stop(
+          "The 'GenSA' package is required for this algorithm.\n 
+          Please install it using install.packages('GenSA')."
+        )
+      }
+      
       GenSA::GenSA(
         fn = obj_func,
         par = initial_params,
@@ -109,6 +117,14 @@ fit_p <- function(
       )
     },
     "GA" = {
+      # 检查所依赖的算法包是否安装
+      if (!requireNamespace("GA", quietly = TRUE)) {
+        stop(
+          "The 'GA' package is required for this algorithm.\n 
+          Please install it using install.packages('GA')."
+        )
+      }
+      
       GA::ga(
         type = "real-valued",
         fitness = function(x) obj_func(x),
@@ -120,6 +136,14 @@ fit_p <- function(
       )
     },
     "DEoptim" = {
+      # 检查所依赖的算法包是否安装
+      if (!requireNamespace("DEoptim", quietly = TRUE)) {
+        stop(
+          "The 'DEoptim' package is required for this algorithm.\n 
+          Please install it using install.packages('DEoptim')."
+        )
+      }
+      
       DEoptim::DEoptim(
         fn = obj_func,
         lower = lower,
@@ -134,6 +158,21 @@ fit_p <- function(
       )
     },
     "Bayesian" = {
+      # 检查所依赖的算法包是否安装
+      required_pkgs <- c("mlrMBO", "ParamHelpers", "smoof")
+      missing_pkgs <- required_pkgs[!sapply(
+        required_pkgs, requireNamespace, quietly = TRUE
+      )]
+      
+      if (length(missing_pkgs) > 0) {
+        stop(
+          "The following packages are required for this algorithm.\n",
+          paste(missing_pkgs, collapse = ", "), "\n",
+          "Please install them using install.packages(c(", 
+          paste0("'", missing_pkgs, "'", collapse = ", "), "))."
+        )
+      }
+      
       param_list <- lapply(
         1:n_params, function(i) {
           ParamHelpers::makeNumericParam(
@@ -163,6 +202,14 @@ fit_p <- function(
       )
     },
     "PSO" = {
+      # 检查所依赖的算法包是否安装
+      if (!requireNamespace("pso", quietly = TRUE)) {
+        stop(
+          "The 'PSO' package is required for this algorithm.\n 
+          Please install it using install.packages('pso')."
+        )
+      }
+      
       pso::psoptim(
         par = initial_params,
         fn = obj_func,
@@ -174,6 +221,14 @@ fit_p <- function(
       )
     },
     "CMA-ES" = {
+      # 检查所依赖的算法包是否安装
+      if (!requireNamespace("cmaes", quietly = TRUE)) {
+        stop(
+          "The 'CMA-ES' package is required for this algorithm.\n 
+          Please install it using install.packages('cmaes')."
+        )
+      }
+      
       cmaes::cma_es(
         par = initial_params,
         fn = obj_func,
@@ -234,7 +289,7 @@ fit_p <- function(
   obj_func(params = fit_params)
   binaryRL_res$output <- fit_params
   
-  rm(fit_data, envir = globalenv())
+  on.exit(remove("fit_data", envir = .GlobalEnv))
   summary(binaryRL_res)
   return(binaryRL_res)
 }

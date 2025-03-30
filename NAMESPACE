@@ -1,20 +1,3 @@
-importFrom("dplyr", "%>%")
-importFrom("usethis", "use_data")
-importFrom("stats", "runif")
-
-importFrom("stats", "optim")
-importFrom("GenSA", "GenSA")
-importFrom("GA", "ga")
-importFrom("DEoptim", "DEoptim")
-importFrom("pso", "psoptim")
-importFrom("cmaes", "cma_es")
-
-importFrom("mlrMBO", "mbo", "setMBOControlTermination", "makeMBOControl")
-importFrom("ParamHelpers", "generateDesign", "getParamSet", "makeNumericParam", "makeParamSet")
-importFrom("lhs", "maximinLHS")
-importFrom("smoof", "makeSingleObjectiveFunction")
-
-
 export(func_gamma)
 export(func_eta)
 export(func_epsilon)
