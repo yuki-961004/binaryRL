@@ -1,3 +1,5 @@
+utils::globalVariables("fit_env")
+
 binaryRLStartupMessage <- function()
 {
   # Startup message obtained as 

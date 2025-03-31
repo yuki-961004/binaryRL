@@ -26,11 +26,24 @@
 #' @param data [data.frame] raw data. 
 #'  This data should include the following mandatory columns: 
 #'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
+#'  
+#' @param id [integer] which subject is going to be analyzed.
+#'  is being analyzed. The value should correspond to an entry in the "sub" 
+#'  column, which must contain the subject IDs. 
+#'  e.g., `id = 18`
 #' 
 #' @param obj_func [function] a function with only ONE argument `params`. 
 #'  Additionally, it is important to note that the data needs to be retrieved 
 #'  from fit_env() and the results passed back to fit_env(). 
 #'  This function returns the log likelihood (logL).
+#'  
+#' @param n_params [integer] The number of free parameters in your model. 
+#' 
+#' @param n_trials [integer] The total number of trials in your experiment.
+#' 
+#' @param lower [vector] lower bounds of free parameters
+#' 
+#' @param upper [vector] upper bounds of free parameters
 #' 
 #' @param initial_params [vector] Initial values for the free parameters. 
 #'  automatically generate initial values.
@@ -39,11 +52,6 @@
 #' @param initial_size [integer] Initial population size for the free parameters. 
 #'  automatically generate initial values.
 #'  for `Bayesian`, `GA`, set `initial = 50`
-#' 
-#' @param lower [vector] lower bounds of free parameters
-#' 
-#' @param upper [vector] upper bounds of free parameters
-#' 
 #' @param iteration [integer] the number of iteration
 #' 
 #' @param seed [integer] random seed. This ensures that the results are 
@@ -52,6 +60,7 @@
 #'  
 #' @param algorithm [character] Choose a algorithm package from 
 #'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`
+
 #' 
 #' @returns the result of binaryRL with optimal parameters
 #' @export
@@ -59,11 +68,14 @@
 
 fit_p <- function(
     data,
+    id,
     obj_func,
-    initial_params = NA,
-    initial_size = 50,
+    n_params,
+    n_trials,
     lower,
     upper,
+    initial_params = NA,
+    initial_size = 50,
     iteration = 10,
     seed = 123,
     algorithm
@@ -72,22 +84,18 @@ fit_p <- function(
   fit_env <- new.env()
   # 将data传入到临时环境
   assign(x = "fit_data", value = data, envir = fit_env)
+  assign(x = "fit_id", value = id, envir = fit_env)
+  assign(x = "fit_n_params", value = n_params, envir = fit_env)
+  assign(x = "fit_n_trials", value = n_trials, envir = fit_env)
   # 让obj_func的环境绑定在fit_env中
   environment(obj_func) <- fit_env
-  
-  set.seed(seed)
-  
-  # 提取参数的数量
-  if (length(lower) == length(upper)) {
-    n_params <- length(lower)
-  } else {
-    stop("The lengths of 'lower' and 'upper' must be equal.")
-  }
   
   # 设定初始值
   if (is.na(initial_params)){
     initial_params <- c(rep(1e-5, n_params))
   }
+  
+  set.seed(seed)
   
   result <- switch(
     algorithm,

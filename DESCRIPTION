@@ -1,7 +1,7 @@
 Package: binaryRL
 Type: Package
 Title: Reinforcement Learning tools for Two-Alternative Forced Choice tasks
-Version: 0.5.11
+Version: 0.5.12
 Author: yuki <hmz1969a@gmail.com>
 Maintainer: yuki <hmz1969a@gmail.com>
 Description: This package provides tools for fitting reinforcement learning 

@@ -5,8 +5,18 @@ export(func_tau)
 
 export(run_m)
 export(fit_p)
-export(simulate_l)
-export(recovery_d)
+export(rcv_d)
+
+export(simulate_list)
+export(recovery_data)
+
+export(TD.simulate)
+export(RSTD.simulate)
+export(Utility.simulate)
+
+export(TD.fit)
+export(RSTD.fit)
+export(Utility.fit)
 
 S3method(summary, binaryRL)
 export(summary.binaryRL)

@@ -3,6 +3,7 @@
 file_content <- readLines("../test/zzz.R")
 
 # 替换所有特定符号为问号
+file_content <- gsub("\\\\", "\\\\\\\\", file_content)
 file_content <- gsub("╔", "\\\\u2554", file_content)
 file_content <- gsub("╗", "\\\\u2557", file_content)
 file_content <- gsub("╝", "\\\\u255D", file_content)
