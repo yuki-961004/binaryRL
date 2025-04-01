@@ -235,7 +235,7 @@ write.csv(result, file = "./recovery.csv", row.names = FALSE)
 ## Parameter Recovery
 ```{r warning=FALSE}
 data <- read.csv("./recovery.csv") %>%
-  dplyr::filter(simulate_model == fit_model)
+  dplyr::filter(simulate_model == fit_model & simulate_model == "TD")
 
 set.seed(123)
 
@@ -245,9 +245,7 @@ norm <- data.frame(
   y = x + rnorm(100, 0, 0.1)  
 )
 
-plot <- data %>%
-  dplyr::filter(simulate_model == "TD") %>%
-ggplot2::ggplot(., aes(x = input_param_1, y = output_param_1)) +
+plot <- ggplot2::ggplot(data, aes(x = input_param_1, y = output_param_1)) +
   ggplot2::geom_abline(intercept = 0, slope = 1, color = "#55c186") +  
   ggplot2::geom_point(
     data = norm,

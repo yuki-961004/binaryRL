@@ -493,7 +493,7 @@ write.csv(result, file = "./recovery.csv", row.names = FALSE)
 
 ```r
 data <- read.csv("./recovery.csv") %>%
-  dplyr::filter(simulate_model == fit_model)
+  dplyr::filter(simulate_model == fit_model & simulate_model == "TD")
 
 set.seed(123)
 
@@ -503,9 +503,7 @@ norm <- data.frame(
   y = x + rnorm(100, 0, 0.1)  
 )
 
-plot <- data %>%
-  dplyr::filter(simulate_model == "TD") %>%
-ggplot2::ggplot(., aes(x = input_param_1, y = output_param_1)) +
+plot <- ggplot2::ggplot(data, aes(x = input_param_1, y = output_param_1)) +
   ggplot2::geom_abline(intercept = 0, slope = 1, color = "#55c186") +  
   ggplot2::geom_point(
     data = norm,
@@ -513,10 +511,10 @@ ggplot2::ggplot(., aes(x = input_param_1, y = output_param_1)) +
     color = "#55c186",  
     alpha = 0.5, shape = 1
   ) +
-  ggplot2::geom_point(color = "#053562") +  
+  ggplot2::geom_point(color = "#053562") +  # 绘制散点
   ggplot2::scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
   ggplot2::scale_x_continuous(limits = c(0, 1), expand = c(0, 0)) +
-  ggplot2::labs(x = "simulated η", y = "fit η") +  
+  ggplot2::labs(x = "simulated η", y = "fit η") +  # 添加坐标轴标签
   papaja::theme_apa() +
   ggplot2::theme(
     text = element_text(
