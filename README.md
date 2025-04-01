@@ -484,12 +484,10 @@ for (i in 1:length(model)){
 }
 
 result <- dplyr::bind_rows(model_comparison)
-write.csv(result, "./comparison.csv")
 
-rm(
-  i, j, model, model_name, n_params, lower, upper, 
-  model_result, binaryRL_res
-)
+write.csv(result, "./comparison.csv", row.names = FALSE)
+
+rm(i, j, model, model_name, n_params, lower, upper, model_result, binaryRL_res)
 ```
 
 <details>
