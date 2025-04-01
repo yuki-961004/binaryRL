@@ -7,9 +7,6 @@ export(run_m)
 export(fit_p)
 export(rcv_d)
 
-export(simulate_list)
-export(recovery_data)
-
 export(TD.simulate)
 export(RSTD.simulate)
 export(Utility.simulate)

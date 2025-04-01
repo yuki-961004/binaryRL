@@ -54,7 +54,7 @@ model <- function(params){
 ```{r message=FALSE, warning=FALSE}
 binaryRL_res <- binaryRL::fit_p(
   data = Ludvig_2014_Exp1,
-  id = 2,
+  id = 1,
   n_params = 3,
   n_trials = 288,
   obj_func = binaryRL::RSTD.fit,
@@ -62,13 +62,13 @@ binaryRL_res <- binaryRL::fit_p(
   upper = c(1, 1, 1),
   iteration = 10,
   seed = 123,
-  algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-  #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
+  algorithm = "L-BFGS-B"   # Gradient-Based (stats::optim)
   #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
-  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
   #algorithm = "GA"        # Genetic Algorithm (GA::ga)
+  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
+  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
 )
 ```
 
@@ -226,10 +226,10 @@ recovery <- binaryRL::rcv_d(
   algorithm = "GenSA"
 )
 
-test <- bind_rows(recovery) %>%
+result <- bind_rows(recovery) %>%
   dplyr::select(simulate_model, fit_model, iteration, everything())
 
-write.csv(test, file = "./recovery.csv", row.names = FALSE)
+write.csv(result, file = "./recovery.csv", row.names = FALSE)
 ```
 
 ## Parameter Recovery
@@ -325,6 +325,8 @@ plot <- ggplot2::ggplot(data, aes(x = simulate, y = fit, fill = value)) +
   ggplot2::geom_text(aes(label = value), size = 10, color = "white") +
   ggplot2::theme_minimal() +
   ggplot2::theme(
+    panel.background = ggplot2::element_rect(fill = "white", color = NA),
+    plot.background = ggplot2::element_rect(fill = "white", color = NA),
     legend.position = "none",
     text = element_text(
       family = "serif", 

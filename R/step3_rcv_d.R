@@ -68,7 +68,7 @@ rcv_d <- function(
     np <- formals(simulate_models[[i]])$n_params
     nt <- n_trials
     
-    list_simulated <- binaryRL::simulate_list(
+    list_simulated <- simulate_list(
       data = data,
       simulate_model = simulate_models[[i]],
       n_params = np, 
@@ -83,7 +83,7 @@ rcv_d <- function(
       np <- length(fit_lower[[j]])
       nt <- n_trials
       
-      list_recovery[[j]] <- binaryRL::recovery_data(
+      list_recovery[[j]] <- recovery_data(
         list = list_simulated,
         fit_model = fit_models[[j]],
         model_name = model_names[j],

@@ -29,19 +29,19 @@ This data should include the following mandatory columns:
 
 \item{n_trials}{[integer] number of toltal trials}
 
-\item{simulate_models}{[list] functions of simulate models}
+\item{simulate_models}{[list] A collection of functions used to generate simulated data.}
 
-\item{simulate_lower}{simulate_lower}
+\item{simulate_lower}{[list] The lower bounds for simulate models}
 
-\item{simulate_upper}{simulate_upper}
+\item{simulate_upper}{[list] The upper bounds for simulate models}
 
-\item{fit_models}{[list] functions of fit models}
+\item{fit_models}{[list] A collection of functions applied to fit models to the data.}
 
-\item{fit_lower}{fit_lower}
+\item{fit_lower}{[list] The lower bounds for model fit models}
 
-\item{fit_upper}{fit_upper}
+\item{fit_upper}{[list] The upper bounds for model fit models}
 
-\item{model_names}{[charactor]the name of fit modal}
+\item{model_names}{[character] the name of fit modal}
 
 \item{initial_params}{[vector] Initial values for the free parameters. 
 These need to be set only when using L-BFGS-B. Other algorithms 
