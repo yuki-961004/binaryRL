@@ -5,7 +5,7 @@ date: "2025-03-19"
 output: html_document
 ---
 ```{r}
-install.packages("../../binaryRL_0.5.12.tar.gz")
+install.packages("../../binaryRL_0.6.0.tar.gz")
 ```
 
 ```{r}
@@ -54,7 +54,7 @@ model <- function(params){
 ```{r message=FALSE, warning=FALSE}
 binaryRL_res <- binaryRL::fit_p(
   data = Ludvig_2014_Exp1,
-  id = 1,
+  id = 2,
   n_params = 3,
   n_trials = 288,
   obj_func = binaryRL::RSTD.fit,
@@ -72,145 +72,76 @@ binaryRL_res <- binaryRL::fit_p(
 )
 ```
 
-
-```{r}
-list_simulated <- binaryRL::simulate_list(
-  data = Ludvig_2014_Exp1,
-  simulate_model = binaryRL::RSTD.simulate,
-  n_params = 3, 
-  n_trials = 288,
-  lower = c(0, 0, 1),
-  upper = c(1, 1, 1),
-  seed = 123,
-  iteration = 10
-)
-```
-
+# Model Comparison
 ```{r include=FALSE}
-df_recovery <- binaryRL::recovery_data(
-  list = list_simulated,
-  id = 1,
-  fit_model = binaryRL::RSTD.fit,
-  model_name = "RSTD",
-  n_params = 3,
-  n_trials = 288,
-  lower = c(0, 0, 1),
-  upper = c(1, 1, 1),
-  iteration = 10,
-  algorithm = "PSO"
-)
-```
+model <- list(TD.fit, RSTD.fit, Utility.fit)
+model_name <- c("TD", "RSTD", "Utility")
+n_params <- c(2, 3, 3)
+lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))
+upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1))
 
-```{r}
-cor(df_recovery$input_param_1, df_recovery$output_param_1)
-cor(df_recovery$input_param_2, df_recovery$output_param_2)
+model_comparison <- list()
+model_result <- list()
 
-cor(df_recovery$input_param_1, df_recovery$input_param_2)
-cor(df_recovery$output_param_1, df_recovery$output_param_2)
-```
-
-```{r}
-binaryRL::rcv_d(
-  data = Ludvig_2014_Exp1,
-  n_params = c(2, 3, 3),
-  n_trials = 288,
-  simulate_models = list(TD.simulate),
-  fit_models = list(TD.fit, RSTD.fit, Utility.fit),
-  model_names = c("TD", "RSTD", "Utility"),
-  recovery = c("parameter", "model"),
-  initial_params = NA,
-  initial_size = 50,
-  iteration_s = 3,
-  iteration_f = 10,
-  seed = 123,
-  algorithm = "PSO"
-)
-```
-
-
-```{r}
-fake_parameter_recovery <- function(){
-  # 设置随机种子，确保结果可重复
-  set.seed(123)
+for (i in 1:length(model)){
   
-  # 生成 simulated_eta，均匀分布在 0 到 1 之间
-  simulated_eta <- runif(100, 0, 1)
-  
-  # 生成 fit_eta，基于 simulated_eta 增加一些随机噪声
-  fit_eta <- simulated_eta + rnorm(100, 0, 0.1)
-  
-  # 将 fit_eta 限制在 0 到 1 之间
-  fit_eta[fit_eta < 0] <- 0
-  fit_eta[fit_eta > 1] <- 1
-  
-  # 创建数据框
-  data <- data.frame(simulated_eta, fit_eta)
-  
-  return(data)
-}
-
-data <- fake_parameter_recovery()
-
-ggplot2::ggplot(data = data, aes(x = simulated_eta, y = fit_eta)) +
-  ggplot2::geom_point(color = "#053562") +  # 绘制散点
-  ggplot2::geom_abline(intercept = 0, slope = 1, color = "#55c186") +  # 添加 y = x 的直线
-  ggplot2::labs(x = "simulated η", y = "fit η") +  # 添加坐标轴标签
-  papaja::theme_apa() +
-  ggplot2::theme(
-    text = element_text(
-      family = "serif", 
-      face = "bold",
-      size = 15
-    ),
-    axis.text = element_text(
-      color = "black",
-      family = "serif", 
-      face = "bold",
-      size = 10
+  for (j in 1:length(levels(Ludvig_2014_Exp1$Subject))) {
+    
+    binaryRL_res <- binaryRL::fit_p(
+      data = Ludvig_2014_Exp1,
+      id = j,
+      n_params = n_params[i],
+      n_trials = 288,
+      obj_func = model[[i]],
+      lower = lower[[i]],
+      upper = upper[[i]],
+      iteration = 10,
+      seed = 123,
+      #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+      #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
+      #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+      #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
+      algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+      #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+      #algorithm = "GA"        # Genetic Algorithm (GA::ga)
     )
-  )
+    
+    model_result[[j]] <- data.frame(
+      fit_model = model_name[i],
+      Subject = i,
+      ACC = binaryRL_res$acc,
+      LogL = -binaryRL_res$ll,
+      AIC = binaryRL_res$aic,
+      BIC = binaryRL_res$bic
+    )
+  }
+  model_comparison[[i]] <- model_result
+}
 
+result <- dplyr::bind_rows(model_comparison)
+write.csv(result, "./comparison.csv")
 
-ggplot2::ggsave(filename = "./ignore/param_recovery.png", height = 3, width = 4)
+rm(
+  i, j, model, model_name, n_params, lower, upper, 
+  model_result, binaryRL_res
+)
 ```
 
 ```{r}
-fake_model_comparison <- function(n_params, n_trials = 288, seed = 123) {
-  set.seed(seed)
-
-  # 设置模型数量
-  num_models <- 2
-
-  # 生成模型名称
-  models <- paste("Model", 1:num_models)
-
-  # 生成准确率（ACC）
-  ACC <- round(runif(num_models, 70, 100), 2)
-
-  # 生成对数似然值（LogL）
-  LogL <- round(runif(num_models, -120, -80), 2)
-
-  # 设置参数数量
-  n_params <- n_params # 模型1的参数为2，模型2的参数为4
-
-  # 计算 AIC 和 BIC
-  AIC <- 2 * n_params - 2 * LogL
-  BIC <- n_params * log(n_trials) - 2 * LogL
-
-  # 创建数据框
-  data <- data.frame(model = models, ACC = ACC, LogL = -LogL, AIC = AIC, BIC = BIC)
-
-  return(data)
-}
-
-# 调用函数生成数据
-data <- fake_model_comparison(n_params = c(2, 4), n_trials = 288) %>%
+data <- read.csv("./comparison.csv") %>%
+  dplyr::mutate(
+    LogL = -LogL
+  ) %>%
   tidyr::pivot_longer(
     cols = c(ACC, LogL, AIC, BIC), 
     names_to = "metric", 
     values_to = "value"
   ) %>%
   dplyr::mutate(
+    fit_model = factor(
+      fit_model,
+      levels = c("TD", "RSTD", "Utility")
+    ),
     metric = factor(
       metric, 
       levels = c('ACC', 'LogL', 'AIC', 'BIC'),
@@ -218,14 +149,14 @@ data <- fake_model_comparison(n_params = c(2, 4), n_trials = 288) %>%
     )
   )
 
-# 绘制条形图
-ggplot2::ggplot(data, aes(x = metric, y = value, fill = model)) +
-  ggplot2::geom_bar(stat = "identity", position = "dodge") +
+plot <- ggplot2::ggplot(data, aes(x = metric, y = value, fill = fit_model)) +
+  ggplot2::geom_bar(stat = "summary", fun = "mean", position = "dodge") +
   ggplot2::labs(x = "", y = "", fill = "Model") +
-  papaja::theme_apa() +
-  ggplot2::scale_fill_manual(
-    values = c("#053562", "#55c186")
+  ggplot2::scale_fill_manual(values = c("#053562", "#55c186", "#f0de36")) +
+  ggplot2::scale_y_continuous(
+    breaks = seq(0, max(data$value), by = 50)
   ) +
+  papaja::theme_apa() +
   ggplot2::theme(
     legend.title = element_blank(),
     text = element_text(
@@ -241,10 +172,177 @@ ggplot2::ggplot(data, aes(x = metric, y = value, fill = model)) +
     )
   )
 
-ggplot2::ggsave(filename = "./ignore/model_comparison.png", height = 6, width = 8)
+ggplot2::ggsave(
+  plot = plot,
+  filename = "./model_comparison.png", 
+  width = 8, height = 6
+)
 ```
 
+# Recovery
 ```{r}
+list_simulated <- binaryRL::simulate_list(
+  data = Ludvig_2014_Exp1,
+  simulate_model = binaryRL::RSTD.simulate,
+  n_params = 3, 
+  n_trials = 288,
+  lower = c(0, 0, 0),
+  upper = c(1, 1, 1),
+  seed = 1,
+  iteration = 5
+)
+```
 
+```{r include=FALSE}
+df_recovery <- binaryRL::recovery_data(
+  list = list_simulated,
+  id = 1,
+  fit_model = binaryRL::RSTD.fit,
+  model_name = "RSTD",
+  n_params = 3,
+  n_trials = 288,
+  lower = c(0, 0, 0),
+  upper = c(1, 1, 1),
+  iteration = 10,
+  algorithm = "GenSA"
+)
+```
+
+```{r include=FALSE}
+recovery <- binaryRL::rcv_d(
+  data = Ludvig_2014_Exp1,
+  n_trials = 288,
+  simulate_models = list(TD.simulate, RSTD.simulate, Utility.simulate),
+  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  fit_models = list(TD.fit, RSTD.fit, Utility.fit),
+  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  initial_params = NA,
+  initial_size = 50,
+  iteration_s = 10,
+  iteration_f = 10,
+  seed = 1,
+  algorithm = "GenSA"
+)
+
+test <- bind_rows(recovery) %>%
+  dplyr::select(simulate_model, fit_model, iteration, everything())
+
+write.csv(test, file = "./recovery.csv", row.names = FALSE)
+```
+
+## Parameter Recovery
+```{r warning=FALSE}
+data <- read.csv("./recovery.csv") %>%
+  dplyr::filter(simulate_model == fit_model)
+
+set.seed(123)
+
+x <- runif(100, 0, 1)
+norm <- data.frame(
+  x = x,  
+  y = x + rnorm(100, 0, 0.1)  
+)
+
+plot <- data %>%
+  dplyr::filter(simulate_model == "TD") %>%
+ggplot2::ggplot(., aes(x = input_param_1, y = output_param_1)) +
+  ggplot2::geom_abline(intercept = 0, slope = 1, color = "#55c186") +  
+  ggplot2::geom_point(
+    data = norm,
+    mapping = aes(x = x, y = y),
+    color = "#55c186",  
+    alpha = 0.5, shape = 1
+  ) +
+  ggplot2::geom_point(color = "#053562") +  # 绘制散点
+  ggplot2::scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
+  ggplot2::scale_x_continuous(limits = c(0, 1), expand = c(0, 0)) +
+  ggplot2::labs(x = "simulated η", y = "fit η") +  # 添加坐标轴标签
+  papaja::theme_apa() +
+  ggplot2::theme(
+    text = element_text(
+      family = "serif", 
+      face = "bold",
+      size = 15
+    ),
+    axis.text = element_text(
+      color = "black",
+      family = "serif", 
+      face = "bold",
+      size = 10
+    ),
+    plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
+  )
+
+rm(x, norm)
+
+ggplot2::ggsave(
+  plot = plot,
+  filename = "./param_recovery.png", 
+  width = 4, height = 3
+)
+```
+
+
+## Model Recovery
+```{r}
+data <- read.csv("./recovery.csv") %>%
+  dplyr::select(simulate_model, fit_model, iteration, BIC) %>%
+  tidyr::pivot_wider(names_from = "fit_model", values_from = "BIC") %>%
+  dplyr::mutate(
+    TD_score = ifelse(TD == pmin(TD, RSTD, Utility), 1, 0),
+    RSTD_score = ifelse(RSTD == pmin(TD, RSTD, Utility), 1, 0),
+    Utility_score = ifelse(Utility == pmin(TD, RSTD, Utility), 1, 0)
+  ) %>% 
+  dplyr::select(simulate_model, TD_score, RSTD_score, Utility_score) %>%
+  dplyr::group_by(simulate_model) %>%
+  dplyr::summarise(
+    TD = mean(TD_score),
+    RSTD = mean(RSTD_score),
+    Utility = mean(Utility_score),
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(factor(simulate_model, levels = c("TD", "RSTD", "Utility"))) %>%
+  tidyr::pivot_longer(
+    cols = -simulate_model, 
+    names_to = "fit_model", 
+    values_to = "value"
+  ) %>%
+  dplyr::mutate(
+    simulate = factor(simulate_model, levels = c("TD", "RSTD", "Utility")),
+    fit = factor(fit_model, levels = c("TD", "RSTD", "Utility")),
+  ) 
+
+plot <- ggplot2::ggplot(data, aes(x = simulate, y = fit, fill = value)) +
+  ggplot2::geom_tile() +
+  ggplot2::scale_fill_gradient2(
+    low = "#003161", mid = "#55c186", high = "#f0de36",
+    limits = c(0, 1), 
+    midpoint = 0.4       
+  ) + 
+  ggplot2::labs(x = "simulate model", y = "fit model") + 
+  ggplot2::geom_text(aes(label = value), size = 10, color = "white") +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(
+    legend.position = "none",
+    text = element_text(
+      family = "serif", 
+      face = "bold",
+      size = 25
+    ),
+    axis.text = element_text(
+      color = "black",
+      family = "serif", 
+      face = "bold",
+      size = 20
+    )
+  )
+
+ggplot2::ggsave(
+  plot = plot,
+  filename = "./model_recovery.png", 
+  width = 8, height = 6
+)
 ```
 

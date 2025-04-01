@@ -6,17 +6,19 @@
 \usage{
 rcv_d(
   data,
-  n_params = c(2, 3, 3),
   n_trials = 288,
   simulate_models = list(TD.simulate, RSTD.simulate, Utility.simulate),
+  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   fit_models = list(TD.fit, RSTD.fit, Utility.fit),
+  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   model_names = c("TD", "RSTD", "Utility"),
-  recovery = c("parameter", "model"),
   initial_params = NA,
   initial_size = 50,
   iteration_s = 10,
   iteration_f = 10,
-  seed = 123,
+  seed = 1,
   algorithm
 )
 }
@@ -25,17 +27,21 @@ rcv_d(
 This data should include the following mandatory columns: 
 - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward".}
 
-\item{n_params}{[vector] number of free parameters in each model}
-
 \item{n_trials}{[integer] number of toltal trials}
 
 \item{simulate_models}{[list] functions of simulate models}
 
+\item{simulate_lower}{simulate_lower}
+
+\item{simulate_upper}{simulate_upper}
+
 \item{fit_models}{[list] functions of fit models}
 
-\item{model_names}{[charactor]the name of fit modal}
+\item{fit_lower}{fit_lower}
 
-\item{recovery}{[vector] recovery parameter or model}
+\item{fit_upper}{fit_upper}
+
+\item{model_names}{[charactor]the name of fit modal}
 
 \item{initial_params}{[vector] Initial values for the free parameters. 
 These need to be set only when using L-BFGS-B. Other algorithms 

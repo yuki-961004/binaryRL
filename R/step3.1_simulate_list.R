@@ -10,12 +10,15 @@
 #' For more information, please refer to the GitHub repository:
 #' https://github.com/yuki-961004/binaryRL
 #' @param data raw data
+#' 
 #' @param simulate_model [function] a function with only ONE argument `params`. 
 #'  Additionally, it is important to note that the data needs to be retrieved 
 #'  from parent.frame(). This function returns the binaryRL_res(res).
 #' 
 #' @param n_params [integer] number of free parameters
+#' 
 #' @param n_trials  [integer] number of total trials
+#' 
 #' @param lower [vector] lower bounds of free parameters
 #' 
 #' @param upper [vector] upper bounds of free parameters

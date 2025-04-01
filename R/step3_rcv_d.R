@@ -4,17 +4,17 @@
 #'  This data should include the following mandatory columns: 
 #'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
 #'  
-#' @param n_params [vector] number of free parameters in each model
-#' 
 #' @param n_trials [integer] number of toltal trials
 #'  
-#' @param simulate_models [list] functions of simulate models
+#' @param simulate_models [list] A collection of functions used to generate simulated data.
+#' @param simulate_lower [list] The lower bounds for simulate models
+#' @param simulate_upper [list] The upper bounds for simulate models
 #' 
-#' @param fit_models [list] functions of fit models
+#' @param fit_models [list] A collection of functions applied to fit models to the data.
+#' @param fit_lower [list] The lower bounds for model fit models
+#' @param fit_upper [list] The upper bounds for model fit models
 #' 
-#' @param model_names [charactor]the name of fit modal
-#' 
-#' @param recovery [vector] recovery parameter or model
+#' @param model_names [character] the name of fit modal
 #' 
 #' @param initial_params [vector] Initial values for the free parameters. 
 #'  These need to be set only when using L-BFGS-B. Other algorithms 
@@ -42,17 +42,19 @@
 #'
 rcv_d <- function(
   data,
-  n_params = c(2, 3, 3),
   n_trials = 288,
   simulate_models = list(TD.simulate, RSTD.simulate, Utility.simulate),
+  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   fit_models = list(TD.fit, RSTD.fit, Utility.fit),
+  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   model_names = c("TD", "RSTD", "Utility"),
-  recovery = c("parameter", "model"),
   initial_params = NA,
   initial_size = 50,
   iteration_s = 10,
   iteration_f = 10,
-  seed = 123,
+  seed = 1,
   algorithm
 ){
   n_round_s <- length(simulate_models)
@@ -62,45 +64,47 @@ rcv_d <- function(
   
   df_recovery <- list()
   
-  for (s in 1:n_round_s){
-    np <- n_params[s]
+  for (i in 1:n_round_s){
+    np <- formals(simulate_models[[i]])$n_params
     nt <- n_trials
     
     list_simulated <- binaryRL::simulate_list(
       data = data,
-      simulate_model = simulate_models[[s]],
+      simulate_model = simulate_models[[i]],
       n_params = np, 
       n_trials = nt,
-      lower = rep(0, np),
-      upper = rep(1, np),
+      lower = simulate_lower[[i]],
+      upper = simulate_upper[[i]],
       seed = seed,
       iteration = iteration_s
     )
     
-    for (f in 1:n_round_f){
-      np <- n_params[f]
+    for (j in 1:n_round_f){
+      np <- length(fit_lower[[j]])
       nt <- n_trials
       
-      list_recovery[[f]] <- binaryRL::recovery_data(
+      list_recovery[[j]] <- binaryRL::recovery_data(
         list = list_simulated,
-        fit_model = fit_models[[f]],
-        model_name = model_names[f],
+        fit_model = fit_models[[j]],
+        model_name = model_names[j],
         n_params = np, 
         n_trials = nt,
-        lower = rep(0, np),
-        upper = rep(1, np),
+        lower = fit_lower[[j]],
+        upper = fit_upper[[j]],
         initial_params = initial_params,
         initial_size = initial_size,
         iteration = iteration_f,
         algorithm = algorithm
       )
+      
+      list_recovery[[j]]$simulate_model <- model_names[i]
+      list_recovery[[j]]$iteration <- 1:length(list_recovery[[j]]$iteration)
     }
     
-    df_recovery[[s]] <- do.call(rbind, list_recovery)
-    df_recovery[[s]]$simulate_model <- model_names[s]
+    df_recovery[[i]] <- list_recovery
   }
 
-  result <- do.call(rbind, df_recovery)
+  result <- df_recovery
   
   return(result)
 }
