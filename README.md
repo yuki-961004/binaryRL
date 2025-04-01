@@ -468,7 +468,7 @@ recovery <- binaryRL::rcv_d(
   algorithm = "GenSA"
 )
 
-result <- bind_rows(recovery) %>%
+result <- dplyr::bind_rows(recovery) %>%
   dplyr::select(simulate_model, fit_model, iteration, everything())
 
 write.csv(result, file = "./recovery.csv", row.names = FALSE)
