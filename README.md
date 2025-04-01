@@ -440,6 +440,121 @@ binaryRL::run_m(
 ### References
 Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
 
+
+## Model Comparison
+Users can use a for loop combined with the fit_p function to fit all participants in a dataset using all RL models.  
+
+```r
+model <- list(TD.fit, RSTD.fit, Utility.fit)
+model_name <- c("TD", "RSTD", "Utility")
+n_params <- c(2, 3, 3)
+lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))
+upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1))
+
+model_comparison <- list()
+model_result <- list()
+
+for (i in 1:length(model)){
+  
+  for (j in 1:length(levels(Ludvig_2014_Exp1$Subject))) {
+    
+    binaryRL_res <- binaryRL::fit_p(
+      data = Ludvig_2014_Exp1,
+      id = j,
+      n_params = n_params[i],
+      n_trials = 288,
+      obj_func = model[[i]],
+      lower = lower[[i]],
+      upper = upper[[i]],
+      iteration = 10,
+      seed = 123,
+      algorithm = "GenSA" 
+    )
+    
+    model_result[[j]] <- data.frame(
+      fit_model = model_name[i],
+      Subject = i,
+      ACC = binaryRL_res$acc,
+      LogL = -binaryRL_res$ll,
+      AIC = binaryRL_res$aic,
+      BIC = binaryRL_res$bic
+    )
+  }
+  model_comparison[[i]] <- model_result
+}
+
+result <- dplyr::bind_rows(model_comparison)
+write.csv(result, "./comparison.csv")
+
+rm(
+  i, j, model, model_name, n_params, lower, upper, 
+  model_result, binaryRL_res
+)
+```
+
+<details>
+<summary>Example Code: Visualizing Model Comparison</summary>
+
+```r
+data <- read.csv("./comparison.csv") %>%
+  dplyr::mutate(
+    LogL = -LogL
+  ) %>%
+  tidyr::pivot_longer(
+    cols = c(ACC, LogL, AIC, BIC), 
+    names_to = "metric", 
+    values_to = "value"
+  ) %>%
+  dplyr::mutate(
+    fit_model = factor(
+      fit_model,
+      levels = c("TD", "RSTD", "Utility")
+    ),
+    metric = factor(
+      metric, 
+      levels = c('ACC', 'LogL', 'AIC', 'BIC'),
+      labels = c('ACC', '-LogL', 'AIC', 'BIC')
+    )
+  )
+
+plot <- ggplot2::ggplot(data, aes(x = metric, y = value, fill = fit_model)) +
+  ggplot2::geom_bar(stat = "summary", fun = "mean", position = "dodge") +
+  ggplot2::labs(x = "", y = "", fill = "Model") +
+  ggplot2::scale_fill_manual(values = c("#053562", "#55c186", "#f0de36")) +
+  ggplot2::scale_y_continuous(
+    breaks = seq(0, max(data$value), by = 50)
+  ) +
+  papaja::theme_apa() +
+  ggplot2::theme(
+    legend.title = element_blank(),
+    text = element_text(
+      family = "serif", 
+      face = "bold",
+      size = 25
+    ),
+    axis.text = element_text(
+      color = "black",
+      family = "serif", 
+      face = "bold",
+      size = 20
+    )
+  )
+
+ggplot2::ggsave(
+  plot = plot,
+  filename = "./model_comparison.png", 
+  width = 8, height = 6
+)
+```
+
+</details>
+
+<!---------------------------------------------------------->
+
+<p align="center">
+    <img src="./test/model_comparison.png" alt="RL Models" width="70%">
+</p>
+
 <!---------------------------------------------------------->
 
 ## 3. Parameter and Model Recovery
