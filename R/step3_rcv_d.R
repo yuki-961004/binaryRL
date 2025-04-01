@@ -1,10 +1,10 @@
-#' Title
+#' Parameter and Model Recovery
 #'
 #' @param data [data.frame] raw data. 
 #'  This data should include the following mandatory columns: 
 #'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
 #'  
-#' @param n_trials [integer] number of toltal trials
+#' @param n_trials [integer] number of total trials
 #'  
 #' @param simulate_models [list] A collection of functions used to generate simulated data.
 #' @param simulate_lower [list] The lower bounds for simulate models
@@ -14,7 +14,7 @@
 #' @param fit_lower [list] The lower bounds for model fit models
 #' @param fit_upper [list] The upper bounds for model fit models
 #' 
-#' @param model_names [character] the name of fit modal
+#' @param model_names [list] the name of fit modal
 #' 
 #' @param initial_params [vector] Initial values for the free parameters. 
 #'  These need to be set only when using L-BFGS-B. Other algorithms 

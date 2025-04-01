@@ -1,4 +1,4 @@
-#' run_m
+#' Building Reinforcement Learning Model
 #'
 #' @description
 #'  This function requires the optimal parameter values obtained through the 

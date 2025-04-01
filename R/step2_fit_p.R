@@ -1,57 +1,34 @@
-#' fit_p
-#' 
-#' @description
-#' This function optimizes free parameters of reinforcement learning 
-#' models built with the `run_m` function. After constructing a 
-#' reinforcement learning model (a function with only ONE argument, 
-#' `params`), the `fit_p` function searches for the optimal values of 
-#' these free parameters.
+#' Fit parameters
 #'
-#' The package provides four optimization algorithms:
-#' 
-#' 1. L-BFGS-B (from `stats::optim`)  
-#' 2. Simulated Annealing (`GenSA::GenSA`)  
-#' 3. Genetic Algorithm (`GA::ga`)  
-#' 4. Differential Evolution (`DEoptim::DEoptim`).   
-#' 5. Bayesian Optimization (`mlrMBO::mbo`)
-#' 6. Particle Swarm Optimization (`pso::psoptim`)
-#' 7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`)
-#' 
-#'
-#' We recommend Differential Evolution (`DEoptim::DEoptim`) for its speed.
-#' 
-#' For more information, please refer to the GitHub repository:
-#' https://github.com/yuki-961004/binaryRL
-#' 
 #' @param data [data.frame] raw data. 
 #'  This data should include the following mandatory columns: 
 #'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
 #'  
-#' @param id [integer] which subject is going to be analyzed.
+#' @param id [vector] which subject is going to be analyzed.
 #'  is being analyzed. The value should correspond to an entry in the "sub" 
 #'  column, which must contain the subject IDs. 
-#'  e.g., `id = 18`
-#' 
-#' @param obj_func [function] a function with only ONE argument `params`. 
-#'  Additionally, it is important to note that the data needs to be retrieved 
-#'  from fit_env() and the results passed back to fit_env(). 
-#'  This function returns the log likelihood (logL).
+#'  e.g., `id = c(1:40)`
 #'  
-#' @param n_params [integer] The number of free parameters in your model. 
+#' @param model [list] A collection of functions applied to fit models to the data.
 #' 
-#' @param n_trials [integer] The total number of trials in your experiment.
+#' @param model_name [list] the name of fit modals
 #' 
-#' @param lower [vector] lower bounds of free parameters
+#' @param n_trials [integer] number of total trials
 #' 
-#' @param upper [vector] upper bounds of free parameters
+#' @param lower [list] The lower bounds for model fit models
+#' 
+#' @param upper [list] The upper bounds for model fit models
 #' 
 #' @param initial_params [vector] Initial values for the free parameters. 
+#'  These need to be set only when using L-BFGS-B. Other algorithms 
 #'  automatically generate initial values.
 #'  for `L-BFGS-B`, `GenSA`, set `initial = c(0, 0, ...)`
 #'  
-#' @param initial_size [integer] Initial population size for the free parameters. 
+#' @param initial_size [integer] Initial values for the free parameters. 
+#'  These need to be set only when using L-BFGS-B. Other algorithms 
 #'  automatically generate initial values.
 #'  for `Bayesian`, `GA`, set `initial = 50`
+#'  
 #' @param iteration [integer] the number of iteration
 #' 
 #' @param seed [integer] random seed. This ensures that the results are 
@@ -60,215 +37,67 @@
 #'  
 #' @param algorithm [character] Choose a algorithm package from 
 #'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`
-
-#' 
-#' @returns the result of binaryRL with optimal parameters
+#'
+#' @return binaryRL results for all subjects with all models
 #' @export
 #'
 
 fit_p <- function(
-    data,
-    id,
-    obj_func,
-    n_params,
-    n_trials,
-    lower,
-    upper,
-    initial_params = NA,
-    initial_size = 50,
-    iteration = 10,
-    seed = 123,
-    algorithm
+  data,
+  id = c(1:40),
+  n_trials,
+  model = list(TD.fit, RSTD.fit, Utility.fit),
+  model_name = c("TD", "RSTD", "Utility"),
+  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  initial_params = NA,
+  initial_size = 50,
+  iteration = 10,
+  seed = 123,
+  algorithm
 ){
-  # 创建临时环境
-  fit_env <- new.env()
-  # 将data传入到临时环境
-  assign(x = "fit_data", value = data, envir = fit_env)
-  assign(x = "fit_id", value = id, envir = fit_env)
-  assign(x = "fit_n_params", value = n_params, envir = fit_env)
-  assign(x = "fit_n_trials", value = n_trials, envir = fit_env)
-  # 让obj_func的环境绑定在fit_env中
-  environment(obj_func) <- fit_env
+  model_comparison <- list()
+  model_result <- list()
   
-  # 设定初始值
-  if (is.na(initial_params)){
-    initial_params <- c(rep(1e-5, n_params))
+  for (i in 1:length(model)){
+    
+    for (j in 1:length(id)) {
+      
+      n_params <- length(lower[[i]])
+      
+      binaryRL_res <- binaryRL::optimize_para(
+        data = data,
+        id = id[j],
+        n_params = n_params,
+        n_trials = n_trials,
+        obj_func = model[[i]],
+        lower = lower[[i]],
+        upper = upper[[i]],
+        iteration = iteration,
+        seed = seed,
+        initial_params = initial_params,
+        initial_size = initial_size,
+        algorithm = algorithm 
+      )
+      
+      model_result[[j]] <- data.frame(
+        fit_model = model_name[i],
+        Subject = id[j],
+        ACC = binaryRL_res$acc,
+        LogL = -binaryRL_res$ll,
+        AIC = binaryRL_res$aic,
+        BIC = binaryRL_res$bic
+      )
+      
+      for (k in 1:n_params) {
+        model_result[[j]][1, k + 6] <- binaryRL_res$output[k]
+        names(model_result[[j]])[k + 6] <- paste0("param_", k)
+      }
+    }
+    model_comparison[[i]] <- model_result
   }
   
-  set.seed(seed)
+  result <- model_comparison
   
-  result <- switch(
-    algorithm,
-    "L-BFGS-B" = {
-      stats::optim(
-        par = initial_params,
-        method = "L-BFGS-B",
-        fn = obj_func,
-        lower = lower,
-        upper = upper,
-        control = list(
-          maxit = iteration
-        )
-      )
-    },
-    "GenSA" = {
-      # 检查所依赖的算法包是否安装
-      check_dependency("GenSA", algorithm_name = "Simulated Annealing")
-      
-      GenSA::GenSA(
-        fn = obj_func,
-        par = initial_params,
-        lower = lower,
-        upper = upper,
-        control = list(
-        maxit = iteration,
-          seed = seed
-        )
-      )
-    },
-    "GA" = {
-      # 检查所依赖的算法包是否安装
-      check_dependency("GA", algorithm_name = "Genetic Algorithm")
-      
-      GA::ga(
-        type = "real-valued",
-        fitness = function(x) -obj_func(x),
-        popSize = initial_size,
-        lower = lower,
-        upper = upper,
-        maxiter = iteration,
-        parallel = TRUE
-      )
-    },
-    "DEoptim" = {
-      # 检查所依赖的算法包是否安装
-      check_dependency("DEoptim", algorithm_name = "Differential Evolution")
-      
-      DEoptim::DEoptim(
-        fn = obj_func,
-        lower = lower,
-        upper = upper,
-        control = DEoptim::DEoptim.control(
-          NP = initial_size,
-          itermax = iteration,
-          parallelType = c("parallel"),
-          packages = c("binaryRL")
-        )
-      )
-    },
-    "Bayesian" = {
-      # 检查所依赖的算法包是否安装
-      required_pkgs <- c("mlrMBO", "ParamHelpers", "smoof")
-      check_dependency(required_pkgs, algorithm_name = "Bayesian Optimization")
-      
-      param_list <- lapply(
-        1:n_params, function(i) {
-          ParamHelpers::makeNumericParam(
-            id = paste0("param_", i),
-            lower = lower[i],
-            upper = upper[i]
-          )
-        }
-      )
-    
-      bys_func <- smoof::makeSingleObjectiveFunction(
-        fn = obj_func,
-        par.set = ParamHelpers::makeParamSet(params = param_list)
-      )
-    
-      mlrMBO::mbo(
-        fun = bys_func, 
-        design = ParamHelpers::generateDesign(
-          n = initial_size, 
-          par.set = ParamHelpers::getParamSet(bys_func), 
-          fun = lhs::maximinLHS
-        ), 
-        control = mlrMBO::setMBOControlTermination(
-          control = mlrMBO::makeMBOControl(),
-          iters = iteration
-        )
-      )
-    },
-    "PSO" = {
-      # 检查所依赖的算法包是否安装
-      check_dependency("pso", algorithm_name = "Particle Swarm Optimization")
-      
-      pso::psoptim(
-        par = initial_params,
-        fn = obj_func,
-        lower = lower,
-        upper = upper,
-        control = list(
-          maxit = iteration
-        )
-      )
-    },
-    "CMA-ES" = {
-      # 检查所依赖的算法包是否安装
-      check_dependency("CMA-ES", algorithm_name = "Covariance Matrix Adapting")
-      
-      cmaes::cma_es(
-        par = initial_params,
-        fn = obj_func,
-        lower = lower,
-        upper = upper,
-        control = list(
-          maxit = iteration
-        )
-      )
-    },
-   { # 默认情况（如果 algorithm 不匹配任何已知值）
-      stop("
-        Choose a algorithm from 
-        `L-BFGS-B`, `GenSA`, 
-        `GA`, `DEoptim`,
-        `Bayesian`, `PSO`,
-        `CMA-ES`
-      ")
-    }
-  )
-
-  switch(
-    algorithm,
-    "L-BFGS-B" = {
-     fit_params <- as.vector(result$par)
-    },
-    "GA" = {
-      fit_params <- as.vector(result@solution)
-    },
-    "GenSA" = {
-      fit_params <- as.vector(result$par)
-    },
-    "DEoptim" = {
-      fit_params <- as.vector(result$optim$bestmem)
-    },
-    "Bayesian" = {
-      fit_params <- as.vector(
-        as.numeric(result$final.opt.state$opt.result$mbo.result$x)
-      )
-    },
-    "PSO" = {
-      fit_params <- as.vector(result$par)
-    },
-    "CMA-ES" = {
-      fit_params <- as.vector(result$par)
-    },
-    {
-    stop("
-        Choose a algorithm from 
-        `L-BFGS-B`, `GenSA`, 
-        `GA`, `DEoptim`,
-        `Bayesian`, `PSO`,
-        `CMA-ES`
-      ")
-    }
-  )
-  # 用找到的最佳参数带回到obj_func中
-  obj_func(params = fit_params)
-  # obj_func产生的binaryRL_res会存入fit_env中
-  fit_env$binaryRL_res$output <- fit_params
-  # summaryfit_env环境中的binaryRL_res
-  summary(fit_env$binaryRL_res)
-  
-  return(fit_env$binaryRL_res)
+  return(result)
 }

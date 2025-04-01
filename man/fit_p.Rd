@@ -2,16 +2,16 @@
 % Please edit documentation in R/step2_fit_p.R
 \name{fit_p}
 \alias{fit_p}
-\title{fit_p}
+\title{Fit parameters}
 \usage{
 fit_p(
   data,
-  id,
-  obj_func,
-  n_params,
+  id = c(1:40),
   n_trials,
-  lower,
-  upper,
+  model = list(TD.fit, RSTD.fit, Utility.fit),
+  model_name = c("TD", "RSTD", "Utility"),
+  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   initial_params = NA,
   initial_size = 50,
   iteration = 10,
@@ -24,29 +24,28 @@ fit_p(
 This data should include the following mandatory columns: 
 - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward".}
 
-\item{id}{[integer] which subject is going to be analyzed.
+\item{id}{[vector] which subject is going to be analyzed.
 is being analyzed. The value should correspond to an entry in the "sub" 
 column, which must contain the subject IDs. 
-e.g., `id = 18`}
+e.g., `id = c(1:40)`}
 
-\item{obj_func}{[function] a function with only ONE argument `params`. 
-Additionally, it is important to note that the data needs to be retrieved 
-from fit_env() and the results passed back to fit_env(). 
-This function returns the log likelihood (logL).}
+\item{n_trials}{[integer] number of total trials}
 
-\item{n_params}{[integer] The number of free parameters in your model.}
+\item{model}{[list] A collection of functions applied to fit models to the data.}
 
-\item{n_trials}{[integer] The total number of trials in your experiment.}
+\item{model_name}{[list] the name of fit modals}
 
-\item{lower}{[vector] lower bounds of free parameters}
+\item{lower}{[list] The lower bounds for model fit models}
 
-\item{upper}{[vector] upper bounds of free parameters}
+\item{upper}{[list] The upper bounds for model fit models}
 
 \item{initial_params}{[vector] Initial values for the free parameters. 
+These need to be set only when using L-BFGS-B. Other algorithms 
 automatically generate initial values.
 for `L-BFGS-B`, `GenSA`, set `initial = c(0, 0, ...)`}
 
-\item{initial_size}{[integer] Initial population size for the free parameters. 
+\item{initial_size}{[integer] Initial values for the free parameters. 
+These need to be set only when using L-BFGS-B. Other algorithms 
 automatically generate initial values.
 for `Bayesian`, `GA`, set `initial = 50`}
 
@@ -60,28 +59,8 @@ default: `seed = 123`}
 `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`}
 }
 \value{
-the result of binaryRL with optimal parameters
+binaryRL results for all subjects with all models
 }
 \description{
-This function optimizes free parameters of reinforcement learning 
-models built with the `run_m` function. After constructing a 
-reinforcement learning model (a function with only ONE argument, 
-`params`), the `fit_p` function searches for the optimal values of 
-these free parameters.
-
-The package provides four optimization algorithms:
-
-1. L-BFGS-B (from `stats::optim`)  
-2. Simulated Annealing (`GenSA::GenSA`)  
-3. Genetic Algorithm (`GA::ga`)  
-4. Differential Evolution (`DEoptim::DEoptim`).   
-5. Bayesian Optimization (`mlrMBO::mbo`)
-6. Particle Swarm Optimization (`pso::psoptim`)
-7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`)
-
-
-We recommend Differential Evolution (`DEoptim::DEoptim`) for its speed.
-
-For more information, please refer to the GitHub repository:
-https://github.com/yuki-961004/binaryRL
+Fit parameters
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/step3_rcv_d.R
 \name{rcv_d}
 \alias{rcv_d}
-\title{Title}
+\title{Parameter and Model Recovery}
 \usage{
 rcv_d(
   data,
@@ -27,7 +27,7 @@ rcv_d(
 This data should include the following mandatory columns: 
 - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward".}
 
-\item{n_trials}{[integer] number of toltal trials}
+\item{n_trials}{[integer] number of total trials}
 
 \item{simulate_models}{[list] A collection of functions used to generate simulated data.}
 
@@ -41,7 +41,7 @@ This data should include the following mandatory columns:
 
 \item{fit_upper}{[list] The upper bounds for model fit models}
 
-\item{model_names}{[character] the name of fit modal}
+\item{model_names}{[list] the name of fit modal}
 
 \item{initial_params}{[vector] Initial values for the free parameters. 
 These need to be set only when using L-BFGS-B. Other algorithms 
@@ -68,5 +68,5 @@ default: `seed = 123`}
 data frame of recovery
 }
 \description{
-Title
+Parameter and Model Recovery
 }

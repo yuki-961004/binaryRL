@@ -5,7 +5,7 @@ date: "2025-03-19"
 output: html_document
 ---
 ```{r}
-install.packages("../../binaryRL_0.6.0.tar.gz")
+install.packages("../../binaryRL_0.6.1.tar.gz")
 ```
 
 ```{r}
@@ -54,12 +54,12 @@ model <- function(params){
 ```{r message=FALSE, warning=FALSE}
 binaryRL_res <- binaryRL::fit_p(
   data = Ludvig_2014_Exp1,
-  id = 1,
-  n_params = 3,
   n_trials = 288,
-  obj_func = binaryRL::RSTD.fit,
-  lower = c(0, 0, 0),
-  upper = c(1, 1, 1),
+  id = c(2),
+  model <- list(TD.fit, RSTD.fit, Utility.fit),
+  model_name <- c("TD", "RSTD", "Utility"),
+  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   iteration = 10,
   seed = 123,
   algorithm = "L-BFGS-B"   # Gradient-Based (stats::optim)

@@ -1,7 +1,7 @@
 #' recovery_d
 #'
 #' @description
-#' This function applies `fit_p` to each fake dataset in the list generated 
+#' This function applies `fit_parameter` to each fake dataset in the list generated 
 #' by `simulate_l`. The results can be used for parameter recovery and 
 #' model recovery, helping evaluate the consistency and validity of the 
 #' reinforcement learning model.
@@ -90,7 +90,7 @@ recovery_data <- function(
   for (i in 1:length(list)){
     data <- list[[i]][[1]]
     
-    binaryRL_res <- binaryRL::fit_p(
+    binaryRL_res <- binaryRL::optimize_para(
       data = data,
       id = id,
       obj_func = fit_model,

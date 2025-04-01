@@ -2,7 +2,7 @@
 % Please edit documentation in R/step1_run_m.R
 \name{run_m}
 \alias{run_m}
-\title{run_m}
+\title{Building Reinforcement Learning Model}
 \usage{
 run_m(
   data,
