@@ -376,9 +376,8 @@ binaryRL_res <- binaryRL::fit_p(
 ```
 
 <!---------------------------------------------------------->
-## What is the Classic Models
+## How Classic RL Models Are Built
 
-The default function can run the three classic models here. Setting different parameters in `run_m` means running different RL models.  
 These basic models are built into the package. You can call them using `binaryRL::TD.fit`, `binaryRL::RSTD.fit`, `binaryRL::Utility.fit`.
 
 <!---------------------------------------------------------->
@@ -444,6 +443,12 @@ Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction 
 <!---------------------------------------------------------->
 
 ## 3. Parameter and Model Recovery
+
+Here, using the publicly available data from Ludvig et al. (2014), we demonstrate how to perform parameter recovery and model recovery following the method suggested by Wilson & Collins (2019).  
+
+  1. Notably, Wilson & Collins (2019) recommend increasing the softmax parameter $\tau$ by 1 during model recovery, as this can help reduce the amount of noise in behavior.  
+  2. Additionally, different algorithms and varying number of iterations can also influence the results of both parameter recovery and model recovery. You should adjust these settings based on your specific needs and circumstances.   
+  
 
 ```r
 recovery <- binaryRL::rcv_d(
@@ -704,7 +709,9 @@ Ganger, M., Duryea, E., & Hu, W. (2016). Double Sarsa and double expected Sarsa 
 ## Soft-Max Function
 The closer $\tau$ is to 1 (*default: 0.5*), the more sensitive the subjects become to the values of the left and right options. In other words, even a slight difference in value will lead the subjects to choose the option with the higher value.  
 
-If you add $\tau$ to your model as a extra free parameter, you will generally achieve better model fit. In fact, some articles have already incorporated the parameter in the softmax function into reinforcement learning models (e.g., Niv et al., 2012; Rosenbaum et al.,2022).
+If you add $\tau$ to your model as a extra free parameter, you will generally achieve better model fit. In fact, some articles have already incorporated the parameter in the softmax function into reinforcement learning models (e.g., Niv et al., 2012; Rosenbaum et al.,2022).  
+
+In fact, the three built-in fundamental models in the package are implemented by setting $\tau$ as a free parameter.
 
 ```r
 # RSTD Model
