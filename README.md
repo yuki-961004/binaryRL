@@ -361,18 +361,23 @@ write.csv(result, "./comparison.csv", row.names = FALSE)
 #>    η:  0.012 0.001 
 #>    ε:  NA 
 #>    τ:  0.039 
-
+#> 
 #> Model Fit:
 #>    Accuracy:  77.08 %
 #>    LogL:  -125.19 
 #>    AIC:  256.38 
 #>    BIC:  267.37 
 ```
+<!---------------------------------------------------------->
+
+`binaryRL::fit_p()` is the for-loop version of `binaryRL::optimize_para()`, allowing you to fit all models to all subjects at once.   
+If you prefer to fit a single model to a single subject at a time or want to speed up fitting multiple subjects using parallel computing, consider using `binaryRL::optimize_para()`.   
+Below is an example of how to use it. We encourage advanced users to take advantage of this function.
 
 <!---------------------------------------------------------->
 
 <details>
-<summary>Fitting a Model to a Single Subject</summary>
+<summary>[Example Code] binaryRL::optimize_para()</summary>
 
 ```r
 binaryRL_res <- binaryRL::optimize_para(
@@ -396,12 +401,6 @@ binaryRL_res <- binaryRL::optimize_para(
 ```
 
 </details>
-
-<!---------------------------------------------------------->
-
-`fit_p()` is the for-loop version of `optimize_para()`, allowing you to fit all models to all subjects at once.   
-If you prefer to fit a single model to a single subject at a time or want to speed up fitting multiple subjects using parallel computing, consider using `optimize_para()`.   
-Below is an example of how to use it. We encourage advanced users to take advantage of this function.
 
 <!---------------------------------------------------------->
 ## How Classic RL Models Are Built
@@ -574,9 +573,54 @@ write.csv(result, file = "./recovery.csv", row.names = FALSE)
 
 <!---------------------------------------------------------->
 
+`binaryRL::rcv_d()` is the for-loop version of `binaryRL::simulate_list()` and `binaryRL::recovery_data()`, allowing you to generate simulated data using all models at once and then fit all models to the simulated data.
+We also encourage advanced users to use `binaryRL::simulate_list()` and `binaryRL::recovery_data()` separately for parameter recovery and model recovery. Below is an example code.
+
+<details>
+<summary>[Example Code] binaryRL::simulate_list()</summary>
+
+```r
+list_simulated <- binaryRL::simulate_list(
+  data = Ludvig_2014_Exp1,
+  simulate_model = binaryRL::RSTD.simulate,
+  n_params = 3, 
+  n_trials = 288,
+  lower = c(0, 0, 0),
+  upper = c(1, 1, 1),
+  seed = 1,
+  iteration = 5
+)
+```
+
+</details>
+
+<!---------------------------------------------------------->
+
+<details>
+<summary>[Example Code] binaryRL::simulate_list()</summary>
+
+```r
+df_recovery <- binaryRL::recovery_data(
+  list = list_simulated,
+  id = 1,
+  fit_model = binaryRL::RSTD.fit,
+  model_name = "RSTD",
+  n_params = 3,
+  n_trials = 288,
+  lower = c(0, 0, 0),
+  upper = c(1, 1, 1),
+  iteration = 10,
+  algorithm = "GenSA"
+)
+```
+
+</details>
+
+<!---------------------------------------------------------->
+
 ### Parameter Recovery
 
-> "Before reading too much into the best-fitting parameter values, $\theta_{m}^{MLE}$,  it is important to check whether the fitting procedure gives meaningful parameter values in the best case scenario, -that is, when fitting fake data where the ‘true’ parameter values are known (Nilsson et al., 2011). Such a procedure is known as ‘Parameter Recovery’, and is a crucial part of any model-based analysis."
+> "Before reading too much into the best-fitting parameter values, $\theta_{m}^{MLE}$,  it is important to check whether the fitting procedure gives meaningful parameter values in the best case scenario, -that is, when fitting fake data where the 'true' parameter values are known (Nilsson et al., 2011). Such a procedure is known as 'Parameter Recovery', and is a crucial part of any model-based analysis."
 
 <!---------------------------------------------------------->
 
