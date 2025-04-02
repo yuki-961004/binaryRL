@@ -51,11 +51,34 @@ model <- function(params){
 }
 ```
 
-```{r message=FALSE, warning=FALSE}
+```{r}
+binaryRL_res <- binaryRL::optimize_para(
+  data = Ludvig_2014_Exp1,
+  id = 1,
+  n_params = 3,
+  n_trials = 288,
+  obj_func = binaryRL::RSTD.fit,
+  lower = c(0, 0, 0),
+  upper = c(1, 1, 1),
+  iteration = 10,
+  seed = 123,
+  algorithm = "L-BFGS-B"   # Gradient-Based (stats::optim)
+  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
+  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
+  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+)
+```
+
+
+# Model Comparison
+```{r include=FALSE}
 binaryRL_res <- binaryRL::fit_p(
   data = Ludvig_2014_Exp1,
   n_trials = 288,
-  id = c(2),
+  id = c(1:40),
   model <- list(TD.fit, RSTD.fit, Utility.fit),
   model_name <- c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
@@ -70,59 +93,10 @@ binaryRL_res <- binaryRL::fit_p(
   #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
   #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
 )
-```
 
-# Model Comparison
-```{r include=FALSE}
-model <- list(TD.fit, RSTD.fit, Utility.fit)
-model_name <- c("TD", "RSTD", "Utility")
-n_params <- c(2, 3, 3)
-lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))
-upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1))
-
-model_comparison <- list()
-model_result <- list()
-
-for (i in 1:length(model)){
-  
-  for (j in 1:length(levels(Ludvig_2014_Exp1$Subject))) {
-    
-    binaryRL_res <- binaryRL::fit_p(
-      data = Ludvig_2014_Exp1,
-      id = j,
-      n_params = n_params[i],
-      n_trials = 288,
-      obj_func = model[[i]],
-      lower = lower[[i]],
-      upper = upper[[i]],
-      iteration = 10,
-      seed = 123,
-      #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-      #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-      #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-      #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-      algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
-      #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
-      #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-    )
-    
-    model_result[[j]] <- data.frame(
-      fit_model = model_name[i],
-      Subject = i,
-      ACC = binaryRL_res$acc,
-      LogL = -binaryRL_res$ll,
-      AIC = binaryRL_res$aic,
-      BIC = binaryRL_res$bic
-    )
-  }
-  model_comparison[[i]] <- model_result
-}
-
-result <- dplyr::bind_rows(model_comparison)
+result <- dplyr::bind_rows(binaryRL_res)
 
 write.csv(result, "./comparison.csv", row.names = FALSE)
-
-rm(i, j, model, model_name, n_params, lower, upper, model_result, binaryRL_res)
 ```
 
 ```{r}
