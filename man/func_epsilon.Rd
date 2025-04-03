@@ -2,44 +2,46 @@
 % Please edit documentation in R/func_epsilon.R
 \name{func_epsilon}
 \alias{func_epsilon}
-\title{func_epsilon}
+\title{Epsilon Greedy}
 \usage{
 func_epsilon(i, var1 = NA, var2 = NA, threshold = 1, epsilon = NA, lambda)
 }
 \arguments{
 \item{i}{row number}
 
-\item{var1}{A string specifying the name of an additional variable that can be used in the model. 
-Provide the name of the column as a character string 
+\item{var1}{[character] column name of extra variable 1. If your model uses 
+more than just reward and expected value, and you need other information, 
+such as whether the choice frame is Gain or Loss, then you can input the 
+'Frame' column as var1 into the model.
 e.g., `var1 = "Extra_Var1"`}
 
-\item{var2}{A string specifying the name of an additional variable that can be used in the model. 
-Provide the name of the column as a character string 
+\item{var2}{[character] column name of extra variable 2. If one additional 
+variable, var1, does not meet your needs, you can add another additional 
+variable, var2, into your model.
 e.g., `var2 = "Extra_Var2"`}
 
-\item{threshold}{A numeric value specifying the number of initial trials during which the subject makes random choices 
-rather than choosing based on the values of the options. This occurs because the subject has not yet learned the values of the options. 
-For example, threshold = 20 means the subject will make completely random choices for the first 20 trials.
-Provide the value as a number. 
-default: `threshold = 1`}
+\item{threshold}{[integer] the number of initial trials during which the 
+subject makes random choices rather than choosing based on the values of 
+the options. This occurs because the subject has not yet learned the values 
+of the options. For example, threshold = 20 means the subject will make 
+completely random choices for the first 20 trials. default: `threshold = 1`}
 
-\item{epsilon}{A parameter used in the `expl_func` (Exploration Function), 
-determining whether the subject makes decisions based on the relative values of the left and right options, 
-or chooses completely randomly. 
-For example, when epsilon = 0.1, it means the subject has a 10% chance of making a completely random choice 
-and a 90% chance of choosing based on the values of the options.
-Provide the value as a vector 
+\item{epsilon}{[vector] Parameters used in the `expl_func` (Exploration Function), 
+determining whether the subject makes decisions based on the relative values 
+of the left and right options, or chooses completely randomly. For example, 
+when epsilon = 0.1, it means the subject has a 10% chance of making a 
+completely random choice and a 90% chance of choosing based on the values 
+of the options.
 e.g., `epsilon = c(0.1)`}
 
-\item{lambda}{An additional parameter that may be used in these functions. 
-Provide the value as a vector 
+\item{lambda}{[vector] Extra parameters that may be used in functions. 
 e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 }
 \value{
 explore or not
 }
 \description{
-func_epsilon
+Epsilon Greedy
 }
 \note{
 When customizing these functions, please ensure that you do not modify the arguments. 

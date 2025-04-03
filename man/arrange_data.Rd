@@ -2,16 +2,17 @@
 % Please edit documentation in R/2_arrange_data.R
 \name{arrange_data}
 \alias{arrange_data}
-\title{arrange_data}
+\title{Arrange Data based on Block and Trial}
 \usage{
 arrange_data(data, time_line = c("Block", "Trial"))
 }
 \arguments{
-\item{data}{A data frame resulting from the 'step1' process of the `unique_choice` function.}
+\item{data}{[data.frame] A data frame resulting from the 'step1' process of the `unique_choice` function.}
 
-\item{time_line}{A vector specifying the name of the column that the sequence of the experiment. 
-This argument defines how the experiment is structured, such as whether it is organized by "Block" with breaks in between, and multiple trials within each block. 
-Provide the sequence as a character vector, 
+\item{time_line}{[vector] A vector specifying the name of the column that 
+the sequence of the experiment. This argument defines how the experiment is 
+structured, such as whether it is organized by "Block" with breaks in 
+between, and multiple trials within each block. 
 e.g., `time_line = c("Block", "Trial")`}
 }
 \value{
@@ -21,5 +22,5 @@ data frame:
   }
 }
 \description{
-arrange_data
+Arrange Data based on Block and Trial
 }

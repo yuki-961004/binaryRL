@@ -2,12 +2,12 @@
 % Please edit documentation in R/3_add_NA.R
 \name{add_NA}
 \alias{add_NA}
-\title{add_NA}
+\title{Create NULL columns and the line 0}
 \usage{
 add_NA(data)
 }
 \arguments{
-\item{data}{A data frame resulting from the 'step2' process of the `arrange_data` function.}
+\item{data}{[data.frame] A data frame resulting from the 'step2' process of the `arrange_data` function.}
 }
 \value{
 data frame:
@@ -16,5 +16,5 @@ data frame:
   }
 }
 \description{
-add_NA
+Create NULL columns and the line 0
 }

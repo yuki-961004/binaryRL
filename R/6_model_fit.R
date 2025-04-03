@@ -1,18 +1,15 @@
-#' model_fit
+#' Calculate the Model Fit
 #'
-#' @param data A data frame resulting from the 'step5' process of the `decision_making` function. 
+#' @param data [data.frame] A data frame resulting from the 'step5' process of the `decision_making` function. 
 #' 
-#' @param L_choice A string specifying the name of the column that represents the left choice. 
-#' Provide the name of the column as a character string 
-#' e.g., `L_choice = "Left_Choice"`
+#' @param L_choice [character] column name of left choice. 
+#'  e.g., `L_choice = "Left_Choice"`
 #' 
-#' @param R_choice A string specifying the name of the column that represents the right choice. 
-#' Provide the name of the column as a character string 
-#' e.g., `R_choice = "Right_Choice"`
+#' @param R_choice [character] column name of right choice. 
+#'  e.g., `R_choice = "Right_Choice"`
 #' 
-#' @param sub_choose A string specifying the name of the column that represents the choice made by the subject. 
-#' Provide the name of the column as a character string 
-#' e.g., `sub_choose = "Sub_Choose"`
+#' @param sub_choose [character] column name of choices made by the subject. 
+#'  e.g., `sub_choose = "Choose"`
 #'
 #' @returns data frame:
 #'   \itemize{

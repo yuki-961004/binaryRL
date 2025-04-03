@@ -1,11 +1,12 @@
-#' arrange_data
+#' Arrange Data based on Block and Trial
 #'
-#' @param data A data frame resulting from the 'step1' process of the `unique_choice` function.
+#' @param data [data.frame] A data frame resulting from the 'step1' process of the `unique_choice` function.
 #' 
-#' @param time_line A vector specifying the name of the column that the sequence of the experiment. 
-#' This argument defines how the experiment is structured, such as whether it is organized by "Block" with breaks in between, and multiple trials within each block. 
-#' Provide the sequence as a character vector, 
-#' e.g., `time_line = c("Block", "Trial")`
+#' @param time_line [vector] A vector specifying the name of the column that 
+#'  the sequence of the experiment. This argument defines how the experiment is 
+#'  structured, such as whether it is organized by "Block" with breaks in 
+#'  between, and multiple trials within each block. 
+#'  e.g., `time_line = c("Block", "Trial")`
 #'
 #' @returns data frame:
 #'   \itemize{

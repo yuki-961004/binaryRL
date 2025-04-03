@@ -1,27 +1,32 @@
-#' func_prob
+#' Soft-Max Function
 #' 
 #' @param LR Are you calculating the probability for the left option or the right option?
 #' @param try If the choice was random, the value is 1; if the choice was based on value, the value is 0.
 #' @param L_value The value of the left option
 #' @param R_value The value of the right option
 #' 
-#' @param var1 A string specifying the name of an additional variable that can be used in the model. 
-#' Provide the name of the column as a character string 
-#' e.g., `var1 = "Extra_Var1"`
+#' @param var1 [character] column name of extra variable 1. If your model uses 
+#'  more than just reward and expected value, and you need other information, 
+#'  such as whether the choice frame is Gain or Loss, then you can input the 
+#'  'Frame' column as var1 into the model.
+#'  e.g., `var1 = "Extra_Var1"`
 #' 
-#' @param var2 A string specifying the name of an additional variable that can be used in the model. 
-#' Provide the name of the column as a character string 
-#' e.g., `var2 = "Extra_Var2"`
+#' @param var2 [character] column name of extra variable 2. If one additional 
+#'  variable, var1, does not meet your needs, you can add another additional 
+#'  variable, var2, into your model.
+#'  e.g., `var2 = "Extra_Var2"`
 #' 
-#' @param tau A parameter used in the `prob_func` (Soft-Max Function), representing the sensitivity of the subject to the value difference when making decisions. 
-#' It determines the probability of selecting the left option versus the right option based on their values. A larger value of tau indicates greater sensitivity 
-#' to the value difference between the options. In other words, even a small difference in value will make the subject more likely to choose the higher-value option. 
-#' Provide the value as a vector 
-#' e.g., `tau = c(0.5)`
+#' @param tau [vector] Parameters used in the `prob_func` (Soft-Max Function), 
+#'  representing the sensitivity of the subject to the value difference when 
+#'  making decisions. It determines the probability of selecting the left option 
+#'  versus the right option based on their values. A larger value of tau 
+#'  indicates greater sensitivity to the value difference between the options. 
+#'  In other words, even a small difference in value will make the subject more 
+#'  likely to choose the higher-value option. 
+#'  e.g., `tau = c(0.5)`
 #' 
-#' @param lambda An additional parameter that may be used in these functions. 
-#' Provide the value as a vector 
-#' e.g., `lambda = c(0.4, 0.7, 20, 60)`
+#' @param lambda [vector] Extra parameters that may be used in functions. 
+#'  e.g., `lambda = c(0.4, 0.7, 20, 60)`
 #' 
 #' @return The probability of choosing this option
 #' @export

@@ -7,10 +7,10 @@
 RSTD.fit(params)
 }
 \arguments{
-\item{params}{params}
+\item{params}{[vector] algorithm packages accept only one argument}
 }
 \value{
--logL
+negative log likelihood
 }
 \description{
 RSTD model for fit

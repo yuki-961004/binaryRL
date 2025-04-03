@@ -2,22 +2,19 @@
 % Please edit documentation in R/1_unique_choice.R
 \name{unique_choice}
 \alias{unique_choice}
-\title{unique_choice}
+\title{Figure out how many options exist}
 \usage{
 unique_choice(data, L_choice = "L_choice", R_choice = "R_choice")
 }
 \arguments{
-\item{data}{A data frame containing the raw data. 
+\item{data}{[data.frame] raw data. 
 This data should include the following mandatory columns: 
-- "sub", "time_line", "L_choice", "R_choice", "choose", "reward". 
-The following arguments allow you to customize the column names used for processing}
+- "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward".}
 
-\item{L_choice}{A string specifying the name of the column that represents the left choice. 
-Provide the name of the column as a character string 
+\item{L_choice}{[character] column name of left choice. 
 e.g., `L_choice = "Left_Choice"`}
 
-\item{R_choice}{A string specifying the name of the column that represents the right choice. 
-Provide the name of the column as a character string 
+\item{R_choice}{[character] column name of right choice. 
 e.g., `R_choice = "Right_Choice"`}
 }
 \value{
@@ -28,5 +25,5 @@ list:
   }
 }
 \description{
-unique_choice
+Figure out how many options exist
 }

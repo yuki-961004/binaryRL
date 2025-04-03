@@ -1,5 +1,14 @@
 #' Parameter and Model Recovery
-#'
+#' 
+#' @description
+#' This function fits multiple sets of simulated data using a loop.  
+#'  You need to provide a list of simulation functions, fitting functions,  
+#'  and parameter bounds. If you prefer to handle the process manually,  
+#'  you can use the internal functions `simulate_list` and `recovery_data`.
+#'  
+#'  For more information, please refer to the GitHub repository:
+#'  https://github.com/yuki-961004/binaryRL
+#'  
 #' @param data [data.frame] raw data. 
 #'  This data should include the following mandatory columns: 
 #'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
@@ -14,7 +23,7 @@
 #' @param fit_lower [list] The lower bounds for model fit models
 #' @param fit_upper [list] The upper bounds for model fit models
 #' 
-#' @param model_names [list] the name of fit modal
+#' @param model_names [list] the names of fit modals
 #' 
 #' @param initial_params [vector] Initial values for the free parameters. 
 #'  These need to be set only when using L-BFGS-B. Other algorithms 
@@ -26,9 +35,9 @@
 #'  automatically generate initial values.
 #'  for `Bayesian`, `GA`, set `initial = 50`
 #'  
-#' @param iteration_s [integer] the number of iteration in simulation
+#' @param iteration_s [integer] the number of iteration in simulation (simulate)
 #' 
-#' @param iteration_f [integer] the number of iteration in algorithm
+#' @param iteration_f [integer] the number of iteration in algorithm (fit)
 #' 
 #' @param seed [integer] random seed. This ensures that the results are 
 #'  reproducible and remain the same each time the function is run. 
@@ -37,7 +46,7 @@
 #' @param algorithm [character] Choose a algorithm package from 
 #'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`
 #'
-#' @returns data frame of recovery
+#' @returns a list containing all recovery data
 #' @export
 #'
 rcv_d <- function(

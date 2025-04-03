@@ -168,11 +168,11 @@ variable, var1, does not meet your needs, you can add another additional
 variable, var2, into your model.
 e.g., `var2 = "Extra_Var2"`}
 
-\item{digits_1}{The number of decimal places to retain for columns related 
+\item{digits_1}{[integer] The number of decimal places to retain for columns related 
 to the value function 
 The default is 2.}
 
-\item{digits_2}{The number of decimal places to retain for columns related 
+\item{digits_2}{[integer] The number of decimal places to retain for columns related 
 to the select function. 
 The default is 5.}
 }

@@ -1,9 +1,14 @@
 #' TD model for simulate
 #'
-#' @param params free parameters
-#' @param data raw data
-#' @param n_trials number of total trials
-#' @param n_params number of total params
+#' @param params [vector] free parameters
+#' 
+#' @param data [data.frame] raw data. 
+#'  This data should include the following mandatory columns: 
+#'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
+#'  
+#' @param n_params [integer] The number of free parameters in your model. 
+#' 
+#' @param n_trials [integer] The total number of trials in your experiment.
 #'
 #' @returns binaryRL_res
 #' @export

@@ -7,13 +7,15 @@
 TD.simulate(params, data, n_params = 2, n_trials = 288)
 }
 \arguments{
-\item{params}{free parameters}
+\item{params}{[vector] free parameters}
 
-\item{data}{raw data}
+\item{data}{[data.frame] raw data. 
+This data should include the following mandatory columns: 
+- "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward".}
 
-\item{n_params}{number of total params}
+\item{n_params}{[integer] The number of free parameters in your model.}
 
-\item{n_trials}{number of total trials}
+\item{n_trials}{[integer] The total number of trials in your experiment.}
 }
 \value{
 binaryRL_res

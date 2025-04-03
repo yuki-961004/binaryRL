@@ -2,7 +2,7 @@
 % Please edit documentation in R/func_eta.R
 \name{func_eta}
 \alias{func_eta}
-\title{func_eta}
+\title{Learning Rate}
 \usage{
 func_eta(value, utility, reward, occurrence, var1 = NA, var2 = NA, eta, lambda)
 }
@@ -15,30 +15,33 @@ func_eta(value, utility, reward, occurrence, var1 = NA, var2 = NA, eta, lambda)
 
 \item{occurrence}{The number of times the same stimulus has appeared.}
 
-\item{var1}{A string specifying the name of an additional variable that can be used in the model. 
-Provide the name of the column as a character string 
+\item{var1}{[character] column name of extra variable 1. If your model uses 
+more than just reward and expected value, and you need other information, 
+such as whether the choice frame is Gain or Loss, then you can input the 
+'Frame' column as var1 into the model.
 e.g., `var1 = "Extra_Var1"`}
 
-\item{var2}{A string specifying the name of an additional variable that can be used in the model. 
-Provide the name of the column as a character string 
+\item{var2}{[character] column name of extra variable 2. If one additional 
+variable, var1, does not meet your needs, you can add another additional 
+variable, var2, into your model.
 e.g., `var2 = "Extra_Var2"`}
 
-\item{eta}{A parameter used in the `rate_func` (Learning Rate Function), 
-representing the rate at which the subject updates the difference between the reward and the expected value in the subject's mind. 
-In the TD model, there is a single learning rate throughout the experiment. 
-In the RSTD model, two different learning rates are used when the reward is higher or lower than the expected value.
-Provide the value as a vector 
+\item{eta}{[vector] Parameters used in the `rate_func` (Learning Rate Function), 
+representing the rate at which the subject updates the 
+difference (prediction error) between the reward and the expected value 
+in the subject's mind. In the TD model, there is a single learning rate 
+throughout the experiment. In the RSTD model, two different learning rates 
+are used when the reward is higher or lower than the expected value.
 e.g., `eta = c(0.3, 0.7)`}
 
-\item{lambda}{An additional parameter that may be used in these functions. 
-Provide the value as a vector 
+\item{lambda}{[vector] Extra parameters that may be used in functions. 
 e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 }
 \value{
 learning rate eta
 }
 \description{
-func_eta
+Learning Rate
 }
 \note{
 When customizing these functions, please ensure that you do not modify the arguments. 

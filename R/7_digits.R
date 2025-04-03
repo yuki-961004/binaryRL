@@ -1,16 +1,16 @@
-#' digits
+#' Round Digital
 #'
-#' @param data A data frame resulting from the 'step6' process of the `model_fit` function. 
+#' @param data [data.frame] A data frame resulting from the 'step6' process of the `model_fit` function. 
 #' 
-#' @param options all alternative options from 'step1' `unique_choice`
+#' @param options [vector] all alternative options from 'step1' `unique_choice`
 #' 
-#' @param digits_1 The number of decimal places to retain for values related to the value function. 
-#' The default is 2.
-#' e.g., `Value_Option_A = 20.00` 
+#' @param digits_1 [integer] The number of decimal places to retain for columns related 
+#'  to the value function 
+#'  The default is 2.
 #' 
-#' @param digits_2 The number of decimal places to retain for values related to the action function. 
-#' The default is 5.
-#' e.g., `L_logl = -123.12345` 
+#' @param digits_2 [integer] The number of decimal places to retain for columns related 
+#'  to the select function. 
+#'  The default is 5.
 #'
 #' @returns data frame:
 #'   \itemize{

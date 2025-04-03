@@ -1,27 +1,21 @@
-#' fit_p
+#' Fit Parameters
 #' 
 #' @description
-#' This function optimizes free parameters of reinforcement learning 
-#' models built with the `run_m` function. After constructing a 
-#' reinforcement learning model (a function with only ONE argument, 
-#' `params`), the `fit_p` function searches for the optimal values of 
-#' these free parameters.
+#' This function is an internal function of `fit_p` We isolate it from direct use
+#'  by capable users.
 #'
-#' The package provides four optimization algorithms:
+#'  The function provides four optimization algorithms: 
 #' 
-#' 1. L-BFGS-B (from `stats::optim`)  
-#' 2. Simulated Annealing (`GenSA::GenSA`)  
-#' 3. Genetic Algorithm (`GA::ga`)  
-#' 4. Differential Evolution (`DEoptim::DEoptim`).   
-#' 5. Bayesian Optimization (`mlrMBO::mbo`)
-#' 6. Particle Swarm Optimization (`pso::psoptim`)
-#' 7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`)
+#'    1. L-BFGS-B (from `stats::optim`); 
+#'    2. Simulated Annealing (`GenSA::GenSA`); 
+#'    3. Genetic Algorithm (`GA::ga`); 
+#'    4. Differential Evolution (`DEoptim::DEoptim`); 
+#'    5. Bayesian Optimization (`mlrMBO::mbo`); 
+#'    6. Particle Swarm Optimization (`pso::psoptim`); 
+#'    7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`); 
 #' 
-#'
-#' We recommend Differential Evolution (`DEoptim::DEoptim`) for its speed.
-#' 
-#' For more information, please refer to the GitHub repository:
-#' https://github.com/yuki-961004/binaryRL
+#'  For more information, please refer to the GitHub repository:
+#'  https://github.com/yuki-961004/binaryRL
 #' 
 #' @param data [data.frame] raw data. 
 #'  This data should include the following mandatory columns: 
@@ -128,7 +122,8 @@ optimize_para <- function(
     },
     "GA" = {
       # 检查所依赖的算法包是否安装
-      check_dependency("GA", algorithm_name = "Genetic Algorithm")
+      required_pkgs <- c("GA", "methods", "foreach", "iterators")
+      check_dependency(required_pkgs, algorithm_name = "Genetic Algorithm")
       
       GA::ga(
         type = "real-valued",
@@ -142,7 +137,8 @@ optimize_para <- function(
     },
     "DEoptim" = {
       # 检查所依赖的算法包是否安装
-      check_dependency("DEoptim", algorithm_name = "Differential Evolution")
+      required_pkgs <- c("DEoptim", "parallel")
+      check_dependency(required_pkgs, algorithm_name = "Differential Evolution")
       
       DEoptim::DEoptim(
         fn = obj_func,
@@ -158,7 +154,7 @@ optimize_para <- function(
     },
     "Bayesian" = {
       # 检查所依赖的算法包是否安装
-      required_pkgs <- c("mlrMBO", "ParamHelpers", "smoof")
+      required_pkgs <- c("mlrMBO", "mlr", "ParamHelpers", "smoof", "lhs")
       check_dependency(required_pkgs, algorithm_name = "Bayesian Optimization")
       
       param_list <- lapply(
@@ -191,8 +187,9 @@ optimize_para <- function(
     },
     "PSO" = {
       # 检查所依赖的算法包是否安装
-      check_dependency("pso", algorithm_name = "Particle Swarm Optimization")
-      
+      required_pkgs <- c("pso", "methods")
+      check_dependency(required_pkgs, algorithm_name = "Particle Swarm Optimization")
+
       pso::psoptim(
         par = initial_params,
         fn = obj_func,

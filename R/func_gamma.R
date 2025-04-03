@@ -1,4 +1,4 @@
-#' func_gamma
+#' Utility Function
 #'
 #' @note When customizing these functions, please ensure that you do not modify the arguments. 
 #' Instead, only modify the `if-else` statements or the internal logic to adapt the function to your needs.
@@ -8,24 +8,25 @@
 #' @param reward The objective reward received by the subject after selecting a stimulus.
 #' @param occurrence The number of times the same stimulus has appeared.
 #' 
-#' @param var1 A string specifying the name of an additional variable that can be used in the model. 
-#' Provide the name of the column as a character string 
-#' e.g., `var1 = "Extra_Var1"`
+#' @param var1 [character] column name of extra variable 1. If your model uses 
+#'  more than just reward and expected value, and you need other information, 
+#'  such as whether the choice frame is Gain or Loss, then you can input the 
+#'  'Frame' column as var1 into the model.
+#'  e.g., `var1 = "Extra_Var1"`
 #' 
-#' @param var2 A string specifying the name of an additional variable that can be used in the model. 
-#' Provide the name of the column as a character string 
-#' e.g., `var2 = "Extra_Var2"`
+#' @param var2 [character] column name of extra variable 2. If one additional 
+#'  variable, var1, does not meet your needs, you can add another additional 
+#'  variable, var2, into your model.
+#'  e.g., `var2 = "Extra_Var2"`
 #' 
-#' @param gamma A parameter used in the `util_func` (Utility Function), often 
-#' referred to as the discount rate. For example, in the utility equation 
-#' `utility = gamma * reward`, if gamma < 1, it indicates that people discount 
-#' the objective reward. 
-#' Provide the value as a vector 
-#' e.g., `gamma = c(0.7)`
+#' @param gamma [vector] Parameters used in the `util_func` (Utility Function), 
+#'  often referred to as the discount rate. For example, 
+#'  `utility = gamma * reward`, if gamma < 1, it indicates that people 
+#'  tend to discount the objective reward. Provide the value as a vector 
+#'  e.g., `gamma = c(0.7)`
 #' 
-#' @param lambda An additional parameter that may be used in these functions. 
-#' Provide the value as a vector 
-#' e.g., `lambda = c(0.4, 0.7, 20, 60)`
+#' @param lambda [vector] Extra parameters that may be used in functions. 
+#'  e.g., `lambda = c(0.4, 0.7, 20, 60)`
 #' 
 #' @return Discount rate and utility
 #' @export

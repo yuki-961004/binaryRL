@@ -1,42 +1,44 @@
-#' output
+#' Summary the Results
 #'
-#' @param data A data frame resulting from the 'step7' process of the `digits` function. 
+#' @param data [data.frame] A data frame resulting from the 'step7' process of the `digits` function. 
 #' 
-#' @param n_params The number of free parameters in the model. 
+#' @param n_params [integer] The number of free parameters in your model. 
 #' 
-#' @param n_trials The total number of trials in the experiment.
+#' @param n_trials [integer] The total number of trials in your experiment.
 #' 
-#' @param lambda An additional parameter that may be used in these functions. 
-#' Provide the value as a vector 
-#' e.g., `lambda = c(0.4, 0.7, 20, 60)`
+#' @param lambda [vector] Extra parameters that may be used in functions. 
+#'  e.g., `lambda = c(0.4, 0.7, 20, 60)`
 #' 
-#' @param gamma A parameter used in the `util_func` (Utility Function), often 
-#' referred to as the discount rate. For example, in the utility equation 
-#' `utility = gamma * reward`, if gamma < 1, it indicates that people discount 
-#' the objective reward. 
-#' Provide the value as a vector 
-#' e.g., `gamma = c(0.7)`
+#' @param gamma [vector] Parameters used in the `util_func` (Utility Function), 
+#'  often referred to as the discount rate. For example, 
+#'  `utility = gamma * reward`, if gamma < 1, it indicates that people 
+#'  tend to discount the objective reward. Provide the value as a vector 
+#'  e.g., `gamma = c(0.7)`
 #' 
-#' @param eta A parameter used in the `rate_func` (Learning Rate Function), 
-#' representing the rate at which the subject updates the difference between the reward and the expected value in the subject's mind. 
-#' In the TD model, there is a single learning rate throughout the experiment. 
-#' In the RSTD model, two different learning rates are used when the reward is higher or lower than the expected value.
-#' Provide the value as a vector 
-#' e.g., `eta = c(0.3, 0.7)`
+#' @param eta [vector] Parameters used in the `rate_func` (Learning Rate Function), 
+#'  representing the rate at which the subject updates the 
+#'  difference (prediction error) between the reward and the expected value 
+#'  in the subject's mind. In the TD model, there is a single learning rate 
+#'  throughout the experiment. In the RSTD model, two different learning rates 
+#'  are used when the reward is higher or lower than the expected value.
+#'  e.g., `eta = c(0.3, 0.7)`
 #' 
-#' @param epsilon A parameter used in the `expl_func` (Exploration Function), 
-#' determining whether the subject makes decisions based on the relative values of the left and right options, 
-#' or chooses completely randomly. 
-#' For example, when epsilon = 0.1, it means the subject has a 10% chance of making a completely random choice 
-#' and a 90% chance of choosing based on the values of the options.
-#' Provide the value as a vector 
-#' e.g., `epsilon = c(0.1)`
+#' @param epsilon [vector] Parameters used in the `expl_func` (Exploration Function), 
+#'  determining whether the subject makes decisions based on the relative values 
+#'  of the left and right options, or chooses completely randomly. For example, 
+#'  when epsilon = 0.1, it means the subject has a 10% chance of making a 
+#'  completely random choice and a 90% chance of choosing based on the values 
+#'  of the options.
+#'  e.g., `epsilon = c(0.1)`
 #' 
-#' @param tau A parameter used in the `prob_func` (Soft-Max Function), representing the sensitivity of the subject to the value difference when making decisions. 
-#' It determines the probability of selecting the left option versus the right option based on their values. A larger value of tau indicates greater sensitivity 
-#' to the value difference between the options. In other words, even a small difference in value will make the subject more likely to choose the higher-value option. 
-#' Provide the value as a vector 
-#' e.g., `tau = c(0.5)`
+#' @param tau [vector] Parameters used in the `prob_func` (Soft-Max Function), 
+#'  representing the sensitivity of the subject to the value difference when 
+#'  making decisions. It determines the probability of selecting the left option 
+#'  versus the right option based on their values. A larger value of tau 
+#'  indicates greater sensitivity to the value difference between the options. 
+#'  In other words, even a small difference in value will make the subject more 
+#'  likely to choose the higher-value option. 
+#'  e.g., `tau = c(0.5)`
 #'
 #' @returns binaryRL[list]:
 #'   \itemize{

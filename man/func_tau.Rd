@@ -2,7 +2,7 @@
 % Please edit documentation in R/func_tau.R
 \name{func_tau}
 \alias{func_tau}
-\title{func_prob}
+\title{Soft-Max Function}
 \usage{
 func_tau(LR, try, L_value, R_value, var1 = NA, var2 = NA, tau = 1, lambda)
 }
@@ -15,27 +15,32 @@ func_tau(LR, try, L_value, R_value, var1 = NA, var2 = NA, tau = 1, lambda)
 
 \item{R_value}{The value of the right option}
 
-\item{var1}{A string specifying the name of an additional variable that can be used in the model. 
-Provide the name of the column as a character string 
+\item{var1}{[character] column name of extra variable 1. If your model uses 
+more than just reward and expected value, and you need other information, 
+such as whether the choice frame is Gain or Loss, then you can input the 
+'Frame' column as var1 into the model.
 e.g., `var1 = "Extra_Var1"`}
 
-\item{var2}{A string specifying the name of an additional variable that can be used in the model. 
-Provide the name of the column as a character string 
+\item{var2}{[character] column name of extra variable 2. If one additional 
+variable, var1, does not meet your needs, you can add another additional 
+variable, var2, into your model.
 e.g., `var2 = "Extra_Var2"`}
 
-\item{tau}{A parameter used in the `prob_func` (Soft-Max Function), representing the sensitivity of the subject to the value difference when making decisions. 
-It determines the probability of selecting the left option versus the right option based on their values. A larger value of tau indicates greater sensitivity 
-to the value difference between the options. In other words, even a small difference in value will make the subject more likely to choose the higher-value option. 
-Provide the value as a vector 
+\item{tau}{[vector] Parameters used in the `prob_func` (Soft-Max Function), 
+representing the sensitivity of the subject to the value difference when 
+making decisions. It determines the probability of selecting the left option 
+versus the right option based on their values. A larger value of tau 
+indicates greater sensitivity to the value difference between the options. 
+In other words, even a small difference in value will make the subject more 
+likely to choose the higher-value option. 
 e.g., `tau = c(0.5)`}
 
-\item{lambda}{An additional parameter that may be used in these functions. 
-Provide the value as a vector 
+\item{lambda}{[vector] Extra parameters that may be used in functions. 
 e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 }
 \value{
 The probability of choosing this option
 }
 \description{
-func_prob
+Soft-Max Function
 }

@@ -41,7 +41,7 @@ This data should include the following mandatory columns:
 
 \item{fit_upper}{[list] The upper bounds for model fit models}
 
-\item{model_names}{[list] the name of fit modal}
+\item{model_names}{[list] the names of fit modals}
 
 \item{initial_params}{[vector] Initial values for the free parameters. 
 These need to be set only when using L-BFGS-B. Other algorithms 
@@ -53,9 +53,9 @@ These need to be set only when using L-BFGS-B. Other algorithms
 automatically generate initial values.
 for `Bayesian`, `GA`, set `initial = 50`}
 
-\item{iteration_s}{[integer] the number of iteration in simulation}
+\item{iteration_s}{[integer] the number of iteration in simulation (simulate)}
 
-\item{iteration_f}{[integer] the number of iteration in algorithm}
+\item{iteration_f}{[integer] the number of iteration in algorithm (fit)}
 
 \item{seed}{[integer] random seed. This ensures that the results are 
 reproducible and remain the same each time the function is run. 
@@ -65,8 +65,14 @@ default: `seed = 123`}
 `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`}
 }
 \value{
-data frame of recovery
+a list containing all recovery data
 }
 \description{
-Parameter and Model Recovery
+This function fits multiple sets of simulated data using a loop.  
+ You need to provide a list of simulation functions, fitting functions,  
+ and parameter bounds. If you prefer to handle the process manually,  
+ you can use the internal functions `simulate_list` and `recovery_data`.
+ 
+ For more information, please refer to the GitHub repository:
+ https://github.com/yuki-961004/binaryRL
 }

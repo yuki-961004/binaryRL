@@ -1,6 +1,6 @@
-#' add_NA
+#' Create NULL columns and the line 0
 #'
-#' @param data A data frame resulting from the 'step2' process of the `arrange_data` function. 
+#' @param data [data.frame] A data frame resulting from the 'step2' process of the `arrange_data` function. 
 #'
 #' @returns data frame:
 #'   \itemize{

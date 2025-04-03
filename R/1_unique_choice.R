@@ -1,17 +1,14 @@
-#' unique_choice
+#' Figure out how many options exist
 #'
-#' @param data A data frame containing the raw data. 
-#' This data should include the following mandatory columns: 
-#' - "sub", "time_line", "L_choice", "R_choice", "choose", "reward". 
-#' The following arguments allow you to customize the column names used for processing
+#' @param data [data.frame] raw data. 
+#'  This data should include the following mandatory columns: 
+#'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
 #' 
-#' @param L_choice A string specifying the name of the column that represents the left choice. 
-#' Provide the name of the column as a character string 
-#' e.g., `L_choice = "Left_Choice"`
+#' @param L_choice [character] column name of left choice. 
+#'  e.g., `L_choice = "Left_Choice"`
 #' 
-#' @param R_choice A string specifying the name of the column that represents the right choice. 
-#' Provide the name of the column as a character string 
-#' e.g., `R_choice = "Right_Choice"`
+#' @param R_choice [character] column name of right choice. 
+#'  e.g., `R_choice = "Right_Choice"`
 #'
 #' @returns list:
 #'   \itemize{

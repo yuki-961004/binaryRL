@@ -2,7 +2,7 @@
 % Please edit documentation in R/6_model_fit.R
 \name{model_fit}
 \alias{model_fit}
-\title{model_fit}
+\title{Calculate the Model Fit}
 \usage{
 model_fit(
   data,
@@ -12,19 +12,16 @@ model_fit(
 )
 }
 \arguments{
-\item{data}{A data frame resulting from the 'step5' process of the `decision_making` function.}
+\item{data}{[data.frame] A data frame resulting from the 'step5' process of the `decision_making` function.}
 
-\item{L_choice}{A string specifying the name of the column that represents the left choice. 
-Provide the name of the column as a character string 
+\item{L_choice}{[character] column name of left choice. 
 e.g., `L_choice = "Left_Choice"`}
 
-\item{R_choice}{A string specifying the name of the column that represents the right choice. 
-Provide the name of the column as a character string 
+\item{R_choice}{[character] column name of right choice. 
 e.g., `R_choice = "Right_Choice"`}
 
-\item{sub_choose}{A string specifying the name of the column that represents the choice made by the subject. 
-Provide the name of the column as a character string 
-e.g., `sub_choose = "Sub_Choose"`}
+\item{sub_choose}{[character] column name of choices made by the subject. 
+e.g., `sub_choose = "Choose"`}
 }
 \value{
 data frame:
@@ -33,5 +30,5 @@ data frame:
   }
 }
 \description{
-model_fit
+Calculate the Model Fit
 }

@@ -1,15 +1,15 @@
-#' set_initial_value
+#' Set initial values for all options
 #'
-#' @param data A data frame resulting from the 'step3' process of the `add_NA` function. 
+#' @param data [data.frame] A data frame resulting from the 'step3' process of the `add_NA` function. 
 #' 
-#' @param options all alternative options
+#' @param options [vector] all alternative options from 'step1' `unique_choice`
 #' 
-#' @param initial_value A numeric value representing the subject's initial expected value for each stimulus's reward. 
-#' If this value is not set, the subject will use the reward received after the first trial as the initial value for that stimulus. 
-#' In other words, the learning rate for the first trial is 100%. 
-#' Provide the initial value as a number 
-#' default: `initial_value = NA`
-#' e.g., `initial_value = 0` 
+#' @param initial_value [numeric] subject's initial expected value for each 
+#'  stimulus's reward. If this value is not set (`initial_value = NA`), 
+#'  the subject will use the reward received after the first trial as the 
+#'  initial value for that stimulus. In other words, the learning rate for the 
+#'  first trial is 100%. default: `initial_value = NA` 
+#'  e.g., `initial_value = 0`
 #'
 #' @returns data frame:
 #'   \itemize{

@@ -1,26 +1,36 @@
 Package: binaryRL
-Type: Package
+Version: 0.6.2
 Title: Reinforcement Learning tools for Two-Alternative Forced Choice tasks
-Version: 0.6.1
-Author: yuki <hmz1969a@gmail.com>
+Description:
+  This package is tailored for fitting reinforcement learning models to
+  Two-Alternative Forced Choice (TAFC) tasks in psychological researches.
+  It follows the three steps from Wilson & Collins (2019),
+    1. `run_m` constructs a reinforcement learning model.
+    2. `fit_p` optimizes free parameters in the RL model.
+    3. `rcv_d` assesses model performance via parameter and model recovery.
+  The example dataset is from an open data of Ludvig et al. (2014).
+Authors@R:
+  c(person(
+    given = "YuKi",
+    role = c("aut", "cre"),
+    email = "hmz1969a@gmail.com",
+    comment = c(ORCID = "0009-0000-1378-1318")
+  ))
 Maintainer: yuki <hmz1969a@gmail.com>
-Description: This package provides tools for fitting reinforcement learning 
-  models to Two-Alternative Forced Choice (TAFC) decision-making tasks. 
-  Users first construct a reinforcement learning model using the `run_m` 
-  function and then optimize its free parameters with `fit_p`. Additionally, 
-  the package includes `simulate_l` and `recovery_d` functions for parameter 
-  recovery and model recovery, enabling users to assess model performance.
-License: MIT + file LICENSE
+URL: https://github.com/yuki-961004/binaryRL
+BugReports: https://github.com/yuki-961004/binaryRL/issues
+License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 7.3.2
 Standardizable: FALSE
-Depends: R (>= 2.10)
+Depends: R (>= 4.0.0)
 Suggests: 
+  foreach, iterators, parallel, methods,
   stats,
   GenSA, 
   GA, 
   DEoptim, 
-  mlrMBO, ParamHelpers, smoof, lhs,
-  pso,
+  mlrMBO, mlr, ParamHelpers, smoof, lhs,
+  pso, 
   cmaes

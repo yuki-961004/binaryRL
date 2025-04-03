@@ -62,5 +62,22 @@ default: `seed = 123`}
 binaryRL results for all subjects with all models
 }
 \description{
-Fit parameters
+This function optimizes free parameters of reinforcement learning 
+ models built with the `run_m` function. After constructing a 
+ reinforcement learning model (a function with only ONE argument, 
+ `params`), the `fit_p` function searches for the optimal values of 
+ these free parameters.
+
+ The package provides four optimization algorithms: 
+
+   1. L-BFGS-B (from `stats::optim`); 
+   2. Simulated Annealing (`GenSA::GenSA`); 
+   3. Genetic Algorithm (`GA::ga`); 
+   4. Differential Evolution (`DEoptim::DEoptim`); 
+   5. Bayesian Optimization (`mlrMBO::mbo`); 
+   6. Particle Swarm Optimization (`pso::psoptim`); 
+   7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`); 
+
+ For more information, please refer to the GitHub repository:
+ https://github.com/yuki-961004/binaryRL
 }

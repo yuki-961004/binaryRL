@@ -2,7 +2,7 @@
 % Please edit documentation in R/5_decision_making.R
 \name{decision_making}
 \alias{decision_making}
-\title{decision_making}
+\title{Markov Decision Process}
 \usage{
 decision_making(
   data,
@@ -29,99 +29,98 @@ decision_making(
 )
 }
 \arguments{
-\item{data}{A data frame resulting from the 'step4' process of the `set_initial_value` function.}
+\item{data}{[data.frame] A data frame resulting from the 'step4' process of the `set_initial_value` function.}
 
-\item{options}{all alternative options from 'step1' `unique_choice`}
+\item{options}{[vector] all alternative options from 'step1' `unique_choice`}
 
-\item{L_choice}{A string specifying the name of the column that represents the left choice. 
-Provide the name of the column as a character string 
+\item{L_choice}{[character] column name of left choice. 
 e.g., `L_choice = "Left_Choice"`}
 
-\item{R_choice}{A string specifying the name of the column that represents the right choice. 
-Provide the name of the column as a character string 
+\item{R_choice}{[character] column name of right choice. 
 e.g., `R_choice = "Right_Choice"`}
 
-\item{L_reward}{A string specifying the name of the left column. 
-Provide the name of the column as a character string 
+\item{L_reward}{[character] column name of the reward of left choice 
 e.g., `L_reward = "Left_reward"`}
 
-\item{R_reward}{A string specifying the name of the right column. 
-Provide the name of the column as a character string 
+\item{R_reward}{[character] column name of the reward of right choice 
 e.g., `R_reward = "Right_reward"`}
 
-\item{var1}{A string specifying the name of an additional variable that can be used in the model. 
-Provide the name of the column as a character string 
+\item{var1}{[character] column name of extra variable 1. If your model uses 
+more than just reward and expected value, and you need other information, 
+such as whether the choice frame is Gain or Loss, then you can input the 
+'Frame' column as var1 into the model.
 e.g., `var1 = "Extra_Var1"`}
 
-\item{var2}{A string specifying the name of an additional variable that can be used in the model. 
-Provide the name of the column as a character string 
+\item{var2}{[character] column name of extra variable 2. If one additional 
+variable, var1, does not meet your needs, you can add another additional 
+variable, var2, into your model.
 e.g., `var2 = "Extra_Var2"`}
 
-\item{seed}{A numeric value to set the random seed. 
-This ensures that the results are reproducible and remain the same each time the function is run.
-Provide the value as a number. 
-
+\item{seed}{[integer] random seed. This ensures that the results are 
+reproducible and remain the same each time the function is run. 
 default: `seed = 123`}
 
-\item{initial_value}{A numeric value representing the subject's initial expected value for each stimulus's reward. 
-If this value is not set, the subject will use the reward received after the first trial as the initial value for that stimulus. 
-In other words, the learning rate for the first trial is 100%. 
-Provide the initial value as a number 
-default: `initial_value = NA`
+\item{initial_value}{[numeric] subject's initial expected value for each 
+stimulus's reward. If this value is not set (`initial_value = NA`), 
+the subject will use the reward received after the first trial as the 
+initial value for that stimulus. In other words, the learning rate for the 
+first trial is 100%. default: `initial_value = NA` 
 e.g., `initial_value = 0`}
 
-\item{softmax}{A logical value indicating whether to use the softmax function. 
-When softmax = TRUE, the value of each option influences the probability of selecting that option. 
-Higher values increase the probability of selecting that option. 
-When softmax = FALSE, the subject will always choose the option with the higher value, with no possibility of selecting the lower-value option.
-Provide the value as a logical (TRUE or FALSE).
-default: `softmax = TRUE`}
+\item{softmax}{[logical] whether to use the softmax function. 
+When softmax = TRUE, the value of each option influences the probability 
+of selecting that option. Higher values increase the probability of 
+selecting that option. When softmax = FALSE, the subject will always 
+choose the option with the higher value, with no possibility of selecting 
+the lower-value option. default: `softmax = TRUE`}
 
-\item{threshold}{A numeric value specifying the number of initial trials during which the subject makes random choices 
-rather than choosing based on the values of the options. This occurs because the subject has not yet learned the values of the options. 
-For example, threshold = 20 means the subject will make completely random choices for the first 20 trials.
-Provide the value as a number. 
-default: `threshold = 1`}
+\item{threshold}{[integer] the number of initial trials during which the 
+subject makes random choices rather than choosing based on the values of 
+the options. This occurs because the subject has not yet learned the values 
+of the options. For example, threshold = 20 means the subject will make 
+completely random choices for the first 20 trials. default: `threshold = 1`}
 
-\item{gamma}{A parameter used in the `util_func` (Utility Function), often 
-referred to as the discount rate. For example, in the utility equation 
-`utility = gamma * reward`, if gamma < 1, it indicates that people discount 
-the objective reward. 
-Provide the value as a vector 
+\item{gamma}{[vector] Parameters used in the `util_func` (Utility Function), 
+often referred to as the discount rate. For example, 
+`utility = gamma * reward`, if gamma < 1, it indicates that people 
+tend to discount the objective reward. Provide the value as a vector 
 e.g., `gamma = c(0.7)`}
 
-\item{eta}{A parameter used in the `rate_func` (Learning Rate Function), 
-representing the rate at which the subject updates the difference between the reward and the expected value in the subject's mind. 
-In the TD model, there is a single learning rate throughout the experiment. 
-In the RSTD model, two different learning rates are used when the reward is higher or lower than the expected value.
-Provide the value as a vector 
+\item{eta}{[vector] Parameters used in the `rate_func` (Learning Rate Function), 
+representing the rate at which the subject updates the 
+difference (prediction error) between the reward and the expected value 
+in the subject's mind. In the TD model, there is a single learning rate 
+throughout the experiment. In the RSTD model, two different learning rates 
+are used when the reward is higher or lower than the expected value.
 e.g., `eta = c(0.3, 0.7)`}
 
-\item{epsilon}{A parameter used in the `expl_func` (Exploration Function), 
-determining whether the subject makes decisions based on the relative values of the left and right options, 
-or chooses completely randomly. 
-For example, when epsilon = 0.1, it means the subject has a 10% chance of making a completely random choice 
-and a 90% chance of choosing based on the values of the options.
-Provide the value as a vector 
+\item{epsilon}{[vector] Parameters used in the `expl_func` (Exploration Function), 
+determining whether the subject makes decisions based on the relative values 
+of the left and right options, or chooses completely randomly. For example, 
+when epsilon = 0.1, it means the subject has a 10% chance of making a 
+completely random choice and a 90% chance of choosing based on the values 
+of the options.
 e.g., `epsilon = c(0.1)`}
 
-\item{tau}{A parameter used in the `prob_func` (Soft-Max Function), representing the sensitivity of the subject to the value difference when making decisions. 
-It determines the probability of selecting the left option versus the right option based on their values. A larger value of tau indicates greater sensitivity 
-to the value difference between the options. In other words, even a small difference in value will make the subject more likely to choose the higher-value option. 
-Provide the value as a vector 
+\item{tau}{[vector] Parameters used in the `prob_func` (Soft-Max Function), 
+representing the sensitivity of the subject to the value difference when 
+making decisions. It determines the probability of selecting the left option 
+versus the right option based on their values. A larger value of tau 
+indicates greater sensitivity to the value difference between the options. 
+In other words, even a small difference in value will make the subject more 
+likely to choose the higher-value option. 
 e.g., `tau = c(0.5)`}
 
-\item{lambda}{An additional parameter that may be used in these functions. 
-Provide the value as a vector 
+\item{lambda}{[vector] Extra parameters that may be used in functions. 
 e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 
-\item{expl_func}{The function for the epsilon greedy, which you can customize}
+\item{expl_func}{[function] Exploration Function.}
 
-\item{prob_func}{The function for the temperature tau, which you can customize.}
+\item{prob_func}{[function] Soft-Max Function.}
 
-\item{util_func}{The function for the utility gamma, which you can customize}
+\item{util_func}{[function] Utility Function.}
 
-\item{rate_func}{The function for the learning rate eta, which you can customize}
+\item{rate_func}{[function] Learning Rate Function.}
 }
 \value{
 data frame:
@@ -130,5 +129,5 @@ data frame:
   }
 }
 \description{
-decision_making
+Markov Decision Process
 }

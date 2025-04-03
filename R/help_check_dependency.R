@@ -5,11 +5,11 @@
 #' If any package is missing, it stops execution with an informative error
 #' message guiding the user on how to install them.
 #'
-#' @param pkg_names A character vector containing the names of the packages
-#'   to check.
-#' @param algorithm_name Optional: The name of the algorithm or feature
-#'   that requires these packages. Used to make the error message more specific.
-#'   Defaults to "this functionality".
+#' @param pkg_names [vector] A character vector containing the names of the packages
+#'  to check.
+#' @param algorithm_name [character] Optional: The name of the algorithm or feature
+#'  that requires these packages. Used to make the error message more specific.
+#'  Defaults to "this functionality".
 #'
 #' @returns Returns `invisible(TRUE)` if all specified packages are available,
 #'   otherwise it stops the execution via `stop()`.

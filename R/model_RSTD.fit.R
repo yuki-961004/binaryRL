@@ -1,8 +1,8 @@
 #' RSTD model for fit
 #'
-#' @param params params
+#' @param params [vector] algorithm packages accept only one argument
 #'
-#' @returns -logL
+#' @returns negative log likelihood
 #' @export
 #'
 
