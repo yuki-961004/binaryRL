@@ -61,11 +61,7 @@ Ludvig, E. A., Madan, C. R., & Spetch, M. L. (2014). Extreme outcomes sway risky
 
 ## 1. Run Model
 
-Create a function with **ONLY ONE** argument, `params`, and return **ONLY ONE** value, `-res$ll`.  
-That's why we use `get()` to retrieve external variables and `assign()` to store output variables outside the function.  
-
- - You must have noticed that the `envir = fit_env` and wondered where it comes from. 
- - Well, it's an environment created by `binaryRL::fit_p()` (we will talke about it latter), so the package won't mess up your `.GlobalEnv`
+Create a function with **ONLY ONE** argument, `params`
 
 ```r
 Model <- function(params){
@@ -77,7 +73,7 @@ Model <- function(params){
     n_trials = n_trials,            # the number of total trials
 
     # free parameters of your model [the only part you need to design]
-    n_params = n_params,            # the number of free parameters
+    n_params = n_params,            
     eta = c(params[1], params[2]),  
     gamma = c(params[3], params[4]),
     epsion = c(params[5], params[6]),
@@ -321,8 +317,8 @@ comparison <- binaryRL::fit_p(
   data = Ludvig_2014_Exp1,
   n_trials = 288,
   id = c(1:40),
-  fit_model <- list(TD, RSTD, Utility),
-  model_name <- c("TD", "RSTD", "Utility"),
+  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
+  model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   iteration = 10,
@@ -545,10 +541,10 @@ recovery <- binaryRL::rcv_d(
   id = 1,
   n_trials = 288,
   model_names = c("TD", "RSTD", "Utility"),
-  simulate_models = list(TD, RSTD, Utility),
+  simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   simulate_upper = list(c(1, 1), c(1, 1, 1), c(0, 0, 0)),
-  fit_models = list(TD, RSTD, Utility),
+  fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   fit_upper = list(c(1, 1), c(1, 1, 1), c(0, 0, 0)),
   initial_params = NA,
