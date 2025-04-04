@@ -371,7 +371,7 @@ Below is an example of how to use it. We encourage advanced users to take advant
 <summary>[Example Code] binaryRL::optimize_para()</summary>
 
 ```r
-binaryRL_res <- binaryRL::optimize_para(
+binaryRL.res <- binaryRL::optimize_para(
   data = Ludvig_2014_Exp1,
   id = 1,
   n_params = 3,
