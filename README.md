@@ -67,24 +67,27 @@ Create a function with **ONLY ONE** argument, `params`
 Model <- function(params){
   # build your RL model
   res <- binaryRL::run_m(
-    data = data,                    # your data
-    id = id,                        # Subject ID
-    mode = mode,                    # for fitting or simulating
-    n_trials = n_trials,            # the number of total trials
+    data = data,                  # your data
+    id = id,                      # Subject ID
+    mode = mode,                  # for fitting or simulating
+    n_trials = n_trials,          # the number of total trials
+    n_params = n_params,          # the number of free parameters
 
-    # free parameters of your model [the only part you need to design]
-    n_params = n_params,            
-    eta = c(params[1], params[2]),  
+    # ------------------------------------- #
+    # | You only need to modify this part | #
+    # ------------------------------------- #
+    eta = c(params[1], params[2]),
     gamma = c(params[3], params[4]),
     epsion = c(params[5], params[6]),
     tau = c(params[7], params[8]),
     lambda = c(params[9], params[...]),
-    # free parameters of your model [the only part you need to design]
+    # ------------------------------------- #
+    # | You only need to modify this part | #
+    # ------------------------------------- #
   )
 
   # pass the result to the Local Scope binaryRL.env
   assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
-  
   # switch mode: fit or simulate
   switch(mode, "fit" = return(-res$ll), "simulate" = return(res))
 }
