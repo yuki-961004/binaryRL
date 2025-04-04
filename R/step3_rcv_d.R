@@ -13,6 +13,11 @@
 #'  This data should include the following mandatory columns: 
 #'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
 #'  
+#' @param id [vector] which subject is going to be analyzed.
+#'  is being analyzed. The value should correspond to an entry in the "sub" 
+#'  column, which must contain the subject IDs. 
+#'  e.g., `id = c(1:40)` 
+#'  
 #' @param n_trials [integer] number of total trials
 #'  
 #' @param simulate_models [list] A collection of functions used to generate simulated data.
@@ -51,11 +56,12 @@
 #'
 rcv_d <- function(
   data,
+  id = 1,
   n_trials = 288,
-  simulate_models = list(TD.simulate, RSTD.simulate, Utility.simulate),
+  simulate_models = list(TD, RSTD, Utility),
   simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  fit_models = list(TD.fit, RSTD.fit, Utility.fit),
+  fit_models = list(TD, RSTD, Utility),
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   model_names = c("TD", "RSTD", "Utility"),
@@ -74,12 +80,13 @@ rcv_d <- function(
   df_recovery <- list()
   
   for (i in 1:n_round_s){
-    np <- formals(simulate_models[[i]])$n_params
+    np <- length(simulate_lower[[i]])
     nt <- n_trials
     
     list_simulated <- simulate_list(
       data = data,
-      simulate_model = simulate_models[[i]],
+      id = id,
+      obj_func = simulate_models[[i]],
       n_params = np, 
       n_trials = nt,
       lower = simulate_lower[[i]],
@@ -94,6 +101,7 @@ rcv_d <- function(
       
       list_recovery[[j]] <- recovery_data(
         list = list_simulated,
+        id = id,
         fit_model = fit_models[[j]],
         model_name = model_names[j],
         n_params = np, 
@@ -107,7 +115,7 @@ rcv_d <- function(
       )
       
       list_recovery[[j]]$simulate_model <- model_names[i]
-      list_recovery[[j]]$iteration <- 1:length(list_recovery[[j]]$iteration)
+      list_recovery[[j]]$iteration <- 1:nrow(list_recovery[[j]])
     }
     
     df_recovery[[i]] <- list_recovery

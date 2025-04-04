@@ -7,7 +7,7 @@
 run_m(
   data,
   id,
-  back = FALSE,
+  mode = "fit",
   initial_value = NA,
   softmax = TRUE,
   threshold = 1,
@@ -49,7 +49,7 @@ is being analyzed. The value should correspond to an entry in the "sub"
 column, which must contain the subject IDs. 
 e.g., `id = 18`}
 
-\item{back}{[logical] whether to generate raw data.
+\item{mode}{[character] 'fit' or 'simulate' whether to generate raw data.
 Defaults to FALSE. Set to TRUE to generate fake data.
 This produces a data frame with the same format as
 the actual raw data.}

@@ -75,14 +75,16 @@ optimize_para <- function(
     algorithm
 ){
   # 创建临时环境
-  fit_env <- new.env()
+  binaryRL.env <- new.env()
+  mode <- "fit"
   # 将data传入到临时环境
-  assign(x = "fit_data", value = data, envir = fit_env)
-  assign(x = "fit_id", value = id, envir = fit_env)
-  assign(x = "fit_n_params", value = n_params, envir = fit_env)
-  assign(x = "fit_n_trials", value = n_trials, envir = fit_env)
+  assign(x = "mode", value = mode, envir = binaryRL.env)
+  assign(x = "data", value = data, envir = binaryRL.env)
+  assign(x = "id", value = id, envir = binaryRL.env)
+  assign(x = "n_params", value = n_params, envir = binaryRL.env)
+  assign(x = "n_trials", value = n_trials, envir = binaryRL.env)
   # 让obj_func的环境绑定在fit_env中
-  environment(obj_func) <- fit_env
+  environment(obj_func) <- binaryRL.env
   
   # 设定初始值
   if (is.na(initial_params)){
@@ -262,10 +264,10 @@ optimize_para <- function(
   )
   # 用找到的最佳参数带回到obj_func中
   obj_func(params = fit_params)
-  # obj_func产生的binaryRL_res会存入fit_env中
-  fit_env$binaryRL_res$output <- fit_params
-  # summaryfit_env环境中的binaryRL_res
-  summary(fit_env$binaryRL_res)
+  # obj_func会给binaryRL.env传入一个binaryRL.res
+  binaryRL.env$binaryRL.res$output <- fit_params
+  # 总结binaryRL.env环境中的binaryRL.res
+  summary(binaryRL.env$binaryRL.res)
   
-  return(fit_env$binaryRL_res)
+  return(binaryRL.env$binaryRL.res)
 }

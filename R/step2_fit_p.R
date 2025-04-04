@@ -29,7 +29,7 @@
 #'  column, which must contain the subject IDs. 
 #'  e.g., `id = c(1:40)`
 #'  
-#' @param model [list] A collection of functions applied to fit models to the data.
+#' @param fit_model [list] A collection of functions applied to fit models to the data.
 #' 
 #' @param model_name [list] the name of fit modals
 #' 
@@ -66,7 +66,7 @@ fit_p <- function(
   data,
   id = c(1:40),
   n_trials,
-  model = list(TD.fit, RSTD.fit, Utility.fit),
+  fit_model = list(TD, RSTD, Utility),
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
@@ -79,7 +79,7 @@ fit_p <- function(
   model_comparison <- list()
   model_result <- list()
   
-  for (i in 1:length(model)){
+  for (i in 1:length(fit_model)){
     
     for (j in 1:length(id)) {
       
@@ -90,7 +90,7 @@ fit_p <- function(
         id = id[j],
         n_params = n_params,
         n_trials = n_trials,
-        obj_func = model[[i]],
+        obj_func = fit_model[[i]],
         lower = lower[[i]],
         upper = upper[[i]],
         iteration = iteration,

@@ -70,6 +70,11 @@ recovery_data <- function(
     AIC = NA,
     BIC = NA
   )
+  # 检测是都用同一个被试的题目, 还是每次都更换题目
+  if (length(id) == 1) {
+    id <- rep(id, length(list))
+  }
+  
   
   # 增加放置输入参数的列
   n_input_params <- length(list[[1]]$input)
@@ -90,7 +95,7 @@ recovery_data <- function(
   for (i in 1:length(list)){
     data <- list[[i]][[1]]
     
-    binaryRL_res <- binaryRL::optimize_para(
+    binaryRL.res <- binaryRL::optimize_para(
       data = data,
       id = id,
       obj_func = fit_model,
@@ -106,10 +111,10 @@ recovery_data <- function(
     )
     
     # 每解完一次题就存一次结果
-    recovery[i, 2] <- binaryRL_res$acc
-    recovery[i, 3] <- binaryRL_res$ll
-    recovery[i, 4] <- binaryRL_res$aic
-    recovery[i, 5] <- binaryRL_res$bic
+    recovery[i, 2] <- binaryRL.res$acc
+    recovery[i, 3] <- binaryRL.res$ll
+    recovery[i, 4] <- binaryRL.res$aic
+    recovery[i, 5] <- binaryRL.res$bic
     
     for (j in 1:n_input_params) {
       recovery[i, j + 5] <- list[[i]]$input[j]
@@ -117,7 +122,7 @@ recovery_data <- function(
     
     # 增加放置输出参数的列
     for (j in 1:n_output_params) {
-      recovery[i, j + 5 + n_input_params] <- binaryRL_res$output[j]
+      recovery[i, j + 5 + n_input_params] <- binaryRL.res$output[j]
     }
   }
   

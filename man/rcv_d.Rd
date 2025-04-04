@@ -6,11 +6,12 @@
 \usage{
 rcv_d(
   data,
+  id = 1,
   n_trials = 288,
-  simulate_models = list(TD.simulate, RSTD.simulate, Utility.simulate),
+  simulate_models = list(TD, RSTD, Utility),
   simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  fit_models = list(TD.fit, RSTD.fit, Utility.fit),
+  fit_models = list(TD, RSTD, Utility),
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   model_names = c("TD", "RSTD", "Utility"),
@@ -26,6 +27,11 @@ rcv_d(
 \item{data}{[data.frame] raw data. 
 This data should include the following mandatory columns: 
 - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward".}
+
+\item{id}{[vector] which subject is going to be analyzed.
+is being analyzed. The value should correspond to an entry in the "sub" 
+column, which must contain the subject IDs. 
+e.g., `id = c(1:40)`}
 
 \item{n_trials}{[integer] number of total trials}
 

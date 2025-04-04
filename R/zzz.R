@@ -1,4 +1,7 @@
-utils::globalVariables("fit_env")
+utils::globalVariables(c(
+  "binaryRL.env",
+  "mode", "data", "id", "n_params", "n_trials"
+))
 
 binaryRLStartupMessage <- function()
 {

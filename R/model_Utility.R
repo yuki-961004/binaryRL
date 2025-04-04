@@ -6,12 +6,7 @@
 #' @export
 #'
 
-Utility.fit <- function(params){
-  
-  data <- get(x = "fit_data", envir = fit_env)
-  id <- get(x = "fit_id", envir = fit_env)
-  n_params <- get(x = "fit_n_params", envir = fit_env)
-  n_trials <- get(x = "fit_n_trials", envir = fit_env)
+Utility <- function(params){
   
   res <- binaryRL::run_m(
     data = data,                   
@@ -20,10 +15,11 @@ Utility.fit <- function(params){
     gamma = c(params[2]),
     tau = c(params[3]),
     n_params = n_params,                   
-    n_trials = n_trials                  
+    n_trials = n_trials,
+    mode = mode                  
   )
   
-  assign(x = "binaryRL_res", value = res, envir = fit_env)
+  assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
   
-  return(-res$ll)
+  switch(mode, "fit" = return(-res$ll), "simulate" = return(res))
 }

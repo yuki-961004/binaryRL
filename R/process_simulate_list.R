@@ -12,10 +12,15 @@
 #' @param data [data.frame] raw data. 
 #'  This data should include the following mandatory columns: 
 #'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
-#' 
-#' @param simulate_model [function] a function with only ONE argument `params`. 
+#'  
+#' @param id [vector] which subject is going to be analyzed.
+#'  is being analyzed. The value should correspond to an entry in the "sub" 
+#'  column, which must contain the subject IDs. 
+#'  e.g., `id = c(1:40)`
+#'  
+#' @param obj_func [function] a function with only ONE argument `params`. 
 #'  Additionally, it is important to note that the data needs to be retrieved 
-#'  from parent.frame(). This function returns the binaryRL_res(res).
+#'  from parent.frame(). This function returns the binaryRL.res(res).
 #' 
 #' @param n_params [integer] The number of free parameters in your model. 
 #' 
@@ -36,7 +41,8 @@
 #'
 simulate_list <- function(
   data,
-  simulate_model, 
+  id = 1,
+  obj_func, 
   n_params, 
   n_trials,
   lower, 
@@ -45,6 +51,10 @@ simulate_list <- function(
   seed = 123
 ) {
   list_simulated <- list()
+  # 检测是都用同一个被试的题目, 还是每次都更换题目
+  if (length(id) == 1) {
+    id <- rep(id, iteration)
+  }
   
   for (i in 1:iteration) {
     params <- c()
@@ -54,12 +64,19 @@ simulate_list <- function(
       params[j] <- stats::runif(n = 1, min = lower[j], max = upper[j])
     }
     
-    list_simulated[[i]] <- simulate_model(
-      data = data,
-      params = params, 
-      n_params = n_params, 
-      n_trials = n_trials
-    )
+    # 创建临时环境
+    binaryRL.env <- new.env()
+    mode <- "simulate"
+    # 将data传入到临时环境
+    assign(x = "mode", value = mode, envir = binaryRL.env)
+    assign(x = "data", value = data, envir = binaryRL.env)
+    assign(x = "id", value = id[i], envir = binaryRL.env)
+    assign(x = "n_params", value = n_params, envir = binaryRL.env)
+    assign(x = "n_trials", value = n_trials, envir = binaryRL.env)
+    # 让obj_func的环境绑定在fit_env中
+    environment(obj_func) <- binaryRL.env
+    
+    list_simulated[[i]] <- obj_func(params = params)
     list_simulated[[i]]$input <- params
   }
   

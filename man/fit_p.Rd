@@ -8,7 +8,7 @@ fit_p(
   data,
   id = c(1:40),
   n_trials,
-  model = list(TD.fit, RSTD.fit, Utility.fit),
+  fit_model = list(TD, RSTD, Utility),
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
@@ -31,7 +31,7 @@ e.g., `id = c(1:40)`}
 
 \item{n_trials}{[integer] number of total trials}
 
-\item{model}{[list] A collection of functions applied to fit models to the data.}
+\item{fit_model}{[list] A collection of functions applied to fit models to the data.}
 
 \item{model_name}{[list] the name of fit modals}
 

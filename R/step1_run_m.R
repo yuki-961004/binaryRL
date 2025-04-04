@@ -18,7 +18,7 @@
 #'  This data should include the following mandatory columns: 
 #'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
 #'  
-#' @param back [logical] whether to generate raw data.
+#' @param mode [character] 'fit' or 'simulate' whether to generate raw data.
 #'  Defaults to FALSE. Set to TRUE to generate fake data.
 #'  This produces a data frame with the same format as
 #'  the actual raw data.
@@ -169,7 +169,7 @@
 run_m <- function(
     data,
     id,
-    back = FALSE,
+    mode = "fit",
     initial_value = NA,
     softmax = TRUE,
     threshold = 1,
@@ -273,9 +273,9 @@ run_m <- function(
     tau = tau
   )
   
-  step9 <- back(
+  step9 <- mode(
     data = step8,
-    back = back,
+    mode = mode,
     sub_choose = sub_choose,
     rob_choose = rob_choose,
     raw_cols = raw_cols

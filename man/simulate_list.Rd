@@ -6,7 +6,8 @@
 \usage{
 simulate_list(
   data,
-  simulate_model,
+  id = 1,
+  obj_func,
   n_params,
   n_trials,
   lower,
@@ -20,7 +21,12 @@ simulate_list(
 This data should include the following mandatory columns: 
 - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward".}
 
-\item{simulate_model}{[function] a function with only ONE argument `params`. 
+\item{id}{[vector] which subject is going to be analyzed.
+is being analyzed. The value should correspond to an entry in the "sub" 
+column, which must contain the subject IDs. 
+e.g., `id = c(1:40)`}
+
+\item{obj_func}{[function] a function with only ONE argument `params`. 
 Additionally, it is important to note that the data needs to be retrieved 
 from parent.frame(). This function returns the binaryRL_res(res).}
 

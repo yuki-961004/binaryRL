@@ -2,7 +2,7 @@
 #'
 #' @param data [list] a list resulting from the 'step7' process of the `output` function. 
 #' 
-#' @param back [logical] whether to generate raw data.
+#' @param mode [character] 'fit' or 'simulate' whether to generate raw data.
 #'  Defaults to FALSE. Set to TRUE to generate fake data.
 #'  This produces a data frame with the same format as
 #'  the actual raw data.
@@ -17,7 +17,7 @@
 #' @param raw_cols [vector] default: c("Subject", "Block", "Trial", 
 #'  "L_choice", "R_choice", "L_reward", "R_reward", "Choose", "Reward")
 #'  These are the column names of the raw data. 
-#'  Only required when `back = TRUE`.
+#'  Only required when `back = 'simulate'`.
 #'
 #' @returns binaryRL[list]:
 #'   \itemize{
@@ -30,9 +30,9 @@
 #'   }
 #' @export
 #'
-back <- function(
+mode <- function(
   data, 
-  back = FALSE,
+  mode = "fit",
   sub_choose = "Sub_Choose",
   rob_choose = "Rob_Choose",
   raw_cols = c(
@@ -41,12 +41,16 @@ back <- function(
     "Sub_Choose"
   )
 ){
-  if (back == TRUE){
-    data[[1]][[sub_choose]] <- data[[1]][[rob_choose]]
-    data[[1]] <- data[[1]][, raw_cols]
-  } else {
-    data <- data
-  }
+  switch(
+    mode, 
+    "fit" = {
+      data <- data
+    }, 
+    "simulate" = {
+      data[[1]][[sub_choose]] <- data[[1]][[rob_choose]]
+      data[[1]] <- data[[1]][, raw_cols]
+    }
+  )
   
   return(data)
 }
