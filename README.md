@@ -343,7 +343,7 @@ result <- dplyr::bind_rows(comparison)
 write.csv(result, "./result_comparison.csv", row.names = FALSE)
 ```  
   
-[result_comparison.csv](./test/result_comparison.csv)  
+Check the Example Result: [result_comparison.csv](./test/result_comparison.csv)  
 
 ```r
 #> Results of the Reinforcement Learning Model:
@@ -567,7 +567,7 @@ write.csv(result, file = "./result_recovery.csv", row.names = FALSE)
 ```
 
   
-[result_recovery.csv](./test/result_recovery.csv)  
+Check the Example Result: [result_recovery.csv](./test/result_recovery.csv)  
 
 
 <!---------------------------------------------------------->
