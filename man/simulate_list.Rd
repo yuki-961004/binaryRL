@@ -28,7 +28,7 @@ e.g., `id = c(1:40)`}
 
 \item{obj_func}{[function] a function with only ONE argument `params`. 
 Additionally, it is important to note that the data needs to be retrieved 
-from parent.frame(). This function returns the binaryRL_res(res).}
+from parent.frame(). This function returns the binaryRL.res(res).}
 
 \item{n_params}{[integer] The number of free parameters in your model.}
 

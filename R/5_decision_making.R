@@ -272,8 +272,8 @@ decision_making <- function(
       gamma = gamma,
       lambda = lambda
     )
-    data$gamma[i] <- as.numeric(gamma_utility[1])
-    data$R_utility[i] <- as.numeric(gamma_utility[2])
+    data$gamma[i] <- as.numeric(gamma_utility[[1]])
+    data$R_utility[i] <- as.numeric(gamma_utility[[2]])
     
     # 看到reward之后的学习率, 用rate_func选择此时对应的eta
     data$eta[i] <- rate_func(
