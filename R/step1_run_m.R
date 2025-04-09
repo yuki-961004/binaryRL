@@ -244,7 +244,12 @@ run_m <- function(
     gamma = gamma,
     eta = eta,
     epsilon = epsilon,
-    tau = tau
+    tau = tau,
+
+    util_func = util_func,
+    rate_func = rate_func,
+    expl_func = expl_func,
+    prob_func = prob_func
   )
   
   step6 <- model_fit(
