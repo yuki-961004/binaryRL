@@ -193,7 +193,7 @@ recovery <- binaryRL::rcv_d(
   seed = 1,
   iteration_s = 3,
   iteration_f = 10,
-  algorithm = "GenSA"
+  algorithm = "Bayesian"
 )
 
 result <- dplyr::bind_rows(recovery) %>%

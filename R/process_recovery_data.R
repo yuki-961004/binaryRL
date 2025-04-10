@@ -97,7 +97,7 @@ recovery_data <- function(
     
     binaryRL.res <- binaryRL::optimize_para(
       data = data,
-      id = id,
+      id = id[i],
       obj_func = fit_model,
       n_params = n_params,
       n_trials = n_trials,
