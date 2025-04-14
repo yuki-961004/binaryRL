@@ -5,7 +5,7 @@ date: "2025-03-19"
 output: html_document
 ---
 ```{r}
-install.packages("../../binaryRL_0.6.3.tar.gz")
+install.packages("../../binaryRL_0.6.6.tar.gz")
 ```
 
 ```{r}
@@ -73,32 +73,29 @@ binaryRL.res <- binaryRL::optimize_para(
 comparison <- binaryRL::fit_p(
   data = Ludvig_2014_Exp1,
   n_trials = 288,
-  id = c(1:3),
+  id = c(1:40),
   fit_model = list(TD, RSTD, Utility),
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  iteration = 10,
+  iteration = 3,
   seed = 123,
   #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-  algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
   #algorithm = "GA"        # Genetic Algorithm (GA::ga)
   #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
   #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+  algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
   #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
 )
 
 result <- dplyr::bind_rows(comparison)
 
-#write.csv(result, "./result_comparison.csv", row.names = FALSE)
+write.csv(result, "./result_comparison.csv", row.names = FALSE)
 ```
 
 ```{r}
 data <- read.csv("./result_comparison.csv") %>%
-  dplyr::mutate(
-    LogL = -LogL
-  ) %>%
   tidyr::pivot_longer(
     cols = c(ACC, LogL, AIC, BIC), 
     names_to = "metric", 
@@ -172,32 +169,32 @@ df_recovery <- binaryRL::recovery_data(
   lower = c(0, 0, 0),
   upper = c(1, 1, 1),
   iteration = 10,
-  algorithm = "GenSA"
+  algorithm = "Bayesian"
 )
 ```
 
-```{r include=FALSE}
+```{r}
 recovery <- binaryRL::rcv_d(
   data = Ludvig_2014_Exp1,
   id = 1,
   n_trials = 288,
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(TD, RSTD, Utility),
-  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  simulate_upper = list(c(1, 1), c(1, 1, 1), c(0, 0, 0)),
+  simulate_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
+  simulate_upper = list(c(1, 2), c(1, 1, 2), c(1, 1, 2)),
   fit_models = list(TD, RSTD, Utility),
-  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  fit_upper = list(c(1, 1), c(1, 1, 1), c(0, 0, 0)),
+  fit_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
+  fit_upper = list(c(1, 2), c(1, 1, 2), c(1, 1, 2)),
   initial_params = NA,
   initial_size = 50,
   seed = 1,
-  iteration_s = 3,
-  iteration_f = 10,
+  iteration_s = 30,
+  iteration_f = 30,
   algorithm = "Bayesian"
 )
 
-result <- dplyr::bind_rows(recovery) %>%
-  dplyr::select(simulate_model, fit_model, iteration, everything())
+#result <- dplyr::bind_rows(recovery) %>%
+  #dplyr::select(simulate_model, fit_model, iteration, everything())
 
 #write.csv(result, file = "./result_recovery.csv", row.names = FALSE)
 ```
@@ -254,8 +251,9 @@ ggplot2::ggsave(
 
 
 ## Model Recovery
+### Confusion Matrix
 ```{r}
-data <- read.csv("./recovery.csv") %>%
+data <- read.csv("./result_recovery.csv") %>%
   dplyr::select(simulate_model, fit_model, iteration, BIC) %>%
   tidyr::pivot_wider(names_from = "fit_model", values_from = "BIC") %>%
   dplyr::mutate(
@@ -290,6 +288,7 @@ plot <- ggplot2::ggplot(data, aes(x = simulate, y = fit, fill = value)) +
     midpoint = 0.4       
   ) + 
   ggplot2::labs(x = "simulate model", y = "fit model") + 
+  ggplot2::ggtitle("Confusion Matrix: P(fit model | simulated model)") +
   ggplot2::geom_text(aes(label = value), size = 10, color = "white") +
   ggplot2::theme_minimal() +
   ggplot2::theme(
@@ -311,8 +310,71 @@ plot <- ggplot2::ggplot(data, aes(x = simulate, y = fit, fill = value)) +
 
 ggplot2::ggsave(
   plot = plot,
-  filename = "./model_recovery.png", 
+  filename = "./matrix_confusion.png", 
   width = 8, height = 6
 )
 ```
 
+### Inversion Matrix
+```{r}
+data <- read.csv("./result_recovery.csv") %>%
+  dplyr::select(simulate_model, fit_model, iteration, BIC) %>%
+  tidyr::pivot_wider(names_from = "simulate_model", values_from = "BIC") %>%
+  dplyr::mutate(
+    TD_score = ifelse(TD == pmin(TD, RSTD, Utility), 1, 0),
+    RSTD_score = ifelse(RSTD == pmin(TD, RSTD, Utility), 1, 0),
+    Utility_score = ifelse(Utility == pmin(TD, RSTD, Utility), 1, 0)
+  ) %>% 
+  dplyr::select(fit_model, TD_score, RSTD_score, Utility_score) %>%
+  dplyr::group_by(fit_model) %>%
+  dplyr::summarise(
+    TD = mean(TD_score),
+    RSTD = mean(RSTD_score),
+    Utility = mean(Utility_score),
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(factor(fit_model, levels = c("TD", "RSTD", "Utility"))) %>%
+  tidyr::pivot_longer(
+    cols = -fit_model, 
+    names_to = "simulate_model", 
+    values_to = "value"
+  ) %>%
+  dplyr::mutate(
+    simulate = factor(fit_model, levels = c("TD", "RSTD", "Utility")),
+    fit = factor(simulate_model, levels = c("TD", "RSTD", "Utility")),
+  ) 
+
+plot <- ggplot2::ggplot(data, aes(x = simulate, y = fit, fill = value)) +
+  ggplot2::geom_tile() +
+  ggplot2::scale_fill_gradient2(
+    low = "#003161", mid = "#55c186", high = "#f0de36",
+    limits = c(0, 1), 
+    midpoint = 0.4       
+  ) + 
+  ggplot2::labs(x = "simulate model", y = "fit model") + 
+  ggplot2::ggtitle("Inversion Matrix: P(simulated model | fit model)") +
+  ggplot2::geom_text(aes(label = value), size = 10, color = "white") +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(
+    panel.background = ggplot2::element_rect(fill = "white", color = NA),
+    plot.background = ggplot2::element_rect(fill = "white", color = NA),
+    legend.position = "none",
+    text = element_text(
+      family = "serif", 
+      face = "bold",
+      size = 25
+    ),
+    axis.text = element_text(
+      color = "black",
+      family = "serif", 
+      face = "bold",
+      size = 20
+    )
+  )
+
+ggplot2::ggsave(
+  plot = plot,
+  filename = "./matrix_inversion.png", 
+  width = 8, height = 6
+)
+```

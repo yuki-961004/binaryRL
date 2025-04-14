@@ -95,6 +95,8 @@ rcv_d <- function(
       iteration = iteration_s
     )
     
+    names(list_simulated) <- rep(model_names[i], length(list_simulated))
+    
     for (j in 1:n_round_f){
       np <- length(fit_lower[[j]])
       nt <- n_trials

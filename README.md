@@ -588,7 +588,7 @@ list_simulated <- binaryRL::simulate_list(
   lower = c(0, 0, 0),
   upper = c(1, 1, 1),
   seed = 1,
-  iteration = 3
+  iteration = 30
 )
 ```
 
@@ -609,8 +609,8 @@ df_recovery <- binaryRL::recovery_data(
   n_trials = 288,
   lower = c(0, 0, 0),
   upper = c(1, 1, 1),
-  iteration = 10,
-  algorithm = "GenSA"
+  iteration = 30,
+  algorithm = "Bayesian"
 )
 ```
 
@@ -692,14 +692,16 @@ ggplot2::ggsave(
 
 <!---------------------------------------------------------->
 
+#### Confusion Matrix
+
 <p align="center">
-    <img src="./test/model_recovery.png" alt="RL Models" width="70%">
+    <img src="./test/matrix_confusion.png" alt="RL Models" width="70%">
 </p>
 
 <!---------------------------------------------------------->
 
 <details>
-<summary>[Example Code] Visualizing Model Recovery</summary>
+<summary>[Example Code] Visualizing Confusion Matrix</summary>
 
 ```r
 data <- read.csv("./result_recovery.csv") %>%
@@ -737,6 +739,7 @@ plot <- ggplot2::ggplot(data, aes(x = simulate, y = fit, fill = value)) +
     midpoint = 0.4       
   ) + 
   ggplot2::labs(x = "simulate model", y = "fit model") + 
+  ggplot2::ggtitle("Confusion Matrix: P(fit model | simulated model)") +
   ggplot2::geom_text(aes(label = value), size = 10, color = "white") +
   ggplot2::theme_minimal() +
   ggplot2::theme(
@@ -758,7 +761,85 @@ plot <- ggplot2::ggplot(data, aes(x = simulate, y = fit, fill = value)) +
 
 ggplot2::ggsave(
   plot = plot,
-  filename = "./model_recovery.png", 
+  filename = "./matrix_confusion.png", 
+  width = 8, height = 6
+)
+```
+
+</details>
+
+<!---------------------------------------------------------->
+
+#### Inversion Matrix
+
+<p align="center">
+    <img src="./test/matrix_inversion.png" alt="RL Models" width="70%">
+</p>
+
+<!---------------------------------------------------------->
+
+<details>
+<summary>[Example Code] Visualizing Inversion Matrix</summary>
+
+```r
+data <- read.csv("./result_recovery.csv") %>%
+  dplyr::select(simulate_model, fit_model, iteration, BIC) %>%
+  tidyr::pivot_wider(names_from = "simulate_model", values_from = "BIC") %>%
+  dplyr::mutate(
+    TD_score = ifelse(TD == pmin(TD, RSTD, Utility), 1, 0),
+    RSTD_score = ifelse(RSTD == pmin(TD, RSTD, Utility), 1, 0),
+    Utility_score = ifelse(Utility == pmin(TD, RSTD, Utility), 1, 0)
+  ) %>% 
+  dplyr::select(fit_model, TD_score, RSTD_score, Utility_score) %>%
+  dplyr::group_by(fit_model) %>%
+  dplyr::summarise(
+    TD = mean(TD_score),
+    RSTD = mean(RSTD_score),
+    Utility = mean(Utility_score),
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(factor(fit_model, levels = c("TD", "RSTD", "Utility"))) %>%
+  tidyr::pivot_longer(
+    cols = -fit_model, 
+    names_to = "simulate_model", 
+    values_to = "value"
+  ) %>%
+  dplyr::mutate(
+    simulate = factor(fit_model, levels = c("TD", "RSTD", "Utility")),
+    fit = factor(simulate_model, levels = c("TD", "RSTD", "Utility")),
+  ) 
+
+plot <- ggplot2::ggplot(data, aes(x = simulate, y = fit, fill = value)) +
+  ggplot2::geom_tile() +
+  ggplot2::scale_fill_gradient2(
+    low = "#003161", mid = "#55c186", high = "#f0de36",
+    limits = c(0, 1), 
+    midpoint = 0.4       
+  ) + 
+  ggplot2::labs(x = "simulate model", y = "fit model") + 
+  ggplot2::ggtitle("Inversion Matrix: P(simulated model | fit model)") +
+  ggplot2::geom_text(aes(label = value), size = 10, color = "white") +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(
+    panel.background = ggplot2::element_rect(fill = "white", color = NA),
+    plot.background = ggplot2::element_rect(fill = "white", color = NA),
+    legend.position = "none",
+    text = element_text(
+      family = "serif", 
+      face = "bold",
+      size = 25
+    ),
+    axis.text = element_text(
+      color = "black",
+      family = "serif", 
+      face = "bold",
+      size = 20
+    )
+  )
+
+ggplot2::ggsave(
+  plot = plot,
+  filename = "./matrix_inversion.png", 
   width = 8, height = 6
 )
 ```

@@ -100,6 +100,12 @@ fit_p <- function(
         algorithm = algorithm 
       )
       
+      cat(
+        "\n", 
+        model_name[i], "\u00d7 Subject", id[j], "[\u2713]", "\n",
+        "\n"
+      )
+      
       model_result[[j]] <- data.frame(
         fit_model = model_name[i],
         Subject = id[j],

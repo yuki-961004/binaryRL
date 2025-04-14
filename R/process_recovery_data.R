@@ -116,6 +116,14 @@ recovery_data <- function(
     recovery[i, 4] <- binaryRL.res$aic
     recovery[i, 5] <- binaryRL.res$bic
     
+    cat(
+      "\n", 
+      "Simulate Model: ", names(list)[1], "\n",
+      "Fit Model: ", model_name, "\n",
+      "Iteration:", i, "[\u2713]",  "\n",
+      "\n"
+    )
+    
     for (j in 1:n_input_params) {
       recovery[i, j + 5] <- list[[i]]$input[j]
     }
