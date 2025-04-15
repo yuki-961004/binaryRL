@@ -548,16 +548,16 @@ recovery <- binaryRL::rcv_d(
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  simulate_upper = list(c(1, 1), c(1, 1, 1), c(0, 0, 0)),
+  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  fit_upper = list(c(1, 1), c(1, 1, 1), c(0, 0, 0)),
+  fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   initial_params = NA,
   initial_size = 50,
   seed = 1,
-  iteration_s = 10,
-  iteration_f = 10,
-  algorithm = "GenSA"
+  iteration_s = 50,
+  iteration_f = 30,
+  algorithm = "Bayesian"
 )
 
 result <- dplyr::bind_rows(recovery) %>%
@@ -708,16 +708,18 @@ data <- read.csv("./result_recovery.csv") %>%
   dplyr::select(simulate_model, fit_model, iteration, BIC) %>%
   tidyr::pivot_wider(names_from = "fit_model", values_from = "BIC") %>%
   dplyr::mutate(
-    TD_score = ifelse(TD == pmin(TD, RSTD, Utility), 1, 0),
-    RSTD_score = ifelse(RSTD == pmin(TD, RSTD, Utility), 1, 0),
-    Utility_score = ifelse(Utility == pmin(TD, RSTD, Utility), 1, 0)
+    min_value = pmin(TD, RSTD, Utility),
+    min_count = (TD == min_value) + (RSTD == min_value) + (Utility == min_value),
+    TD_score = ifelse(TD == min_value, 1 / min_count, 0),
+    RSTD_score = ifelse(RSTD == min_value, 1 / min_count, 0),
+    Utility_score = ifelse(Utility == min_value, 1 / min_count, 0),
   ) %>% 
   dplyr::select(simulate_model, TD_score, RSTD_score, Utility_score) %>%
   dplyr::group_by(simulate_model) %>%
   dplyr::summarise(
-    TD = mean(TD_score),
-    RSTD = mean(RSTD_score),
-    Utility = mean(Utility_score),
+    TD = round(mean(TD_score), 2),
+    RSTD = round(mean(RSTD_score), 2),
+    Utility = round(mean(Utility_score), 2),
   ) %>%
   dplyr::ungroup() %>%
   dplyr::arrange(factor(simulate_model, levels = c("TD", "RSTD", "Utility"))) %>%
@@ -738,23 +740,32 @@ plot <- ggplot2::ggplot(data, aes(x = simulate, y = fit, fill = value)) +
     limits = c(0, 1), 
     midpoint = 0.4       
   ) + 
-  ggplot2::labs(x = "simulate model", y = "fit model") + 
-  ggplot2::ggtitle("Confusion Matrix: P(fit model | simulated model)") +
+  ggplot2::labs(
+    title = "Confusion Matrix: P(fit model | simulated model)",
+    x = "simulate model", 
+    y = "fit model"
+  ) + 
   ggplot2::geom_text(aes(label = value), size = 10, color = "white") +
   ggplot2::theme_minimal() +
   ggplot2::theme(
+    legend.position = "none",
     panel.background = ggplot2::element_rect(fill = "white", color = NA),
     plot.background = ggplot2::element_rect(fill = "white", color = NA),
-    legend.position = "none",
-    text = element_text(
-      family = "serif", 
-      face = "bold",
-      size = 25
+    plot.margin = margin(t = 10, r = 10, b = 10, l = 10),
+    plot.title = element_text(
+      family = "serif", face = "bold",
+      size = 25, hjust = 1.5, margin = margin(b = 20)
+    ),
+    axis.title.y = element_text(
+      family = "serif", face = "bold",
+      size = 25, margin = margin(r = 20)
+    ),
+    axis.title.x = element_text(
+      family = "serif", face = "bold",
+      size = 25, margin = margin(t = 20)
     ),
     axis.text = element_text(
-      color = "black",
-      family = "serif", 
-      face = "bold",
+      color = "black", family = "serif",  face = "bold",
       size = 20
     )
   )
@@ -786,16 +797,18 @@ data <- read.csv("./result_recovery.csv") %>%
   dplyr::select(simulate_model, fit_model, iteration, BIC) %>%
   tidyr::pivot_wider(names_from = "simulate_model", values_from = "BIC") %>%
   dplyr::mutate(
-    TD_score = ifelse(TD == pmin(TD, RSTD, Utility), 1, 0),
-    RSTD_score = ifelse(RSTD == pmin(TD, RSTD, Utility), 1, 0),
-    Utility_score = ifelse(Utility == pmin(TD, RSTD, Utility), 1, 0)
+    min_value = pmin(TD, RSTD, Utility),
+    min_count = (TD == min_value) + (RSTD == min_value) + (Utility == min_value),
+    TD_score = ifelse(TD == min_value, 1 / min_count, 0),
+    RSTD_score = ifelse(RSTD == min_value, 1 / min_count, 0),
+    Utility_score = ifelse(Utility == min_value, 1 / min_count, 0),
   ) %>% 
   dplyr::select(fit_model, TD_score, RSTD_score, Utility_score) %>%
   dplyr::group_by(fit_model) %>%
   dplyr::summarise(
-    TD = mean(TD_score),
-    RSTD = mean(RSTD_score),
-    Utility = mean(Utility_score),
+    TD = round(mean(TD_score), 2),
+    RSTD = round(mean(RSTD_score), 2),
+    Utility = round(mean(Utility_score), 2),
   ) %>%
   dplyr::ungroup() %>%
   dplyr::arrange(factor(fit_model, levels = c("TD", "RSTD", "Utility"))) %>%
@@ -809,30 +822,39 @@ data <- read.csv("./result_recovery.csv") %>%
     fit = factor(simulate_model, levels = c("TD", "RSTD", "Utility")),
   ) 
 
-plot <- ggplot2::ggplot(data, aes(x = simulate, y = fit, fill = value)) +
+plot <- ggplot2::ggplot(data, aes(x = fit, y = simulate, fill = value)) +
   ggplot2::geom_tile() +
   ggplot2::scale_fill_gradient2(
     low = "#003161", mid = "#55c186", high = "#f0de36",
     limits = c(0, 1), 
     midpoint = 0.4       
   ) + 
-  ggplot2::labs(x = "simulate model", y = "fit model") + 
-  ggplot2::ggtitle("Inversion Matrix: P(simulated model | fit model)") +
+  ggplot2::labs(
+    title = "Inversion Matrix: P(simulated model | fit model)",
+    x = "simulate model", 
+    y = "fit model"
+  ) + 
   ggplot2::geom_text(aes(label = value), size = 10, color = "white") +
   ggplot2::theme_minimal() +
   ggplot2::theme(
+    legend.position = "none",
     panel.background = ggplot2::element_rect(fill = "white", color = NA),
     plot.background = ggplot2::element_rect(fill = "white", color = NA),
-    legend.position = "none",
-    text = element_text(
-      family = "serif", 
-      face = "bold",
-      size = 25
+    plot.margin = margin(t = 10, r = 10, b = 10, l = 10),
+    plot.title = element_text(
+      family = "serif", face = "bold",
+      size = 25, hjust = 1.5, margin = margin(b = 20)
+    ),
+    axis.title.y = element_text(
+      family = "serif", face = "bold",
+      size = 25, margin = margin(r = 20)
+    ),
+    axis.title.x = element_text(
+      family = "serif", face = "bold",
+      size = 25, margin = margin(t = 20)
     ),
     axis.text = element_text(
-      color = "black",
-      family = "serif", 
-      face = "bold",
+      color = "black", family = "serif",  face = "bold",
       size = 20
     )
   )
