@@ -65,30 +65,33 @@ Create a function with **ONLY ONE** argument, `params`
 
 ```r
 Model <- function(params){
-  # build your RL model
-  res <- binaryRL::run_m(
-    data = data,                  # your data
-    id = id,                      # Subject ID
-    mode = mode,                  # for fitting or simulating
-    n_trials = n_trials,          # the number of total trials
-    n_params = n_params,          # the number of free parameters
 
-    # ------------------------------------- #
-    # | You only need to modify this part | #
-    # ------------------------------------- #
+  res <- binaryRL::run_m(
+    data = data,
+    id = id,
+    mode = mode,
+    n_trials = n_trials,
+    n_params = n_params,
+# ╔═══════════════════════════════════╗ #
+# ║ You only need to modify this part ║ #
+# ║ -------- free parameters -------- ║ #
     eta = c(params[1], params[2]),
     gamma = c(params[3], params[4]),
-    epsion = c(params[5], params[6]),
+    epsilon = c(params[5], params[6]),
     tau = c(params[7], params[8]),
     lambda = c(params[9], params[...]),
-    # ------------------------------------- #
-    # | You only need to modify this part | #
-    # ------------------------------------- #
+# ║ -------- core functions --------- ║ #
+    util_func = your_util_func,
+    rate_func = your_rate_func,  
+    expl_func = your_expl_func,
+    prob_func = your_prob_func,
+# ║ --------- column names ---------- ║ #
+    ...
+# ║ You only need to modify this part ║ #
+# ╚═══════════════════════════════════╝ # 
   )
 
-  # pass the result to the Local Scope binaryRL.env
   assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
-  # switch mode: fit or simulate
   switch(mode, "fit" = return(-res$ll), "simulate" = return(res))
 }
 ```
@@ -96,48 +99,10 @@ Model <- function(params){
 <!---------------------------------------------------------->
 
 <details>
-<summary>Custom Column Names</summary>
-
-```r
-model <- function(params){
-  ...
-
-  res <- binaryRL::run_m(
-    ...,
-    # column names
-    sub = "Subject",
-    time_line = c("Block", "Trial"),
-    L_choice = "L_choice",
-    R_choice = "R_choice",
-    L_reward = "L_reward",
-    R_reward = "R_reward",
-    sub_choose = "Sub_Choose",
-    rob_choose = "Rob_Choose",
-    raw_cols = c(
-      "Subject", "Block", "Trial",
-      "L_choice", "R_choice", "L_reward", "R_reward",
-      "Sub_Choose"
-    ),
-    var1 = "extra_Var1",
-    var2 = "extra_Var2"
-  )
-  ... 
-}
-```
-
-</details>  
-
-<!---------------------------------------------------------->
-
-If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::run_m`
-
-<!---------------------------------------------------------->
-
-<details>
 <summary>Custom Functions</summary>
 
 ```r
-model <- function(params){
+Model <- function(params){
   ...
 
   # build a RL model
@@ -297,6 +262,44 @@ func_tau <- function (
 
 <!---------------------------------------------------------->
 
+<details>
+<summary>Custom Column Names</summary>
+
+```r
+Model <- function(params){
+  ...
+
+  res <- binaryRL::run_m(
+    ...,
+    # column names
+    sub = "Subject",
+    time_line = c("Block", "Trial"),
+    L_choice = "L_choice",
+    R_choice = "R_choice",
+    L_reward = "L_reward",
+    R_reward = "R_reward",
+    sub_choose = "Sub_Choose",
+    rob_choose = "Rob_Choose",
+    raw_cols = c(
+      "Subject", "Block", "Trial",
+      "L_choice", "R_choice", "L_reward", "R_reward",
+      "Sub_Choose"
+    ),
+    var1 = "extra_Var1",
+    var2 = "extra_Var2"
+  )
+  ... 
+}
+```
+
+</details>  
+
+<!---------------------------------------------------------->
+
+If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::run_m`
+
+<!---------------------------------------------------------->
+
 ## 2. Fit Parameters
 
 This package includes **7** algorithms:  
@@ -349,17 +352,19 @@ Check the Example Result: [result_comparison.csv](./test/result_comparison.csv)
 #> Results of the Reinforcement Learning Model:
 #> 
 #> Parameters:
-#>    λ:  NA  
+#>    λ:  NA 
 #>    γ:  1 
-#>    η:  0.012 0.001 
+#>    η:  0.021 
 #>    ε:  NA 
-#>    τ:  0.039 
+#>    τ:  0.042 
 #> 
 #> Model Fit:
-#>    Accuracy:  77.08 %
+#>    Accuracy:  76.74 %
 #>    LogL:  -125.19 
-#>    AIC:  256.38 
-#>    BIC:  267.37 
+#>    AIC:  254.38 
+#>    BIC:  261.71 
+#> 
+#>  TD × Subject 1 [✓]
 ```
 <!---------------------------------------------------------->
 

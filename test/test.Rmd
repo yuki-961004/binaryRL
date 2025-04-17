@@ -71,21 +71,21 @@ binaryRL.res <- binaryRL::optimize_para(
 # Model Comparison
 ```{r include=FALSE}
 comparison <- binaryRL::fit_p(
-  data = Ludvig_2014_Exp1,
+  data = binaryRL::Ludvig_2014_Exp1,
   n_trials = 288,
   id = c(1:40),
-  fit_model = list(TD, RSTD, Utility),
+  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  iteration = 30,
+  iteration = 10,
   seed = 123,
-  #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
+  algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
   #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
   #algorithm = "GA"        # Genetic Algorithm (GA::ga)
   #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
   #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-  algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
   #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
 )
 
