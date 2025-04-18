@@ -283,6 +283,75 @@ Model <- function(params){
 
 <!---------------------------------------------------------->
 
+
+## Three Classic RL Models
+
+These basic models are built into the package. You can use them using `binaryRL::TD.fit`, `binaryRL::RSTD.fit`, `binaryRL::Utility.fit`.
+
+<!---------------------------------------------------------->
+
+### 1. TD Model ($\eta$)
+
+> "The TD model is a standard temporal difference learning model (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998)."  
+
+**if only ONE $\eta$ is set as a free paramters, it represents the TD model.**
+
+```r
+# TD Model
+binaryRL::run_m(
+  ...,
+  eta = c(params[1]),              # free parameter: learning rate
+  gamma = 1,                       # fixed parameter: utility, default as 1
+  tau = c(params[2]),
+  ...
+)
+```
+
+### 2. Risk-Sensitive TD Model ($\eta_{-}$, $\eta_{+}$)
+
+> "In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, 2002)."  
+
+**If TWO $\eta$ are set as free parameters, it represents the RSTD model.**
+
+```r
+# RSTD Model
+binaryRL::run_m(
+  ...,
+  eta = c(params[1], params[2]),   # free parameter: learning rate
+  gamma = 1,                       # fixed parameter: utility, default as 1
+  tau = c(params[3]),
+  ...
+)
+```
+
+### 3. Utility Model ($\eta$, $\gamma$)
+
+> "The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, 1954)"
+
+**If ONE $\eta$ and ONE $\gamma$ are set as free parameters, it represents the utility model.**
+
+```r
+# Utility Model
+binaryRL::run_m(
+  ...,
+  eta = c(params[1]),              # free parameter: learning rate
+  gamma = c(params[2]),            # free parameter: utility
+  tau = c(params[3]),
+  ...
+)
+```
+
+<p align="center">
+    <img src="./fig/rl_models.png" alt="RL Models" width="70%">
+</p>
+
+### References
+Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
+
+
+<!---------------------------------------------------------->
+
+
 ## 2. Fit Parameters
 
 This package includes **7** algorithms:  
@@ -382,72 +451,6 @@ binaryRL.res <- binaryRL::optimize_para(
 ```
 
 </details>
-
-<!---------------------------------------------------------->
-## How Classic RL Models Are Built
-
-These basic models are built into the package. You can use them using `binaryRL::TD.fit`, `binaryRL::RSTD.fit`, `binaryRL::Utility.fit`.
-
-<!---------------------------------------------------------->
-
-### 1. TD Model ($\eta$)
-
-> "The TD model is a standard temporal difference learning model (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998)."  
-
-**if only ONE $\eta$ is set as a free paramters, it represents the TD model.**
-
-```r
-# TD Model
-binaryRL::run_m(
-  ...,
-  eta = c(params[1]),              # free parameter: learning rate
-  gamma = 1,                       # fixed parameter: utility, default as 1
-  tau = c(params[2]),
-  ...
-)
-```
-
-### 2. Risk-Sensitive TD Model ($\eta_{-}$, $\eta_{+}$)
-
-> "In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, 2002)."  
-
-**If TWO $\eta$ are set as free parameters, it represents the RSTD model.**
-
-```r
-# RSTD Model
-binaryRL::run_m(
-  ...,
-  eta = c(params[1], params[2]),   # free parameter: learning rate
-  gamma = 1,                       # fixed parameter: utility, default as 1
-  tau = c(params[3]),
-  ...
-)
-```
-
-### 3. Utility Model ($\eta$, $\gamma$)
-
-> "The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, 1954)"
-
-**If ONE $\eta$ and ONE $\gamma$ are set as free parameters, it represents the utility model.**
-
-```r
-# Utility Model
-binaryRL::run_m(
-  ...,
-  eta = c(params[1]),              # free parameter: learning rate
-  gamma = c(params[2]),            # free parameter: utility
-  tau = c(params[3]),
-  ...
-)
-```
-
-<p align="center">
-    <img src="./fig/rl_models.png" alt="RL Models" width="70%">
-</p>
-
-### References
-Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
-
 
 ## Model Comparison
 
