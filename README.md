@@ -98,27 +98,7 @@ Model <- function(params){
 
 <!---------------------------------------------------------->
 
-<details>
-<summary>Custom Functions</summary>
-
-```r
-Model <- function(params){
-  ...
-
-  # build a RL model
-  res <- binaryRL::run_m(
-    ...              
-    # functions
-    util_func = your_util_func,
-    rate_func = your_rate_func,  
-    expl_func = your_expl_func,
-    prob_func = your_prob_func
-  )
-  ... 
-}
-```
-
-</details>  
+### Custom Functions
 
 <!---------------------------------------------------------->
 
@@ -128,7 +108,7 @@ You can also customize all four functions to build your own RL model.
 <!---------------------------------------------------------->
 
 <details>
-<summary> - Utility Function (γ)</summary>
+<summary> -  Utility Function (γ)</summary>
 
 ```r
 print(binaryRL::func_gamma)
@@ -156,7 +136,7 @@ func_gamma <- function(
 <!---------------------------------------------------------->
 
 <details>
-<summary> - Learning Rate Function (η)</summary>
+<summary> -  Learning Rate Function (η)</summary>
 
 ```r
 print(binaryRL::func_eta)
@@ -189,7 +169,7 @@ func_eta <- function (
 <!---------------------------------------------------------->
 
 <details>
-<summary> - Exploration Function (ε)</summary>
+<summary> -  Exploration Function (ε)</summary>
 
 ```r
 print(binaryRL::func_epsilon)
@@ -226,7 +206,7 @@ func_epsilon <- function(
 <!---------------------------------------------------------->
 
 <details>
-<summary> - Soft-Max Function (τ)</summary>
+<summary> -  Soft-Max Function (τ)</summary>
 
 ```r
 print(binaryRL::func_tau)
@@ -262,8 +242,10 @@ func_tau <- function (
 
 <!---------------------------------------------------------->
 
+### Custom Column Names
+
 <details>
-<summary>Custom Column Names</summary>
+<summary>Column Name = "???"</summary>
 
 ```r
 Model <- function(params){
