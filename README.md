@@ -128,7 +128,7 @@ You can also customize all four functions to build your own RL model.
 <!---------------------------------------------------------->
 
 <details>
-<summary style="margin-left: 20px;">Utility Function (γ)</summary>
+<summary> ▸ Utility Function (γ)</summary>
 
 ```r
 print(binaryRL::func_gamma)
