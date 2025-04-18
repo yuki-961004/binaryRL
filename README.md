@@ -244,8 +244,13 @@ func_tau <- function (
 
 ### Custom Column Names
 
+
+If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::run_m`
+
+<!---------------------------------------------------------->
+
 <details>
-<summary>Column Name = "???"</summary>
+<summary> -  colnames = "???"</summary>
 
 ```r
 Model <- function(params){
@@ -275,10 +280,6 @@ Model <- function(params){
 ```
 
 </details>  
-
-<!---------------------------------------------------------->
-
-If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::run_m`
 
 <!---------------------------------------------------------->
 
