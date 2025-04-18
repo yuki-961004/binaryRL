@@ -128,7 +128,7 @@ You can also customize all four functions to build your own RL model.
 <!---------------------------------------------------------->
 
 <details>
-<summary> ▸ Utility Function (γ)</summary>
+<summary> - Utility Function (γ)</summary>
 
 ```r
 print(binaryRL::func_gamma)
@@ -156,7 +156,7 @@ func_gamma <- function(
 <!---------------------------------------------------------->
 
 <details>
-<summary>Learning Rate Function (η)</summary>
+<summary> - Learning Rate Function (η)</summary>
 
 ```r
 print(binaryRL::func_eta)
@@ -189,7 +189,7 @@ func_eta <- function (
 <!---------------------------------------------------------->
 
 <details>
-<summary>Exploration Function (ε)</summary>
+<summary> - Exploration Function (ε)</summary>
 
 ```r
 print(binaryRL::func_epsilon)
@@ -226,7 +226,7 @@ func_epsilon <- function(
 <!---------------------------------------------------------->
 
 <details>
-<summary>Soft-Max Function (τ)</summary>
+<summary> - Soft-Max Function (τ)</summary>
 
 ```r
 print(binaryRL::func_tau)
