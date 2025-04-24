@@ -621,13 +621,15 @@ df_recovery <- binaryRL::recovery_data(
 <!---------------------------------------------------------->
 
 <p align="center">
-    <img src="./test/param_recovery.png" alt="RL Models" width="70%">
+    <img src="./test/param_recovery_eta.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./test/param_recovery_tau.png" alt="RL Models" width="45%" style="display: inline;">
 </p>
+
 
 <!---------------------------------------------------------->
 
 <details>
-<summary>[Example Code] Visualizing Parameter Recovery</summary>
+<summary>[Example Code] Visualizing Parameter η Recovery</summary>
 
 ```r
 data <- read.csv("./result_recovery.csv") %>%
@@ -649,10 +651,10 @@ plot <- ggplot2::ggplot(data, aes(x = input_param_1, y = output_param_1)) +
     color = "#55c186",  
     alpha = 0.5, shape = 1
   ) +
-  ggplot2::geom_point(color = "#053562") +  
-  ggplot2::scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
-  ggplot2::scale_x_continuous(limits = c(0, 1), expand = c(0, 0)) +
-  ggplot2::labs(x = "simulated η", y = "fit η") +  
+  ggplot2::geom_point(color = "#053562") +  # 绘制散点
+  ggplot2::scale_y_continuous(limits = c(0, 1.1), expand = c(0, 0)) +
+  ggplot2::scale_x_continuous(limits = c(0, 1.1), expand = c(0, 0)) +
+  ggplot2::labs(x = "simulated η", y = "fit η") +  # 添加坐标轴标签
   papaja::theme_apa() +
   ggplot2::theme(
     text = element_text(
@@ -663,7 +665,7 @@ plot <- ggplot2::ggplot(data, aes(x = input_param_1, y = output_param_1)) +
     axis.text = element_text(
       color = "black",
       family = "serif", 
-      face = "bold",
+      face = "plain",
       size = 10
     ),
     plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
@@ -673,11 +675,74 @@ rm(x, norm)
 
 ggplot2::ggsave(
   plot = plot,
-  filename = "./param_recovery.png", 
+  filename = "./param_recovery_eta.png", 
   width = 4, height = 3
 )
 ```
+</details>
 
+<!---------------------------------------------------------->
+
+<details>
+<summary>[Example Code] Visualizing Parameter τ Recovery</summary>
+
+```r
+data <- read.csv("./result_recovery.csv") %>%
+  dplyr::filter(simulate_model == fit_model & simulate_model == "TD") %>%
+  dplyr::mutate(
+    log_input = log10(input_param_2),
+    log_output = log10(output_param_2)
+  )
+
+# Generate exponential data for x
+x <- rexp(100, 10)
+
+# Add smaller exponential noise to create y
+norm <- data.frame(
+  x = log10(x),
+  y = log10(x + rexp(100, rate = 1))  # Higher rate results in smaller fluctuations
+)
+
+plot <- ggplot2::ggplot(data, aes(x = log_input, y = log_output)) +
+  ggplot2::geom_smooth(
+    data = norm,
+    mapping = aes(x = x, y = y),
+    method = "lm", color = "#55c186", se = FALSE
+  ) +
+  ggplot2::geom_point(
+    data = norm,
+    mapping = aes(x = x, y = y),
+    color = "#55c186",  
+    alpha = 0.5, shape = 1
+  ) +
+  ggplot2::geom_point(color = "#053562") +  # 绘制散点
+  ggplot2::scale_y_continuous(
+    limits = c(-3, 1.1), expand = c(0, 0),
+    labels = function(x) parse(text = paste0("10^", x))
+  ) +
+  ggplot2::scale_x_continuous(
+    limits = c(-3, 0.3), expand = c(0, 0),
+    labels = function(x) parse(text = paste0("10^", x))
+  ) +
+  ggplot2::labs(x = "simulated τ", y = "fit τ") +  # 添加坐标轴标签
+  papaja::theme_apa() +
+  ggplot2::theme(
+    text = element_text(
+      family = "serif", 
+      face = "bold",
+      size = 15
+    ),
+    plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
+  )
+
+rm(x, norm)
+
+ggplot2::ggsave(
+  plot = plot,
+  filename = "./param_recovery_tau.png", 
+  width = 4, height = 3
+)
+```
 </details>
 
 <!---------------------------------------------------------->
@@ -688,11 +753,11 @@ ggplot2::ggsave(
 
 <!---------------------------------------------------------->
 
-#### Confusion Matrix
-
 <p align="center">
-    <img src="./test/matrix_confusion.png" alt="RL Models" width="70%">
+    <img src="./test/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./test/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
 </p>
+
 
 <!---------------------------------------------------------->
 
@@ -772,14 +837,6 @@ ggplot2::ggsave(
 ```
 
 </details>
-
-<!---------------------------------------------------------->
-
-#### Inversion Matrix
-
-<p align="center">
-    <img src="./test/matrix_inversion.png" alt="RL Models" width="70%">
-</p>
 
 <!---------------------------------------------------------->
 
