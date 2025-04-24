@@ -5,7 +5,7 @@ date: "2025-03-19"
 output: html_document
 ---
 ```{r}
-install.packages("../../binaryRL_0.6.6.tar.gz")
+install.packages("../../binaryRL_0.6.7.tar.gz")
 ```
 
 ```{r}
@@ -267,7 +267,7 @@ data <- read.csv("./result_recovery.csv") %>%
   )
 
 # Generate exponential data for x
-x <- rexp(100, 10)
+x <- rexp(100, -log(1e-5) / 1)
 
 # Add smaller exponential noise to create y
 norm <- data.frame(
