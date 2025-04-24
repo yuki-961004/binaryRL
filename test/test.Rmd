@@ -18,20 +18,12 @@ head(Ludvig_2014_Exp1)
 
 ```{r}
 binaryRL::Ludvig_2014_Exp1 %>%
-  dplyr::select(L_choice, L_reward) %>%
   dplyr::group_by(L_choice) %>%
-  dplyr::mutate(mean_value = mean(L_reward)) %>%
-  dplyr::ungroup() %>%
-  dplyr::select(L_choice, mean_value) %>%
-  dplyr::distinct()
+  dplyr::summarise(value = mean(L_reward))
 
 binaryRL::Ludvig_2014_Exp1 %>%
-  dplyr::select(R_choice, R_reward) %>%
   dplyr::group_by(R_choice) %>%
-  dplyr::mutate(mean_value = mean(R_reward)) %>%
-  dplyr::ungroup() %>%
-  dplyr::select(R_choice, mean_value) %>%
-  dplyr::distinct()
+  dplyr::summarise(value = mean(R_reward))
 ```
 
 ```{r}
