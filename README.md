@@ -694,13 +694,11 @@ data <- read.csv("./result_recovery.csv") %>%
     log_output = log10(output_param_2)
   )
 
-# Generate exponential data for x
 x <- rexp(100, 10)
 
-# Add smaller exponential noise to create y
 norm <- data.frame(
   x = log10(x),
-  y = log10(x + rexp(100, rate = 1))  # Higher rate results in smaller fluctuations
+  y = log10(x + rexp(100, rate = 1))  
 )
 
 plot <- ggplot2::ggplot(data, aes(x = log_input, y = log_output)) +
