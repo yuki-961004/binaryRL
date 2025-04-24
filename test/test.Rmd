@@ -17,12 +17,20 @@ head(Ludvig_2014_Exp1)
 ```
 
 ```{r}
-Ludvig_2014_Exp1 %>%
+binaryRL::Ludvig_2014_Exp1 %>%
   dplyr::select(L_choice, L_reward) %>%
   dplyr::group_by(L_choice) %>%
   dplyr::mutate(mean_value = mean(L_reward)) %>%
   dplyr::ungroup() %>%
   dplyr::select(L_choice, mean_value) %>%
+  dplyr::distinct()
+
+binaryRL::Ludvig_2014_Exp1 %>%
+  dplyr::select(R_choice, R_reward) %>%
+  dplyr::group_by(R_choice) %>%
+  dplyr::mutate(mean_value = mean(R_reward)) %>%
+  dplyr::ungroup() %>%
+  dplyr::select(R_choice, mean_value) %>%
   dplyr::distinct()
 ```
 
@@ -48,7 +56,7 @@ model <- function(params){
 
 ```{r}
 binaryRL.res <- binaryRL::optimize_para(
-  data = Ludvig_2014_Exp1,
+  data = binaryRL::Ludvig_2014_Exp1,
   id = 10,
   obj_func = binaryRL::RSTD,
   n_params = 3,
@@ -154,7 +162,7 @@ ggplot2::ggsave(
 # Recovery
 ```{r}
 list_simulated <- binaryRL::simulate_list(
-  data = Ludvig_2014_Exp1,
+  data = binaryRL::Ludvig_2014_Exp1,
   id = 1,
   obj_func = binaryRL::RSTD,
   n_params = 3, 
@@ -183,7 +191,7 @@ df_recovery <- binaryRL::recovery_data(
 
 ```{r}
 recovery <- binaryRL::rcv_d(
-  data = Ludvig_2014_Exp1,
+  data = binaryRL::Ludvig_2014_Exp1,
   id = 1,
   n_trials = 288,
   model_names = c("TD", "RSTD", "Utility"),
