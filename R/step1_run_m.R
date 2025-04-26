@@ -26,7 +26,7 @@
 #' @param raw_cols [vector] default: c("Subject", "Block", "Trial", 
 #'  "L_choice", "R_choice", "L_reward", "R_reward", "Choose", "Reward")
 #'  These are the column names of the raw data. 
-#'  Only required when `back = TRUE`.
+#'  Only required when `mode = "simulate"`.
 #' 
 #' @param id [integer] which subject is going to be analyzed.
 #'  is being analyzed. The value should correspond to an entry in the "sub" 
@@ -196,17 +196,17 @@ run_m <- function(
     R_reward = "R_reward",
     sub_choose = "Sub_Choose",
     rob_choose = "Rob_Choose",
-    raw_cols = c(
-      "Subject", "Block", "Trial",
-      "L_choice", "R_choice", "L_reward", "R_reward",
-      "Sub_Choose"
-    ),
+    raw_cols = NULL,
     var1 = NA,
     var2 = NA,
     
     digits_1 = 2,
     digits_2 = 5
 ){
+  if (is.null(raw_cols)) {
+    raw_cols = colnames(data)
+  }
+  
   # 选择被试
   data <- data[data[[sub]] == id, ]
   

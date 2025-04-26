@@ -21,5 +21,5 @@ Utility <- function(params){
   
   assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
   
-  switch(mode, "fit" = return(-res$ll), "simulate" = return(res))
+  switch(mode, "fit" = -res$ll, "simulate" = res, "review" = res)
 }

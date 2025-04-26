@@ -36,8 +36,9 @@ mode <- function(
   sub_choose = "Sub_Choose",
   rob_choose = "Rob_Choose",
   raw_cols = c(
-    "Subject", "Block", "Trial",
-    "L_choice", "R_choice", "L_reward", "R_reward",
+    "Subject", "Block", "Trial", 
+    "L_choice", "R_choice", 
+    "L_reward", "R_reward", 
     "Sub_Choose"
   )
 ){
@@ -49,7 +50,10 @@ mode <- function(
     "simulate" = {
       data[[1]][[sub_choose]] <- data[[1]][[rob_choose]]
       data[[1]] <- data[[1]][, raw_cols]
-    }
+    },
+    "review" = {
+      data <- data
+    }, 
   )
   
   return(data)

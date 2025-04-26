@@ -31,8 +31,7 @@ run_m(
   R_reward = "R_reward",
   sub_choose = "Sub_Choose",
   rob_choose = "Rob_Choose",
-  raw_cols = c("Subject", "Block", "Trial", "L_choice", "R_choice", "L_reward",
-    "R_reward", "Sub_Choose"),
+  raw_cols = NULL,
   var1 = NA,
   var2 = NA,
   digits_1 = 2,
@@ -155,7 +154,7 @@ you should ignore this argument}
 \item{raw_cols}{[vector] default: c("Subject", "Block", "Trial", 
 "L_choice", "R_choice", "L_reward", "R_reward", "Choose", "Reward")
 These are the column names of the raw data. 
-Only required when `back = TRUE`.}
+Only required when `mode = "simulate"`.}
 
 \item{var1}{[character] column name of extra variable 1. If your model uses 
 more than just reward and expected value, and you need other information, 

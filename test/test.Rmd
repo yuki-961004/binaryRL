@@ -465,3 +465,329 @@ ggplot2::ggsave(
   width = 8, height = 6
 )
 ```
+
+
+```{r}
+ratio_plot <- function(df, filename) {
+  summarise <- df %>%
+    dplyr::group_by(Block, Frame) %>%
+    dplyr::summarise(
+      Rate_Mean = mean(Rate),
+      Rate_SD = sd(Rate)
+      / sqrt(n_distinct(Subject) - 1)
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      LLCI = Rate_Mean - Rate_SD,
+      ULCI = Rate_Mean + Rate_SD,
+    )
+
+  p1 <- ggplot2::ggplot(
+      data = df %>% dplyr::filter(Frame == "Gain"),
+      mapping = aes(x = Block, y = Rate)
+    ) +
+    ggplot2::geom_point(mapping = aes(color = Subject), alpha = 0.2) +
+    ggplot2::geom_line(mapping = aes(color = Subject), alpha = 0.2) +
+    ggplot2::geom_errorbar(
+      data = summarise %>% dplyr::filter(Frame == "Gain"),
+      mapping = aes(x = Block, y = Rate_Mean, ymin = LLCI, ymax = ULCI), 
+      size = 1, width = 0.3, color = "#FF6500"
+    ) +
+    ggplot2::geom_point(
+      data = summarise %>% dplyr::filter(Frame == "Gain"),
+      mapping = aes(x = Block, y = Rate_Mean), 
+      size = 7, shape = 17, color = "#FF6500", 
+    ) +
+    ggplot2::scale_x_continuous(breaks = c(1, 2, 3, 4, 5, 6)) +
+    ggplot2::scale_y_continuous(
+      limits = c(-0.05, 1.05),
+      breaks = c(0, 0.25, 0.5, 0.75, 1), 
+      labels = c("0%", "25%", "50%", "75%", "100%")
+    ) +
+    ggplot2::labs(
+      x = "Blcok", y = "The Ratio of Choosing Risky Door", title = "Gain Frame"
+    ) +
+    papaja::theme_apa() +
+    ggplot2::theme(
+      legend.position = "none"
+    )
+  
+  p2 <- ggplot2::ggplot(
+      data = df %>% dplyr::filter(Frame == "Loss"),
+      mapping = aes(x = Block, y = Rate)
+    ) +
+    ggplot2::geom_point(mapping = aes(color = Subject), alpha = 0.2) +
+    ggplot2::geom_line(mapping = aes(color = Subject), alpha = 0.2) +
+    ggplot2::geom_errorbar(
+      data = summarise %>% dplyr::filter(Frame == "Loss"),
+      mapping = aes(x = Block, y = Rate_Mean, ymin = LLCI, ymax = ULCI), 
+      size = 1, width = 0.3, color = "#86B6F6"
+    ) +
+    ggplot2::geom_point(
+      data = summarise %>% dplyr::filter(Frame == "Loss"),
+      mapping = aes(x = Block, y = Rate_Mean), 
+      size = 7, shape = 17, color = "#86B6F6", 
+    ) +
+    ggplot2::scale_x_continuous(breaks = c(1, 2, 3, 4, 5, 6)) +
+    ggplot2::scale_y_continuous(
+      limits = c(-0.05, 1.05),
+      breaks = c(0, 0.25, 0.5, 0.75, 1), 
+      labels = c("0%", "25%", "50%", "75%", "100%")
+    ) +
+    ggplot2::labs(
+      x = "Blcok", y = "The Ratio of Choosing Risky Door", title = "Loss Frame"
+    ) +
+    papaja::theme_apa() +
+    ggplot2::theme(
+      legend.position = "none"
+    )
+  
+  save <- p1 + p2 + plot_layout(nrow = 1, guides = 'collect')
+  
+  ggplot2::ggsave(
+    plot = save,
+    filename = filename,
+    width = 15,
+    height = 5,
+  )
+}
+
+```
+
+################################################################################
+
+```{r}
+id <- c(1:40)
+list <- list()
+```
+
+```{r}
+data <- binaryRL::Ludvig_2014_Exp1 %>%
+  dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+  dplyr::select(Subject, Block, Trial, Frame, Sub_Choose) %>%
+  dplyr::mutate(
+    Subject = factor(Subject),
+    Block = as.numeric(Block),
+    Sub_Choose = case_when(
+      Sub_Choose %in% c("A", "C") ~ 0,
+      Sub_Choose %in% c("B", "D") ~ 1,
+    ),
+  ) %>%
+  dplyr::group_by(Subject, Block, Frame) %>%
+  dplyr::summarise(Rate = mean(Sub_Choose)) %>%
+  #dplyr::mutate(Time = row_number()) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(Subject, Frame, Block)
+
+library(patchwork)
+
+ratio_plot(df = data, filename = "./0_raw.png")
+```
+
+# TD
+```{r}
+result <- read.csv("./result_comparison.csv")  %>%
+  dplyr::filter(fit_model == "TD")
+
+res <- list()
+
+for (i in 1:length(id)) {
+  
+  params <- na.omit(unlist(result[i, grep("param_", names(result))]))
+  
+  binaryRL.env <- new.env()
+  binaryRL.env$data <- binaryRL::Ludvig_2014_Exp1
+  binaryRL.env$id <- id[i]
+  binaryRL.env$n_params <- length(params)
+  binaryRL.env$n_trials <- 288
+  binaryRL.env$mode <- "simulate"
+  
+  
+  obj_func <-  function(params){
+    
+    res <- binaryRL::run_m(
+      data = data,                   
+      id = id,                        
+      eta = c(params[1]), 
+      tau = c(params[2]),
+      n_params = n_params,                   
+      n_trials = n_trials,
+      mode = mode,
+      raw_cols = colnames(data)
+    )
+    
+    assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
+    
+    switch(mode, "fit" = return(res), "simulate" = return(res))
+  }
+  
+  environment(obj_func) <- binaryRL.env
+  res[[i]] <- obj_func(params = params)[[1]]
+}
+
+rm(i, params, obj_func, binaryRL.env)
+
+list[[1]] <- dplyr::bind_rows(res)
+```
+
+```{r}
+data <- list[[1]] %>%
+  dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+  dplyr::select(Subject, Block, Trial, Frame, Sub_Choose) %>%
+  dplyr::mutate(
+    Subject = factor(Subject),
+    Block = as.numeric(Block),
+    Sub_Choose = case_when(
+      Sub_Choose %in% c("A", "C") ~ 0,
+      Sub_Choose %in% c("B", "D") ~ 1,
+    ),
+  ) %>%
+  dplyr::group_by(Subject, Block, Frame) %>%
+  dplyr::summarise(Rate = mean(Sub_Choose)) %>%
+  #dplyr::mutate(Time = row_number()) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(Subject, Frame, Block)
+
+ratio_plot(df = data, filename = "./1_TD.png")
+```
+
+# RSTD
+```{r}
+result <- read.csv("./result_comparison.csv")  %>%
+  dplyr::filter(fit_model == "RSTD")
+
+res <- list()
+
+for (i in 1:length(id)) {
+  
+  params <- na.omit(unlist(result[i, grep("param_", names(result))]))
+  
+  binaryRL.env <- new.env()
+  binaryRL.env$data <- binaryRL::Ludvig_2014_Exp1
+  binaryRL.env$id <- id[i]
+  binaryRL.env$n_params <- length(params)
+  binaryRL.env$n_trials <- 288
+  binaryRL.env$mode <- "simulate"
+  
+  obj_func <- function(params){
+  
+    res <- binaryRL::run_m(
+      data = data,                   
+      id = id,                        
+      eta = c(params[1], params[2]), 
+      tau = c(params[3]),
+      n_params = n_params,                   
+      n_trials = n_trials,
+      mode = mode,
+      raw_cols = c(
+        "Subject", "Block", "Trial",
+        "L_choice", "R_choice", "L_reward", "R_reward",
+        "Sub_Choose", "Frame"
+      ),
+    )
+    
+    assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
+    
+    switch(mode, "fit" = return(res), "simulate" = return(res))
+  }
+  
+  environment(obj_func) <- binaryRL.env
+  res[[i]] <- obj_func(params = params)[[1]]
+}
+
+rm(i, params, obj_func, binaryRL.env)
+
+list[[2]] <- dplyr::bind_rows(res)
+```
+
+```{r}
+data <- list[[2]] %>%
+  dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+  dplyr::select(Subject, Block, Trial, Frame, Sub_Choose) %>%
+  dplyr::mutate(
+    Subject = factor(Subject),
+    Block = as.numeric(Block),
+    Sub_Choose = case_when(
+      Sub_Choose %in% c("A", "C") ~ 0,
+      Sub_Choose %in% c("B", "D") ~ 1,
+    ),
+  ) %>%
+  dplyr::group_by(Subject, Block, Frame) %>%
+  dplyr::summarise(Rate = mean(Sub_Choose)) %>%
+  #dplyr::mutate(Time = row_number()) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(Subject, Frame, Block)
+
+ratio_plot(df = data, filename = "./2_RSTD.png")
+```
+
+# Utility
+```{r}
+result <- read.csv("./result_comparison.csv")  %>%
+  dplyr::filter(fit_model == "Utility")
+
+res <- list()
+
+for (i in 1:length(id)) {
+  
+  params <- na.omit(unlist(result[i, grep("param_", names(result))]))
+  
+  binaryRL.env <- new.env()
+  binaryRL.env$data <- binaryRL::Ludvig_2014_Exp1
+  binaryRL.env$id <- id[i]
+  binaryRL.env$n_params <- length(params)
+  binaryRL.env$n_trials <- 288
+  binaryRL.env$mode <- "simulate"
+  
+  obj_func <- function(params){
+  
+    res <- binaryRL::run_m(
+      data = data,                   
+      id = id,                        
+      eta = c(params[1]), 
+      gamma = c(params[2]),
+      tau = c(params[3]),
+      n_params = n_params,                   
+      n_trials = n_trials,
+      mode = mode,
+      raw_cols = c(
+        "Subject", "Block", "Trial",
+        "L_choice", "R_choice", "L_reward", "R_reward",
+        "Sub_Choose", "Frame"
+      ),
+    )
+    
+    assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
+    
+    switch(mode, "fit" = return(res), "simulate" = return(res))
+  }
+  
+  environment(obj_func) <- binaryRL.env
+  res[[i]] <- obj_func(params = params)[[1]]
+}
+
+rm(i, params, obj_func, binaryRL.env)
+
+list[[3]] <- dplyr::bind_rows(res)
+```
+
+```{r}
+data <- list[[3]] %>%
+  dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+  dplyr::select(Subject, Block, Trial, Frame, Sub_Choose) %>%
+  dplyr::mutate(
+    Subject = factor(Subject),
+    Block = as.numeric(Block),
+    Sub_Choose = case_when(
+      Sub_Choose %in% c("A", "C") ~ 0,
+      Sub_Choose %in% c("B", "D") ~ 1,
+    ),
+  ) %>%
+  dplyr::group_by(Subject, Block, Frame) %>%
+  dplyr::summarise(Rate = mean(Sub_Choose)) %>%
+  #dplyr::mutate(Time = row_number()) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(Subject, Frame, Block)
+
+ratio_plot(df = data, filename = "./3_Utility.png")
+```
