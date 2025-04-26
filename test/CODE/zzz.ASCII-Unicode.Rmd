@@ -1,0 +1,21 @@
+```{r}
+# 读取文件内容
+file_content <- readLines("./zzz.R")
+
+# 替换所有特定符号为问号
+file_content <- gsub("\\\\", "\\\\\\\\", file_content)
+file_content <- gsub("╔", "\\\\u2554", file_content)
+file_content <- gsub("╗", "\\\\u2557", file_content)
+file_content <- gsub("╝", "\\\\u255D", file_content)
+file_content <- gsub("╚", "\\\\u255A", file_content)
+file_content <- gsub("║", "\\\\u2551", file_content)
+file_content <- gsub("═", "\\\\u2550", file_content)
+file_content <- gsub("█", "\\\\u2588", file_content)
+
+
+# 写回文件
+writeLines(file_content, "../../R/zzz.R")
+```
+
+
+
