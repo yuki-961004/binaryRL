@@ -600,26 +600,10 @@ for (i in 1:length(id)) {
   binaryRL.env$id <- id[i]
   binaryRL.env$n_params <- length(params)
   binaryRL.env$n_trials <- 288
-  binaryRL.env$mode <- "simulate"
+  binaryRL.env$mode <- "review"
   
   
-  obj_func <-  function(params){
-    
-    res <- binaryRL::run_m(
-      data = data,                   
-      id = id,                        
-      eta = c(params[1]), 
-      tau = c(params[2]),
-      n_params = n_params,                   
-      n_trials = n_trials,
-      mode = mode,
-      raw_cols = colnames(data)
-    )
-    
-    assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
-    
-    switch(mode, "fit" = return(res), "simulate" = return(res))
-  }
+  obj_func <- binaryRL::TD
   
   environment(obj_func) <- binaryRL.env
   res[[i]] <- obj_func(params = params)[[1]]
@@ -633,17 +617,17 @@ list[[1]] <- dplyr::bind_rows(res)
 ```{r}
 data <- list[[1]] %>%
   dplyr::filter(Frame %in% c("Gain","Loss")) %>%
-  dplyr::select(Subject, Block, Trial, Frame, Sub_Choose) %>%
+  dplyr::select(Subject, Block, Trial, Frame, Rob_Choose) %>%
   dplyr::mutate(
     Subject = factor(Subject),
     Block = as.numeric(Block),
-    Sub_Choose = case_when(
-      Sub_Choose %in% c("A", "C") ~ 0,
-      Sub_Choose %in% c("B", "D") ~ 1,
+    Rob_Choose = case_when(
+      Rob_Choose %in% c("A", "C") ~ 0,
+      Rob_Choose %in% c("B", "D") ~ 1,
     ),
   ) %>%
   dplyr::group_by(Subject, Block, Frame) %>%
-  dplyr::summarise(Rate = mean(Sub_Choose)) %>%
+  dplyr::summarise(Rate = mean(Rob_Choose)) %>%
   #dplyr::mutate(Time = row_number()) %>%
   dplyr::ungroup() %>%
   dplyr::arrange(Subject, Frame, Block)
@@ -667,29 +651,9 @@ for (i in 1:length(id)) {
   binaryRL.env$id <- id[i]
   binaryRL.env$n_params <- length(params)
   binaryRL.env$n_trials <- 288
-  binaryRL.env$mode <- "simulate"
+  binaryRL.env$mode <- "review"
   
-  obj_func <- function(params){
-  
-    res <- binaryRL::run_m(
-      data = data,                   
-      id = id,                        
-      eta = c(params[1], params[2]), 
-      tau = c(params[3]),
-      n_params = n_params,                   
-      n_trials = n_trials,
-      mode = mode,
-      raw_cols = c(
-        "Subject", "Block", "Trial",
-        "L_choice", "R_choice", "L_reward", "R_reward",
-        "Sub_Choose", "Frame"
-      ),
-    )
-    
-    assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
-    
-    switch(mode, "fit" = return(res), "simulate" = return(res))
-  }
+  obj_func <- binaryRL::RSTD
   
   environment(obj_func) <- binaryRL.env
   res[[i]] <- obj_func(params = params)[[1]]
@@ -703,17 +667,17 @@ list[[2]] <- dplyr::bind_rows(res)
 ```{r}
 data <- list[[2]] %>%
   dplyr::filter(Frame %in% c("Gain","Loss")) %>%
-  dplyr::select(Subject, Block, Trial, Frame, Sub_Choose) %>%
+  dplyr::select(Subject, Block, Trial, Frame, Rob_Choose) %>%
   dplyr::mutate(
     Subject = factor(Subject),
     Block = as.numeric(Block),
-    Sub_Choose = case_when(
-      Sub_Choose %in% c("A", "C") ~ 0,
-      Sub_Choose %in% c("B", "D") ~ 1,
+    Rob_Choose = case_when(
+      Rob_Choose %in% c("A", "C") ~ 0,
+      Rob_Choose %in% c("B", "D") ~ 1,
     ),
   ) %>%
   dplyr::group_by(Subject, Block, Frame) %>%
-  dplyr::summarise(Rate = mean(Sub_Choose)) %>%
+  dplyr::summarise(Rate = mean(Rob_Choose)) %>%
   #dplyr::mutate(Time = row_number()) %>%
   dplyr::ungroup() %>%
   dplyr::arrange(Subject, Frame, Block)
@@ -737,30 +701,9 @@ for (i in 1:length(id)) {
   binaryRL.env$id <- id[i]
   binaryRL.env$n_params <- length(params)
   binaryRL.env$n_trials <- 288
-  binaryRL.env$mode <- "simulate"
+  binaryRL.env$mode <- "review"
   
-  obj_func <- function(params){
-  
-    res <- binaryRL::run_m(
-      data = data,                   
-      id = id,                        
-      eta = c(params[1]), 
-      gamma = c(params[2]),
-      tau = c(params[3]),
-      n_params = n_params,                   
-      n_trials = n_trials,
-      mode = mode,
-      raw_cols = c(
-        "Subject", "Block", "Trial",
-        "L_choice", "R_choice", "L_reward", "R_reward",
-        "Sub_Choose", "Frame"
-      ),
-    )
-    
-    assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
-    
-    switch(mode, "fit" = return(res), "simulate" = return(res))
-  }
+  obj_func <- binaryRL::Utility
   
   environment(obj_func) <- binaryRL.env
   res[[i]] <- obj_func(params = params)[[1]]
@@ -774,17 +717,17 @@ list[[3]] <- dplyr::bind_rows(res)
 ```{r}
 data <- list[[3]] %>%
   dplyr::filter(Frame %in% c("Gain","Loss")) %>%
-  dplyr::select(Subject, Block, Trial, Frame, Sub_Choose) %>%
+  dplyr::select(Subject, Block, Trial, Frame, Rob_Choose) %>%
   dplyr::mutate(
     Subject = factor(Subject),
     Block = as.numeric(Block),
-    Sub_Choose = case_when(
-      Sub_Choose %in% c("A", "C") ~ 0,
-      Sub_Choose %in% c("B", "D") ~ 1,
+    Rob_Choose = case_when(
+      Rob_Choose %in% c("A", "C") ~ 0,
+      Rob_Choose %in% c("B", "D") ~ 1,
     ),
   ) %>%
   dplyr::group_by(Subject, Block, Frame) %>%
-  dplyr::summarise(Rate = mean(Sub_Choose)) %>%
+  dplyr::summarise(Rate = mean(Rob_Choose)) %>%
   #dplyr::mutate(Time = row_number()) %>%
   dplyr::ungroup() %>%
   dplyr::arrange(Subject, Frame, Block)
