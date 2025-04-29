@@ -37,16 +37,16 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |   ███�
 
 ## Read your Raw Data
 ```r
-# An open data from Ludvig et. al. (2014) https://osf.io/eagcd/
-head(Ludvig_2014_Exp1)
+# An open data from Mason et. al. (2024) https://osf.io/hy3q4/
+head(Mason_2024_Exp2)
 ```
 
 | Subject | Block | Trial | L_choice | R_choice | L_reward | R_reward | Sub_Choose |
 |---------|-------|-------|----------|----------|----------|----------|------------|
-| 1       | 1     | 1     | A        | B        | 20       | 0        | A          |
-| 1       | 1     | 2     | B        | A        | 40       | 20       | B          |
-| 1       | 1     | 3     | C        | D        | -20      | 0        | C          |
-| 1       | 1     | 4     | D        | C        | -40      | -20      | D          |
+| 1       | 1     | 1     | A        | B        | 36       | 40       | A          |
+| 1       | 1     | 2     | B        | A        | 0        | 36       | B          |
+| 1       | 1     | 3     | C        | D        | -36      | -40      | C          |
+| 1       | 1     | 4     | D        | C        | 0        | -36      | D          |
 | ...     | ...   | ...   | ...      | ...      | ...      | ...      | ...        |
 
 *NOTES*
@@ -55,7 +55,7 @@ head(Ludvig_2014_Exp1)
 2. You can also add two **additional variables** as factors that the model needs to consider.
 
 ### References
-Ludvig, E. A., Madan, C. R., & Spetch, M. L. (2014). Extreme outcomes sway risky decisions from experience. Journal of Behavioral Decision Making, 27(2), 146-156. https://doi.org/10.1002/bdm.1792
+Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). Rare and extreme outcomes in risky choice. *Psychonomic Bulletin & Review, 31*(3), 1301-1308. https://doi.org/10.3758/s13423-023-02415-x
 
 <!---------------------------------------------------------->
 
@@ -266,12 +266,6 @@ Model <- function(params){
     L_reward = "L_reward",
     R_reward = "R_reward",
     sub_choose = "Sub_Choose",
-    rob_choose = "Rob_Choose",
-    raw_cols = c(
-      "Subject", "Block", "Trial",
-      "L_choice", "R_choice", "L_reward", "R_reward",
-      "Sub_Choose"
-    ),
     var1 = "extra_Var1",
     var2 = "extra_Var2"
   )
@@ -372,13 +366,13 @@ If you want to use an algorithm other than `L-BFGS-B`, you must install the corr
 
 ```r
 comparison <- binaryRL::fit_p(
-  data = Ludvig_2014_Exp1,
-  n_trials = 288,
-  id = c(1:40),
+  data = Mason_2024_Exp2,
+  n_trials = 360,
+  id = c(1:125),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
   iteration = 10,
   seed = 123,
   # Gradient-based 
@@ -431,13 +425,13 @@ Below is an example of how to use it. We encourage advanced users to take advant
 
 ```r
 binaryRL.res <- binaryRL::optimize_para(
-  data = Ludvig_2014_Exp1,
+  data = Mason_2024_Exp2,
   id = 1,
   n_params = 3,
   n_trials = 288,
   obj_func = binaryRL::RSTD,
   lower = c(0, 0, 0),
-  upper = c(1, 1, 1),
+  upper = c(1, 1, 10),
   iteration = 10,
   seed = 123,
   algorithm = "L-BFGS-B"   # Gradient-Based (stats::optim)
@@ -538,16 +532,16 @@ Here, using the publicly available data from Ludvig et al. (2014), we demonstrat
 
 ```r
 recovery <- binaryRL::rcv_d(
-  data = Ludvig_2014_Exp1,
+  data = Mason_2024_Exp2,
   id = 1,
-  n_trials = 288,
+  n_trials = 360,
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  simulate_upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  fit_upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
   initial_params = NA,
   initial_size = 50,
   seed = 1,
@@ -576,13 +570,13 @@ We also encourage advanced users to use `binaryRL::simulate_list()` and `binaryR
 
 ```r
 list_simulated <- binaryRL::simulate_list(
-  data = Ludvig_2014_Exp1,
+  data = Mason_2024_Exp2,
   id = 1,
   obj_func = binaryRL::RSTD,
   n_params = 3, 
   n_trials = 288,
   lower = c(0, 0, 0),
-  upper = c(1, 1, 1),
+  upper = c(1, 1, 10),
   seed = 1,
   iteration = 30
 )
@@ -602,9 +596,9 @@ df_recovery <- binaryRL::recovery_data(
   fit_model = binaryRL::RSTD,
   model_name = "RSTD",
   n_params = 3,
-  n_trials = 288,
+  n_trials = 360,
   lower = c(0, 0, 0),
-  upper = c(1, 1, 1),
+  upper = c(1, 1, 10),
   iteration = 30,
   algorithm = "Bayesian"
 )
@@ -629,116 +623,152 @@ df_recovery <- binaryRL::recovery_data(
 <!---------------------------------------------------------->
 
 <details>
-<summary>[Example Code] Visualizing Parameter η Recovery</summary>
+<summary>[Example Code] Visualizing Parameter Recovery</summary>
 
 ```r
-data <- read.csv("./result_recovery.csv") %>%
-  dplyr::filter(simulate_model == fit_model & simulate_model == "TD")
+plot_param_rcv <- function(
+  data = read.csv("../OUTPUT/result_recovery.csv"),
+  model,
+  param_index,
+  param_name,
+  filename,
+  softmax
+){
+  switch(
+    softmax, 
+    "TRUE" = {
+      data <- data %>%
+        dplyr::filter(simulate_model == fit_model & simulate_model == model) %>%
+          dplyr::mutate(
+            log_input = log10(.data[[paste0("input_param_", param_index)]]),
+            log_output = log10(.data[[paste0("output_param_", param_index)]])
+          )
+      set.seed(123)
+      # Generate exponential data for x
+      x <- rexp(100, rate = -log(1e-5) / 1)
+      
+      # Add smaller exponential noise to create y
+      norm <- data.frame(
+        x = log10(x),
+        y = log10(x + rexp(100, rate = 10))  # Higher rate results in smaller fluctuations
+      )
+      
+      plot <- ggplot2::ggplot(data, aes(x = log_input, y = log_output)) +
+        ggplot2::geom_smooth(
+          data = norm,
+          mapping = aes(x = x, y = y),
+          method = "lm", color = "#55c186", se = FALSE
+        ) +
+        ggplot2::geom_point(
+          data = norm,
+          mapping = aes(x = x, y = y),
+          color = "#55c186",  
+          alpha = 0.5, shape = 1
+        ) +
+        ggplot2::geom_point(color = "#053562") +  # 绘制散点
+        ggplot2::scale_y_continuous(
+          limits = c(-3, 1.1), expand = c(0, 0),
+          labels = function(x) parse(text = paste0("10^", x))
+        ) +
+        ggplot2::scale_x_continuous(
+          limits = c(-3, 0.3), expand = c(0, 0),
+          labels = function(x) parse(text = paste0("10^", x))
+        ) +
+        ggplot2::labs(
+          x = paste("simulated", param_name),
+          y = paste("fit", param_name)
+        ) +
+        papaja::theme_apa() +
+        ggplot2::theme(
+          text = element_text(
+            family = "serif", 
+            face = "bold",
+            size = 15
+          ),
+          plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
+        )
+      
+      rm(x, norm)
+      
+      ggplot2::ggsave(
+        plot = plot,
+        filename = filename, 
+        width = 4, height = 3
+      )
+    }, 
+    "FALSE" = {
+      data <- data %>%
+        dplyr::filter(simulate_model == fit_model & simulate_model == model)
+      
+      set.seed(123)
+      
+      x <- runif(100, 0, 1)
+      norm <- data.frame(
+        x = x,  
+        y = x + rnorm(100, 0, 0.1)  
+      )
+      
+      plot <- ggplot2::ggplot(
+        data, 
+        mapping = aes(
+          x = .data[[paste0("input_param_", param_index)]],
+          y = .data[[paste0("output_param_", param_index)]]
+        )) +
+        ggplot2::geom_abline(intercept = 0, slope = 1, color = "#55c186") +  
+        ggplot2::geom_point(
+          data = norm,
+          mapping = aes(x = x, y = y),
+          color = "#55c186",  
+          alpha = 0.5, shape = 1
+        ) +
+        ggplot2::geom_point(color = "#053562") +  # 绘制散点
+        ggplot2::scale_y_continuous(limits = c(0, 1.1), expand = c(0, 0)) +
+        ggplot2::scale_x_continuous(limits = c(0, 1.1), expand = c(0, 0)) +
+        ggplot2::labs(
+          x = paste("simulated", param_name),
+          y = paste("fit", param_name)
+        ) +
+        papaja::theme_apa() +
+        ggplot2::theme(
+          text = element_text(
+            family = "serif", 
+            face = "bold",
+            size = 15
+          ),
+          axis.text = element_text(
+            color = "black",
+            family = "serif", 
+            face = "plain",
+            size = 10
+          ),
+          plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
+        )
+      
+      ggplot2::ggsave(
+        plot = plot,
+        filename = filename, 
+        width = 4, height = 3
+      ) 
+    },
+  )
+}
 
-set.seed(123)
-
-x <- runif(100, 0, 1)
-norm <- data.frame(
-  x = x,  
-  y = x + rnorm(100, 0, 0.1)  
+plot_param_rcv(
+  data = read.csv("../OUTPUT/result_recovery.csv"),
+  model = "TD",
+  param_index = 1,
+  param_name = "η",
+  filename = "../FIGURE/1_TD_eta.png",
+  softmax = "FALSE"
 )
 
-plot <- ggplot2::ggplot(data, aes(x = input_param_1, y = output_param_1)) +
-  ggplot2::geom_abline(intercept = 0, slope = 1, color = "#55c186") +  
-  ggplot2::geom_point(
-    data = norm,
-    mapping = aes(x = x, y = y),
-    color = "#55c186",  
-    alpha = 0.5, shape = 1
-  ) +
-  ggplot2::geom_point(color = "#053562") +  # 绘制散点
-  ggplot2::scale_y_continuous(limits = c(0, 1.1), expand = c(0, 0)) +
-  ggplot2::scale_x_continuous(limits = c(0, 1.1), expand = c(0, 0)) +
-  ggplot2::labs(x = "simulated η", y = "fit η") +  # 添加坐标轴标签
-  papaja::theme_apa() +
-  ggplot2::theme(
-    text = element_text(
-      family = "serif", 
-      face = "bold",
-      size = 15
-    ),
-    axis.text = element_text(
-      color = "black",
-      family = "serif", 
-      face = "plain",
-      size = 10
-    ),
-    plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
-  )
-
-rm(x, norm)
-
-ggplot2::ggsave(
-  plot = plot,
-  filename = "../FIGURE/param_recovery_eta.png", 
-  width = 4, height = 3
-)
-```
-</details>
-
-<!---------------------------------------------------------->
-
-<details>
-<summary>[Example Code] Visualizing Parameter τ Recovery</summary>
-
-```r
-data <- read.csv("./result_recovery.csv") %>%
-  dplyr::filter(simulate_model == fit_model & simulate_model == "TD") %>%
-  dplyr::mutate(
-    log_input = log10(input_param_2),
-    log_output = log10(output_param_2)
-  )
-
-x <- rexp(100, 10)
-
-norm <- data.frame(
-  x = log10(x),
-  y = log10(x + rexp(100, rate = 1))  
-)
-
-plot <- ggplot2::ggplot(data, aes(x = log_input, y = log_output)) +
-  ggplot2::geom_smooth(
-    data = norm,
-    mapping = aes(x = x, y = y),
-    method = "lm", color = "#55c186", se = FALSE
-  ) +
-  ggplot2::geom_point(
-    data = norm,
-    mapping = aes(x = x, y = y),
-    color = "#55c186",  
-    alpha = 0.5, shape = 1
-  ) +
-  ggplot2::geom_point(color = "#053562") +  # 绘制散点
-  ggplot2::scale_y_continuous(
-    limits = c(-3, 1.1), expand = c(0, 0),
-    labels = function(x) parse(text = paste0("10^", x))
-  ) +
-  ggplot2::scale_x_continuous(
-    limits = c(-3, 0.3), expand = c(0, 0),
-    labels = function(x) parse(text = paste0("10^", x))
-  ) +
-  ggplot2::labs(x = "simulated τ", y = "fit τ") +  # 添加坐标轴标签
-  papaja::theme_apa() +
-  ggplot2::theme(
-    text = element_text(
-      family = "serif", 
-      face = "bold",
-      size = 15
-    ),
-    plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
-  )
-
-rm(x, norm)
-
-ggplot2::ggsave(
-  plot = plot,
-  filename = "../FIGURE/param_recovery_tau.png", 
-  width = 4, height = 3
+plot_param_rcv(
+  data = read.csv("../OUTPUT/result_recovery.csv"),
+  model = "TD",
+  param_index = 2,
+  param_name = "τ",
+  filename = "../FIGURE/1_TD_tau.png",
+  softmax = "TRUE"
 )
 ```
 </details>

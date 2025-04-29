@@ -63,10 +63,7 @@ simulate_list <- function(
       # 确保每次种子不同
       set.seed(seed + n_params * i + j) 
       if (j == n_params) {
-        # 如果是最后一个参数, 则是tau
-        rate <- -log(1e-5) / upper[j]
-        # tau服从指数分布, 而不是均匀分布
-        params[j] <- stats::rexp(1, rate = rate)
+        params[j] <- stats::rexp(1, rate = upper[j]) + lower[j]
       } else {
         # 其他参数服从均匀分布
         params[j] <- stats::runif(n = 1, min = lower[j], max = upper[j])

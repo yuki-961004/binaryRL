@@ -9,18 +9,24 @@ library(binaryRL)
 ```
 
 ```{r}
-head(Ludvig_2014_Exp1)
+head(binaryRL::Mason_2024_Exp2)
 ```
 
 ```{r}
-binaryRL::Ludvig_2014_Exp1 %>%
-  dplyr::group_by(L_choice) %>%
-  dplyr::summarise(value = mean(L_reward))
+test <-binaryRL::run_m(
+  data = binaryRL::Mason_2024_Exp2,                    
+  id = 1,                       
+  eta = c(0.3),  
+  tau = c(0.1),
+  n_params = 2,            
+  n_trials = 360,            
+  mode = "fit"
+)
 
-binaryRL::Ludvig_2014_Exp1 %>%
-  dplyr::group_by(R_choice) %>%
-  dplyr::summarise(value = mean(R_reward))
+test <- test[[1]] %>%
+  dplyr::filter(Frame == "Gain")
 ```
+
 
 ```{r}
 model <- function(params){
@@ -44,7 +50,7 @@ model <- function(params){
 
 ```{r}
 binaryRL.res <- binaryRL::optimize_para(
-  data = binaryRL::Ludvig_2014_Exp1,
+  data = binaryRL::Mason_2024_Exp2,
   id = 10,
   obj_func = binaryRL::RSTD,
   n_params = 3,
@@ -67,14 +73,14 @@ binaryRL.res <- binaryRL::optimize_para(
 # Model Comparison
 ```{r include=FALSE}
 comparison <- binaryRL::fit_p(
-  data = binaryRL::Ludvig_2014_Exp1,
+  data = read.csv("../DATA/df_pilot.csv"),
   n_trials = 288,
   id = c(1:40),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  iteration = 10,
+  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
+  iteration = 50,
   seed = 123,
   algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
   #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
@@ -150,15 +156,15 @@ ggplot2::ggsave(
 # Recovery
 ```{r}
 list_simulated <- binaryRL::simulate_list(
-  data = binaryRL::Ludvig_2014_Exp1,
+  data = binaryRL::Mason_2024_Exp2,
   id = 1,
   obj_func = binaryRL::RSTD,
   n_params = 3, 
-  n_trials = 288,
-  lower = c(0, 0, 0),
-  upper = c(1, 1, 1),
-  seed = 1,
-  iteration = 3
+  n_trials = 360,
+  lower = c(0, 0, 1),
+  upper = c(1, 1, 10),
+  seed = 123,
+  iteration = 10
 )
 ```
 
@@ -169,31 +175,31 @@ df_recovery <- binaryRL::recovery_data(
   fit_model = binaryRL::RSTD,
   model_name = "RSTD",
   n_params = 3,
-  n_trials = 288,
-  lower = c(0, 0, 0),
-  upper = c(1, 1, 1),
-  iteration = 10,
+  n_trials = 360,
+  lower = c(0, 0, 1),
+  upper = c(1, 1, 2),
+  iteration = 50,
   algorithm = "Bayesian"
 )
 ```
 
 ```{r include=FALSE}
 recovery <- binaryRL::rcv_d(
-  data = read.csv("../DATA/df_pilot.csv"),
-  id = 11,
-  n_trials = 288,
+  data = binaryRL::Mason_2024_Exp2,
+  id = 1,
+  n_trials = 360,
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  simulate_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
+  simulate_upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  fit_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
+  fit_upper = list(c(1, 2), c(1, 1, 2), c(1, 1, 2)),
   initial_params = NA,
   initial_size = 50,
-  seed = 1,
+  seed = 123,
   iteration_s = 50,
-  iteration_f = 30,
+  iteration_f = 50,
   algorithm = "Bayesian"
 )
 
@@ -349,7 +355,7 @@ plot_param_rcv(
 plot_param_rcv(
   data = read.csv("../OUTPUT/result_recovery.csv"),
   model = "RSTD",
-  param_index = 1,,
+  param_index = 1,
   param_name = "η-",
   filename = "../FIGURE/2_RSTD_eta1.png",
   softmax = "FALSE"
@@ -358,7 +364,7 @@ plot_param_rcv(
 plot_param_rcv(
   data = read.csv("../OUTPUT/result_recovery.csv"),
   model = "RSTD",
-  param_index = 2,,
+  param_index = 2,
   param_name = "η+",
   filename = "../FIGURE/2_RSTD_eta2.png",
   softmax = "FALSE"
@@ -367,7 +373,7 @@ plot_param_rcv(
 plot_param_rcv(
   data = read.csv("../OUTPUT/result_recovery.csv"),
   model = "Utility",
-  param_index = 1,,
+  param_index = 1,
   param_name = "η",
   filename = "../FIGURE/3_Utility_eta.png",
   softmax = "FALSE"
@@ -397,7 +403,7 @@ cor(data$input_param_1, data$output_param_1)
 plot_param_rcv(
   data = read.csv("../OUTPUT/result_recovery.csv"),
   model = "Utility",
-  param_index = 2,,
+  param_index = 2,
   param_name = "γ",
   filename = "../FIGURE/3_Utility_gamma.png",
   softmax = "FALSE"

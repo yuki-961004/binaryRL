@@ -208,8 +208,7 @@ decision_making <- function(
       if (!is.numeric(data$L_value[i]) | !is.numeric(data$R_value[i])) {
         stop("An error occurs when softmax == FALSE")
       }
-      # 设置随机种子
-      set.seed(seed = seed)
+
       # 基于刚刚的概率, 随机选一个. 而不是谁大选谁
       data$Rob_Choose[i] <- sample(
         c(data[[L_choice]][i], data[[R_choice]][i]), 
