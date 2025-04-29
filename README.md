@@ -86,7 +86,15 @@ Model <- function(params){
     expl_func = your_expl_func,
     prob_func = your_prob_func,
 # ║ --------- column names ---------- ║ #
-    ...
+    sub = "Subject",
+    time_line = c("Block", "Trial"),
+    L_choice = "L_choice",
+    R_choice = "R_choice",
+    L_reward = "L_reward",
+    R_reward = "R_reward",
+    sub_choose = "Sub_Choose",
+    var1 = "extra_Var1",
+    var2 = "extra_Var2"
 # ║ You only need to modify this part ║ #
 # ╚═══════════════════════════════════╝ # 
   )
@@ -239,41 +247,6 @@ func_tau <- function (
 ```
 
 </details>
-
-<!---------------------------------------------------------->
-
-### Custom Column Names
-
-
-If your column names are different from my example, you need to fill in the column names in the argument of `binaryRL::run_m`
-
-<!---------------------------------------------------------->
-
-<details>
-<summary> -  colnames = "???"</summary>
-
-```r
-Model <- function(params){
-  ...
-
-  res <- binaryRL::run_m(
-    ...,
-    # column names
-    sub = "Subject",
-    time_line = c("Block", "Trial"),
-    L_choice = "L_choice",
-    R_choice = "R_choice",
-    L_reward = "L_reward",
-    R_reward = "R_reward",
-    sub_choose = "Sub_Choose",
-    var1 = "extra_Var1",
-    var2 = "extra_Var2"
-  )
-  ... 
-}
-```
-
-</details>  
 
 <!---------------------------------------------------------->
 
@@ -532,21 +505,21 @@ Here, using the publicly available data from Ludvig et al. (2014), we demonstrat
 
 ```r
 recovery <- binaryRL::rcv_d(
-  data = Mason_2024_Exp2,
+  data = binaryRL::Mason_2024_Exp2,
   id = 1,
   n_trials = 360,
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  simulate_upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
+  simulate_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
+  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  fit_upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
+  fit_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
+  fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
   initial_params = NA,
   initial_size = 50,
-  seed = 1,
+  seed = 123,
   iteration_s = 50,
-  iteration_f = 30,
+  iteration_f = 50,
   algorithm = "Bayesian"
 )
 
@@ -570,13 +543,13 @@ We also encourage advanced users to use `binaryRL::simulate_list()` and `binaryR
 
 ```r
 list_simulated <- binaryRL::simulate_list(
-  data = Mason_2024_Exp2,
+  data = binaryRL::Mason_2024_Exp2,
   id = 1,
   obj_func = binaryRL::RSTD,
   n_params = 3, 
   n_trials = 288,
-  lower = c(0, 0, 0),
-  upper = c(1, 1, 10),
+  lower = c(0, 0, 1),
+  upper = c(1, 1, 1),
   seed = 1,
   iteration = 30
 )
@@ -597,8 +570,8 @@ df_recovery <- binaryRL::recovery_data(
   model_name = "RSTD",
   n_params = 3,
   n_trials = 360,
-  lower = c(0, 0, 0),
-  upper = c(1, 1, 10),
+  lower = c(0, 0, 1),
+  upper = c(1, 1, 5),
   iteration = 30,
   algorithm = "Bayesian"
 )
