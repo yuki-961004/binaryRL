@@ -193,14 +193,14 @@ This function requires the optimal parameter values obtained through the
  https://github.com/yuki-961004/binaryRL
 }
 \examples{
-data <- Ludvig_2014_Exp1
+data <- Mason_2024_Exp1
 
 simulated <- binaryRL::run_m(
   data = data,
   id = 18,
   eta = c(0.321, 0.765),
   n_params = 2, 
-  n_trials = 288
+  n_trials = 360
 )
 
 summary(simulated)
