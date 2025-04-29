@@ -339,7 +339,7 @@ If you want to use an algorithm other than `L-BFGS-B`, you must install the corr
 
 ```r
 comparison <- binaryRL::fit_p(
-  data = Mason_2024_Exp2,
+  data = binaryRL::Mason_2024_Exp2,
   n_trials = 360,
   id = c(1:125),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
@@ -1003,27 +1003,26 @@ Ganger, M., Duryea, E., & Hu, W. (2016). Double Sarsa and double expected Sarsa 
 <!---------------------------------------------------------->
 
 ## Soft-Max Function
-The closer $\tau$ is to 1 (*default: 0.5*), the more sensitive the subjects become to the values of the left and right options. In other words, even a slight difference in value will lead the subjects to choose the option with the higher value.  
+During the recovery process, the last element of both `simulate_lower` and `simulate_upper` corresponds to the $\tau$ parameter used in the softmax function.
 
-If you add $\tau$ to your model as a extra free parameter, you will generally achieve better model fit. In fact, some articles have already incorporated the parameter in the softmax function into reinforcement learning models (e.g., Niv et al., 2012; Rosenbaum et al.,2022).  
+- `simulate_lower` represents a fixed positive increment applied to all $\tau$ values.   
+if this value is set to 1, it means that 1 is added to every $\tau$ during simulation.
 
-In fact, the three built-in fundamental models in the package are implemented by setting $\tau$ as a free parameter.
+- `simulate_upper` specifies the rate parameter of an exponential distribution from which $\tau$ is sampled.  
+if this value is 1, then $\tau$ is drawn from an exponential distribution with a rate of 10, i.e., $\tau \sim \text{Exp}(1)$.
+
 
 ```r
-# RSTD Model
-binaryRL::run_m(
-  ...,
-  eta = c(params[1], params[2]),   
-  gamma = 1,                      
-  tau = c(params[3]), 
-  n_params = 3,                    
+binaryRL::rcv_d(
+  ...
+  simulate_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
+  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   ...
 )
 ```
 
-### References
-Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012  
-Rosenbaum, G. M., Grassie, H. L., & Hartley, C. A. (2022). Valence biases in reinforcement learning shift across adolescence and modulate subsequent memory. *ELife, 11*, e64620. https://doi.org/10.7554/eLife.64620
+### References  
+Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547
 
 <!---------------------------------------------------------->
 
