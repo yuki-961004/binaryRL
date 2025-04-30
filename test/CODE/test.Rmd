@@ -87,17 +87,17 @@ binaryRL.res <- binaryRL::optimize_para(
 # Model Comparison
 ```{r include=FALSE}
 comparison <- binaryRL::fit_p(
-  data = read.csv("../DATA/df_pilot.csv"),
-  n_trials = 288,
-  id = c(1:40),
+  data = binaryRL::Mason_2024_Exp2,
+  n_trials = 360,
+  id = unique(binaryRL::Mason_2024_Exp2$Subject),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
   iteration = 50,
   seed = 123,
-  algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
+  algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
   #algorithm = "GA"        # Genetic Algorithm (GA::ga)
   #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
   #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
