@@ -204,7 +204,7 @@ optimize_para <- function(
     },
     "CMA-ES" = {
       # 检查所依赖的算法包是否安装
-      check_dependency("CMA-ES", algorithm_name = "Covariance Matrix Adapting")
+      check_dependency("cmaes", algorithm_name = "Covariance Matrix Adapting")
       
       cmaes::cma_es(
         par = initial_params,
@@ -233,7 +233,7 @@ optimize_para <- function(
      fit_params <- as.vector(result$par)
     },
     "GA" = {
-      fit_params <- as.vector(result@solution)
+      fit_params <- as.vector(result@solution[1,])
     },
     "GenSA" = {
       fit_params <- as.vector(result$par)
@@ -266,6 +266,7 @@ optimize_para <- function(
   obj_func(params = fit_params)
   # obj_func会给binaryRL.env传入一个binaryRL.res
   binaryRL.env$binaryRL.res$output <- fit_params
+  binaryRL.env$binaryRL.res$algorithm <- result
   # 总结binaryRL.env环境中的binaryRL.res
   summary(binaryRL.env$binaryRL.res)
   
