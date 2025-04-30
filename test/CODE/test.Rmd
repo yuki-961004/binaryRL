@@ -247,24 +247,35 @@ plot_param_rcv <- function(
     )
   
   if (param_name == "τ") {
-    data <- data %>%
-      dplyr::mutate(
-        input_param = log10(input_param),
-        output_param = log10(output_param)
-      )
+    if (min(data$input_param) > 1) {
+      data <- data %>%
+        dplyr::mutate(
+          input_param = log10(input_param - 1),
+          output_param = log10(output_param - 1)
+        )
+      param_name <- "τ-1"
+    }
+    else if ((min(data$input_param) <= 1)) {
+      data <- data %>%
+        dplyr::mutate(
+          input_param = log10(input_param),
+          output_param = log10(output_param)
+        )
+    }
     
     set.seed(123)
     x <- rexp(100, rate = rate)
+    
     norm <- data.frame(
       x = log10(x),
-      y <- log10(x) + sample(c(-1, 1), 100, replace = TRUE) * log10(rexp(100, rate = rate))
+      y = log10(x) + sample(c(-1, 1), 100, replace = TRUE) * log10(rexp(100, rate = rate))
     )
     
     x_min <- floor(quantile(norm$x, 0.05, na.rm = TRUE))
-    x_max <- ceiling(quantile(norm$x, 0.95, na.rm = TRUE)) + 1
+    x_max <- ceiling(quantile(norm$x, 0.95, na.rm = TRUE))
     
     y_min <- floor(quantile(norm$y, 0.05, na.rm = TRUE))
-    y_max <- ceiling(quantile(norm$y, 0.95, na.rm = TRUE)) + 1
+    y_max <- ceiling(quantile(norm$y, 0.95, na.rm = TRUE))
   } else {
     x <- runif(100, 0, 1)
     norm <- data.frame(

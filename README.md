@@ -588,11 +588,17 @@ df_recovery <- binaryRL::recovery_data(
 <!---------------------------------------------------------->
 
 <p align="center">
-    <img src="./test/FIGURE/param_recovery_eta.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./test/FIGURE/param_recovery_tau.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./test/FIGURE/param_rcv/lower_0/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./test/FIGURE/param_rcv/lower_0/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
 </p>
 
+The value of the softmax parameter $\tau$ affects the recovery of other parameters in the model. Under the assumption that $\tau \sim \text{Exp}(1)$, adding 1 to all $\tau$ values improves the recovery of the learning rate  $\eta$, but decreases the recovery accuracy of  $\tau$ itself.
 
+
+<p align="center">
+    <img src="./test/FIGURE/param_rcv/lower_1/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./test/FIGURE/param_rcv/lower_1/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
+</p>
 <!---------------------------------------------------------->
 
 <details>
@@ -615,24 +621,35 @@ plot_param_rcv <- function(
     )
   
   if (param_name == "τ") {
-    data <- data %>%
-      dplyr::mutate(
-        input_param = log10(input_param),
-        output_param = log10(output_param)
-      )
+    if (min(data$input_param) > 1) {
+      data <- data %>%
+        dplyr::mutate(
+          input_param = log10(input_param - 1),
+          output_param = log10(output_param - 1)
+        )
+      param_name <- "τ-1"
+    }
+    else if ((min(data$input_param) <= 1)) {
+      data <- data %>%
+        dplyr::mutate(
+          input_param = log10(input_param),
+          output_param = log10(output_param)
+        )
+    }
     
     set.seed(123)
     x <- rexp(100, rate = rate)
+    
     norm <- data.frame(
       x = log10(x),
-      y = log10(x + rexp(100, rate = 10))
+      y = log10(x) + sample(c(-1, 1), 100, replace = TRUE) * log10(rexp(100, rate = rate))
     )
     
-    x_min <- floor(min(norm$x))
-    x_max <- ceiling(max(norm$x)) + 1
+    x_min <- floor(quantile(norm$x, 0.05, na.rm = TRUE))
+    x_max <- ceiling(quantile(norm$x, 0.95, na.rm = TRUE))
     
-    y_min <- floor(min(norm$y))
-    y_max <- ceiling(max(norm$y)) + 1
+    y_min <- floor(quantile(norm$y, 0.05, na.rm = TRUE))
+    y_max <- ceiling(quantile(norm$y, 0.95, na.rm = TRUE))
   } else {
     x <- runif(100, 0, 1)
     norm <- data.frame(
@@ -640,11 +657,21 @@ plot_param_rcv <- function(
       y = x + rnorm(100, 0, 0.1)
     )
     
-    x_min <- 0
-    x_max <- 1
+    x_min <- trunc(min(norm$x))
+    if (max(norm$x) < 1) {
+      x_max <- 1
+    }
+    else {
+      x_max <- trunc(max(norm$x))
+    }
     
-    y_min <- 0
-    y_max <- 1
+    y_min <- trunc(min(norm$y))
+    if (max(norm$y) < 1) {
+      y_max <- 1
+    }
+    else {
+      y_max <- trunc(max(norm$y))
+    }
   }
 
   plot <- ggplot2::ggplot(data, aes(x = input_param, y = output_param)) +
@@ -712,12 +739,13 @@ plot_param_rcv <- function(
   ) 
 }
 
+
 plot_param_rcv(
   data = read.csv("../OUTPUT/result_recovery.csv"),
   model = "TD",
   param_index = 1,
   param_name = "η",
-  filename = "../FIGURE/param_recovery_eta.png",
+  filename = "../FIGURE/1_TD_eta.png",
 )
 
 plot_param_rcv(
@@ -726,7 +754,7 @@ plot_param_rcv(
   param_index = 2,
   param_name = "τ",
   rate = 1,
-  filename = "../FIGURE/param_recovery_tau.png"
+  filename = "../FIGURE/1_TD_tau.png"
 )
 ```
 </details>
@@ -743,6 +771,8 @@ plot_param_rcv(
     <img src="./test/FIGURE/model_rcv/lower_0/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
     <img src="./test/FIGURE/model_rcv/lower_0/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
 </p>
+
+> "In panel B, all of the softmax parameters $b$ and $b_{c}$ were increased by 1. This has the effect of reducing the amount of noise in the behavior, which makes the models more easily identifiable and the corresponding confusion matrix more diagonal."
 
 <p align="center">
     <img src="./test/FIGURE/model_rcv/lower_1/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
