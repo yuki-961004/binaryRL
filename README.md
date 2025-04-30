@@ -740,11 +740,14 @@ plot_param_rcv(
 <!---------------------------------------------------------->
 
 <p align="center">
-    <img src="./test/FIGURE/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./test/FIGURE/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./test/FIGURE/model_rcv/lower_0/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./test/FIGURE/model_rcv/lower_0/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
 </p>
 
-
+<p align="center">
+    <img src="./test/FIGURE/model_rcv/lower_1/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./test/FIGURE/model_rcv/lower_1/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
+</p>
 <!---------------------------------------------------------->
 
 <details>

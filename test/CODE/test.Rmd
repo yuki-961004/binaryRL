@@ -257,14 +257,14 @@ plot_param_rcv <- function(
     x <- rexp(100, rate = rate)
     norm <- data.frame(
       x = log10(x),
-      y = log10(x + rexp(100, rate = 10))
+      y <- log10(x) + sample(c(-1, 1), 100, replace = TRUE) * log10(rexp(100, rate = rate))
     )
     
-    x_min <- floor(min(norm$x))
-    x_max <- ceiling(max(norm$x)) + 1
+    x_min <- floor(quantile(norm$x, 0.05, na.rm = TRUE))
+    x_max <- ceiling(quantile(norm$x, 0.95, na.rm = TRUE)) + 1
     
-    y_min <- floor(min(norm$y))
-    y_max <- ceiling(max(norm$y)) + 1
+    y_min <- floor(quantile(norm$y, 0.05, na.rm = TRUE))
+    y_max <- ceiling(quantile(norm$y, 0.95, na.rm = TRUE)) + 1
   } else {
     x <- runif(100, 0, 1)
     norm <- data.frame(
@@ -272,11 +272,21 @@ plot_param_rcv <- function(
       y = x + rnorm(100, 0, 0.1)
     )
     
-    x_min <- 0
-    x_max <- 1
+    x_min <- trunc(min(norm$x))
+    if (max(norm$x) < 1) {
+      x_max <- 1
+    }
+    else {
+      x_max <- trunc(max(norm$x))
+    }
     
-    y_min <- 0
-    y_max <- 1
+    y_min <- trunc(min(norm$y))
+    if (max(norm$y) < 1) {
+      y_max <- 1
+    }
+    else {
+      y_max <- trunc(max(norm$y))
+    }
   }
 
   plot <- ggplot2::ggplot(data, aes(x = input_param, y = output_param)) +
@@ -424,7 +434,7 @@ plot_param_rcv(
   model = "TD",
   param_index = 2,
   param_name = "τ",
-  rate = 10,
+  rate = 1,
   filename = "../FIGURE/1_TD_tau.png"
 )
 
@@ -433,7 +443,7 @@ plot_param_rcv(
   model = "RSTD",
   param_index = 3,
   param_name = "τ",
-  rate = 10,
+  rate = 1,
   filename = "../FIGURE/2_RSTD_tau.png"
 )
 
@@ -442,7 +452,7 @@ plot_param_rcv(
   model = "Utility",
   param_index = 3,
   param_name = "τ",
-  rate = 10,
+  rate = 1,
   filename = "../FIGURE/3_Utility_tau.png"
 )
 ```
