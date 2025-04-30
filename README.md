@@ -499,7 +499,7 @@ ggplot2::ggsave(
 
 Here, using the publicly available data from Ludvig et al. (2014), we demonstrate how to perform parameter recovery and model recovery following the method suggested by Wilson & Collins (2019).  
 
-  1. Notably, Wilson & Collins (2019) recommend increasing the softmax parameter $\tau$ by 1 ($\tau \in \{1, 2\}$) during model recovery, as this can help reduce the amount of noise in behavior.  
+  1. Notably, Wilson & Collins (2019) recommend increasing the softmax parameter $\tau$ by 1 during model recovery, as this can help reduce the amount of noise in behavior.  
   2. Additionally, different algorithms and varying number of iterations can also influence the results of both parameter recovery and model recovery. You should adjust these settings based on your specific needs and circumstances.   
   
 
@@ -604,126 +604,112 @@ plot_param_rcv <- function(
   model,
   param_index,
   param_name,
-  filename,
-  softmax
+  rate,
+  filename
 ){
-  switch(
-    softmax, 
-    "TRUE" = {
-      data <- data %>%
-        dplyr::filter(simulate_model == fit_model & simulate_model == model) %>%
-          dplyr::mutate(
-            log_input = log10(.data[[paste0("input_param_", param_index)]]),
-            log_output = log10(.data[[paste0("output_param_", param_index)]])
-          )
-      set.seed(123)
-      # Generate exponential data for x
-      x <- rexp(100, rate = -log(1e-5) / 1)
-      
-      # Add smaller exponential noise to create y
-      norm <- data.frame(
-        x = log10(x),
-        y = log10(x + rexp(100, rate = 10))  # Higher rate results in smaller fluctuations
+  data <- data %>%
+    dplyr::filter(simulate_model == fit_model & simulate_model == model) %>%
+    dplyr::mutate(
+      input_param = .data[[paste0("input_param_", param_index)]],
+      output_param = .data[[paste0("output_param_", param_index)]]
+    )
+  
+  if (param_name == "τ") {
+    data <- data %>%
+      dplyr::mutate(
+        input_param = log10(input_param),
+        output_param = log10(output_param)
       )
-      
-      plot <- ggplot2::ggplot(data, aes(x = log_input, y = log_output)) +
-        ggplot2::geom_smooth(
-          data = norm,
-          mapping = aes(x = x, y = y),
-          method = "lm", color = "#55c186", se = FALSE
-        ) +
-        ggplot2::geom_point(
-          data = norm,
-          mapping = aes(x = x, y = y),
-          color = "#55c186",  
-          alpha = 0.5, shape = 1
-        ) +
-        ggplot2::geom_point(color = "#053562") +  # 绘制散点
-        ggplot2::scale_y_continuous(
-          limits = c(-3, 1.1), expand = c(0, 0),
-          labels = function(x) parse(text = paste0("10^", x))
-        ) +
-        ggplot2::scale_x_continuous(
-          limits = c(-3, 0.3), expand = c(0, 0),
-          labels = function(x) parse(text = paste0("10^", x))
-        ) +
-        ggplot2::labs(
-          x = paste("simulated", param_name),
-          y = paste("fit", param_name)
-        ) +
-        papaja::theme_apa() +
-        ggplot2::theme(
-          text = element_text(
-            family = "serif", 
-            face = "bold",
-            size = 15
-          ),
-          plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
-        )
-      
-      rm(x, norm)
-      
-      ggplot2::ggsave(
-        plot = plot,
-        filename = filename, 
-        width = 4, height = 3
-      )
-    }, 
-    "FALSE" = {
-      data <- data %>%
-        dplyr::filter(simulate_model == fit_model & simulate_model == model)
-      
-      set.seed(123)
-      
-      x <- runif(100, 0, 1)
-      norm <- data.frame(
-        x = x,  
-        y = x + rnorm(100, 0, 0.1)  
-      )
-      
-      plot <- ggplot2::ggplot(
-        data, 
-        mapping = aes(
-          x = .data[[paste0("input_param_", param_index)]],
-          y = .data[[paste0("output_param_", param_index)]]
-        )) +
-        ggplot2::geom_abline(intercept = 0, slope = 1, color = "#55c186") +  
-        ggplot2::geom_point(
-          data = norm,
-          mapping = aes(x = x, y = y),
-          color = "#55c186",  
-          alpha = 0.5, shape = 1
-        ) +
-        ggplot2::geom_point(color = "#053562") +  # 绘制散点
-        ggplot2::scale_y_continuous(limits = c(0, 1.1), expand = c(0, 0)) +
-        ggplot2::scale_x_continuous(limits = c(0, 1.1), expand = c(0, 0)) +
-        ggplot2::labs(
-          x = paste("simulated", param_name),
-          y = paste("fit", param_name)
-        ) +
-        papaja::theme_apa() +
-        ggplot2::theme(
-          text = element_text(
-            family = "serif", 
-            face = "bold",
-            size = 15
-          ),
-          axis.text = element_text(
-            color = "black",
-            family = "serif", 
-            face = "plain",
-            size = 10
-          ),
-          plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
-        )
-      
-      ggplot2::ggsave(
-        plot = plot,
-        filename = filename, 
-        width = 4, height = 3
-      ) 
-    },
-  )
+    
+    set.seed(123)
+    x <- rexp(100, rate = rate)
+    norm <- data.frame(
+      x = log10(x),
+      y = log10(x + rexp(100, rate = 10))
+    )
+    
+    x_min <- floor(min(norm$x))
+    x_max <- ceiling(max(norm$x)) + 1
+    
+    y_min <- floor(min(norm$y))
+    y_max <- ceiling(max(norm$y)) + 1
+  } else {
+    x <- runif(100, 0, 1)
+    norm <- data.frame(
+      x = x,
+      y = x + rnorm(100, 0, 0.1)
+    )
+    
+    x_min <- 0
+    x_max <- 1
+    
+    y_min <- 0
+    y_max <- 1
+  }
+
+  plot <- ggplot2::ggplot(data, aes(x = input_param, y = output_param)) +
+    ggplot2::geom_smooth(
+      data = norm,
+      mapping = aes(x = x, y = y),
+      method = "lm", color = "#55c186", se = FALSE
+    ) +
+    ggplot2::geom_point(
+      data = norm,
+      mapping = aes(x = x, y = y),
+      color = "#55c186",  
+      alpha = 0.5, shape = 1
+    ) +
+    ggplot2::geom_point(color = "#053562") +  # 绘制散点
+    ggplot2::scale_y_continuous(
+      limits = c(y_min, y_max + 0.1), expand = c(0, 0),
+      labels = 
+        if (param_name == "τ") {
+          function(x) parse(text = paste0("10^", x))
+        } 
+        else {
+          waiver()  
+        }
+    ) +
+    ggplot2::scale_x_continuous(
+      limits = c(x_min, x_max + 0.1), expand = c(0, 0),
+      labels = 
+        if (param_name == "τ") {
+          function(x) parse(text = paste0("10^", x))
+        } 
+        else {
+          waiver()  
+        }
+    ) +
+    ggplot2::labs(
+      x = paste("simulated", param_name),
+      y = paste("fit", param_name),
+      title = paste(model, "Model")
+    ) +
+    papaja::theme_apa() +
+    ggplot2::theme(
+      text = element_text(
+        family = "serif", 
+        face = "bold",
+        size = 15
+      ),
+      axis.text = element_text(
+        color = "black",
+        family = "serif", 
+        face = "plain",
+        size = 10
+      ),
+      plot.title = element_text(
+        family = "serif", face = "bold",
+        size = 15, hjust = 0.5
+      ),
+      plot.margin = margin(t = 1, r = 1, b = 1, l = 1),
+    )
+
+  ggplot2::ggsave(
+    plot = plot,
+    filename = filename, 
+    width = 4, height = 3
+  ) 
 }
 
 plot_param_rcv(
@@ -731,8 +717,7 @@ plot_param_rcv(
   model = "TD",
   param_index = 1,
   param_name = "η",
-  filename = "../FIGURE/1_TD_eta.png",
-  softmax = "FALSE"
+  filename = "../FIGURE/param_recovery_eta.png",
 )
 
 plot_param_rcv(
@@ -740,8 +725,8 @@ plot_param_rcv(
   model = "TD",
   param_index = 2,
   param_name = "τ",
-  filename = "../FIGURE/1_TD_tau.png",
-  softmax = "TRUE"
+  rate = 1,
+  filename = "../FIGURE/param_recovery_tau.png"
 )
 ```
 </details>
