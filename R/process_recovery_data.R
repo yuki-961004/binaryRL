@@ -17,6 +17,10 @@
 #' 
 #' @param model_name [character] the name of your modal
 #' 
+#' @param n_params [integer] The number of free parameters in your model. 
+#' 
+#' @param n_trials [integer] The total number of trials in your experiment.
+#'
 #' @param initial_params [vector] Initial values for the free parameters. 
 #'  These need to be set only when using L-BFGS-B. Other algorithms 
 #'  automatically generate initial values.
@@ -36,14 +40,12 @@
 #'  default: `seed = 123` 
 #'  
 #' @param iteration [integer] the number of iteration
+#'  
+#' @param nc [integer] Number of CPU cores to use for parallel computation.
 #' 
 #' @param algorithm [character] Choose a algorithm package from 
 #'  `L-BFGS-B`, `GA`, `GenSA`, `DEoptim`
-
-#' @param n_params [integer] The number of free parameters in your model. 
-#' 
-#' @param n_trials [integer] The total number of trials in your experiment.
-#'
+#'  
 #' @return a data frame for parameter recovery and model recovery
 #' @export
 #'
@@ -56,11 +58,12 @@ recovery_data <- function(
     n_trials,
     lower,
     upper,
-    algorithm,
     initial_params = NA,
     initial_size = 50,
     iteration = 10,
-    seed = 123
+    seed = 123,
+    nc = 4,
+    algorithm
 ){
   # 创建一个空数据集, 用于存放结果
   recovery <- data.frame(
@@ -74,7 +77,6 @@ recovery_data <- function(
   if (length(id) == 1) {
     id <- rep(id, length(list))
   }
-  
   
   # 增加放置输入参数的列
   n_input_params <- length(list[[1]]$input)
@@ -91,47 +93,96 @@ recovery_data <- function(
     names(recovery)[i + 5 + n_input_params] <- paste0("output_param_", i)
   }
   
-  # 用解题模型求解参数
-  for (i in 1:length(list)){
-    data <- list[[i]][[1]]
-    
-    binaryRL.res <- binaryRL::optimize_para(
-      data = data,
-      id = id[i],
-      obj_func = fit_model,
-      n_params = n_params,
-      n_trials = n_trials,
-      lower = lower,
-      upper = upper,
-      initial_params = initial_params,
-      initial_size = initial_size,
-      iteration = iteration,
-      seed = seed,
-      algorithm = algorithm
-    )
-    
-    # 每解完一次题就存一次结果
-    recovery[i, 2] <- binaryRL.res$acc
-    recovery[i, 3] <- binaryRL.res$ll
-    recovery[i, 4] <- binaryRL.res$aic
-    recovery[i, 5] <- binaryRL.res$bic
-    
-    cat(
-      "\n", 
-      "Simulate Model: ", names(list)[1], "\n",
-      "Fit Model: ", model_name, "\n",
-      "Iteration:", i, "[\u2713]",  "\n",
-      "\n"
-    )
-    
-    for (j in 1:n_input_params) {
-      recovery[i, j + 5] <- list[[i]]$input[j]
+
+  # Check for internally parallel algorithms
+  if ((algorithm %in% c("GA", "DEoptim")) | (nc == 1)) {
+    # 用解题模型求解参数
+    for (i in 1:length(list)){
+      data <- list[[i]][[1]]
+      
+      binaryRL.res <- binaryRL::optimize_para(
+        data = data,
+        id = id[i],
+        obj_func = fit_model,
+        n_params = n_params,
+        n_trials = n_trials,
+        lower = lower,
+        upper = upper,
+        initial_params = initial_params,
+        initial_size = initial_size,
+        iteration = iteration,
+        seed = seed,
+        algorithm = algorithm
+      )
+      
+      # 每解完一次题就存一次结果
+      recovery[i, 2] <- binaryRL.res$acc
+      recovery[i, 3] <- binaryRL.res$ll
+      recovery[i, 4] <- binaryRL.res$aic
+      recovery[i, 5] <- binaryRL.res$bic
+      
+      cat(
+        "\n", 
+        "Simulate Model: ", names(list)[1], "\n",
+        "Fit Model: ", model_name, "\n",
+        "Iteration:", i, "[\u2713]",  "\n",
+        "\n"
+      )
+      
+      for (j in 1:n_input_params) {
+        recovery[i, j + 5] <- list[[i]]$input[j]
+      }
+      
+      # 增加放置输出参数的列
+      for (j in 1:n_output_params) {
+        recovery[i, j + 5 + n_input_params] <- binaryRL.res$output[j]
+      }
     }
+  }
+  else {
+
+    cl <- parallel::makeCluster(nc)
+    doParallel::registerDoParallel(cl)
     
-    # 增加放置输出参数的列
-    for (j in 1:n_output_params) {
-      recovery[i, j + 5 + n_input_params] <- binaryRL.res$output[j]
+    temp_recovery <- foreach(i = 1:length(list), .combine = rbind, .packages = "binaryRL") %dopar% {
+      data_i <- list[[i]][[1]]
+      
+      binaryRL.res <- binaryRL::optimize_para(
+        data = data_i,
+        id = id[i],
+        obj_func = fit_model,
+        n_params = n_params,
+        n_trials = n_trials,
+        lower = lower,
+        upper = upper,
+        initial_params = initial_params,
+        initial_size = initial_size,
+        iteration = iteration,
+        seed = seed,
+        algorithm = algorithm
+      )
+      
+      row_i <- data.frame(matrix(NA, nrow = 1, ncol = 5 + n_input_params + n_output_params))
+      row_i[1, 1] <- model_name
+      row_i[1, 2] <- binaryRL.res$acc
+      row_i[1, 3] <- binaryRL.res$ll
+      row_i[1, 4] <- binaryRL.res$aic
+      row_i[1, 5] <- binaryRL.res$bic
+      
+      for (j in 1:n_input_params) {
+        row_i[1, 5 + j] <- list[[i]]$input[j]
+      }
+      for (j in 1:n_output_params) {
+        row_i[1, 5 + n_input_params + j] <- binaryRL.res$output[j]
+      }
+      
+      return(row_i)
     }
+    parallel::stopCluster(cl)
+    
+    # 继承recovery的列名
+    colnames(temp_recovery) <- colnames(recovery)
+    recovery <- temp_recovery
   }
   
   return(recovery)

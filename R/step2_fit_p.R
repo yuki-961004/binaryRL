@@ -55,6 +55,8 @@
 #'  reproducible and remain the same each time the function is run. 
 #'  default: `seed = 123` 
 #'  
+#' @param nc [integer] Number of CPU cores to use for parallel computation.
+#' 
 #' @param algorithm [character] Choose a algorithm package from 
 #'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`
 #'
@@ -74,55 +76,107 @@ fit_p <- function(
   initial_size = 50,
   iteration = 10,
   seed = 123,
+  nc = 4,
   algorithm
 ){
   model_comparison <- list()
   model_result <- list()
   
-  for (i in 1:length(fit_model)){
+  # Check for internally parallel algorithms
+  if ((algorithm %in% c("GA", "DEoptim")) | (nc == 1)) {
     
-    for (j in 1:length(id)) {
+    for (i in 1:length(fit_model)){
       
-      n_params <- length(lower[[i]])
-      
-      binaryRL_res <- binaryRL::optimize_para(
-        data = data,
-        id = id[j],
-        n_params = n_params,
-        n_trials = n_trials,
-        obj_func = fit_model[[i]],
-        lower = lower[[i]],
-        upper = upper[[i]],
-        iteration = iteration,
-        seed = seed,
-        initial_params = initial_params,
-        initial_size = initial_size,
-        algorithm = algorithm 
-      )
-      
-      cat(
-        "\n", 
-        model_name[i], "\u00d7 Subject", id[j], "[\u2713]", "\n",
-        "\n"
-      )
-      
-      model_result[[j]] <- data.frame(
-        fit_model = model_name[i],
-        Subject = id[j],
-        ACC = binaryRL_res$acc,
-        LogL = -binaryRL_res$ll,
-        AIC = binaryRL_res$aic,
-        BIC = binaryRL_res$bic
-      )
-      
-      for (k in 1:n_params) {
-        model_result[[j]][1, k + 6] <- binaryRL_res$output[k]
-        names(model_result[[j]])[k + 6] <- paste0("param_", k)
+      for (j in 1:length(id)) {
+        
+        n_params <- length(lower[[i]])
+        
+        binaryRL_res <- binaryRL::optimize_para(
+          data = data,
+          id = id[j],
+          n_params = n_params,
+          n_trials = n_trials,
+          obj_func = fit_model[[i]],
+          lower = lower[[i]],
+          upper = upper[[i]],
+          iteration = iteration,
+          seed = seed,
+          initial_params = initial_params,
+          initial_size = initial_size,
+          algorithm = algorithm 
+        )
+        
+        cat(
+          "\n", 
+          model_name[i], "\u00d7 Subject", id[j], "[\u2713]", "\n",
+          "\n"
+        )
+        
+        model_result[[j]] <- data.frame(
+          fit_model = model_name[i],
+          Subject = id[j],
+          ACC = binaryRL_res$acc,
+          LogL = -binaryRL_res$ll,
+          AIC = binaryRL_res$aic,
+          BIC = binaryRL_res$bic
+        )
+        
+        for (k in 1:n_params) {
+          model_result[[j]][1, k + 6] <- binaryRL_res$output[k]
+          names(model_result[[j]])[k + 6] <- paste0("param_", k)
+        }
       }
+      model_comparison[[i]] <- model_result
     }
-    model_comparison[[i]] <- model_result
   }
-  
+  else {
+    for (i in 1:length(fit_model)){
+
+      cl <- parallel::makeCluster(nc)
+      doParallel::registerDoParallel(cl)
+      
+      model_result <- foreach(j = 1:length(id), .combine = rbind, .packages = c("binaryRL")) %dopar% {
+        
+        n_params <- length(lower[[i]])
+        
+        binaryRL_res <- binaryRL::optimize_para(
+          data = data,
+          id = id[j],
+          n_params = n_params,
+          n_trials = n_trials,
+          obj_func = fit_model[[i]],
+          lower = lower[[i]],
+          upper = upper[[i]],
+          iteration = iteration,
+          seed = seed,
+          initial_params = initial_params,
+          initial_size = initial_size,
+          algorithm = algorithm 
+        )
+        
+        result_j <- data.frame(
+          fit_model = model_name[i],
+          Subject = id[j],
+          ACC = binaryRL_res$acc,
+          LogL = -binaryRL_res$ll,
+          AIC = binaryRL_res$aic,
+          BIC = binaryRL_res$bic
+        )
+        
+        for (k in 1:n_params) {
+          result_j[1, k + 6] <- binaryRL_res$output[k]
+          names(result_j)[k + 6] <- paste0("param_", k)
+        }
+        
+        return(result_j)
+      }
+      
+      model_comparison[[i]] <- model_result
+    
+      parallel::stopCluster(cl)
+    }
+  }
+
   result <- model_comparison
   
   return(result)

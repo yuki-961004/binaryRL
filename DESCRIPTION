@@ -1,5 +1,5 @@
 Package: binaryRL
-Version: 0.7.1
+Version: 0.7.2
 Title: Reinforcement Learning tools for Two-Alternative Forced Choice tasks
 Description:
   This package is tailored for fitting reinforcement learning models to
@@ -25,8 +25,9 @@ LazyData: TRUE
 RoxygenNote: 7.3.2
 Standardizable: FALSE
 Depends: R (>= 4.0.0)
+Imports: foreach
 Suggests: 
-  foreach, iterators, parallel, methods,
+  parallel, doParallel, iterators, methods,
   stats,
   GenSA, 
   GA, 

@@ -49,8 +49,9 @@ recovery <- binaryRL::rcv_d(
   initial_params = NA,
   initial_size = 50,
   seed = 123,
-  iteration_s = 50,
-  iteration_f = 30,
+  iteration_s = 10,
+  iteration_f = 50,
+  nc = 10,
   #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
   algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
   #algorithm = "GA"        # Genetic Algorithm (GA::ga)
@@ -63,7 +64,7 @@ recovery <- binaryRL::rcv_d(
 result <- dplyr::bind_rows(recovery) %>%
   dplyr::select(simulate_model, fit_model, iteration, everything())
 
-write.csv(result, file = "../OUTPUT/result_recovery.csv", row.names = FALSE)
+#write.csv(result, file = "../OUTPUT/result_recovery.csv", row.names = FALSE)
 ```
 
 ## Parameter Recovery

@@ -48,6 +48,8 @@
 #'  reproducible and remain the same each time the function is run. 
 #'  default: `seed = 123` 
 #'  
+#' @param nc [integer] Number of CPU cores to use for parallel computation.
+#'  
 #' @param algorithm [character] Choose a algorithm package from 
 #'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`
 #'
@@ -70,6 +72,7 @@ rcv_d <- function(
   iteration_s = 10,
   iteration_f = 10,
   seed = 1,
+  nc = 4,
   algorithm
 ){
   n_round_s <- length(simulate_models)
@@ -113,6 +116,7 @@ rcv_d <- function(
         initial_params = initial_params,
         initial_size = initial_size,
         iteration = iteration_f,
+        nc = nc,
         algorithm = algorithm
       )
       

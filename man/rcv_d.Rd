@@ -20,6 +20,7 @@ rcv_d(
   iteration_s = 10,
   iteration_f = 10,
   seed = 1,
+  nc = 4,
   algorithm
 )
 }
@@ -66,6 +67,8 @@ for `Bayesian`, `GA`, set `initial = 50`}
 \item{seed}{[integer] random seed. This ensures that the results are 
 reproducible and remain the same each time the function is run. 
 default: `seed = 123`}
+
+\item{nc}{[integer] Number of CPU cores to use for parallel computation.}
 
 \item{algorithm}{[character] Choose a algorithm package from 
 `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`}

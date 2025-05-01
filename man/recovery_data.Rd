@@ -13,11 +13,12 @@ recovery_data(
   n_trials,
   lower,
   upper,
-  algorithm,
   initial_params = NA,
   initial_size = 50,
   iteration = 10,
-  seed = 123
+  seed = 123,
+  nc = 4,
+  algorithm
 )
 }
 \arguments{
@@ -37,9 +38,6 @@ recovery_data(
 
 \item{upper}{[vector] upper bounds of free parameters}
 
-\item{algorithm}{[character] Choose a algorithm package from 
-`L-BFGS-B`, `GA`, `GenSA`, `DEoptim`}
-
 \item{initial_params}{[vector] Initial values for the free parameters. 
 These need to be set only when using L-BFGS-B. Other algorithms 
 automatically generate initial values.
@@ -55,6 +53,11 @@ for `Bayesian`, `GA`, set `initial = 50`}
 \item{seed}{[integer] random seed. This ensures that the results are 
 reproducible and remain the same each time the function is run. 
 default: `seed = 123`}
+
+\item{nc}{[integer] Number of CPU cores to use for parallel computation.}
+
+\item{algorithm}{[character] Choose a algorithm package from 
+`L-BFGS-B`, `GA`, `GenSA`, `DEoptim`}
 }
 \value{
 a data frame for parameter recovery and model recovery
