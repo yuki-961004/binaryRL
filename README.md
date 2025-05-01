@@ -781,159 +781,112 @@ plot_param_rcv(
 <!---------------------------------------------------------->
 
 <details>
-<summary>[Example Code] Visualizing Confusion Matrix</summary>
+<summary>[Example Code] Visualizing Model Recovery</summary>
 
 ```r
-data <- read.csv("./result_recovery.csv") %>%
-  dplyr::select(simulate_model, fit_model, iteration, BIC) %>%
-  tidyr::pivot_wider(names_from = "fit_model", values_from = "BIC") %>%
-  dplyr::mutate(
-    TD_score = ifelse(TD == pmin(TD, RSTD, Utility), 1, 0),
-    RSTD_score = ifelse(RSTD == pmin(TD, RSTD, Utility), 1, 0),
-    Utility_score = ifelse(Utility == pmin(TD, RSTD, Utility), 1, 0)
-  ) %>% 
-  dplyr::select(simulate_model, TD_score, RSTD_score, Utility_score) %>%
-  dplyr::group_by(simulate_model) %>%
-  dplyr::summarise(
-    TD = round(mean(TD_score), 2),
-    RSTD = round(mean(RSTD_score), 2),
-    Utility = round(mean(Utility_score), 2),
-  ) %>%
-  dplyr::ungroup() %>%
-  dplyr::arrange(factor(simulate_model, levels = c("TD", "RSTD", "Utility"))) %>%
-  tidyr::pivot_longer(
-    cols = -simulate_model, 
-    names_to = "fit_model", 
-    values_to = "value"
-  ) %>%
-  dplyr::mutate(
-    simulate = factor(simulate_model, levels = c("TD", "RSTD", "Utility")),
-    fit = factor(fit_model, levels = c("TD", "RSTD", "Utility")),
-  ) 
-
-plot <- ggplot2::ggplot(data, aes(x = simulate, y = fit, fill = value)) +
-  ggplot2::geom_tile() +
-  ggplot2::scale_fill_gradient2(
-    low = "#003161", mid = "#55c186", high = "#f0de36",
-    limits = c(0, 1), 
-    midpoint = 0.4       
-  ) + 
-  ggplot2::labs(
-    title = "Confusion Matrix: P(fit model | simulated model)",
-    x = "simulate model", 
-    y = "fit model"
-  ) + 
-  ggplot2::geom_text(aes(label = value), size = 10, color = "white") +
-  ggplot2::theme_minimal() +
-  ggplot2::theme(
-    legend.position = "none",
-    panel.background = ggplot2::element_rect(fill = "white", color = NA),
-    plot.background = ggplot2::element_rect(fill = "white", color = NA),
-    plot.margin = margin(t = 10, r = 10, b = 10, l = 10),
-    plot.title = element_text(
-      family = "serif", face = "bold",
-      size = 25, hjust = 1.5, margin = margin(b = 20)
-    ),
-    axis.title.y = element_text(
-      family = "serif", face = "bold",
-      size = 25, margin = margin(r = 20)
-    ),
-    axis.title.x = element_text(
-      family = "serif", face = "bold",
-      size = 25, margin = margin(t = 20)
-    ),
-    axis.text = element_text(
-      color = "black", family = "serif",  face = "bold",
-      size = 20
-    )
+plot_model_rcv <- function(
+  data = read.csv("../OUTPUT/result_recovery.csv"),
+  matrix_type,
+  filename
+){
+  data <- data %>%
+    dplyr::select(simulate_model, fit_model, iteration, BIC) %>%
+    tidyr::pivot_wider(names_from = "fit_model", values_from = "BIC") %>%
+    dplyr::mutate(
+      TD_score = ifelse(TD == pmin(TD, RSTD, Utility), 1, 0),
+      RSTD_score = ifelse(RSTD == pmin(TD, RSTD, Utility), 1, 0),
+      Utility_score = ifelse(Utility == pmin(TD, RSTD, Utility), 1, 0)
+    ) %>% 
+    dplyr::select(simulate_model, TD_score, RSTD_score, Utility_score) %>%
+    dplyr::group_by(simulate_model) %>%
+    dplyr::summarise(
+      TD = round(mean(TD_score), 2),
+      RSTD = round(mean(RSTD_score), 2),
+      Utility = round(mean(Utility_score), 2),
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(factor(simulate_model, levels = c("TD", "RSTD", "Utility"))) %>%
+    tidyr::pivot_longer(
+      cols = -simulate_model, 
+      names_to = "fit_model", 
+      values_to = "value"
+    ) %>%
+    dplyr::mutate(
+      simulate = factor(simulate_model, levels = c("TD", "RSTD", "Utility")),
+      fit = factor(fit_model, levels = c("TD", "RSTD", "Utility")),
+    ) 
+  
+  switch(
+    matrix_type,
+    "confusion" = {
+      data <- data
+      title <- "Confusion Matrix: P(fit model | simulated model)"
+      hjust <- 1.3
+    },
+    "inversion" = {
+      data <- data %>%
+        dplyr::group_by(fit_model) %>%
+        dplyr::mutate(value = round(value / sum(value), 2)) %>%
+        dplyr::ungroup()
+      title <- "Inversion Matrix: P(simulated model | fit model)"
+      hjust <- 1.5
+    }
   )
+  
+  plot <- ggplot2::ggplot(data, aes(x = simulate, y = fit, fill = value)) +
+    ggplot2::geom_tile() +
+    ggplot2::scale_fill_gradient2(
+      low = "#003161", mid = "#55c186", high = "#f0de36",
+      limits = c(0, 1), 
+      midpoint = 0.4       
+    ) + 
+    ggplot2::labs(
+      title = title,
+      x = "simulate model", 
+      y = "fit model"
+    ) + 
+    ggplot2::geom_text(aes(label = value), size = 10, color = "white") +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      legend.position = "none",
+      panel.background = ggplot2::element_rect(fill = "white", color = NA),
+      plot.background = ggplot2::element_rect(fill = "white", color = NA),
+      plot.margin = margin(t = 10, r = 10, b = 10, l = 10),
+      plot.title = element_text(
+        family = "serif", face = "bold",
+        size = 25, hjust = hjust, margin = margin(b = 20)
+      ),
+      axis.title.y = element_text(
+        family = "serif", face = "bold",
+        size = 25, margin = margin(r = 20)
+      ),
+      axis.title.x = element_text(
+        family = "serif", face = "bold",
+        size = 25, margin = margin(t = 20)
+      ),
+      axis.text = element_text(
+        color = "black", family = "serif",  face = "bold",
+        size = 20
+      )
+    )
+  
+  ggplot2::ggsave(
+    plot = plot,
+    filename = filename, 
+    width = 8, height = 6
+  )
+}
 
-ggplot2::ggsave(
-  plot = plot,
-  filename = "../FIGURE/matrix_confusion.png", 
-  width = 8, height = 6
+plot_model_rcv(
+  data = read.csv("../OUTPUT/result_recovery.csv"),
+  matrix_type = "confusion",
+  filename = "../FIGURE/matrix_confusion.png"
 )
-```
 
-</details>
-
-<!---------------------------------------------------------->
-
-<details>
-<summary>[Example Code] Visualizing Inversion Matrix</summary>
-
-```r
-data <- read.csv("./result_recovery.csv") %>%
-  dplyr::select(simulate_model, fit_model, iteration, BIC) %>%
-  tidyr::pivot_wider(names_from = "fit_model", values_from = "BIC") %>%
-  dplyr::mutate(
-    TD_score = ifelse(TD == pmin(TD, RSTD, Utility), 1, 0),
-    RSTD_score = ifelse(RSTD == pmin(TD, RSTD, Utility), 1, 0),
-    Utility_score = ifelse(Utility == pmin(TD, RSTD, Utility), 1, 0)
-  ) %>% 
-  dplyr::select(simulate_model, TD_score, RSTD_score, Utility_score) %>%
-  dplyr::group_by(simulate_model) %>%
-  dplyr::summarise(
-    TD = round(mean(TD_score), 2),
-    RSTD = round(mean(RSTD_score), 2),
-    Utility = round(mean(Utility_score), 2),
-  ) %>%
-  dplyr::ungroup() %>%
-  dplyr::arrange(factor(simulate_model, levels = c("TD", "RSTD", "Utility"))) %>%
-  tidyr::pivot_longer(
-    cols = -simulate_model, 
-    names_to = "fit_model", 
-    values_to = "value"
-  ) %>%
-  dplyr::mutate(
-    simulate = factor(simulate_model, levels = c("TD", "RSTD", "Utility")),
-    fit = factor(fit_model, levels = c("TD", "RSTD", "Utility")),
-  ) %>%
-  dplyr::group_by(fit_model) %>%
-  dplyr::mutate(value = round(value / sum(value), 2)) %>%
-  dplyr::ungroup()
-
-plot <- ggplot2::ggplot(data, aes(x = simulate, y = fit, fill = value)) +
-  ggplot2::geom_tile() +
-  ggplot2::scale_fill_gradient2(
-    low = "#003161", mid = "#55c186", high = "#f0de36",
-    limits = c(0, 1), 
-    midpoint = 0.4       
-  ) + 
-  ggplot2::labs(
-    title = "Inversion Matrix: P(simulated model | fit model)",
-    x = "simulate model", 
-    y = "fit model"
-  ) + 
-  ggplot2::geom_text(aes(label = value), size = 10, color = "white") +
-  ggplot2::theme_minimal() +
-  ggplot2::theme(
-    legend.position = "none",
-    panel.background = ggplot2::element_rect(fill = "white", color = NA),
-    plot.background = ggplot2::element_rect(fill = "white", color = NA),
-    plot.margin = margin(t = 10, r = 10, b = 10, l = 10),
-    plot.title = element_text(
-      family = "serif", face = "bold",
-      size = 25, hjust = 1.5, margin = margin(b = 20)
-    ),
-    axis.title.y = element_text(
-      family = "serif", face = "bold",
-      size = 25, margin = margin(r = 20)
-    ),
-    axis.title.x = element_text(
-      family = "serif", face = "bold",
-      size = 25, margin = margin(t = 20)
-    ),
-    axis.text = element_text(
-      color = "black", family = "serif",  face = "bold",
-      size = 20
-    )
-  )
-
-ggplot2::ggsave(
-  plot = plot,
-  filename = "../FIGURE/matrix_inversion.png", 
-  width = 8, height = 6
+plot_model_rcv(
+  data = read.csv("../OUTPUT/result_recovery.csv"),
+  matrix_type = "inversion",
+  filename = "../FIGURE/matrix_inversion.png"
 )
 ```
 

@@ -1,0 +1,454 @@
+---
+title: "Untitled"
+author: "yuki"
+date: "2025-05-01"
+output: html_document
+---
+```{r setup}
+library(patchwork)
+```
+
+# Model Comparison
+## optimize_para
+```{r}
+binaryRL.res <- binaryRL::optimize_para(
+  data = binaryRL::Mason_2024_Exp2,
+  id = 1,
+  obj_func = binaryRL::RSTD,
+  n_params = 3,
+  n_trials = 360,
+  lower = c(0, 0, 0),
+  upper = c(1, 1, 1),
+  iteration = 40,
+  seed = 123,
+  #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
+  algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
+  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
+  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+)
+```
+
+## fit_p
+```{r include=FALSE}
+comparison <- binaryRL::fit_p(
+  data = binaryRL::Mason_2024_Exp2,
+  n_trials = 360,
+  id = unique(binaryRL::Mason_2024_Exp2$Subject),
+  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
+  model_name = c("TD", "RSTD", "Utility"),
+  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
+  iteration = 50,
+  seed = 123,
+  #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
+  algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
+  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
+  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+)
+
+result <- dplyr::bind_rows(comparison)
+
+write.csv(result, "../OUTPUT/result_comparison.csv", row.names = FALSE)
+```
+
+## Plot
+```{r}
+data <- read.csv("../OUTPUT/result_comparison.csv") %>%
+  dplyr::select(-dplyr::starts_with("param_")) %>%
+  tidyr::pivot_longer(
+    cols = c(ACC, LogL, AIC, BIC),
+    names_to = "metric", 
+    values_to = "value"
+  ) %>%
+  dplyr::group_by(Subject, metric) %>%
+  dplyr::mutate(
+    value_norm = (value - min(value)) / (max(value) - min(value) + 1e-10), 
+    fit_model = factor(
+      fit_model,
+      levels = c("TD", "RSTD", "Utility")
+    ),
+    metric = factor(
+      metric, 
+      levels = c('ACC', 'LogL', 'AIC', 'BIC'),
+      labels = c('ACC', '-LogL', 'AIC', 'BIC')
+    )
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(Subject, fit_model)
+
+plot <- ggplot2::ggplot(data, aes(x = metric, y = value_norm, fill = fit_model)) +
+  ggplot2::geom_bar(stat = "summary", fun = "mean", position = "dodge") +
+  ggplot2::geom_errorbar(
+    stat = "summary", fun.data = "mean_se",
+    position = position_dodge(width = 0.9), width = 0.2
+  ) +
+  ggplot2::labs(x = "Normalized Metric", y = "", fill = "Model") +
+  ggplot2::scale_fill_manual(values = c("#053562", "#55c186", "#f0de36")) +
+  ggplot2::coord_cartesian(ylim = c(0, 1)) +
+  ggplot2::scale_y_continuous(labels = scales::percent) +
+  papaja::theme_apa() +
+  ggplot2::theme(
+    legend.title = element_blank(),
+    text = element_text(
+      family = "serif", 
+      face = "bold",
+      size = 25
+    ),
+    axis.text = element_text(
+      color = "black",
+      family = "serif", 
+      face = "bold",
+      size = 20
+    )
+  )  
+  
+ggplot2::ggsave(
+  plot = plot,
+  filename = "../FIGURE/model_comparison.png", 
+  width = 8, height = 6
+)
+```
+
+# Review
+```{r block_plot}
+block_plot <- function(data, filename, agent) {
+  switch(
+    agent,
+    "human" = {
+      data <- data %>%
+        dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+        dplyr::select(Subject, Block, Trial, Frame, Sub_Choose) %>%
+        dplyr::mutate(
+          Subject = factor(Subject),
+          Block = as.numeric(Block),
+          Sub_Choose = case_when(
+            Sub_Choose %in% c("A", "C") ~ 0,
+            Sub_Choose %in% c("B", "D") ~ 1,
+          ),
+        ) %>%
+        dplyr::group_by(Subject, Block, Frame) %>%
+        dplyr::summarise(Rate = mean(Sub_Choose)) %>%
+        #dplyr::mutate(Time = row_number()) %>%
+        dplyr::ungroup() %>%
+        dplyr::arrange(Subject, Frame, Block)
+    },
+    "robot" = {
+      data <- data %>%
+        dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+        dplyr::select(Subject, Block, Trial, Frame, Rob_Choose) %>%
+        dplyr::mutate(
+          Subject = factor(Subject),
+          Block = as.numeric(Block),
+          Rob_Choose = case_when(
+            Rob_Choose %in% c("A", "C") ~ 0,
+            Rob_Choose %in% c("B", "D") ~ 1,
+          ),
+        ) %>%
+        dplyr::group_by(Subject, Block, Frame) %>%
+        dplyr::summarise(Rate = mean(Rob_Choose)) %>%
+        #dplyr::mutate(Time = row_number()) %>%
+        dplyr::ungroup() %>%
+        dplyr::arrange(Subject, Frame, Block)
+    }
+  )
+  
+
+  
+  summarise <- data %>%
+    dplyr::group_by(Block, Frame) %>%
+    dplyr::summarise(
+      Rate_Mean = mean(Rate),
+      Rate_SD = sd(Rate)
+      / sqrt(n_distinct(Subject) - 1)
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      LLCI = Rate_Mean - Rate_SD,
+      ULCI = Rate_Mean + Rate_SD,
+    )
+
+  p1 <- ggplot2::ggplot(
+      data = data %>% dplyr::filter(Frame == "Gain"),
+      mapping = aes(x = Block, y = Rate)
+    ) +
+    ggplot2::geom_point(mapping = aes(color = Subject), alpha = 0.2) +
+    ggplot2::geom_line(mapping = aes(color = Subject), alpha = 0.2) +
+    ggplot2::geom_errorbar(
+      data = summarise %>% dplyr::filter(Frame == "Gain"),
+      mapping = aes(x = Block, y = Rate_Mean, ymin = LLCI, ymax = ULCI), 
+      size = 1, width = 0.3, color = "#FF6500"
+    ) +
+    ggplot2::geom_point(
+      data = summarise %>% dplyr::filter(Frame == "Gain"),
+      mapping = aes(x = Block, y = Rate_Mean), 
+      size = 7, shape = 17, color = "#FF6500", 
+    ) +
+    ggplot2::scale_x_continuous(breaks = c(1, 2, 3, 4, 5, 6)) +
+    ggplot2::scale_y_continuous(
+      limits = c(-0.05, 1.05),
+      breaks = c(0, 0.25, 0.5, 0.75, 1), 
+      labels = c("0%", "25%", "50%", "75%", "100%")
+    ) +
+    ggplot2::labs(
+      x = "Blcok", y = "The Ratio of Choosing Risky Door", title = "Gain Frame"
+    ) +
+    papaja::theme_apa() +
+    ggplot2::theme(
+      legend.position = "none"
+    )
+  
+  p2 <- ggplot2::ggplot(
+      data = data %>% dplyr::filter(Frame == "Loss"),
+      mapping = aes(x = Block, y = Rate)
+    ) +
+    ggplot2::geom_point(mapping = aes(color = Subject), alpha = 0.2) +
+    ggplot2::geom_line(mapping = aes(color = Subject), alpha = 0.2) +
+    ggplot2::geom_errorbar(
+      data = summarise %>% dplyr::filter(Frame == "Loss"),
+      mapping = aes(x = Block, y = Rate_Mean, ymin = LLCI, ymax = ULCI), 
+      size = 1, width = 0.3, color = "#86B6F6"
+    ) +
+    ggplot2::geom_point(
+      data = summarise %>% dplyr::filter(Frame == "Loss"),
+      mapping = aes(x = Block, y = Rate_Mean), 
+      size = 7, shape = 17, color = "#86B6F6", 
+    ) +
+    ggplot2::scale_x_continuous(breaks = c(1, 2, 3, 4, 5, 6)) +
+    ggplot2::scale_y_continuous(
+      limits = c(-0.05, 1.05),
+      breaks = c(0, 0.25, 0.5, 0.75, 1), 
+      labels = c("0%", "25%", "50%", "75%", "100%")
+    ) +
+    ggplot2::labs(
+      x = "Blcok", y = "The Ratio of Choosing Risky Door", title = "Loss Frame"
+    ) +
+    papaja::theme_apa() +
+    ggplot2::theme(
+      legend.position = "none"
+    )
+  
+  save <- p1 + p2 + plot_layout(nrow = 1, guides = 'collect')
+  
+  ggplot2::ggsave(
+    plot = save,
+    filename = filename,
+    width = 15,
+    height = 5,
+  )
+}
+```
+
+
+```{r frame_plot}
+frame_plot <- function(data, filename, agent){
+  switch(
+    agent,
+    "human" = {
+      data <- data %>%
+        dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+        dplyr::filter(Block %in% c(4, 5, 6)) %>%
+        dplyr::select(Subject, Block, Trial, Frame, Sub_Choose) %>%
+        dplyr::mutate(
+          Subject = factor(Subject),
+          Sub_Choose = case_when(
+            Sub_Choose %in% c("A", "C") ~ 0,
+            Sub_Choose %in% c("B", "D") ~ 1,
+          ),
+        ) %>%
+        dplyr::group_by(Subject, Frame) %>%
+        dplyr::summarise(Rate = mean(Sub_Choose)) %>%
+        #dplyr::mutate(Time = row_number()) %>%
+        dplyr::ungroup() %>%
+        dplyr::arrange(Subject, Frame)
+    },
+    "robot" = {
+      data <- data %>%
+        dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+        dplyr::filter(Block %in% c(4, 5, 6)) %>%
+        dplyr::select(Subject, Block, Trial, Frame, Rob_Choose) %>%
+        dplyr::mutate(
+          Subject = factor(Subject),
+          Rob_Choose = case_when(
+            Rob_Choose %in% c("A", "C") ~ 0,
+            Rob_Choose %in% c("B", "D") ~ 1,
+          ),
+        ) %>%
+        dplyr::group_by(Subject, Frame) %>%
+        dplyr::summarise(Rate = mean(Rob_Choose)) %>%
+        #dplyr::mutate(Time = row_number()) %>%
+        dplyr::ungroup() %>%
+        dplyr::arrange(Subject, Frame)
+    }
+  )
+  
+  summarise <- data %>%
+    dplyr::group_by(Frame) %>%
+    dplyr::summarise(
+      Rate_Mean = mean(Rate),
+      Rate_SD = sd(Rate)
+      / sqrt(n_distinct(Subject) - 1)
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      LLCI = Rate_Mean - Rate_SD,
+      ULCI = Rate_Mean + Rate_SD,
+    )
+  
+  p <- ggplot2::ggplot(
+      data = data,
+      mapping = ggplot2::aes(x = Frame, y = Rate, color = Frame)
+    ) +
+    ggplot2::geom_jitter(mapping = ggplot2::aes(color = Frame), alpha = 0.2, width = 0.1) +
+    ggplot2::geom_line(mapping = ggplot2::aes(color = Frame), alpha = 0.2) +
+    ggplot2::geom_errorbar(
+      data = summarise,
+      mapping = ggplot2::aes(x = Frame, y = Rate_Mean, ymin = LLCI, ymax = ULCI),
+      size = 1, width = 0.3
+    ) +
+    ggplot2::geom_col(
+      data = summarise,
+      mapping = ggplot2::aes(x = Frame, y = Rate_Mean, fill = Frame),
+      width = 0.5, alpha = 0.5
+    ) +
+    ggplot2::geom_hline(yintercept = 0.5, linetype = "dashed", color = "black") +
+    ggplot2::scale_fill_manual(values = c("#FF6500", "#86B6F6")) +
+    ggplot2::scale_color_manual(values = c("#FF6500", "#86B6F6")) +
+    ggplot2::scale_y_continuous(
+      limits = c(0, 1.1),
+      breaks = c(0, 0.25, 0.5, 0.75, 1), 
+      labels = c("0%", "25%", "50%", "75%", "100%"),
+      expand = c(0, 0)
+    ) +
+    ggplot2::labs(
+      x = "Frame", y = "The Ratio of Choosing Risky Door",
+    ) +
+    papaja::theme_apa() +
+    ggplot2::theme(
+      legend.position = "none"
+    )
+  
+  ggplot2::ggsave(
+    plot = p,
+    filename = filename,
+    width = 8,
+    height = 6,
+  )
+}
+```
+
+
+```{r}
+block_plot(data = binaryRL::Mason_2024_Exp2, filename = "../FIGURE/0_raw.png", agent = "human")
+frame_plot(data = binaryRL::Mason_2024_Exp2, filename = "../FIGURE/0_raw.png", agent = "human")
+```
+
+```{r}
+list <- list()
+id <- unique(binaryRL::Mason_2024_Exp2$Subject)
+```
+
+## TD
+```{r}
+result <- read.csv("../OUTPUT/result_comparison.csv")  %>%
+  dplyr::filter(fit_model == "TD")
+
+res <- list()
+
+for (i in 1:length(id)) {
+  
+  params <- na.omit(unlist(result[i, grep("param_", names(result))]))
+  
+  binaryRL.env <- new.env()
+  binaryRL.env$data <- binaryRL::Mason_2024_Exp2
+  binaryRL.env$id <- id[i]
+  binaryRL.env$n_params <- length(params)
+  binaryRL.env$n_trials <- 360
+  binaryRL.env$mode <- "review"
+  
+  
+  obj_func <- binaryRL::TD
+  
+  environment(obj_func) <- binaryRL.env
+  res[[i]] <- obj_func(params = params)[[1]]
+}
+
+rm(i, params, obj_func, binaryRL.env)
+
+list[[1]] <- dplyr::bind_rows(res)
+
+frame_plot(data = list[[1]], filename = "../FIGURE/1_TD.png", agent = "robot")
+
+block_plot(data = list[[1]], filename = "../FIGURE/1_TD.png", agent = "robot")
+```
+
+## RSTD
+```{r}
+result <- read.csv("../OUTPUT/result_comparison.csv")  %>%
+  dplyr::filter(fit_model == "RSTD")
+
+res <- list()
+
+for (i in 1:length(id)) {
+  
+  params <- na.omit(unlist(result[i, grep("param_", names(result))]))
+  
+  binaryRL.env <- new.env()
+  binaryRL.env$data <- binaryRL::Mason_2024_Exp2
+  binaryRL.env$id <- id[i]
+  binaryRL.env$n_params <- length(params)
+  binaryRL.env$n_trials <- 360
+  binaryRL.env$mode <- "review"
+  
+  obj_func <- binaryRL::RSTD
+  
+  environment(obj_func) <- binaryRL.env
+  res[[i]] <- obj_func(params = params)[[1]]
+}
+
+rm(i, params, obj_func, binaryRL.env)
+
+list[[2]] <- dplyr::bind_rows(res)
+
+block_plot(data = list[[2]], filename = "../FIGURE/2_RSTD.png", agent = "robot")
+
+frame_plot(data = list[[2]], filename = "../FIGURE/2_RSTD.png", agent = "robot")
+```
+
+## Utility
+```{r}
+result <- read.csv("../OUTPUT/result_comparison.csv")  %>%
+  dplyr::filter(fit_model == "Utility")
+
+res <- list()
+
+for (i in 1:length(id)) {
+  
+  params <- na.omit(unlist(result[i, grep("param_", names(result))]))
+  
+  binaryRL.env <- new.env()
+  binaryRL.env$data <- binaryRL::Mason_2024_Exp2
+  binaryRL.env$id <- id[i]
+  binaryRL.env$n_params <- length(params)
+  binaryRL.env$n_trials <- 360
+  binaryRL.env$mode <- "review"
+  
+  obj_func <- binaryRL::Utility
+  
+  environment(obj_func) <- binaryRL.env
+  res[[i]] <- obj_func(params = params)[[1]]
+}
+
+rm(i, params, obj_func, binaryRL.env)
+
+list[[3]] <- dplyr::bind_rows(res)
+
+block_plot(data = list[[3]], filename = "../FIGURE/3_Utility.png", agent = "robot")
+
+frame_plot(data = list[[3]], filename = "../FIGURE/3_Utility.png", agent = "robot")
+```
