@@ -80,14 +80,14 @@ fit_p <- function(
   initial_size = 50,
   iteration = 10,
   seed = 123,
-  nc = 4,
+  nc = 1,
   algorithm
 ){
   model_comparison <- list()
   model_result <- list()
   
   # Check for internally parallel algorithms
-  if ((algorithm %in% c("GA", "DEoptim")) | (nc == 1)) {
+  if (nc == 1) {
     
     for (i in 1:length(fit_model)){
       

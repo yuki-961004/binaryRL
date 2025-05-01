@@ -66,7 +66,7 @@ recovery_data <- function(
     initial_size = 50,
     iteration = 10,
     seed = 123,
-    nc = 4,
+    nc = 1,
     algorithm
 ){
   # 创建一个空数据集, 用于存放结果
@@ -99,7 +99,7 @@ recovery_data <- function(
   
 
   # Check for internally parallel algorithms
-  if ((algorithm %in% c("GA", "DEoptim")) | (nc == 1)) {
+  if (nc == 1) {
     # 用解题模型求解参数
     for (i in 1:length(list)){
       data <- list[[i]][[1]]

@@ -921,9 +921,8 @@ binaryRL::rcv_d(
   ...
 )
 ```
-Both `fit_p` and `rcv_d` support parallel computation, meaning they can fit multiple participants' datasets simultaneously as long as `nc > 1` (with the default set to 4).  
-However, because parallel computation creates a separate environment, if you use parallelization and custom functions, you must inform `binaryRL` of the names of those `custom functions`.  
-Additionally, if you choose to use `GA` or `DEoptim` for model fitting, parallelization across participants will not be supported, since these two algorithms already rely on internal parallel computation.
+Both `fit_p` and `rcv_d` support parallel computation, meaning they can fit multiple participants' datasets simultaneously as long as `nc > 1`.  
+Since parallel execution runs in a separate environment, if you have customized any of the four core functions, you must explicitly pass the function names to `binaryRL` via the `funcs` argument.
 
 ## Initial Value
 In `run_m`, there is an argument called `initial_value`. Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.

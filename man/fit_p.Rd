@@ -17,7 +17,7 @@ fit_p(
   initial_size = 50,
   iteration = 10,
   seed = 123,
-  nc = 4,
+  nc = 1,
   algorithm
 )
 }

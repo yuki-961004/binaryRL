@@ -124,8 +124,7 @@ optimize_para <- function(
     },
     "GA" = {
       # 检查所依赖的算法包是否安装
-      required_pkgs <- c("GA", "methods", "foreach", "iterators")
-      check_dependency(required_pkgs, algorithm_name = "Genetic Algorithm")
+      check_dependency("GA", algorithm_name = "Genetic Algorithm")
       
       GA::ga(
         type = "real-valued",
@@ -134,13 +133,12 @@ optimize_para <- function(
         lower = lower,
         upper = upper,
         maxiter = iteration,
-        parallel = TRUE
+        #parallel = TRUE
       )
     },
     "DEoptim" = {
       # 检查所依赖的算法包是否安装
-      required_pkgs <- c("DEoptim", "parallel")
-      check_dependency(required_pkgs, algorithm_name = "Differential Evolution")
+      check_dependency("DEoptim", algorithm_name = "Differential Evolution")
       
       DEoptim::DEoptim(
         fn = obj_func,
@@ -149,8 +147,8 @@ optimize_para <- function(
         control = DEoptim::DEoptim.control(
           NP = initial_size,
           itermax = iteration,
-          parallelType = c("parallel"),
-          packages = c("binaryRL")
+          #parallelType = "parallel"
+          #packages = "binaryRL"
         )
       )
     },
@@ -189,8 +187,7 @@ optimize_para <- function(
     },
     "PSO" = {
       # 检查所依赖的算法包是否安装
-      required_pkgs <- c("pso", "methods")
-      check_dependency(required_pkgs, algorithm_name = "Particle Swarm Optimization")
+      check_dependency("pso", algorithm_name = "Particle Swarm Optimization")
 
       pso::psoptim(
         par = initial_params,

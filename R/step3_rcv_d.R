@@ -76,7 +76,7 @@ rcv_d <- function(
   iteration_s = 10,
   iteration_f = 10,
   seed = 1,
-  nc = 4,
+  nc = 1,
   algorithm
 ){
   n_round_s <- length(simulate_models)

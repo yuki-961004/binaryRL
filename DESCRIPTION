@@ -1,5 +1,5 @@
 Package: binaryRL
-Version: 0.7.3
+Version: 0.7.4
 Title: Reinforcement Learning tools for Two-Alternative Forced Choice tasks
 Description:
   This package is tailored for fitting reinforcement learning models to

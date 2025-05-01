@@ -21,7 +21,7 @@ rcv_d(
   iteration_s = 10,
   iteration_f = 10,
   seed = 1,
-  nc = 4,
+  nc = 1,
   algorithm
 )
 }
