@@ -341,13 +341,15 @@ If you want to use an algorithm other than `L-BFGS-B`, you must install the corr
 comparison <- binaryRL::fit_p(
   data = binaryRL::Mason_2024_Exp2,
   n_trials = 360,
-  id = c(1:125),
+  id = unique(binaryRL::Mason_2024_Exp2$Subject),
+  #funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
   iteration = 10,
   seed = 123,
+  nc = 4,
   # Gradient-based 
   algorithm = "L-BFGS-B"   # Gradient-Based (stats::optim)
   # Heuristic-based
@@ -508,6 +510,7 @@ recovery <- binaryRL::rcv_d(
   data = binaryRL::Mason_2024_Exp2,
   id = 1,
   n_trials = 360,
+  #funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   simulate_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
@@ -520,6 +523,7 @@ recovery <- binaryRL::rcv_d(
   seed = 123,
   iteration_s = 50,
   iteration_f = 50,
+  nc = 4,
   algorithm = "Bayesian"
 )
 
@@ -573,6 +577,7 @@ df_recovery <- binaryRL::recovery_data(
   lower = c(0, 0, 1),
   upper = c(1, 1, 5),
   iteration = 30,
+  nc = 4,
   algorithm = "Bayesian"
 )
 ```
