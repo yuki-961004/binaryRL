@@ -8,6 +8,7 @@ recovery_data(
   list,
   id = 1,
   fit_model,
+  funcs,
   model_name,
   n_params,
   n_trials,
@@ -27,6 +28,9 @@ recovery_data(
 \item{id}{[integer] default = 1}
 
 \item{fit_model}{[function] fit model}
+
+\item{funcs}{[vector] A character vector containing the names of all 
+user-defined functions required for the computation.}
 
 \item{model_name}{[character] the name of your modal}
 
@@ -64,10 +68,10 @@ a data frame for parameter recovery and model recovery
 }
 \description{
 This function applies `optimize_para` to each fake data in the list generated 
-by `simulate_list`. The results can be used for parameter recovery and 
-model recovery, helping evaluate the consistency and validity of the 
-reinforcement learning model.
+ by `simulate_list`. The results can be used for parameter recovery and 
+ model recovery, helping evaluate the consistency and validity of the 
+ reinforcement learning model.
 
-For more information, please refer to the GitHub repository:
-https://github.com/yuki-961004/binaryRL
+ For more information, please refer to the GitHub repository:
+ https://github.com/yuki-961004/binaryRL
 }

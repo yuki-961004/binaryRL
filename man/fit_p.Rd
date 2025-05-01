@@ -9,6 +9,7 @@ fit_p(
   id = c(1:40),
   n_trials,
   fit_model = list(TD, RSTD, Utility),
+  funcs,
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
@@ -33,6 +34,9 @@ e.g., `id = c(1:40)`}
 \item{n_trials}{[integer] number of total trials}
 
 \item{fit_model}{[list] A collection of functions applied to fit models to the data.}
+
+\item{funcs}{[vector] A character vector containing the names of all 
+user-defined functions required for the computation.}
 
 \item{model_name}{[list] the name of fit modals}
 

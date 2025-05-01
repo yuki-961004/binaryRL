@@ -15,6 +15,7 @@ rcv_d(
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   model_names = c("TD", "RSTD", "Utility"),
+  funcs,
   initial_params = NA,
   initial_size = 50,
   iteration_s = 10,
@@ -49,6 +50,9 @@ e.g., `id = c(1:40)`}
 \item{fit_upper}{[list] The upper bounds for model fit models}
 
 \item{model_names}{[list] the names of fit modals}
+
+\item{funcs}{[vector] A character vector containing the names of all 
+user-defined functions required for the computation.}
 
 \item{initial_params}{[vector] Initial values for the free parameters. 
 These need to be set only when using L-BFGS-B. Other algorithms 

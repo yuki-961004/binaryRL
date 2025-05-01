@@ -30,6 +30,9 @@
 #' 
 #' @param model_names [list] the names of fit modals
 #' 
+#' @param funcs [vector] A character vector containing the names of all 
+#'  user-defined functions required for the computation.
+#' 
 #' @param initial_params [vector] Initial values for the free parameters. 
 #'  These need to be set only when using L-BFGS-B. Other algorithms 
 #'  automatically generate initial values.
@@ -67,6 +70,7 @@ rcv_d <- function(
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   model_names = c("TD", "RSTD", "Utility"),
+  funcs,
   initial_params = NA,
   initial_size = 50,
   iteration_s = 10,
@@ -108,6 +112,7 @@ rcv_d <- function(
         list = list_simulated,
         id = id,
         fit_model = fit_models[[j]],
+        funcs = funcs,
         model_name = model_names[j],
         n_params = np, 
         n_trials = nt,

@@ -31,6 +31,9 @@
 #'  
 #' @param fit_model [list] A collection of functions applied to fit models to the data.
 #' 
+#' @param funcs [vector] A character vector containing the names of all 
+#'  user-defined functions required for the computation.
+#' 
 #' @param model_name [list] the name of fit modals
 #' 
 #' @param n_trials [integer] number of total trials
@@ -69,6 +72,7 @@ fit_p <- function(
   id = c(1:40),
   n_trials,
   fit_model = list(TD, RSTD, Utility),
+  funcs,
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
@@ -134,8 +138,13 @@ fit_p <- function(
 
       cl <- parallel::makeCluster(nc)
       doParallel::registerDoParallel(cl)
+      # 把自定义的函数传入并行环境中
+      parallel::clusterExport(cl, varlist = funcs, envir = .GlobalEnv)
       
-      model_result <- foreach(j = 1:length(id), .combine = rbind, .packages = c("binaryRL")) %dopar% {
+      model_result <- foreach(
+        j = 1:length(id), .combine = rbind, 
+        .packages = c("binaryRL")
+      ) %dopar% {
         
         n_params <- length(lower[[i]])
         
