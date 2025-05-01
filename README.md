@@ -905,6 +905,26 @@ Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational m
 ---
 
 # Other Arguments
+## Paralell
+```r
+binaryRL::fit_p(
+  ...,
+  funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
+  nc = 4,
+  ...
+)
+
+binaryRL::rcv_d(
+  ...,
+  funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
+  nc = 4,
+  ...
+)
+```
+Both `fit_p` and `rcv_d` support parallel computation, meaning they can fit multiple participants' datasets simultaneously as long as `nc > 1` (with the default set to 4).  
+However, because parallel computation creates a separate environment, if you use parallelization and custom functions, you must inform `binaryRL` of the names of those `custom functions`.  
+Additionally, if you choose to use `GA` or `DEoptim` for model fitting, parallelization across participants will not be supported, since these two algorithms already rely on internal parallel computation.
+
 ## Initial Value
 In `run_m`, there is an argument called `initial_value`. Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
 
