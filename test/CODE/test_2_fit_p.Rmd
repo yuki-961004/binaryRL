@@ -83,7 +83,9 @@ data <- read.csv("../OUTPUT/result_comparison.csv") %>%
   ) %>%
   dplyr::ungroup() %>%
   dplyr::arrange(Subject, fit_model)
+```
 
+```{r}
 plot <- ggplot2::ggplot(data, aes(x = metric, y = value_norm, fill = fit_model)) +
   ggplot2::geom_bar(stat = "summary", fun = "mean", position = "dodge") +
   ggplot2::geom_errorbar(
@@ -92,7 +94,7 @@ plot <- ggplot2::ggplot(data, aes(x = metric, y = value_norm, fill = fit_model))
   ) +
   ggplot2::labs(x = "Normalized Metric", y = "", fill = "Model") +
   ggplot2::scale_fill_manual(values = c("#053562", "#55c186", "#f0de36")) +
-  ggplot2::coord_cartesian(ylim = c(0, 1)) +
+  ggplot2::coord_cartesian(ylim = c(0, 0.80)) +
   ggplot2::scale_y_continuous(labels = scales::percent) +
   papaja::theme_apa() +
   ggplot2::theme(
@@ -112,7 +114,47 @@ plot <- ggplot2::ggplot(data, aes(x = metric, y = value_norm, fill = fit_model))
   
 ggplot2::ggsave(
   plot = plot,
-  filename = "../FIGURE/model_comparison.png", 
+  filename = "../FIGURE/model_comparison(rel).png", 
+  width = 8, height = 6
+)
+```
+
+```{r}
+plots <- data %>%
+  split(.$metric) %>%
+  purrr::map(~{
+    ggplot2::ggplot(.x, ggplot2::aes(x = fit_model, y = value, fill = fit_model)) +
+      ggplot2::geom_bar(stat = "summary", fun = "mean", position = "dodge") +
+      ggplot2::geom_errorbar(
+        stat = "summary", fun.data = "mean_se",
+        position = ggplot2::position_dodge(width = 0.9), width = 0.2
+      ) +
+      ggplot2::scale_fill_manual(values = c("#053562", "#55c186", "#f0de36")) +
+      ggplot2::labs(x = "", y = "", title = .x$metric[1]) +
+      ggplot2::coord_cartesian(
+        ylim = c(
+          mean(.x$value) - 0.2*sd(.x$value), 
+          mean(.x$value) + 0.2*sd(.x$value))
+      ) +
+      papaja::theme_apa() +
+      ggplot2::theme(
+        legend.position = "none",
+        plot.margin = margin(t = 0, r = 0, b = 0, l = 0),
+        text = element_text(family = "serif", face = "bold", size = 15),
+        axis.text = element_text(
+          color = "black", family = "serif", face = "bold", size = 12
+        ),
+      )
+  })
+
+# 用 patchwork 拼起來
+plot <- wrap_plots(plots, ncol = 2)
+
+rm(plots)
+
+ggplot2::ggsave(
+  plot = plot, 
+  filename = "../FIGURE/model_comparison(abs).png",
   width = 8, height = 6
 )
 ```
@@ -454,3 +496,78 @@ block_plot(data = list[[3]], filename = "../FIGURE/3_Utility.png", agent = "robo
 
 frame_plot(data = list[[3]], filename = "../FIGURE/3_Utility.png", agent = "robot")
 ```
+
+```{r}
+plot <- list()
+
+model_name <- c("TD", "RSTD", "Utility")
+
+for(i in 1:3){
+  plot[[i]] <- list[[i]]%>%
+    dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+    dplyr::filter(Block %in% c(4, 5, 6)) %>%
+    dplyr::select(Subject, Frame, Rob_Choose) %>%
+    dplyr::mutate(
+      Model = model_name[i],
+      Subject = factor(Subject),
+      Rob_Choose = case_when(
+        Rob_Choose %in% c("A", "C") ~ 0,
+        Rob_Choose %in% c("B", "D") ~ 1,
+    ),
+    ) %>%
+    dplyr::group_by(Model, Subject, Frame) %>%
+    dplyr::summarise(Rate = mean(Rob_Choose)) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(Subject, Frame)
+}
+
+plot[[4]] <- binaryRL::Mason_2024_Exp2%>%
+    dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+    dplyr::filter(Block %in% c(4, 5, 6)) %>%
+    dplyr::select(Subject, Frame, Sub_Choose) %>%
+    dplyr::mutate(
+      Model = "Human",
+      Subject = factor(Subject),
+      Sub_Choose = case_when(
+        Sub_Choose %in% c("A", "C") ~ 0,
+        Sub_Choose %in% c("B", "D") ~ 1,
+    ),
+    ) %>%
+    dplyr::group_by(Model, Subject, Frame) %>%
+    dplyr::summarise(Rate = mean(Sub_Choose)) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(Subject, Frame)
+
+plot <- dplyr::bind_rows(plot) %>%
+  dplyr::group_by(Model, Frame) %>%
+  dplyr::summarise(
+    mean_Rate = mean(Rate),
+    se_Rate = sd(Rate) / sqrt(n_distinct(Subject) - 1),
+  ) %>%
+  dplyr::ungroup()
+```
+
+```{r}
+p <- ggplot2::ggplot(data = plot, ggplot2::aes(x = factor(Frame), y = mean_Rate, color = Model, group = Model)) +
+  ggplot2::geom_line(size = 1.2) +
+  ggplot2::geom_point(size = 3) +
+  ggplot2::scale_color_manual(
+    values = c("grey", "#053562", "#55c186", "#f0de36")
+  ) +
+  ggplot2::scale_y_continuous(
+    limits = c(0, 1.1),
+    breaks = c(0, 0.25, 0.5, 0.75, 1), 
+    labels = c("0%", "25%", "50%", "75%", "100%"),
+    expand = c(0, 0)
+  ) +
+  ggplot2::labs(x = "Frame", y = "The Ratio of Choosing Risky Door") +
+  papaja::theme_apa()
+
+ggplot2::ggsave(
+  plot = p, 
+  filename = "../FIGURE/Exp_Effect.png",
+  width = 8,
+  height = 6
+)
+```
+
