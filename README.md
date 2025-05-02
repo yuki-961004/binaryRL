@@ -478,7 +478,7 @@ list[[3]] <- dplyr::bind_rows(
 
 <!---------------------------------------------------------->
 
-### Visualizing Experimental Effect [[Example Code]](https://github.com/yuki-961004/binaryRL/blob/main/test/CODE/test_2.5_rev_e.Rmd#L241) 
+### Visualizing Experimental Effect [[Example Code]](https://github.com/yuki-961004/binaryRL/blob/main/test/CODE/test_2.5_rev_e.Rmd#L56) 
 
 <p align="center">
     <img src="./test/FIGURE/Exp_Effect(Frame).png" alt="RL Models" width="45%" style="display: inline;">
