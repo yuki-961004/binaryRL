@@ -267,7 +267,7 @@ list[[2]] <- dplyr::bind_rows(
     data = binaryRL::Mason_2024_Exp2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::RSTD,
-    model_nam = "RSTD", 
+    model_name = "RSTD", 
     param_prefix = "param_",
     n_trials = 360
   )
@@ -289,7 +289,7 @@ list[[3]] <- dplyr::bind_rows(
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::Utility,
     param_prefix = "param_",
-    model_nam = "Utility", 
+    model_name = "Utility", 
     n_trials = 360
   )
 )
