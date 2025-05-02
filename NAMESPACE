@@ -7,6 +7,7 @@ export(func_tau)
 
 export(run_m)
 export(fit_p)
+export(rev_e)
 export(rcv_d)
 
 export(optimize_para)
