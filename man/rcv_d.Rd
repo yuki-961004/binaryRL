@@ -15,7 +15,7 @@ rcv_d(
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   model_names = c("TD", "RSTD", "Utility"),
-  funcs,
+  funcs = NULL,
   initial_params = NA,
   initial_size = 50,
   iteration_s = 10,

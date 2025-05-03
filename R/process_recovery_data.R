@@ -56,7 +56,7 @@ recovery_data <- function(
     list,
     id = 1,
     fit_model,
-    funcs,
+    funcs = NULL,
     model_name,
     n_params, 
     n_trials,

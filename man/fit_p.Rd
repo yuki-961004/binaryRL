@@ -9,7 +9,7 @@ fit_p(
   id = c(1:40),
   n_trials,
   fit_model = list(TD, RSTD, Utility),
-  funcs,
+  funcs = NULL,
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
