@@ -132,7 +132,7 @@ optimize_para <- function(
         popSize = initial_size,
         lower = lower,
         upper = upper,
-        maxiter = iteration,
+        maxiter = iteration
         #parallel = TRUE
       )
     },
@@ -146,7 +146,7 @@ optimize_para <- function(
         upper = upper,
         control = DEoptim::DEoptim.control(
           NP = initial_size,
-          itermax = iteration,
+          itermax = iteration
           #parallelType = "parallel"
           #packages = "binaryRL"
         )
