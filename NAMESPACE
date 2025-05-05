@@ -1,4 +1,4 @@
-import(foreach)
+import(doRNG)
 
 export(func_gamma)
 export(func_eta)

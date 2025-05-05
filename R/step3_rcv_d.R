@@ -105,6 +105,9 @@ rcv_d <- function(
     names(list_simulated) <- rep(model_names[i], length(list_simulated))
     
     for (j in 1:n_round_f){
+      
+      message(paste("\nUsing", model_names[j], "to Fit", model_names[i], "\n"))
+      
       np <- length(fit_lower[[j]])
       nt <- n_trials
       

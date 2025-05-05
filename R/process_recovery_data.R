@@ -144,51 +144,65 @@ recovery_data <- function(
     }
   }
   else {
-
-    cl <- parallel::makeCluster(nc)
-    doParallel::registerDoParallel(cl)
-    # 把自定义的函数传入并行环境中
-    parallel::clusterExport(cl, varlist = funcs, envir = .GlobalEnv)
     
-    temp_recovery <- foreach(
-      i = 1:length(list), .combine = rbind, 
-      .packages = "binaryRL", .export = funcs
-    ) %dopar% {
+    future::plan(future::multisession, workers = nc)
+    doFuture::registerDoFuture()
+
+    # 以迭代次数作为进度条
+    n_iterations <- length(list) 
+    
+    progressr::handlers(progressr::handler_txtprogressbar)
+    
+    progressr::with_progress({
       
-      data_i <- list[[i]][[1]]
+      p <- progressr::progressor(steps = n_iterations)
       
-      binaryRL.res <- binaryRL::optimize_para(
-        data = data_i,
-        id = id[i],
-        obj_func = fit_model,
-        n_params = n_params,
-        n_trials = n_trials,
-        lower = lower,
-        upper = upper,
-        initial_params = initial_params,
-        initial_size = initial_size,
-        iteration = iteration,
-        seed = seed,
-        algorithm = algorithm
-      )
+      doRNG::registerDoRNG(seed = seed)
       
-      row_i <- data.frame(matrix(NA, nrow = 1, ncol = 5 + n_input_params + n_output_params))
-      row_i[1, 1] <- model_name
-      row_i[1, 2] <- binaryRL.res$acc
-      row_i[1, 3] <- binaryRL.res$ll
-      row_i[1, 4] <- binaryRL.res$aic
-      row_i[1, 5] <- binaryRL.res$bic
-      
-      for (j in 1:n_input_params) {
-        row_i[1, 5 + j] <- list[[i]]$input[j]
+      temp_recovery <- foreach::foreach(
+        i = 1:n_iterations, .combine = rbind,
+        .packages = "binaryRL", 
+        .export = funcs
+      ) %dorng% {
+        
+        data_i <- list[[i]][[1]]
+        
+        binaryRL.res <- binaryRL::optimize_para(
+          data = data_i,
+          id = id[i],
+          obj_func = fit_model,
+          n_params = n_params,
+          n_trials = n_trials,
+          lower = lower,
+          upper = upper,
+          initial_params = initial_params,
+          initial_size = initial_size,
+          iteration = iteration,
+          seed = seed,
+          algorithm = algorithm
+        )
+        
+        row_i <- data.frame(matrix(NA, nrow = 1, ncol = 5 + n_input_params + n_output_params))
+        row_i[1, 1] <- model_name
+        row_i[1, 2] <- binaryRL.res$acc
+        row_i[1, 3] <- binaryRL.res$ll
+        row_i[1, 4] <- binaryRL.res$aic
+        row_i[1, 5] <- binaryRL.res$bic
+        
+        for (j in 1:n_input_params) {
+          row_i[1, 5 + j] <- list[[i]]$input[j]
+        }
+        for (j in 1:n_output_params) {
+          row_i[1, 5 + n_input_params + j] <- binaryRL.res$output[j]
+        }
+        
+        # 更新進度條
+        p() 
+        
+        return(row_i)
       }
-      for (j in 1:n_output_params) {
-        row_i[1, 5 + n_input_params + j] <- binaryRL.res$output[j]
-      }
-      
-      return(row_i)
-    }
-    parallel::stopCluster(cl)
+    })
+    #parallel::stopCluster(cl)
     
     # 继承recovery的列名
     colnames(temp_recovery) <- colnames(recovery)

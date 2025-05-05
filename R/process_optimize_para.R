@@ -264,8 +264,6 @@ optimize_para <- function(
   # obj_func会给binaryRL.env传入一个binaryRL.res
   binaryRL.env$binaryRL.res$output <- fit_params
   binaryRL.env$binaryRL.res$algorithm <- result
-  # 总结binaryRL.env环境中的binaryRL.res
-  summary(binaryRL.env$binaryRL.res)
-  
+
   return(binaryRL.env$binaryRL.res)
 }

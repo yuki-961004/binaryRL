@@ -46,9 +46,9 @@ comparison <- binaryRL::fit_p(
   seed = 123,
   nc = 8,
   #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
   #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-  algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
+  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
   #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
   #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
   #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
@@ -56,7 +56,7 @@ comparison <- binaryRL::fit_p(
 
 result <- dplyr::bind_rows(comparison)
 
-write.csv(result, "../OUTPUT/result_comparison.csv", row.names = FALSE)
+#write.csv(result, "../OUTPUT/result_comparison.csv", row.names = FALSE)
 ```
 
 ## Plot

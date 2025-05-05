@@ -134,55 +134,71 @@ fit_p <- function(
     }
   }
   else {
-    for (i in 1:length(fit_model)){
-
-      cl <- parallel::makeCluster(nc)
-      doParallel::registerDoParallel(cl)
-      # 把自定义的函数传入并行环境中
-      parallel::clusterExport(cl, varlist = funcs, envir = .GlobalEnv)
-      
-      model_result <- foreach(
-        j = 1:length(id), .combine = rbind, 
-        .packages = c("binaryRL")
-      ) %dopar% {
-        
-        n_params <- length(lower[[i]])
-        
-        binaryRL_res <- binaryRL::optimize_para(
-          data = data,
-          id = id[j],
-          n_params = n_params,
-          n_trials = n_trials,
-          obj_func = fit_model[[i]],
-          lower = lower[[i]],
-          upper = upper[[i]],
-          iteration = iteration,
-          seed = seed,
-          initial_params = initial_params,
-          initial_size = initial_size,
-          algorithm = algorithm 
-        )
-        
-        result_j <- data.frame(
-          fit_model = model_name[i],
-          Subject = id[j],
-          ACC = binaryRL_res$acc,
-          LogL = -binaryRL_res$ll,
-          AIC = binaryRL_res$aic,
-          BIC = binaryRL_res$bic
-        )
-        
-        for (k in 1:n_params) {
-          result_j[1, k + 6] <- binaryRL_res$output[k]
-          names(result_j)[k + 6] <- paste0("param_", k)
-        }
-        
-        return(result_j)
-      }
-      
-      model_comparison[[i]] <- model_result
     
-      parallel::stopCluster(cl)
+    for (i in 1:length(fit_model)){
+      
+      message(paste0("\nFitting ", model_name[i], "\n"))
+      
+      future::plan(future::multisession, workers = nc)
+      doFuture::registerDoFuture()
+      
+      n_subjects <- length(id)
+      
+      # 进度条
+      progressr::handlers(progressr::handler_txtprogressbar)
+      
+      progressr::with_progress({
+        
+        p <- progressr::progressor(steps = n_subjects)
+        
+        doRNG::registerDoRNG(seed = seed)
+        
+        model_result <- foreach::foreach(
+          j = 1:n_subjects, .combine = rbind,
+          .packages = c("binaryRL"),
+          .export = funcs
+        ) %dorng% {
+          n_params <- length(lower[[i]])
+          
+          binaryRL_res <- binaryRL::optimize_para(
+            data = data,
+            id = id[j],
+            n_params = n_params,
+            n_trials = n_trials,
+            obj_func = fit_model[[i]],
+            lower = lower[[i]],
+            upper = upper[[i]],
+            iteration = iteration,
+            seed = seed,
+            initial_params = initial_params,
+            initial_size = initial_size,
+            algorithm = algorithm
+          )
+          
+          result_j <- data.frame(
+            fit_model = model_name[i],
+            Subject = id[j],
+            ACC = binaryRL_res$acc,
+            LogL = -binaryRL_res$ll,
+            AIC = binaryRL_res$aic,
+            BIC = binaryRL_res$bic
+          )
+          
+          for (k in 1:n_params) {
+            result_j[1, k + 6] <- binaryRL_res$output[k]
+            names(result_j)[k + 6] <- paste0("param_", k)
+          }
+          
+          # 在foreach循环内更新进度条
+          p() 
+          return(result_j)
+        }
+      })
+      
+      # 將結果包在一個 list 裡面，保持結構一致性
+      model_comparison[[i]] <- list(model_result) 
+      
+      #parallel::stopCluster(cl)
     }
   }
 
