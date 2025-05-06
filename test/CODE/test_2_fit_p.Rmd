@@ -4,10 +4,6 @@ author: "yuki"
 date: "2025-05-01"
 output: html_document
 ---
-```{r setup}
-library(patchwork)
-```
-
 # Model Comparison
 ## optimize_para
 ```{r}
@@ -22,13 +18,14 @@ binaryRL.res <- binaryRL::optimize_para(
   iteration = 40,
   seed = 123,
   #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-  algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
   #algorithm = "GA"        # Genetic Algorithm (GA::ga)
   #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
   #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+  algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
   #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
 )
+summary(binaryRL.res)
 ```
 
 ## fit_p
@@ -135,8 +132,8 @@ plots <- data %>%
       ggplot2::labs(x = "", y = "", title = .x$metric[1]) +
       ggplot2::coord_cartesian(
         ylim = c(
-          mean(.x$value) - 0.7*sd(.x$value), 
-          mean(.x$value) + 0.7*sd(.x$value))
+          mean(.x$value) - 0.3*sd(.x$value), 
+          mean(.x$value) + 0.3*sd(.x$value))
       ) +
       papaja::theme_apa() +
       ggplot2::theme(
@@ -150,7 +147,7 @@ plots <- data %>%
   })
 
 # 用 patchwork 拼起來
-plot <- wrap_plots(plots, ncol = 2)
+plot <- patchwork::wrap_plots(plots, ncol = 2)
 
 rm(plots)
 

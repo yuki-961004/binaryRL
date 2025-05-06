@@ -137,7 +137,11 @@ fit_p <- function(
     
     for (i in 1:length(fit_model)){
       
-      message(paste0("\nFitting ", model_name[i], "\n"))
+      message(paste0(
+        "\n", 
+        "Fitting Model: ", model_name[i], 
+        "\n"
+      ))
       
       future::plan(future::multisession, workers = nc)
       doFuture::registerDoFuture()

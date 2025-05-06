@@ -108,7 +108,6 @@ optimize_para <- function(
       )
     },
     "GenSA" = {
-      # 检查所依赖的算法包是否安装
       check_dependency("GenSA", algorithm_name = "Simulated Annealing")
       
       GenSA::GenSA(
@@ -123,7 +122,6 @@ optimize_para <- function(
       )
     },
     "GA" = {
-      # 检查所依赖的算法包是否安装
       check_dependency("GA", algorithm_name = "Genetic Algorithm")
       
       GA::ga(
@@ -132,12 +130,12 @@ optimize_para <- function(
         popSize = initial_size,
         lower = lower,
         upper = upper,
-        maxiter = iteration
+        maxiter = iteration,
+        monitor = FALSE
         #parallel = TRUE
       )
     },
     "DEoptim" = {
-      # 检查所依赖的算法包是否安装
       check_dependency("DEoptim", algorithm_name = "Differential Evolution")
       
       DEoptim::DEoptim(
@@ -146,14 +144,14 @@ optimize_para <- function(
         upper = upper,
         control = DEoptim::DEoptim.control(
           NP = initial_size,
-          itermax = iteration
+          itermax = iteration,
+          trace = FALSE
           #parallelType = "parallel"
           #packages = "binaryRL"
         )
       )
     },
     "Bayesian" = {
-      # 检查所依赖的算法包是否安装
       required_pkgs <- c("mlrMBO", "mlr", "ParamHelpers", "smoof", "lhs")
       check_dependency(required_pkgs, algorithm_name = "Bayesian Optimization")
       
@@ -171,22 +169,27 @@ optimize_para <- function(
         fn = obj_func,
         par.set = ParamHelpers::makeParamSet(params = param_list)
       )
-    
-      mlrMBO::mbo(
-        fun = bys_func, 
-        design = ParamHelpers::generateDesign(
-          n = initial_size, 
-          par.set = ParamHelpers::getParamSet(bys_func), 
-          fun = lhs::maximinLHS
-        ), 
-        control = mlrMBO::setMBOControlTermination(
-          control = mlrMBO::makeMBOControl(),
-          iters = iteration
+      
+      suppressWarnings(
+        mlrMBO::mbo(
+          fun = bys_func, 
+          design = ParamHelpers::generateDesign(
+            n = initial_size, 
+            par.set = ParamHelpers::getParamSet(bys_func), 
+            fun = lhs::maximinLHS
+          ), 
+          control = mlrMBO::setMBOControlInfill(
+            mlrMBO::setMBOControlTermination(
+              control = mlrMBO::makeMBOControl(),
+              iters = iteration
+            ),
+            opt.focussearch.maxit = max(floor(1000 / iteration), 5)
+          ),
+          show.info = FALSE
         )
       )
     },
     "PSO" = {
-      # 检查所依赖的算法包是否安装
       check_dependency("pso", algorithm_name = "Particle Swarm Optimization")
 
       pso::psoptim(
@@ -195,12 +198,12 @@ optimize_para <- function(
         lower = lower,
         upper = upper,
         control = list(
-          maxit = iteration
+          maxit = iteration,
+          trace = 0
         )
       )
     },
     "CMA-ES" = {
-      # 检查所依赖的算法包是否安装
       check_dependency("cmaes", algorithm_name = "Covariance Matrix Adapting")
       
       cmaes::cma_es(
@@ -213,7 +216,7 @@ optimize_para <- function(
         )
       )
     },
-   { # 默认情况（如果 algorithm 不匹配任何已知值）
+   { # 停止（如果 algorithm 不匹配任何已知值）
       stop("
         Choose a algorithm from 
         `L-BFGS-B`, `GenSA`, 
