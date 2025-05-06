@@ -41,17 +41,17 @@ recovery <- binaryRL::rcv_d(
   n_trials = 360,
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  simulate_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
   simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
+  fit_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
+  fit_upper = list(c(1, 6), c(1, 1, 6), c(1, 1, 6)),
   initial_params = NA,
   initial_size = 50,
   seed = 123,
   iteration_s = 50,
   iteration_f = 50,
-  nc = 10,
+  nc = 16,
   #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
   #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
   #algorithm = "GA"        # Genetic Algorithm (GA::ga)
@@ -164,7 +164,7 @@ plot_param_rcv <- function(
     ggplot2::scale_x_continuous(
       limits = c(x_min, x_max + 0.1), expand = c(0, 0),
       labels = 
-        if (param_name == "τ") {
+        if (grepl("τ", param_name)) {
           function(x) parse(text = paste0("10^", x))
         } 
         else {
