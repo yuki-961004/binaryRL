@@ -10,7 +10,7 @@ If you agree with this assumptions, I will introduce how to use this package.
 <!---------------------------------------------------------->
 
 # How to cite 
-Hu, M., & L, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal*(7), 100-123. https://doi.org/
+Hu, M., & Liu, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal*(7), 100-123. https://doi.org/
 
 
 # Tutorial
