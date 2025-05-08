@@ -154,7 +154,7 @@ plot_param_rcv <- function(
     ggplot2::scale_y_continuous(
       limits = c(y_min, y_max + 0.1), expand = c(0, 0),
       labels = 
-        if (param_name == "τ") {
+        if (grepl("τ", param_name)) {
           function(x) parse(text = paste0("10^", x))
         } 
         else {
