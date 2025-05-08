@@ -2,11 +2,10 @@ Package: binaryRL
 Version: 0.7.9
 Title: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks
 Description:
-  This package provides tools for building reinforcement learning models
-  for Two-Alternative Forced Choice tasks, commonly used in
-  psychological research. It simplifies model construction, allowing
-  users to define models using if-else statements. The package provides tools 
-  for building, fitting, and recovering reinforcement learning models.
+  Tools for building reinforcement learning models in Two-Alternative
+  Forced Choice tasks, commonly used in psychological research.
+  Supports model definition using simple if-else statements, and includes
+  functions for model construction, fitting, and parameter recovery.
 Authors@R:
   c(person(
     given = "YuKi",
@@ -14,7 +13,7 @@ Authors@R:
     email = "hmz1969a@gmail.com",
     comment = c(ORCID = "0009-0000-1378-1318")
   ))
-Maintainer: yuki <hmz1969a@gmail.com>
+Maintainer: YuKi <hmz1969a@gmail.com>
 URL: https://github.com/yuki-961004/binaryRL
 BugReports: https://github.com/yuki-961004/binaryRL/issues
 License: GPL-3 | file LICENSE
