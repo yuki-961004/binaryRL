@@ -367,7 +367,7 @@ result <- dplyr::bind_rows(comparison)
 write.csv(result, "../OUTPUT/result_comparison.csv", row.names = FALSE)
 ```  
   
-Check the Example Result: [result_comparison.csv](./test/OUTPUT/result_comparison.csv)  
+Check the Example Result: [result_comparison.csv](https://github.com/yuki-961004/binaryRL/blob/main/test/OUTPUT/result_comparison.csv)  
 
 ```r
 #> Results of the Reinforcement Learning Model:
@@ -523,7 +523,7 @@ write.csv(result, file = "../OUTPUT/result_recovery.csv", row.names = FALSE)
 ```
 
   
-Check the Example Result: [result_recovery.csv](./test/OUTPUT/result_recovery.csv)  
+Check the Example Result: [result_recovery.csv](https://github.com/yuki-961004/binaryRL/blob/main/test/OUTPUT/result_recovery.csv)  
 
 
 <!---------------------------------------------------------->

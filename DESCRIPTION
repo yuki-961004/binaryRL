@@ -2,13 +2,11 @@ Package: binaryRL
 Version: 0.7.9
 Title: Reinforcement Learning tools for Two-Alternative Forced Choice tasks
 Description:
-  This package is tailored for fitting reinforcement learning models to
-  Two-Alternative Forced Choice (TAFC) tasks in psychological researches.
-  It follows the three steps from Wilson & Collins (2019),
-    1. `run_m` constructs a reinforcement learning model.
-    2. `fit_p` optimizes free parameters in the RL model.
-    3. `rcv_d` assesses model performance via parameter and model recovery.
-  The example dataset is from an open data of Ludvig et al. (2014).
+  This package provides tools for building reinforcement learning models
+  for Two-Alternative Forced Choice tasks, commonly used in
+  psychological research. It simplifies model construction, allowing
+  users to define models using if-else statements. The package provides tools 
+  for building, fitting, and recovering reinforcement learning models.
 Authors@R:
   c(person(
     given = "YuKi",
@@ -23,7 +21,6 @@ License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 7.3.2
-Standardizable: FALSE
 Depends: R (>= 4.0.0)
 Imports: future, doFuture, foreach, doRNG, progressr
 Suggests: 
