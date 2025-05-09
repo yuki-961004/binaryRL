@@ -100,48 +100,48 @@ recovery_data <- function(
 
   # Check for internally parallel algorithms
   if (nc == 1) {
-    # 用解题模型求解参数
-    for (i in 1:length(list)){
-      data <- list[[i]][[1]]
+    
+    progressr::handlers(progressr::handler_txtprogressbar)
+    
+    progressr::with_progress({
       
-      binaryRL.res <- binaryRL::optimize_para(
-        data = data,
-        id = id[i],
-        obj_func = fit_model,
-        n_params = n_params,
-        n_trials = n_trials,
-        lower = lower,
-        upper = upper,
-        initial_params = initial_params,
-        initial_size = initial_size,
-        iteration = iteration,
-        seed = seed,
-        algorithm = algorithm
-      )
+      p <- progressr::progressor(steps = length(list))
       
-      # 每解完一次题就存一次结果
-      recovery[i, 2] <- binaryRL.res$acc
-      recovery[i, 3] <- binaryRL.res$ll
-      recovery[i, 4] <- binaryRL.res$aic
-      recovery[i, 5] <- binaryRL.res$bic
-      
-      cat(
-        "\n", 
-        "Simulate Model: ", names(list)[1], "\n",
-        "Fit Model: ", model_name, "\n",
-        "Iteration:", i, "[\u2713]",  "\n",
-        "\n"
-      )
-      
-      for (j in 1:n_input_params) {
-        recovery[i, j + 5] <- list[[i]]$input[j]
+      for (i in 1:length(list)) {
+        
+        p()
+        
+        data <- list[[i]][[1]]
+        
+        binaryRL.res <- binaryRL::optimize_para(
+          data = data,
+          id = id[i],
+          obj_func = fit_model,
+          n_params = n_params,
+          n_trials = n_trials,
+          lower = lower,
+          upper = upper,
+          initial_params = initial_params,
+          initial_size = initial_size,
+          iteration = iteration,
+          seed = seed,
+          algorithm = algorithm
+        )
+        
+        recovery[i, 2] <- binaryRL.res$acc
+        recovery[i, 3] <- binaryRL.res$ll
+        recovery[i, 4] <- binaryRL.res$aic
+        recovery[i, 5] <- binaryRL.res$bic
+        
+        for (j in 1:n_input_params) {
+          recovery[i, j + 5] <- list[[i]]$input[j]
+        }
+        
+        for (j in 1:n_output_params) {
+          recovery[i, j + 5 + n_input_params] <- binaryRL.res$output[j]
+        }
       }
-      
-      # 增加放置输出参数的列
-      for (j in 1:n_output_params) {
-        recovery[i, j + 5 + n_input_params] <- binaryRL.res$output[j]
-      }
-    }
+    })
   }
   else {
     
@@ -202,7 +202,6 @@ recovery_data <- function(
         return(row_i)
       }
     })
-    #parallel::stopCluster(cl)
     
     # 继承recovery的列名
     colnames(temp_recovery) <- colnames(recovery)

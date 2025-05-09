@@ -91,45 +91,57 @@ fit_p <- function(
     
     for (i in 1:length(fit_model)){
       
-      for (j in 1:length(id)) {
+      message(paste0(
+        "\n", 
+        "Fitting Model: ", model_name[i], 
+        "\n"
+      ))
+      
+      n_subjects <- length(id)
+      
+      # 进度条
+      progressr::handlers(progressr::handler_txtprogressbar)
+      
+      progressr::with_progress({
         
-        n_params <- length(lower[[i]])
+        p <- progressr::progressor(steps = n_subjects)
         
-        binaryRL_res <- binaryRL::optimize_para(
-          data = data,
-          id = id[j],
-          n_params = n_params,
-          n_trials = n_trials,
-          obj_func = fit_model[[i]],
-          lower = lower[[i]],
-          upper = upper[[i]],
-          iteration = iteration,
-          seed = seed,
-          initial_params = initial_params,
-          initial_size = initial_size,
-          algorithm = algorithm 
-        )
-        
-        cat(
-          "\n", 
-          model_name[i], "\u00d7 Subject", id[j], "[\u2713]", "\n",
-          "\n"
-        )
-        
-        model_result[[j]] <- data.frame(
-          fit_model = model_name[i],
-          Subject = id[j],
-          ACC = binaryRL_res$acc,
-          LogL = -binaryRL_res$ll,
-          AIC = binaryRL_res$aic,
-          BIC = binaryRL_res$bic
-        )
-        
-        for (k in 1:n_params) {
-          model_result[[j]][1, k + 6] <- binaryRL_res$output[k]
-          names(model_result[[j]])[k + 6] <- paste0("param_", k)
+        for (j in 1:n_subjects) {
+          
+          p()
+          
+          n_params <- length(lower[[i]])
+          
+          binaryRL_res <- binaryRL::optimize_para(
+            data = data,
+            id = id[j],
+            n_params = n_params,
+            n_trials = n_trials,
+            obj_func = fit_model[[i]],
+            lower = lower[[i]],
+            upper = upper[[i]],
+            iteration = iteration,
+            seed = seed,
+            initial_params = initial_params,
+            initial_size = initial_size,
+            algorithm = algorithm 
+          )
+          
+          model_result[[j]] <- data.frame(
+            fit_model = model_name[i],
+            Subject = id[j],
+            ACC = binaryRL_res$acc,
+            LogL = -binaryRL_res$ll,
+            AIC = binaryRL_res$aic,
+            BIC = binaryRL_res$bic
+          )
+          
+          for (k in 1:n_params) {
+            model_result[[j]][1, k + 6] <- binaryRL_res$output[k]
+            names(model_result[[j]])[k + 6] <- paste0("param_", k)
+          }
         }
-      }
+      })
       model_comparison[[i]] <- model_result
     }
   }
@@ -201,8 +213,6 @@ fit_p <- function(
       
       # 將結果包在一個 list 裡面，保持結構一致性
       model_comparison[[i]] <- list(model_result) 
-      
-      #parallel::stopCluster(cl)
     }
   }
 
