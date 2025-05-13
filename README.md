@@ -366,11 +366,12 @@ result <- dplyr::bind_rows(comparison)
 
 write.csv(result, "../OUTPUT/result_comparison.csv", row.names = FALSE)
 ```  
-```
+
+<pre>
 Fitting Model: TD
 
   |===                                                                |   5%
-```
+</pre>
 
 Check the Example Result: [result_comparison.csv](./test/OUTPUT/result_comparison.csv)
 
@@ -407,7 +408,8 @@ binaryRL.res <- binaryRL::optimize_para(
 
 summary(binaryRL.res)
 ```
-```r
+
+<pre>
 #> Results of the Reinforcement Learning Model:
 #> 
 #> Parameters:
@@ -422,9 +424,8 @@ summary(binaryRL.res)
 #>    LogL:  -243.69 
 #>    AIC:  493.38 
 #>    BIC:  505.04 
-#> 
-#>  TD × Subject 1 [✓]
-```
+</pre>
+
 </details>
 
 ## Model Comparison
@@ -527,11 +528,12 @@ result <- dplyr::bind_rows(recovery) %>%
 
 write.csv(result, file = "../OUTPUT/result_recovery.csv", row.names = FALSE)
 ```
-```
+
+<pre>
 Simulating Model: TD | Fitting Model: TD
 
   |================                                                   |  10%
-```
+</pre>
   
 Check the Example Result: [result_recovery.csv](./test/OUTPUT/result_recovery.csv)
 
