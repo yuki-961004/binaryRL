@@ -1,4 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^test/
+^tests/
 ^fig/
+^.github/
