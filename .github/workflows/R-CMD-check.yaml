@@ -50,7 +50,7 @@ jobs:
       - name: Test coverage
         run: |
           pak::pak("covr")
-          covr::codecov(path = "test/COVR")
+          covr::codecov(path = "tests/testthat")
         shell: Rscript {0}
 
       - name: Upload coverage reports to Codecov
