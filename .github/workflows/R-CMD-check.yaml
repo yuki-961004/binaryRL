@@ -51,6 +51,7 @@ jobs:
 
       - name: Test coverage
         run: |
+          pak::pak("testthat")
           pak::pak("covr")
           covr::codecov()
         shell: Rscript {0}
