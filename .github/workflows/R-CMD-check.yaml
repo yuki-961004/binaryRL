@@ -10,16 +10,19 @@ name: R-CMD-check
 
 jobs:
   R-CMD-check:
-    runs-on: ${{ matrix.os }}
-
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (R ${{ matrix.config.r }})
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        config:
+          - { os: ubuntu-latest, r: 'release' }
+          - { os: windows-latest, r: 'release' }
+          - { os: macos-latest, r: 'release' }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-
     steps:
       - uses: actions/checkout@v3
 
@@ -27,12 +30,9 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Install dependencies
-        run: |
-          install.packages(c("remotes", "rcmdcheck"), repos = "https://cloud.r-project.org/")
-          remotes::install_deps(dependencies = TRUE)
-        shell: Rscript {0}
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
 
-      - name: Check
-        run: rcmdcheck::rcmdcheck(args = "--no-manual --as-cran", error_on = "warning")
-        shell: Rscript {0}
+      - uses: r-lib/actions/check-r-package@v2
