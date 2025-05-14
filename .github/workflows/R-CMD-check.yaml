@@ -4,15 +4,17 @@ on:
   push:
     branches: [main, master]
     paths:
-      - 'R/**'              
-      - 'DESCRIPTION'       
-      - 'NAMESPACE'         
+      - 'R/**'
+      - 'DESCRIPTION'
+      - 'NAMESPACE'
+      - '.github/workflows/R-CMD-check.yaml'
   pull_request:
     branches: [main, master]
     paths:
-      - 'R/**'              
-      - 'DESCRIPTION'       
-      - 'NAMESPACE'         
+      - 'R/**'
+      - 'DESCRIPTION'
+      - 'NAMESPACE'
+      - '.github/workflows/R-CMD-check.yaml'
 
 name: R-CMD-check
 
@@ -44,3 +46,9 @@ jobs:
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
+
+      - name: Test coverage
+        run: |
+          pak::pak("covr")
+          covr::codecov(path = "test/COVR")
+        shell: Rscript {0}
