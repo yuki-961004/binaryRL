@@ -1,5 +1,5 @@
 testthat::test_that("run_m() works with valid input", {
-  data <- binaryRL::Mason_2024_Exp1
+  data <- binaryRL::Mason_2024_Exp2
   
   res <- binaryRL::run_m(
     data = data,
