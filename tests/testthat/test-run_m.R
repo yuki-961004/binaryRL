@@ -9,5 +9,5 @@ testthat::test_that("run_m() works with valid input", {
     n_trials = 360
   )
   
-  summary(res)
+  testthat::expect_type(res, "list")
 })
