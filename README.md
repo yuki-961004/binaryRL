@@ -9,9 +9,15 @@ If you agree with this assumptions, I will introduce how to use this package.
 
 <!---------------------------------------------------------->
 
-# How to cite 
-Hu, M., & Liu, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal*(7), 100-123. https://doi.org/
+[![CRAN-Version](https://www.r-pkg.org/badges/version/binaryRL?color=blue)](https://CRAN.R-project.org/package=binaryRL) 
+[![CRAN-Downloads](https://cranlogs.r-pkg.org/badges/grand-total/binaryRL?color=green)](https://CRAN.R-project.org/package=binaryRL) 
+[![R-CMD-check](https://github.com/yuki-961004/binaryRL/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/yuki-961004/binaryRL/actions/workflows/R-CMD-check.yaml) 
+[![GitHub-Stars](https://img.shields.io/github/stars/yuki-961004/binaryRL?style=social)](https://github.com/yuki-961004/binaryRL)
 
+# How to cite 
+YuKi. (2025). binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks (Version 0.8.0) [R package]. CRAN. https://CRAN.R-project.org/package=binaryRL
+
+Hu, M., & Liu, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal*(7), 100-123. https://doi.org/
 
 # Tutorial
 ## Install and Load Pacakge
