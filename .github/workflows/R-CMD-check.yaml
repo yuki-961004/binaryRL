@@ -8,7 +8,7 @@ on:
       - 'DESCRIPTION'
       - 'NAMESPACE'
       - '.github/workflows/R-CMD-check.yaml'
-      - '.tests/testthat/'
+      - 'tests/testthat/'
   pull_request:
     branches: [main, master]
     paths:
@@ -16,7 +16,7 @@ on:
       - 'DESCRIPTION'
       - 'NAMESPACE'
       - '.github/workflows/R-CMD-check.yaml'
-      - '.tests/testthat/'
+      - 'tests/testthat/'
 
 name: R-CMD-check
 
@@ -49,6 +49,9 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@v2
 
+      - name: Run test coverage
+        run: Rscript -e 'covr::codecov()'
+        
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
