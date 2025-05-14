@@ -49,9 +49,12 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@v2
 
-      - name: Run test coverage
-        run: Rscript -e 'covr::codecov()'
-        
+      - name: Test coverage
+        run: |
+          pak::pak("covr")
+          covr::codecov()
+        shell: Rscript {0}
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
