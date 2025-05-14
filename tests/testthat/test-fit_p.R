@@ -1,4 +1,4 @@
-testthat::test_that("run_m() works with valid input", {
+testthat::test_that("fit_p() works with valid input", {
   comparison <- binaryRL::fit_p(
     data = binaryRL::Mason_2024_Exp2,
     n_trials = 360,
