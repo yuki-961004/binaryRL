@@ -29,6 +29,7 @@ RoxygenNote: 7.3.2
 Depends: R (>= 4.0.0)
 Imports: future, doFuture, foreach, doRNG, progressr
 Suggests: 
+  testthat,
   stats,
   GenSA, 
   GA, 
