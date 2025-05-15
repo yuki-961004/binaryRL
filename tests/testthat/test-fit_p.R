@@ -12,8 +12,8 @@ testthat::test_that("fit_p() works with valid input", {
     iteration = 2,
     seed = 123,
     nc = 1,
-    #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-    algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+    algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
+    #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
     #algorithm = "GA"        # Genetic Algorithm (GA::ga)
     #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
     #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
@@ -38,8 +38,8 @@ testthat::test_that("fit_p() works with valid input", {
     iteration = 2,
     seed = 123,
     nc = 4,
-    #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-    algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+    algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
+    #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
     #algorithm = "GA"        # Genetic Algorithm (GA::ga)
     #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
     #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
