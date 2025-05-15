@@ -36,27 +36,32 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
+      - name: Set up R
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
 
+      - name: Install R Package Dependencies
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - name: Run R CMD check
       - uses: r-lib/actions/check-r-package@v2
 
-      - name: Test coverage
+      - name: Test Coverage
         run: |
           pak::pak("testthat")
           pak::pak("covr")
           covr::codecov()
         shell: Rscript {0}
 
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
+      - name: Upload Coverage Reports to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
