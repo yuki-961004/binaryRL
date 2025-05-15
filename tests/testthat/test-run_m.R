@@ -15,5 +15,5 @@ testthat::test_that("run_m() works with valid input", {
   
   summary(binaryRL.res)
 
-  testthat::expect_type(res, "list")
+  testthat::expect_type(binaryRL.res, "list")
 })
