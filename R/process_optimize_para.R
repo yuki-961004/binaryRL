@@ -152,7 +152,10 @@ optimize_para <- function(
       )
     },
     "Bayesian" = {
-      required_pkgs <- c("mlrMBO", "mlr", "ParamHelpers", "smoof", "lhs")
+      required_pkgs <- c(
+        "mlrMBO", "mlr", "ParamHelpers", "smoof", "lhs",
+        "DiceKriging", "rgenoud"
+      )
       check_dependency(required_pkgs, algorithm_name = "Bayesian Optimization")
       
       param_list <- lapply(
