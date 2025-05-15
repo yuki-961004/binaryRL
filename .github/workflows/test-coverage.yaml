@@ -44,6 +44,9 @@ jobs:
           extra-packages: any::covr, any::xml2
           needs: coverage
 
+      - name: Install suggested packages
+        run: R -e 'install.packages(desc::desc_get_deps(file = "DESCRIPTION", which = "Suggests")$package)'
+
       - name: Test coverage
         run: |
           cov <- covr::package_coverage(
