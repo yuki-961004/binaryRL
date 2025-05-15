@@ -45,7 +45,10 @@ jobs:
           needs: coverage
 
       - name: Install suggested packages
-        run: R -e 'install.packages(desc::desc_get_deps(file = "DESCRIPTION", which = "Suggests")$package)'
+        run: |
+          Rscript -e 'pkgs <- desc::desc_get_deps(file = "DESCRIPTION"); 
+            suggest_pkgs <- pkgs[pkgs$type == "Suggests", "package"]; 
+            install.packages(suggest_pkgs)'
 
       - name: Test coverage
         run: |
