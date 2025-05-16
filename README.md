@@ -21,7 +21,6 @@ YuKi. (2025). binaryRL: Reinforcement Learning Tools for Two-Alternative Forced 
 
 Hu, M., & Liu, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal*(7), 100-123. https://doi.org/
 
-# Tutorial
 ## Install and Load Pacakge
 ```r
 # Install the stable version from CRAN  
@@ -67,6 +66,18 @@ head(Mason_2024_Exp2)
 
 ### References
 Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). Rare and extreme outcomes in risky choice. *Psychonomic Bulletin & Review, 31*(3), 1301-1308. https://doi.org/10.3758/s13423-023-02415-x
+
+<!---------------------------------------------------------->
+
+# Tutorial
+The development and usage workflow of this R package adheres to the **four** stages (ten rules) recommended by Wilson & Collins (2019).
+
+<p align="center">
+    <img src="./fig/rl_process.png" alt="RL Models" width="70%">
+</p>
+
+### References  
+Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547
 
 <!---------------------------------------------------------->
 
