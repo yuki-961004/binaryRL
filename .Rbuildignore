@@ -3,4 +3,5 @@
 ^demo/
 ^fig/
 ^.github/
+^tests/
 ^LICENSE$
