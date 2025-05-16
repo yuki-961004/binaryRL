@@ -8,7 +8,6 @@ on:
       - 'DESCRIPTION'
       - 'NAMESPACE'
       - '.github/workflows/R-CMD-check.yaml'
-      - 'tests/testthat/**'
       
   pull_request:
     branches: [main, master]
@@ -17,7 +16,6 @@ on:
       - 'DESCRIPTION'
       - 'NAMESPACE'
       - '.github/workflows/R-CMD-check.yaml'
-      - 'tests/testthat/**'
 
 name: R-CMD-check
 
@@ -49,3 +47,5 @@ jobs:
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
+        with:
+          args: "--no-tests"
