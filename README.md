@@ -327,10 +327,172 @@ binaryRL::run_m(
 Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
 
 
+## 2. Parameter and Model Recovery
+
+Here, using the publicly available data from Mason et al. (2024), we demonstrate how to perform parameter recovery and model recovery following the method suggested by Wilson & Collins (2019).  
+
+  1. Notably, Wilson & Collins (2019) recommend increasing the softmax parameter $\tau$ by 1 during model recovery, as this can help reduce the amount of noise in behavior.  
+  2. Additionally, different algorithms and varying number of iterations can also influence the results of both parameter recovery and model recovery. You should adjust these settings based on your specific needs and circumstances.   
+  
+
+```r
+recovery <- binaryRL::rcv_d(
+  data = binaryRL::Mason_2024_Exp2,
+  id = 1,
+  n_trials = 360,
+  #funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
+  model_names = c("TD", "RSTD", "Utility"),
+  simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
+  simulate_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
+  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
+  fit_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
+  fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
+  initial_params = NA,
+  initial_size = 50,
+  seed = 123,
+  iteration_s = 50,
+  iteration_f = 50,
+  nc = 1,
+  # Gradient-based 
+  algorithm = "L-BFGS-B"   # Gradient-Based (stats::optim)
+  # Heuristic-based
+  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
+  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
+  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+  # Model-based
+  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+)
+
+result <- dplyr::bind_rows(recovery) %>%
+  dplyr::select(simulate_model, fit_model, iteration, everything())
+
+write.csv(result, file = "../OUTPUT/result_recovery.csv", row.names = FALSE)
+```
+
+<pre>
+Simulating Model: TD | Fitting Model: TD
+
+  |================                                                   |  10%
+</pre>
+  
+Check the Example Result: [result_recovery.csv](./demo/OUTPUT/result_recovery.csv)
+
+
+<!---------------------------------------------------------->
+
+`binaryRL::rcv_d()` is the for-loop version of `binaryRL::simulate_list()` and `binaryRL::recovery_data()`, allowing you to generate simulated data using all models at once and then fit all models to the simulated data.
+We also encourage advanced users to use `binaryRL::simulate_list()` and `binaryRL::recovery_data()` separately for parameter recovery and model recovery. Below is an example code.
+
+<details>
+<summary>binaryRL::simulate_list()</summary>
+
+```r
+list_simulated <- binaryRL::simulate_list(
+  data = binaryRL::Mason_2024_Exp2,
+  id = 1,
+  obj_func = binaryRL::RSTD,
+  n_params = 3, 
+  n_trials = 288,
+  lower = c(0, 0, 1),
+  upper = c(1, 1, 1),
+  seed = 1,
+  iteration = 30
+)
+```
+
+</details>
+
+<!---------------------------------------------------------->
+
+<details>
+<summary>binaryRL::recovery_data()</summary>
+
+```r
+df_recovery <- binaryRL::recovery_data(
+  list = list_simulated,
+  id = 1,
+  fit_model = binaryRL::RSTD,
+  model_name = "RSTD",
+  n_params = 3,
+  n_trials = 360,
+  lower = c(0, 0, 1),
+  upper = c(1, 1, 5),
+  iteration = 30,
+  nc = 1,
+  # Gradient-based 
+  algorithm = "L-BFGS-B"   # Gradient-Based (stats::optim)
+  # Heuristic-based
+  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
+  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
+  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+  # Model-based
+  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+)
+```
+
+</details>
+
+<!---------------------------------------------------------->
+
+### Parameter Recovery [[Example Code]](./demo/CODE/test_3_rcv_d.Rmd) 
+
+> "Before reading too much into the best-fitting parameter values, $\theta_{m}^{MLE}$,  it is important to check whether the fitting procedure gives meaningful parameter values in the best case scenario, -that is, when fitting fake data where the 'true' parameter values are known (Nilsson et al., 2011). Such a procedure is known as 'Parameter Recovery', and is a crucial part of any model-based analysis."
+
+<!---------------------------------------------------------->
+
+<p align="center">
+    <img src="./demo/FIGURE/param_rcv/lower_0/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/param_rcv/lower_0/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
+</p>
+
+The value of the softmax parameter $\tau$ affects the recovery of other parameters in the model. Under the assumption that $\tau \sim \text{Exp}(1)$, adding 1 to all $\tau$ values improves the recovery of the learning rate  $\eta$, but decreases the recovery accuracy of  $\tau$ itself.
+
+
+<p align="center">
+    <img src="./demo/FIGURE/param_rcv/lower_1/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/param_rcv/lower_1/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
+</p>
+
 <!---------------------------------------------------------->
 
 
-## 2. Fit Parameters
+
+<!---------------------------------------------------------->
+
+### Model Recovery [[Example Code]](./demo/CODE/test_3_rcv_d.Rmd)  
+
+> "More specifically, model recovery involves simulating data from all models (with a range of parameter values carefully selected as in the case of parameter recovery) and then fitting that data with all models to determine the extent to which fake data generated from model A is best fit by model A as opposed to model B. This process can be summarized in a confusion matrix that quantifies the probability that each model is the best fit to data generated from the other models, that is, *p*(*fit model* = B | *simulated model* = A)."
+
+<!---------------------------------------------------------->
+
+<p align="center">
+    <img src="./demo/FIGURE/model_rcv/lower_0/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/model_rcv/lower_0/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
+</p>
+
+> "In panel B, all of the softmax parameters $b$ and $b_{c}$ were increased by 1. This has the effect of reducing the amount of noise in the behavior, which makes the models more easily identifiable and the corresponding confusion matrix more diagonal."
+
+<p align="center">
+    <img src="./demo/FIGURE/model_rcv/lower_1/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/model_rcv/lower_1/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
+</p>
+
+<!---------------------------------------------------------->
+
+
+### References  
+Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547
+
+
+<!---------------------------------------------------------->
+
+
+## 3. Fit Parameters
 
 This package includes **7** algorithms:  
 If you want to use an algorithm other than `L-BFGS-B`, you must install the corresponding package.  
@@ -454,7 +616,7 @@ Using the result file generated by `binaryRL::fit_p`, you can compare models and
 
 <!---------------------------------------------------------->
 
-## Experimental Effect
+## 4. Experimental Effect
 Users can use the simple code snippet below to load the model fitting results, retrieve the best-fitting parameters, and feed them back into the model to reproduce the behavioral data generated by each reinforcement learning model.
 
 ```r
@@ -504,150 +666,6 @@ list[[3]] <- dplyr::bind_rows(
 </p>
 
 
-## 3. Parameter and Model Recovery
-
-Here, using the publicly available data from Ludvig et al. (2014), we demonstrate how to perform parameter recovery and model recovery following the method suggested by Wilson & Collins (2019).  
-
-  1. Notably, Wilson & Collins (2019) recommend increasing the softmax parameter $\tau$ by 1 during model recovery, as this can help reduce the amount of noise in behavior.  
-  2. Additionally, different algorithms and varying number of iterations can also influence the results of both parameter recovery and model recovery. You should adjust these settings based on your specific needs and circumstances.   
-  
-
-```r
-recovery <- binaryRL::rcv_d(
-  data = binaryRL::Mason_2024_Exp2,
-  id = 1,
-  n_trials = 360,
-  #funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
-  model_names = c("TD", "RSTD", "Utility"),
-  simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  simulate_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
-  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  fit_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
-  fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
-  initial_params = NA,
-  initial_size = 50,
-  seed = 123,
-  iteration_s = 50,
-  iteration_f = 50,
-  nc = 1,
-  algorithm = "Bayesian"
-)
-
-result <- dplyr::bind_rows(recovery) %>%
-  dplyr::select(simulate_model, fit_model, iteration, everything())
-
-write.csv(result, file = "../OUTPUT/result_recovery.csv", row.names = FALSE)
-```
-
-<pre>
-Simulating Model: TD | Fitting Model: TD
-
-  |================                                                   |  10%
-</pre>
-  
-Check the Example Result: [result_recovery.csv](./demo/OUTPUT/result_recovery.csv)
-
-
-<!---------------------------------------------------------->
-
-`binaryRL::rcv_d()` is the for-loop version of `binaryRL::simulate_list()` and `binaryRL::recovery_data()`, allowing you to generate simulated data using all models at once and then fit all models to the simulated data.
-We also encourage advanced users to use `binaryRL::simulate_list()` and `binaryRL::recovery_data()` separately for parameter recovery and model recovery. Below is an example code.
-
-<details>
-<summary>binaryRL::simulate_list()</summary>
-
-```r
-list_simulated <- binaryRL::simulate_list(
-  data = binaryRL::Mason_2024_Exp2,
-  id = 1,
-  obj_func = binaryRL::RSTD,
-  n_params = 3, 
-  n_trials = 288,
-  lower = c(0, 0, 1),
-  upper = c(1, 1, 1),
-  seed = 1,
-  iteration = 30
-)
-```
-
-</details>
-
-<!---------------------------------------------------------->
-
-<details>
-<summary>binaryRL::recovery_data()</summary>
-
-```r
-df_recovery <- binaryRL::recovery_data(
-  list = list_simulated,
-  id = 1,
-  fit_model = binaryRL::RSTD,
-  model_name = "RSTD",
-  n_params = 3,
-  n_trials = 360,
-  lower = c(0, 0, 1),
-  upper = c(1, 1, 5),
-  iteration = 30,
-  nc = 1,
-  algorithm = "Bayesian"
-)
-```
-
-</details>
-
-<!---------------------------------------------------------->
-
-### Parameter Recovery [[Example Code]](./demo/CODE/test_3_rcv_d.Rmd) 
-
-> "Before reading too much into the best-fitting parameter values, $\theta_{m}^{MLE}$,  it is important to check whether the fitting procedure gives meaningful parameter values in the best case scenario, -that is, when fitting fake data where the 'true' parameter values are known (Nilsson et al., 2011). Such a procedure is known as 'Parameter Recovery', and is a crucial part of any model-based analysis."
-
-<!---------------------------------------------------------->
-
-<p align="center">
-    <img src="./demo/FIGURE/param_rcv/lower_0/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./demo/FIGURE/param_rcv/lower_0/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
-</p>
-
-The value of the softmax parameter $\tau$ affects the recovery of other parameters in the model. Under the assumption that $\tau \sim \text{Exp}(1)$, adding 1 to all $\tau$ values improves the recovery of the learning rate  $\eta$, but decreases the recovery accuracy of  $\tau$ itself.
-
-
-<p align="center">
-    <img src="./demo/FIGURE/param_rcv/lower_1/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./demo/FIGURE/param_rcv/lower_1/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
-</p>
-
-<!---------------------------------------------------------->
-
-
-
-<!---------------------------------------------------------->
-
-### Model Recovery [[Example Code]](./demo/CODE/test_3_rcv_d.Rmd)  
-
-> "More specifically, model recovery involves simulating data from all models (with a range of parameter values carefully selected as in the case of parameter recovery) and then fitting that data with all models to determine the extent to which fake data generated from model A is best fit by model A as opposed to model B. This process can be summarized in a confusion matrix that quantifies the probability that each model is the best fit to data generated from the other models, that is, *p*(*fit model* = B | *simulated model* = A)."
-
-<!---------------------------------------------------------->
-
-<p align="center">
-    <img src="./demo/FIGURE/model_rcv/lower_0/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./demo/FIGURE/model_rcv/lower_0/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
-</p>
-
-> "In panel B, all of the softmax parameters $b$ and $b_{c}$ were increased by 1. This has the effect of reducing the amount of noise in the behavior, which makes the models more easily identifiable and the corresponding confusion matrix more diagonal."
-
-<p align="center">
-    <img src="./demo/FIGURE/model_rcv/lower_1/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./demo/FIGURE/model_rcv/lower_1/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
-</p>
-<!---------------------------------------------------------->
-
-
-
-<!---------------------------------------------------------->
-
-### References  
-Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547
 
 ---
 

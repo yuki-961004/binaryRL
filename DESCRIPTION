@@ -1,5 +1,5 @@
 Package: binaryRL
-Version: 0.8.1
+Version: 0.8.2
 Title: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks
 Description: Tools for building reinforcement learning (RL) models
   specifically tailored for Two-Alternative Forced Choice (TAFC) tasks,
