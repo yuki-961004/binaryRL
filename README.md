@@ -344,7 +344,23 @@ Here, using the publicly available data from Mason et al. (2024), we demonstrate
 
   1. Notably, Wilson & Collins (2019) recommend increasing the softmax parameter $\tau$ by 1 during model recovery, as this can help reduce the amount of noise in behavior.  
   2. Additionally, different algorithms and varying number of iterations can also influence the results of both parameter recovery and model recovery. You should adjust these settings based on your specific needs and circumstances.   
-  
+
+<!---------------------------------------------------------->
+
+### Algorithms
+This package includes **7** algorithms:  
+If you want to use an algorithm other than `L-BFGS-B`, you must install the corresponding package.  
+
+- Gradient-based 
+1. L-BFGS-B (from `stats::optim`)  
+- Heuristic-based
+2. Simulated Annealing (`GenSA::GenSA`)  
+3. Genetic Algorithm (`GA::ga`)  
+4. Differential Evolution (`DEoptim::DEoptim`).   
+5. Particle Swarm Optimization (`pso::psoptim`)
+- Model-based
+6. Bayesian Optimization (`mlrMBO::mbo`)
+7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`)
 
 ```r
 recovery <- binaryRL::rcv_d(
@@ -471,10 +487,6 @@ The value of the softmax parameter $\tau$ affects the recovery of other paramete
 
 <!---------------------------------------------------------->
 
-
-
-<!---------------------------------------------------------->
-
 ### Model Recovery [[Example Code]](./demo/CODE/test_3_rcv_d.Rmd)  
 
 > "More specifically, model recovery involves simulating data from all models (with a range of parameter values carefully selected as in the case of parameter recovery) and then fitting that data with all models to determine the extent to which fake data generated from model A is best fit by model A as opposed to model B. This process can be summarized in a confusion matrix that quantifies the probability that each model is the best fit to data generated from the other models, that is, *p*(*fit model* = B | *simulated model* = A)."
@@ -504,22 +516,9 @@ Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational m
 
 
 ## 3. Fit Parameters
+> Once all the previous steps have been completed, you can finally move on to modeling your empirical data. 
 
-This package includes **7** algorithms:  
-If you want to use an algorithm other than `L-BFGS-B`, you must install the corresponding package.  
-
-- Gradient-based 
-1. L-BFGS-B (from `stats::optim`)  
-- Heuristic-based
-2. Simulated Annealing (`GenSA::GenSA`)  
-3. Genetic Algorithm (`GA::ga`)  
-4. Differential Evolution (`DEoptim::DEoptim`).   
-5. Particle Swarm Optimization (`pso::psoptim`)
-- Model-based
-6. Bayesian Optimization (`mlrMBO::mbo`)
-7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`)
-
-<!---------------------------------------------------------->
+> If the model-independent analyses do not show evidence of the expected results, there is almost no point in fitting the model. Instead, you should go back to the beginning, either re-thinking the computational models if the analyses show interesting patterns of behavior, or re-thinking the experimental design or even the scientific question you are trying to answer.
 
 ```r
 comparison <- binaryRL::fit_p(
