@@ -46,6 +46,9 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |   ███�
 <!---------------------------------------------------------->
 
 ## Read your Raw Data
+
+Our package includes a minimally processed version of a publicly available dataset from Mason et al. [(2024)](https://doi.org/10.3758/s13423-023-02415-x) as example data. This dataset represents a classic Two-Armed Bandit task, a typical example of a Two-Alternative Forced Choice (TAFC) paradigm.
+
 ```r
 # An open data from Mason et. al. (2024) https://osf.io/hy3q4/
 head(Mason_2024_Exp2)
@@ -65,12 +68,13 @@ head(Mason_2024_Exp2)
 2. You can also add two **additional variables** as factors that the model needs to consider.
 
 ### References
-Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). Rare and extreme outcomes in risky choice. *Psychonomic Bulletin & Review, 31*(3), 1301-1308. https://doi.org/10.3758/s13423-023-02415-x
-
+Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). Rare and extreme outcomes in risky choice. Psychonomic Bulletin & Review, 31(3), 1301-1308. https://doi.org/10.3758/s13423-023-02415-x
 <!---------------------------------------------------------->
 
 # Tutorial
-The development and usage workflow of this R package adheres to the **four** stages (ten rules) recommended by Wilson & Collins (2019).
+The development and usage workflow of this R package adheres to the **four** stages (ten rules) recommended by Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547).
+
+
 
 <p align="center">
     <img src="./fig/rl_process.png" alt="RL Models" width="70%">
@@ -340,9 +344,9 @@ Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction 
 
 ## 2. Parameter and Model Recovery
 
-Here, using the publicly available data from Mason et al. (2024), we demonstrate how to perform parameter recovery and model recovery following the method suggested by Wilson & Collins (2019).  
+Here, using the publicly available data from Mason et al. [(2024)](https://doi.org/10.3758/s13423-023-02415-x), we demonstrate how to perform parameter recovery and model recovery following the method suggested by Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547).  
 
-  1. Notably, Wilson & Collins (2019) recommend increasing the softmax parameter $\tau$ by 1 during model recovery, as this can help reduce the amount of noise in behavior.  
+  1. Notably, Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547) recommend increasing the softmax parameter $\tau$ by 1 during model recovery, as this can help reduce the amount of noise in behavior.  
   2. Additionally, different algorithms and varying number of iterations can also influence the results of both parameter recovery and model recovery. You should adjust these settings based on your specific needs and circumstances.   
 
 <!---------------------------------------------------------->
@@ -507,15 +511,9 @@ The value of the softmax parameter $\tau$ affects the recovery of other paramete
 
 <!---------------------------------------------------------->
 
-
-### References  
-Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547
-
-
-<!---------------------------------------------------------->
-
-
 ## 3. Fit Parameters
+Following the recommendations of Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547), a model is only worth fitting to real data if it demonstrates good performance in the parameter recovery and model recovery.
+
 > Once all the previous steps have been completed, you can finally move on to modeling your empirical data. 
 
 > If the model-independent analyses do not show evidence of the expected results, there is almost no point in fitting the model. Instead, you should go back to the beginning, either re-thinking the computational models if the analyses show interesting patterns of behavior, or re-thinking the experimental design or even the scientific question you are trying to answer.
@@ -696,7 +694,7 @@ binaryRL::rcv_d(
   ...
 )
 ```
-Both `fit_p` and `rcv_d` support parallel computation, meaning they can fit multiple participants' datasets simultaneously as long as `nc > 1`.  
+Both `rcv_d` and `fit_p` support parallel computation, meaning they can fit multiple participants' datasets simultaneously as long as `nc > 1`.  
 Since parallel execution runs in a separate environment, if you have customized any of the four core functions, you must explicitly pass the function names to `binaryRL` via the `funcs` argument.
 
 ## Initial Value
