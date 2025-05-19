@@ -72,17 +72,19 @@ Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). Rare and extreme
 <!---------------------------------------------------------->
 
 # Tutorial
-The development and usage workflow of this R package adheres to the **four** stages (ten rules) recommended by Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547).
-
-
+- The development and usage workflow of this R package adheres to the **four** stages (ten rules) recommended by Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547).  
+- The **three** basic models built into this R package are referenced from Niv et al. [(2012)](https://doi.org/10.1523/JNEUROSCI.5498-10.2012).
 
 <p align="center">
-    <img src="./fig/rl_process.png" alt="RL Models" width="70%">
+    <img src="./fig/rl_process.png" alt="RL Process" width="19.8%" style="display: inline;">
+    <img src="./fig/rl_models.png" alt="RL Models" width="50%" style="display: inline;">
 </p>
 
-### References  
-Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547
 
+### References  
+Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547  
+
+Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
 <!---------------------------------------------------------->
 
 ## 1. Run Model
@@ -334,13 +336,7 @@ binaryRL::run_m(
 )
 ```
 
-<p align="center">
-    <img src="./fig/rl_models.png" alt="RL Models" width="90%">
-</p>
-
-### References
-Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
-
+<!---------------------------------------------------------->
 
 ## 2. Parameter and Model Recovery
 
