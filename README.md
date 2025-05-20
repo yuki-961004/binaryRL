@@ -17,7 +17,7 @@ If you agree with this assumptions, I will introduce how to use this package.
 
 
 # How to cite 
-YuKi. (2025). binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks (Version 0.8.0) [R package]. CRAN. https://CRAN.R-project.org/package=binaryRL
+YuKi. (2025). binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks. R package version 0.8.0. https://CRAN.R-project.org/package=binaryRL
 
 Hu, M., & Liu, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal*(7), 100-123. https://doi.org/
 
@@ -27,6 +27,7 @@ Hu, M., & Liu, Z. (2025). binaryRL: A Package for Building Reinforcement Learnin
 install.packages("binaryRL")
 # Install the latest version from GitHub
 devtools::install_github("yuki-961004/binaryRL") 
+
 library(binaryRL)
 ```
 
@@ -83,7 +84,6 @@ Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). Rare and extreme
 
 ### References  
 Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547  
-
 Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
 <!---------------------------------------------------------->
 
