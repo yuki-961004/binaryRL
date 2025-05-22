@@ -15,15 +15,16 @@ binaryRL.res <- binaryRL::optimize_para(
   n_trials = 360,
   lower = c(0, 0, 0),
   upper = c(1, 1, 1),
-  iteration = 40,
+  iteration = 10,
   seed = 123,
-  #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
-  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-  algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+  #algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)
+  #algorithm = "GenSA"        # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "GA"           # Genetic Algorithm (GA::ga)
+  #algorithm = "DEoptim"      # Differential Evolution (DEoptim::DEoptim)
+  #algorithm = "PSO"          # Particle Swarm Optimization (pso::psoptim)
+  #algorithm = "Bayesian"     # Bayesian Optimization (mlrMBO::mbo)
+  #algorithm = "CMA-ES"       # Covariance Matrix Adapting (`cmaes::cma_es`)
+  algorithm = "NLOPT_GN_MLSL"# Nonlinear Optimization (nloptr::nloptr)
 )
 summary(binaryRL.res)
 ```

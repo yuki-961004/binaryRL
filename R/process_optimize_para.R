@@ -4,15 +4,16 @@
 #' This function is an internal function of `fit_p` We isolate it from direct use
 #'  by capable users.
 #'
-#'  The function provides four optimization algorithms: 
+#'  The function provides several optimization algorithms: 
 #' 
 #'    1. L-BFGS-B (from `stats::optim`); 
 #'    2. Simulated Annealing (`GenSA::GenSA`); 
 #'    3. Genetic Algorithm (`GA::ga`); 
 #'    4. Differential Evolution (`DEoptim::DEoptim`); 
-#'    5. Bayesian Optimization (`mlrMBO::mbo`); 
-#'    6. Particle Swarm Optimization (`pso::psoptim`); 
+#'    5. Particle Swarm Optimization (`pso::psoptim`); 
+#'    6. Bayesian Optimization (`mlrMBO::mbo`); 
 #'    7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`); 
+#'    8. Nonlinear Optimization (`nloptr::nloptr`)
 #' 
 #'  For more information, please refer to the GitHub repository:
 #'  https://github.com/yuki-961004/binaryRL
@@ -54,7 +55,10 @@
 #'  default: `seed = 123` 
 #'  
 #' @param algorithm [character] Choose a algorithm package from 
-#'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`
+#'  `L-BFGS-B`, 
+#'  `GenSA`, `GA`, `DEoptim`, 
+#'  `Bayesian`, `PSO`, 
+#'  `CMA-ES`, `NLOPT_`
 #' 
 #' @returns the result of binaryRL with optimal parameters
 #' @export
@@ -93,9 +97,8 @@ optimize_para <- function(
   
   set.seed(seed)
   
-  result <- switch(
-    algorithm,
-    "L-BFGS-B" = {
+  result <- switch(TRUE,
+    algorithm == "L-BFGS-B" ~ {
       stats::optim(
         par = initial_params,
         method = "L-BFGS-B",
@@ -107,7 +110,7 @@ optimize_para <- function(
         )
       )
     },
-    "GenSA" = {
+    algorithm == "GenSA" ~ {
       check_dependency("GenSA", algorithm_name = "Simulated Annealing")
       
       GenSA::GenSA(
@@ -121,7 +124,7 @@ optimize_para <- function(
         )
       )
     },
-    "GA" = {
+    algorithm == "GA" ~ {
       check_dependency("GA", algorithm_name = "Genetic Algorithm")
       
       GA::ga(
@@ -135,7 +138,7 @@ optimize_para <- function(
         #parallel = TRUE
       )
     },
-    "DEoptim" = {
+    algorithm == "DEoptim" ~ {
       check_dependency("DEoptim", algorithm_name = "Differential Evolution")
       
       DEoptim::DEoptim(
@@ -151,7 +154,7 @@ optimize_para <- function(
         )
       )
     },
-    "Bayesian" = {
+    algorithm == "Bayesian" ~ {
       required_pkgs <- c(
         "mlrMBO", "mlr", "ParamHelpers", "smoof", "lhs",
         "DiceKriging", "rgenoud"
@@ -192,7 +195,7 @@ optimize_para <- function(
         )
       )
     },
-    "PSO" = {
+    algorithm == "PSO" ~ {
       check_dependency("pso", algorithm_name = "Particle Swarm Optimization")
 
       pso::psoptim(
@@ -206,7 +209,7 @@ optimize_para <- function(
         )
       )
     },
-    "CMA-ES" = {
+    algorithm == "CMA-ES" ~ {
       check_dependency("cmaes", algorithm_name = "Covariance Matrix Adapting")
       
       cmaes::cma_es(
@@ -219,49 +222,75 @@ optimize_para <- function(
         )
       )
     },
-   { # 停止（如果 algorithm 不匹配任何已知值）
+    startsWith(algorithm, "NLOPT_") ~ {
+      check_dependency("nloptr", algorithm_name = "Nonlinear Optimization")
+      
+      if (grepl(pattern = "MLSL", x = algorithm)) {
+        local_opts <- list(
+          algorithm = "NLOPT_LN_BOBYQA", 
+          xtol_rel = 1.0e-8            
+        )
+      } else {
+        local_opts <- NULL
+      }
+      
+      nloptr::nloptr(
+        x0 = initial_params,
+        eval_f = obj_func,
+        lb = lower,
+        ub = upper,
+        opts = list(
+          algorithm = algorithm, 
+          local_opts = local_opts,
+          maxeval = iteration
+        )
+      )
+    },
+    TRUE ~ { # 停止（如果 algorithm 不匹配任何已知值）
       stop("
         Choose a algorithm from 
         `L-BFGS-B`, `GenSA`, 
         `GA`, `DEoptim`,
         `Bayesian`, `PSO`,
-        `CMA-ES`
+        `CMA-ES`, `NLOPT_`
       ")
     }
   )
 
-  switch(
-    algorithm,
-    "L-BFGS-B" = {
-     fit_params <- as.vector(result$par)
+  fit_params <- switch(TRUE,
+    algorithm == "L-BFGS-B" ~ {
+     as.vector(result$par)
     },
-    "GA" = {
-      fit_params <- as.vector(result@solution[1,])
+    algorithm == "GA" ~ {
+      as.vector(result@solution[1,])
     },
-    "GenSA" = {
-      fit_params <- as.vector(result$par)
+    algorithm == "GenSA" ~ {
+      as.vector(result$par)
     },
-    "DEoptim" = {
-      fit_params <- as.vector(result$optim$bestmem)
+    algorithm == "DEoptim" ~ {
+      as.vector(result$optim$bestmem)
     },
-    "Bayesian" = {
-      fit_params <- as.vector(
+    algorithm == "Bayesian" ~ {
+      as.vector(
         as.numeric(result$final.opt.state$opt.result$mbo.result$x)
       )
     },
-    "PSO" = {
-      fit_params <- as.vector(result$par)
+    algorithm == "PSO" ~ {
+      as.vector(result$par)
     },
-    "CMA-ES" = {
-      fit_params <- as.vector(result$par)
+    algorithm == "CMA-ES" ~ {
+      as.vector(result$par)
+    },
+    startsWith(algorithm, "NLOPT_") ~ {
+      as.vector(result$solution)
     },
     {
-    stop("
+    TRUE ~ stop("
         Choose a algorithm from 
         `L-BFGS-B`, `GenSA`, 
         `GA`, `DEoptim`,
         `Bayesian`, `PSO`,
-        `CMA-ES`
+        `CMA-ES`, `NLOPT_`
       ")
     }
   )

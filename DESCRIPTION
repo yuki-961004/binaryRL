@@ -1,5 +1,5 @@
 Package: binaryRL
-Version: 0.8.2
+Version: 0.8.3
 Title: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks
 Description: Tools for building reinforcement learning (RL) models
   specifically tailored for Two-Alternative Forced Choice (TAFC) tasks,
@@ -34,6 +34,7 @@ Suggests:
   GenSA, 
   GA, 
   DEoptim, 
-  mlrMBO, mlr, ParamHelpers, smoof, lhs, DiceKriging, rgenoud,
   pso, 
-  cmaes
+  mlrMBO, mlr, ParamHelpers, smoof, lhs, DiceKriging, rgenoud,
+  cmaes,
+  nloptr

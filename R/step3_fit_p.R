@@ -7,15 +7,16 @@
 #'  `params`), the `fit_p` function searches for the optimal values of 
 #'  these free parameters.
 #'
-#'  The package provides four optimization algorithms: 
+#'  The function provides several optimization algorithms: 
 #' 
 #'    1. L-BFGS-B (from `stats::optim`); 
 #'    2. Simulated Annealing (`GenSA::GenSA`); 
 #'    3. Genetic Algorithm (`GA::ga`); 
 #'    4. Differential Evolution (`DEoptim::DEoptim`); 
-#'    5. Bayesian Optimization (`mlrMBO::mbo`); 
-#'    6. Particle Swarm Optimization (`pso::psoptim`); 
+#'    5. Particle Swarm Optimization (`pso::psoptim`); 
+#'    6. Bayesian Optimization (`mlrMBO::mbo`); 
 #'    7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`); 
+#'    8. Nonlinear Optimization (`nloptr::nloptr`)
 #' 
 #'  For more information, please refer to the GitHub repository:
 #'  https://github.com/yuki-961004/binaryRL

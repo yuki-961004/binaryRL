@@ -54,7 +54,10 @@
 #' @param nc [integer] Number of CPU cores to use for parallel computation.
 #'  
 #' @param algorithm [character] Choose a algorithm package from 
-#'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`
+#'  `L-BFGS-B`, 
+#'  `GenSA`, `GA`, `DEoptim`, 
+#'  `Bayesian`, `PSO`, 
+#'  `CMA-ES`, `NLOPT_`
 #'
 #' @returns a list containing all recovery data
 #' @export

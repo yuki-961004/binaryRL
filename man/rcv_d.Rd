@@ -75,7 +75,10 @@ default: `seed = 123`}
 \item{nc}{[integer] Number of CPU cores to use for parallel computation.}
 
 \item{algorithm}{[character] Choose a algorithm package from 
-`L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`}
+`L-BFGS-B`, 
+`GenSA`, `GA`, `DEoptim`, 
+`Bayesian`, `PSO`, 
+`CMA-ES`, `NLOPT_`}
 }
 \value{
 a list containing all recovery data

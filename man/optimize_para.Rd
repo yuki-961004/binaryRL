@@ -57,7 +57,10 @@ reproducible and remain the same each time the function is run.
 default: `seed = 123`}
 
 \item{algorithm}{[character] Choose a algorithm package from 
-`L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `Bayesian`, `PSO`, `CMA-ES`}
+`L-BFGS-B`, 
+`GenSA`, `GA`, `DEoptim`, 
+`Bayesian`, `PSO`, 
+`CMA-ES`, `NLOPT_`}
 }
 \value{
 the result of binaryRL with optimal parameters
@@ -66,15 +69,16 @@ the result of binaryRL with optimal parameters
 This function is an internal function of `fit_p` We isolate it from direct use
  by capable users.
 
- The function provides four optimization algorithms: 
+ The function provides several optimization algorithms: 
 
    1. L-BFGS-B (from `stats::optim`); 
    2. Simulated Annealing (`GenSA::GenSA`); 
    3. Genetic Algorithm (`GA::ga`); 
    4. Differential Evolution (`DEoptim::DEoptim`); 
-   5. Bayesian Optimization (`mlrMBO::mbo`); 
-   6. Particle Swarm Optimization (`pso::psoptim`); 
+   5. Particle Swarm Optimization (`pso::psoptim`); 
+   6. Bayesian Optimization (`mlrMBO::mbo`); 
    7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`); 
+   8. Nonlinear Optimization (`nloptr::nloptr`)
 
  For more information, please refer to the GitHub repository:
  https://github.com/yuki-961004/binaryRL
