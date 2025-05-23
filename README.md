@@ -16,7 +16,7 @@ If you agree with this assumptions, I will introduce how to use this package.
 [![CRAN-Downloads](https://cranlogs.r-pkg.org/badges/grand-total/binaryRL?color=%23FA812F)](https://CRAN.R-project.org/package=binaryRL)
 
 
-# How to cite 
+## How to cite 
 YuKi. (2025). binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks. R package version 0.8.0. https://CRAN.R-project.org/package=binaryRL
 
 Hu, M., & Liu, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal*(7), 100-123. https://doi.org/
@@ -43,6 +43,33 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |   ███�
                                       ║ ╚----------╝             ║
                                       ╚══════════════════════════╝
 </pre>
+
+<!---------------------------------------------------------->
+
+## Algorithms for Parallel Data Fitting
+While this R package is primarily designed for constructing reinforcement learning (RL) models (with `run_m` at its core), its flexibility extends further. 
+
+The key functions, `rcv_d` and `fit_p`, provide a unified interface to seamlessly integrate a diverse range of optimization algorithms. Crucially, they offer a parallel solution for tasks like parameter optimization, parameter recovery, and model recovery.
+
+This means you can leverage this package not only for building and fitting RL models, but also as a versatile algorithm library for fitting other **"black-box functions"** in parallel for each subject. This significantly reduces processing time, provided your function's parameters can be optimized independently for each subject.
+
+**Base R Optimization**  
+  - L-BFGS-B (from `stats::optim`)   
+
+**Specialized External Optimization**
+  - Simulated Annealing (`GenSA`)  
+  - Genetic Algorithm (`GA`)  
+  - Differential Evolution (`DEoptim`).   
+  - Particle Swarm Optimization (`pso`)
+  - Bayesian Optimization (`mlrMBO`)
+  - Covariance Matrix Adapting Evolutionary Strategy (`cmaes`)
+
+**Optimization Library**
+  - Nonlinear Optimization (`nloptr`)
+
+<br>
+
+*NOTE:* If you want to use an algorithm other than `L-BFGS-B`, you must install the corresponding package. 
 
 <!---------------------------------------------------------->
 
@@ -347,24 +374,6 @@ Here, using the publicly available data from Mason et al. [(2024)](https://doi.o
 
 <!---------------------------------------------------------->
 
-### Algorithms
-This package includes **8** algorithms:  
-If you want to use an algorithm other than `L-BFGS-B`, you must install the corresponding package.  
-
-- Gradient-based 
-1. L-BFGS-B (from `stats::optim`)  
-- Heuristic-based
-2. Simulated Annealing (`GenSA`)  
-3. Genetic Algorithm (`GA`)  
-4. Differential Evolution (`DEoptim`).   
-5. Particle Swarm Optimization (`pso`)
-- Model-based
-6. Bayesian Optimization (`mlrMBO`)
-7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes`)
-
-- Optimization Library
-8. Nonlinear Optimization (`nloptr`)
-
 ```r
 recovery <- binaryRL::rcv_d(
   data = binaryRL::Mason_2024_Exp2,
@@ -384,18 +393,18 @@ recovery <- binaryRL::rcv_d(
   iteration_s = 50,
   iteration_f = 50,
   nc = 1,
-  # Gradient-based 
+  # Base R Optimization  
   algorithm = "L-BFGS-B"   # Gradient-Based (stats)
-  # Heuristic-based
+
+  # Specialized External Optimization
   #algorithm = "GenSA"     # Simulated Annealing (GenSA)
   #algorithm = "GA"        # Genetic Algorithm (GA)
   #algorithm = "DEoptim"   # Differential Evolution (DEoptim)
   #algorithm = "PSO"       # Particle Swarm Optimization (pso)
-  # Model-based
   #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO)
   #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes`)
 
-  # Nonlinear Optimization (nloptr)
+  # Optimization Library (nloptr)
   #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 
@@ -524,18 +533,18 @@ comparison <- binaryRL::fit_p(
   iteration = 10,
   seed = 123,
   nc = 1,
-  # Gradient-based 
+  # Base R Optimization  
   algorithm = "L-BFGS-B"   # Gradient-Based (stats)
-  # Heuristic-based
+
+  # Specialized External Optimization
   #algorithm = "GenSA"     # Simulated Annealing (GenSA)
   #algorithm = "GA"        # Genetic Algorithm (GA)
   #algorithm = "DEoptim"   # Differential Evolution (DEoptim)
   #algorithm = "PSO"       # Particle Swarm Optimization (pso)
-  # Model-based
   #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO)
   #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes`)
 
-  # Nonlinear Optimization (nloptr)
+  # Optimization Library (nloptr)
   #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 
