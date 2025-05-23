@@ -18,6 +18,7 @@
 #'   }
 #' @export
 #'
+#' @noRd
 #' 
 digits <- function(data, options, digits_1 = 2, digits_2 = 5){
   # round

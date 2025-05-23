@@ -2,16 +2,19 @@
 % Please edit documentation in R/func_eta.R
 \name{func_eta}
 \alias{func_eta}
-\title{Learning Rate}
+\title{Function: Learning Rate}
 \usage{
 func_eta(value, utility, reward, occurrence, var1 = NA, var2 = NA, eta, lambda)
 }
 \arguments{
-\item{value}{The expected value of the stimulus in the subject's mind at this point in time.}
+\item{value}{The expected value of the stimulus in the subject's mind at 
+this point in time.}
 
-\item{utility}{The subjective value that the subject assigns to the objective reward.}
+\item{utility}{The subjective value that the subject assigns to the 
+objective reward.}
 
-\item{reward}{The objective reward received by the subject after selecting a stimulus.}
+\item{reward}{The objective reward received by the subject after selecting 
+a stimulus.}
 
 \item{occurrence}{The number of times the same stimulus has appeared.}
 
@@ -26,13 +29,13 @@ variable, var1, does not meet your needs, you can add another additional
 variable, var2, into your model.
 e.g., `var2 = "Extra_Var2"`}
 
-\item{eta}{[vector] Parameters used in the `rate_func` (Learning Rate Function), 
-representing the rate at which the subject updates the 
-difference (prediction error) between the reward and the expected value 
-in the subject's mind. In the TD model, there is a single learning rate 
-throughout the experiment. In the RSTD model, two different learning rates 
-are used when the reward is higher or lower than the expected value.
-e.g., `eta = c(0.3, 0.7)`}
+\item{eta}{[vector] Parameters used in the Learning Rate Function 
+`rate_func` representing the rate at which the subject updates the 
+ difference (prediction error) between the reward and the expected value 
+ in the subject's mind. In the TD model, there is a single learning rate 
+ throughout the experiment. In the RSTD model, two different learning rates 
+ are used when the reward is higher or lower than the expected value.
+ e.g., `eta = c(0.3, 0.7)`}
 
 \item{lambda}{[vector] Extra parameters that may be used in functions. 
 e.g., `lambda = c(0.4, 0.7, 20, 60)`}
@@ -41,9 +44,10 @@ e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 learning rate eta
 }
 \description{
-Learning Rate
+Function: Learning Rate
 }
 \note{
-When customizing these functions, please ensure that you do not modify the arguments. 
-Instead, only modify the `if-else` statements or the internal logic to adapt the function to your needs.
+When customizing these functions, please ensure that you do not modify 
+the arguments. Instead, only modify the `if-else` statements or the internal 
+logic to adapt the function to your needs.
 }

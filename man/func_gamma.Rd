@@ -2,7 +2,7 @@
 % Please edit documentation in R/func_gamma.R
 \name{func_gamma}
 \alias{func_gamma}
-\title{Utility Function}
+\title{Function: Utility Function}
 \usage{
 func_gamma(
   value,
@@ -16,11 +16,14 @@ func_gamma(
 )
 }
 \arguments{
-\item{value}{The expected value of the stimulus in the subject's mind at this point in time.}
+\item{value}{The expected value of the stimulus in the subject's mind at 
+this point in time.}
 
-\item{utility}{The subjective value that the subject assigns to the objective reward.}
+\item{utility}{The subjective value that the subject assigns to the 
+objective reward.}
 
-\item{reward}{The objective reward received by the subject after selecting a stimulus.}
+\item{reward}{The objective reward received by the subject after selecting 
+a stimulus.}
 
 \item{occurrence}{The number of times the same stimulus has appeared.}
 
@@ -35,11 +38,13 @@ variable, var1, does not meet your needs, you can add another additional
 variable, var2, into your model.
 e.g., `var2 = "Extra_Var2"`}
 
-\item{gamma}{[vector] Parameters used in the `util_func` (Utility Function), 
-often referred to as the discount rate. For example, 
-`utility = gamma * reward`, if gamma < 1, it indicates that people 
-tend to discount the objective reward. Provide the value as a vector 
-e.g., `gamma = c(0.7)`}
+\item{gamma}{[vector] Parameters used in the Utility Function 
+`util_func`, often referred to as the discount rate. For example,
+`utility = reward^gamma`. If `gamma < 1`, it indicates that people
+tend to discount the objective reward. This equation is very similar
+to the Stevens' power function, reflecting humans' nonlinear perception
+of physical quantities. 
+e.g., `gamma = c(0.7)`.}
 
 \item{lambda}{[vector] Extra parameters that may be used in functions. 
 e.g., `lambda = c(0.4, 0.7, 20, 60)`}
@@ -48,9 +53,10 @@ e.g., `lambda = c(0.4, 0.7, 20, 60)`}
 Discount rate and utility
 }
 \description{
-Utility Function
+Function: Utility Function
 }
 \note{
-When customizing these functions, please ensure that you do not modify the arguments. 
-Instead, only modify the `if-else` statements or the internal logic to adapt the function to your needs.
+When customizing these functions, please ensure that you do not modify 
+the arguments. Instead, only modify the `if-else` statements or the internal 
+logic to adapt the function to your needs.
 }

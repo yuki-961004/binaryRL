@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_optimize_para.R
 \name{optimize_para}
 \alias{optimize_para}
-\title{Fit Parameters}
+\title{Process: Optimizing Parameters}
 \usage{
 optimize_para(
   data,
@@ -22,17 +22,23 @@ optimize_para(
 \arguments{
 \item{data}{[data.frame] raw data. 
 This data should include the following mandatory columns: 
-- "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward".}
+ \itemize{
+   \item "sub"
+   \item "time_line" (e.g., "Block", "Trial")
+   \item "L_choice"
+   \item "R_choice"
+   \item "L_reward"
+   \item "R_reward"
+   \item "sub_choose"
+ }}
 
 \item{id}{[integer] which subject is going to be analyzed.
 is being analyzed. The value should correspond to an entry in the "sub" 
 column, which must contain the subject IDs. 
 e.g., `id = 18`}
 
-\item{obj_func}{[function] a function with only ONE argument `params`. 
-Additionally, it is important to note that the data needs to be retrieved 
-from fit_env() and the results passed back to fit_env(). 
-This function returns the log likelihood (logL).}
+\item{obj_func}{[function] A function with only ONE argument `params`.
+Refer to `binaryRL::TD` to mimic the establishment of an objective function.}
 
 \item{n_params}{[integer] The number of free parameters in your model.}
 
@@ -56,29 +62,32 @@ for `Bayesian`, `GA`, set `initial = 50`}
 reproducible and remain the same each time the function is run. 
 default: `seed = 123`}
 
-\item{algorithm}{[character] Choose a algorithm package from 
-`L-BFGS-B`, 
-`GenSA`, `GA`, `DEoptim`, 
-`Bayesian`, `PSO`, 
-`CMA-ES`, `NLOPT_`}
+\item{algorithm}{[character] Choose an algorithm package from
+`L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `PSO`, `Bayesian`, `CMA-ES`.
+In addition, any algorithm from the `nloptr` package is also
+supported. If your chosen `nloptr` algorithm requires a local search,
+you need to input a character vector. The first element represents
+the algorithm used for global search, and the second element represents
+the algorithm used for local search.}
 }
 \value{
 the result of binaryRL with optimal parameters
 }
 \description{
-This function is an internal function of `fit_p` We isolate it from direct use
- by capable users.
+This function is an internal function of `fit_p`. 
+ We isolate it from direct use by capable users.
 
- The function provides several optimization algorithms: 
-
-   1. L-BFGS-B (from `stats::optim`); 
-   2. Simulated Annealing (`GenSA::GenSA`); 
-   3. Genetic Algorithm (`GA::ga`); 
-   4. Differential Evolution (`DEoptim::DEoptim`); 
-   5. Particle Swarm Optimization (`pso::psoptim`); 
-   6. Bayesian Optimization (`mlrMBO::mbo`); 
-   7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`); 
-   8. Nonlinear Optimization (`nloptr::nloptr`)
+ The function provides several optimization algorithms:
+  \itemize{
+    \item 1. L-BFGS-B (from `stats::optim`);
+    \item 2. Simulated Annealing (`GenSA`);
+    \item 3. Genetic Algorithm (`GA`);
+    \item 4. Differential Evolution (`DEoptim`);
+    \item 5. Particle Swarm Optimization (`pso`);
+    \item 6. Bayesian Optimization (`mlrMBO`);
+    \item 7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes`);
+    \item 8. Nonlinear Optimization (`nloptr`)
+  }
 
  For more information, please refer to the GitHub repository:
  https://github.com/yuki-961004/binaryRL

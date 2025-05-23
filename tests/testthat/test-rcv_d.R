@@ -17,13 +17,7 @@ testthat::test_that("rcv_d() works with valid input", {
     iteration_s = 4,
     iteration_f = 4,
     nc = 1,
-    algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-    #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
-    #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-    #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-    #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-    #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-    #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+    algorithm = "L-BFGS-B"
   )
   
   testthat::expect_type(recovery, "list")
@@ -49,13 +43,7 @@ testthat::test_that("rcv_d() works with valid input", {
     iteration_s = 4,
     iteration_f = 4,
     nc = 4,
-    algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-    #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
-    #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-    #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-    #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-    #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-    #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+    algorithm = "L-BFGS-B"
   )
   
   testthat::expect_type(recovery, "list")

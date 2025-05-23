@@ -1,11 +1,15 @@
-#' Utility Function
+#' Function: Utility Function
 #'
-#' @note When customizing these functions, please ensure that you do not modify the arguments. 
-#' Instead, only modify the `if-else` statements or the internal logic to adapt the function to your needs.
+#' @note When customizing these functions, please ensure that you do not modify 
+#' the arguments. Instead, only modify the `if-else` statements or the internal 
+#' logic to adapt the function to your needs.
 #'
-#' @param value The expected value of the stimulus in the subject's mind at this point in time.
-#' @param utility The subjective value that the subject assigns to the objective reward.
-#' @param reward The objective reward received by the subject after selecting a stimulus.
+#' @param value The expected value of the stimulus in the subject's mind at 
+#'  this point in time.
+#' @param utility The subjective value that the subject assigns to the 
+#'  objective reward.
+#' @param reward The objective reward received by the subject after selecting 
+#'  a stimulus.
 #' @param occurrence The number of times the same stimulus has appeared.
 #' 
 #' @param var1 [character] column name of extra variable 1. If your model uses 
@@ -19,11 +23,13 @@
 #'  variable, var2, into your model.
 #'  e.g., `var2 = "Extra_Var2"`
 #' 
-#' @param gamma [vector] Parameters used in the `util_func` (Utility Function), 
-#'  often referred to as the discount rate. For example, 
-#'  `utility = gamma * reward`, if gamma < 1, it indicates that people 
-#'  tend to discount the objective reward. Provide the value as a vector 
-#'  e.g., `gamma = c(0.7)`
+#' @param gamma [vector] Parameters used in the Utility Function 
+#'  `util_func`, often referred to as the discount rate. For example,
+#'  `utility = reward^gamma`. If `gamma < 1`, it indicates that people
+#'  tend to discount the objective reward. This equation is very similar
+#'  to the Stevens' power function, reflecting humans' nonlinear perception
+#'  of physical quantities. 
+#'  e.g., `gamma = c(0.7)`.
 #' 
 #' @param lambda [vector] Extra parameters that may be used in functions. 
 #'  e.g., `lambda = c(0.4, 0.7, 20, 60)`

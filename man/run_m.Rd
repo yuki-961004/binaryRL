@@ -2,7 +2,7 @@
 % Please edit documentation in R/step1_run_m.R
 \name{run_m}
 \alias{run_m}
-\title{Building Reinforcement Learning Model}
+\title{Step 1: Building reinforcement learning model}
 \usage{
 run_m(
   data,
@@ -41,17 +41,25 @@ run_m(
 \arguments{
 \item{data}{[data.frame] raw data. 
 This data should include the following mandatory columns: 
-- "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward".}
+ \itemize{
+   \item "sub"
+   \item "time_line" (e.g., "Block", "Trial")
+   \item "L_choice"
+   \item "R_choice"
+   \item "L_reward"
+   \item "R_reward"
+   \item "sub_choose"
+ }}
 
 \item{id}{[integer] which subject is going to be analyzed.
 is being analyzed. The value should correspond to an entry in the "sub" 
 column, which must contain the subject IDs. 
 e.g., `id = 18`}
 
-\item{mode}{[character] 'fit' or 'simulate' whether to generate raw data.
-Defaults to FALSE. Set to TRUE to generate fake data.
-This produces a data frame with the same format as
-the actual raw data.}
+\item{mode}{[character] This parameter has three possible values: 
+`simulate`, `fit`, and `review`. These correspond to their use 
+in `rcv_d`, `fit_p`, and `rev_e` respectively. In most cases, you won't need
+to modify this, as suitable default values are set for different contexts.}
 
 \item{initial_value}{[numeric] subject's initial expected value for each 
 stimulus's reward. If this value is not set (`initial_value = NA`), 
@@ -61,16 +69,16 @@ first trial is 100%. default: `initial_value = NA`
 e.g., `initial_value = 0`}
 
 \item{softmax}{[logical] whether to use the softmax function. 
-When softmax = TRUE, the value of each option influences the probability 
+When `softmax = TRUE`, the value of each option influences the probability 
 of selecting that option. Higher values increase the probability of 
-selecting that option. When softmax = FALSE, the subject will always 
+selecting that option. When `softmax = FALSE`, the subject will always 
 choose the option with the higher value, with no possibility of selecting 
 the lower-value option. default: `softmax = TRUE`}
 
 \item{threshold}{[integer] the number of initial trials during which the 
 subject makes random choices rather than choosing based on the values of 
 the options. This occurs because the subject has not yet learned the values 
-of the options. For example, threshold = 20 means the subject will make 
+of the options. For example, `threshold = 20` means the subject will make 
 completely random choices for the first 20 trials. default: `threshold = 1`}
 
 \item{seed}{[integer] random seed. This ensures that the results are 
@@ -81,36 +89,38 @@ default: `seed = 123`}
 
 \item{n_trials}{[integer] The total number of trials in your experiment.}
 
-\item{gamma}{[vector] Parameters used in the `util_func` (Utility Function), 
-often referred to as the discount rate. For example, 
-`utility = gamma * reward`, if gamma < 1, it indicates that people 
-tend to discount the objective reward. Provide the value as a vector 
-e.g., `gamma = c(0.7)`}
+\item{gamma}{[vector] Parameters used in the Utility Function 
+`util_func`, often referred to as the discount rate. For example,
+`utility = reward^gamma`. If `gamma < 1`, it indicates that people
+tend to discount the objective reward. This equation is very similar
+to the Stevens' power function, reflecting humans' nonlinear perception
+of physical quantities. 
+e.g., `gamma = c(0.7)`.}
 
-\item{eta}{[vector] Parameters used in the `rate_func` (Learning Rate Function), 
-representing the rate at which the subject updates the 
-difference (prediction error) between the reward and the expected value 
-in the subject's mind. In the TD model, there is a single learning rate 
-throughout the experiment. In the RSTD model, two different learning rates 
-are used when the reward is higher or lower than the expected value.
-e.g., `eta = c(0.3, 0.7)`}
+\item{eta}{[vector] Parameters used in the Learning Rate Function 
+`rate_func` representing the rate at which the subject updates the 
+ difference (prediction error) between the reward and the expected value 
+ in the subject's mind. In the TD model, there is a single learning rate 
+ throughout the experiment. In the RSTD model, two different learning rates 
+ are used when the reward is higher or lower than the expected value.
+ e.g., `eta = c(0.3, 0.7)`}
 
-\item{epsilon}{[vector] Parameters used in the `expl_func` (Exploration Function), 
-determining whether the subject makes decisions based on the relative values 
-of the left and right options, or chooses completely randomly. For example, 
-when epsilon = 0.1, it means the subject has a 10% chance of making a 
-completely random choice and a 90% chance of choosing based on the values 
-of the options.
-e.g., `epsilon = c(0.1)`}
+\item{epsilon}{[vector] Parameters used in the Exploration Function
+`expl_func` determining whether the subject makes decisions based on the 
+ relative values of the left and right options, or chooses completely 
+ randomly. For example, when epsilon = 0.1, it means the subject has a 10% 
+ chance of making a completely random choice and a 90% chance of choosing 
+ based on the values of the options.
+ e.g., `epsilon = c(0.1)`}
 
-\item{tau}{[vector] Parameters used in the `prob_func` (Soft-Max Function), 
-representing the sensitivity of the subject to the value difference when 
-making decisions. It determines the probability of selecting the left option 
-versus the right option based on their values. A larger value of tau 
-indicates greater sensitivity to the value difference between the options. 
-In other words, even a small difference in value will make the subject more 
-likely to choose the higher-value option. 
-e.g., `tau = c(0.5)`}
+\item{tau}{[vector] Parameters used in the Soft-Max Function 
+`prob_func` representing the sensitivity of the subject to the value 
+ difference when making decisions. It determines the probability of selecting 
+ the left option versus the right option based on their values. A larger 
+ value of tau indicates greater sensitivity to the value difference between 
+ the options. In other words, even a small difference in value will make the 
+ subject more likely to choose the higher-value option. 
+ e.g., `tau = c(0.5)`}
 
 \item{lambda}{[vector] Extra parameters that may be used in functions. 
 e.g., `lambda = c(0.4, 0.7, 20, 60)`}
@@ -151,10 +161,8 @@ e.g., `sub_choose = "Choose"`}
 e.g., `rob_choose = "Rob_Choose"`
 you should ignore this argument}
 
-\item{raw_cols}{[vector] default: c("Subject", "Block", "Trial", 
-"L_choice", "R_choice", "L_reward", "R_reward", "Choose", "Reward")
-These are the column names of the raw data. 
-Only required when `mode = "simulate"`.}
+\item{raw_cols}{[vector] Defaults to `NULL`. If left as `NULL`, it will
+directly capture all column names from the raw data.}
 
 \item{var1}{[character] column name of extra variable 1. If your model uses 
 more than just reward and expected value, and you need other information, 
@@ -176,7 +184,8 @@ to the select function.
 The default is 5.}
 }
 \value{
-the result of binaryRL with input parameters
+A list of class \code{binaryRL} containing the 
+ results of the model fitting.
 }
 \description{
 This function requires the optimal parameter values obtained through the 
@@ -193,9 +202,9 @@ This function requires the optimal parameter values obtained through the
  https://github.com/yuki-961004/binaryRL
 }
 \examples{
-data <- Mason_2024_Exp1
+data <- binaryRL::Mason_2024_Exp1
 
-simulated <- binaryRL::run_m(
+test <- binaryRL::run_m(
   data = data,
   id = 18,
   eta = c(0.321, 0.765),
@@ -203,6 +212,6 @@ simulated <- binaryRL::run_m(
   n_trials = 360
 )
 
-summary(simulated)
+summary(test)
 
 }

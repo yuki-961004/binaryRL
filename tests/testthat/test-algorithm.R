@@ -10,7 +10,7 @@ testthat::test_that("GenSA() works with valid input", {
     upper = c(1, 1, 1),
     iteration = 5,
     seed = 123,
-    algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
+    algorithm = "GenSA" 
   )
   
   testthat::expect_type(binaryRL.res, "list")
@@ -28,7 +28,7 @@ testthat::test_that("GA() works with valid input", {
     upper = c(1, 1, 1),
     iteration = 5,
     seed = 123,
-    algorithm = "GA"        # Genetic Algorithm (GA::ga)
+    algorithm = "GA" 
   )
   
   testthat::expect_type(binaryRL.res, "list")
@@ -46,7 +46,7 @@ testthat::test_that("DEoptim() works with valid input", {
     upper = c(1, 1, 1),
     iteration = 5,
     seed = 123,
-    algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
+    algorithm = "DEoptim"
   )
   
   testthat::expect_type(binaryRL.res, "list")
@@ -64,7 +64,7 @@ testthat::test_that("PSO() works with valid input", {
     upper = c(1, 1, 1),
     iteration = 5,
     seed = 123,
-    algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+    algorithm = "PSO" 
   )
   
   testthat::expect_type(binaryRL.res, "list")
@@ -82,7 +82,7 @@ testthat::test_that("Bayesian() works with valid input", {
     upper = c(1, 1, 1),
     iteration = 10,
     seed = 123,
-    algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
+    algorithm = "Bayesian" 
   )
   
   testthat::expect_type(binaryRL.res, "list")
@@ -100,7 +100,7 @@ testthat::test_that("CMA-ES() works with valid input", {
     upper = c(1, 1, 1),
     iteration = 5,
     seed = 123,
-    algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+    algorithm = "CMA-ES"
   )
   
   testthat::expect_type(binaryRL.res, "list")
@@ -118,7 +118,7 @@ testthat::test_that("NLopt() works with valid input", {
     upper = c(1, 1, 1),
     iteration = 10,
     seed = 123,
-    algorithm = "NLOPT_GN_MLSL" # Nonlinear Optimization (nloptr::nloptr)
+    algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
   )
   
   testthat::expect_type(binaryRL.res, "list")

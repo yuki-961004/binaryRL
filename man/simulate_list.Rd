@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_simulate_list.R
 \name{simulate_list}
 \alias{simulate_list}
-\title{simulate_l}
+\title{Process: Simulating Fake Data}
 \usage{
 simulate_list(
   data,

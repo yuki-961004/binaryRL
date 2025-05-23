@@ -15,7 +15,8 @@
 #'   \itemize{
 #'     \item{\code{data}: step5 + ACC + logL.}
 #'   }
-#' @export
+#'   
+#' @noRd
 #' 
 model_fit <- function(
   data, 

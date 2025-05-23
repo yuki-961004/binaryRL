@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_Utility.R
 \name{Utility}
 \alias{Utility}
-\title{Utility model for fit}
+\title{Model: Utility}
 \usage{
 Utility(params)
 }
@@ -13,5 +13,5 @@ Utility(params)
 negative log likelihood
 }
 \description{
-Utility model for fit
+Model: Utility
 }

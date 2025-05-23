@@ -97,8 +97,9 @@
 #'   \itemize{
 #'     \item{\code{data}: step4 + all decisions.}
 #'   }
-#' @export
-#'
+#'   
+#' @noRd
+#' 
 
 decision_making <- function(
     data, 

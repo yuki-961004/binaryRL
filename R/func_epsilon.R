@@ -1,9 +1,8 @@
-#' Epsilon Greedy
+#' Function: Epsilon Greedy
 #'
-#' @note When customizing these functions, please ensure that you do not modify the arguments. 
-#' Instead, only modify the `if-else` statements or the internal logic to adapt the function to your needs.
-#'
-#' @param i row number
+#' @note When customizing these functions, please ensure that you do not modify 
+#' the arguments. Instead, only modify the `if-else` statements or the internal 
+#' logic to adapt the function to your needs.
 #' 
 #' @param var1 [character] column name of extra variable 1. If your model uses 
 #'  more than just reward and expected value, and you need other information, 
@@ -15,19 +14,26 @@
 #'  variable, var1, does not meet your needs, you can add another additional 
 #'  variable, var2, into your model.
 #'  e.g., `var2 = "Extra_Var2"`
+#'  
+#' @param i The current row number. The `threshold` for random selection, which 
+#'  is used to explore the value of different options, will be determined based 
+#'  on this row number. This is because I believe that in the early stages of 
+#'  an experiment, participants will choose options completely at random to 
+#'  explore the reward value associated with each option.
 #' 
 #' @param threshold [integer] the number of initial trials during which the 
 #'  subject makes random choices rather than choosing based on the values of 
 #'  the options. This occurs because the subject has not yet learned the values 
-#'  of the options. For example, threshold = 20 means the subject will make 
-#'  completely random choices for the first 20 trials. default: `threshold = 1`
+#'  of the options. For example, `threshold = 20` means the subject will make 
+#'  completely random choices for the first 20 trials. 
+#'  default: `threshold = 1`
 #' 
-#' @param epsilon [vector] Parameters used in the `expl_func` (Exploration Function), 
-#'  determining whether the subject makes decisions based on the relative values 
-#'  of the left and right options, or chooses completely randomly. For example, 
-#'  when epsilon = 0.1, it means the subject has a 10% chance of making a 
-#'  completely random choice and a 90% chance of choosing based on the values 
-#'  of the options.
+#' @param epsilon [vector] Parameters used in the Exploration Function
+#' `expl_func` determining whether the subject makes decisions based on the 
+#'  relative values of the left and right options, or chooses completely 
+#'  randomly. For example, when epsilon = 0.1, it means the subject has a 10% 
+#'  chance of making a completely random choice and a 90% chance of choosing 
+#'  based on the values of the options.
 #'  e.g., `epsilon = c(0.1)`
 #' 
 #' @param lambda [vector] Extra parameters that may be used in functions. 

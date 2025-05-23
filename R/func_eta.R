@@ -1,11 +1,15 @@
-#' Learning Rate
+#' Function: Learning Rate
 #'
-#' @note When customizing these functions, please ensure that you do not modify the arguments. 
-#' Instead, only modify the `if-else` statements or the internal logic to adapt the function to your needs.
+#' @note When customizing these functions, please ensure that you do not modify 
+#' the arguments. Instead, only modify the `if-else` statements or the internal 
+#' logic to adapt the function to your needs.
 #'
-#' @param value The expected value of the stimulus in the subject's mind at this point in time.
-#' @param utility The subjective value that the subject assigns to the objective reward.
-#' @param reward The objective reward received by the subject after selecting a stimulus.
+#' @param value The expected value of the stimulus in the subject's mind at 
+#'  this point in time.
+#' @param utility The subjective value that the subject assigns to the 
+#'  objective reward.
+#' @param reward The objective reward received by the subject after selecting 
+#'  a stimulus.
 #' @param occurrence The number of times the same stimulus has appeared.
 #' 
 #' @param var1 [character] column name of extra variable 1. If your model uses 
@@ -19,8 +23,8 @@
 #'  variable, var2, into your model.
 #'  e.g., `var2 = "Extra_Var2"`
 #' 
-#' @param eta [vector] Parameters used in the `rate_func` (Learning Rate Function), 
-#'  representing the rate at which the subject updates the 
+#' @param eta [vector] Parameters used in the Learning Rate Function 
+#' `rate_func` representing the rate at which the subject updates the 
 #'  difference (prediction error) between the reward and the expected value 
 #'  in the subject's mind. In the TD model, there is a single learning rate 
 #'  throughout the experiment. In the RSTD model, two different learning rates 

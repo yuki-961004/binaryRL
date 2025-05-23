@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_recovery_data.R
 \name{recovery_data}
 \alias{recovery_data}
-\title{recovery_d}
+\title{Process: Recovering Fake Data}
 \usage{
 recovery_data(
   list,
@@ -60,11 +60,13 @@ default: `seed = 123`}
 
 \item{nc}{[integer] Number of CPU cores to use for parallel computation.}
 
-\item{algorithm}{[character] Choose a algorithm package from 
-`L-BFGS-B`, 
-`GenSA`, `GA`, `DEoptim`, 
-`Bayesian`, `PSO`, 
-`CMA-ES`, `NLOPT_`}
+\item{algorithm}{[character] Choose an algorithm package from
+`L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `PSO`, `Bayesian`, `CMA-ES`.
+In addition, any algorithm from the `nloptr` package is also
+supported. If your chosen `nloptr` algorithm requires a local search,
+you need to input a character vector. The first element represents
+the algorithm used for global search, and the second element represents
+the algorithm used for local search.}
 }
 \value{
 a data frame for parameter recovery and model recovery

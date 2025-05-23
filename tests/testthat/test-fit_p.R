@@ -4,7 +4,6 @@ testthat::test_that("fit_p() works with valid input", {
     data = binaryRL::Mason_2024_Exp2,
     n_trials = 360,
     id = c(1:2),
-    #id = unique(binaryRL::Mason_2024_Exp2$Subject),
     fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
     model_name = c("TD", "RSTD", "Utility"),
     lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
@@ -12,13 +11,7 @@ testthat::test_that("fit_p() works with valid input", {
     iteration = 2,
     seed = 123,
     nc = 1,
-    algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-    #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
-    #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-    #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-    #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-    #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-    #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+    algorithm = "L-BFGS-B"
   )
   
   testthat::expect_type(comparison, "list")
@@ -30,7 +23,6 @@ testthat::test_that("fit_p() works with valid input", {
     data = binaryRL::Mason_2024_Exp2,
     n_trials = 360,
     id = c(1:4),
-    #id = unique(binaryRL::Mason_2024_Exp2$Subject),
     fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
     model_name = c("TD", "RSTD", "Utility"),
     lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
@@ -38,13 +30,7 @@ testthat::test_that("fit_p() works with valid input", {
     iteration = 2,
     seed = 123,
     nc = 4,
-    algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-    #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
-    #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-    #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-    #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-    #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-    #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+    algorithm = "L-BFGS-B" 
   )
   
   testthat::expect_type(comparison, "list")

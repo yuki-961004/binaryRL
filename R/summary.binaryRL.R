@@ -1,11 +1,11 @@
-#' summary
+#' S3method summary
 #'
-#' @param object binaryRl_res
+#' @param object binaryRL result
 #' @param ... others
 #'
 #' @return summary
-#' @export
-#'
+#' 
+#' 
 summary.binaryRL <- function(object, ...) {
   cat("Results of the Reinforcement Learning Model:\n")
   

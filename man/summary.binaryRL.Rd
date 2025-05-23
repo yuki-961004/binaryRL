@@ -2,12 +2,12 @@
 % Please edit documentation in R/summary.binaryRL.R
 \name{summary.binaryRL}
 \alias{summary.binaryRL}
-\title{summary}
+\title{S3method summary}
 \usage{
 \method{summary}{binaryRL}(object, ...)
 }
 \arguments{
-\item{object}{binaryRl_res}
+\item{object}{binaryRL result}
 
 \item{...}{others}
 }
@@ -15,5 +15,5 @@
 summary
 }
 \description{
-summary
+S3method summary
 }

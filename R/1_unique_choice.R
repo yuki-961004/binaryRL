@@ -15,8 +15,8 @@
 #'     \item{\code{data}: raw data frame + null cols [options].}
 #'     \item{\code{options}: a vector containing all options.}
 #'   }
-#' @export
 #'
+#' @noRd
 #' 
 unique_choice <- function(data, L_choice = "L_choice", R_choice = "R_choice"){
   # 用于获取左右选项中的备选项.

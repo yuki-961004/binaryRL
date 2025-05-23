@@ -15,8 +15,9 @@
 #'   \itemize{
 #'     \item{\code{data}: step3 + row[0] with initial value.}
 #'   }
-#' @export
-#'
+#'   
+#' @noRd
+#' 
 set_initial_value <- function(data, options, initial_value = NA){
   # 设置初始值, 如果没有设置初始值, 则赋予一个0
   # 这个初始值并不是很关键, 只要有数字就行

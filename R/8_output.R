@@ -49,8 +49,9 @@
 #'     \item{\code{numeric}: AIC}
 #'     \item{\code{numeric}: BIC}
 #'   }
-#' @export
-#'
+#'   
+#' @noRd
+#' 
 output <- function(
     data, 
     n_params, n_trials, 

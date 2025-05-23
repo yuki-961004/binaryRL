@@ -28,8 +28,9 @@
 #'     \item{\code{numeric}: AIC}
 #'     \item{\code{numeric}: BIC}
 #'   }
-#' @export
-#'
+#'   
+#' @noRd
+#' 
 mode <- function(
   data, 
   mode = "fit",

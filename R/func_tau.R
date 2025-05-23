@@ -1,7 +1,13 @@
-#' Soft-Max Function
+#' Function: Soft-Max Function
 #' 
-#' @param LR Are you calculating the probability for the left option or the right option?
-#' @param try If the choice was random, the value is 1; if the choice was based on value, the value is 0.
+#' @note When customizing these functions, please ensure that you do not modify 
+#' the arguments. Instead, only modify the `if-else` statements or the internal 
+#' logic to adapt the function to your needs.
+#' 
+#' @param LR Are you calculating the probability for the left option or the 
+#'  right option?
+#' @param try If the choice was random, the value is 1; if the choice was 
+#'  based on value, the value is 0.
 #' @param L_value The value of the left option
 #' @param R_value The value of the right option
 #' 
@@ -16,13 +22,13 @@
 #'  variable, var2, into your model.
 #'  e.g., `var2 = "Extra_Var2"`
 #' 
-#' @param tau [vector] Parameters used in the `prob_func` (Soft-Max Function), 
-#'  representing the sensitivity of the subject to the value difference when 
-#'  making decisions. It determines the probability of selecting the left option 
-#'  versus the right option based on their values. A larger value of tau 
-#'  indicates greater sensitivity to the value difference between the options. 
-#'  In other words, even a small difference in value will make the subject more 
-#'  likely to choose the higher-value option. 
+#' @param tau [vector] Parameters used in the Soft-Max Function 
+#' `prob_func` representing the sensitivity of the subject to the value 
+#'  difference when making decisions. It determines the probability of selecting 
+#'  the left option versus the right option based on their values. A larger 
+#'  value of tau indicates greater sensitivity to the value difference between 
+#'  the options. In other words, even a small difference in value will make the 
+#'  subject more likely to choose the higher-value option. 
 #'  e.g., `tau = c(0.5)`
 #' 
 #' @param lambda [vector] Extra parameters that may be used in functions. 

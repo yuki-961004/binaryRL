@@ -6,7 +6,8 @@
 #'   \itemize{
 #'     \item{\code{data}: step2 + row[0] for initial value + null cols [Reward, gamma, R_utility, ...].}
 #'   }
-#' @export
+#'   
+#' @noRd
 #' 
 add_NA <- function(data){
   

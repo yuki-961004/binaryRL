@@ -1,4 +1,4 @@
-#' simulate_l
+#' Process: Simulating Fake Data
 #' 
 #' @description
 #' 

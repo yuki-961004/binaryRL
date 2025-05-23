@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_RSTD.R
 \name{RSTD}
 \alias{RSTD}
-\title{RSTD model for fit}
+\title{Model: RSTD}
 \usage{
 RSTD(params)
 }
@@ -13,5 +13,5 @@ RSTD(params)
 negative log likelihood
 }
 \description{
-RSTD model for fit
+Model: RSTD
 }

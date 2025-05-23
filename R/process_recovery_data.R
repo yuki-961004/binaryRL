@@ -1,4 +1,4 @@
-#' recovery_d
+#' Process: Recovering Fake Data
 #'
 #' @description
 #' This function applies `optimize_para` to each fake data in the list generated 
@@ -46,11 +46,13 @@
 #'  
 #' @param nc [integer] Number of CPU cores to use for parallel computation.
 #' 
-#' @param algorithm [character] Choose a algorithm package from 
-#'  `L-BFGS-B`, 
-#'  `GenSA`, `GA`, `DEoptim`, 
-#'  `Bayesian`, `PSO`, 
-#'  `CMA-ES`, `NLOPT_`
+#' @param algorithm [character] Choose an algorithm package from
+#'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `PSO`, `Bayesian`, `CMA-ES`.
+#'  In addition, any algorithm from the `nloptr` package is also
+#'  supported. If your chosen `nloptr` algorithm requires a local search,
+#'  you need to input a character vector. The first element represents
+#'  the algorithm used for global search, and the second element represents
+#'  the algorithm used for local search.
 #'  
 #' @return a data frame for parameter recovery and model recovery
 #' @export

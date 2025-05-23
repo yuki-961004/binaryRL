@@ -12,8 +12,8 @@
 #'   \itemize{
 #'     \item{\code{data}: step1 arranged by 'time_line'.}
 #'   }
-#' @export
 #'
+#' @noRd
 #' 
 arrange_data <- function(data, time_line = c("Block", "Trial")){
   # 基于time_line这个向量, 录入排序向量

@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_TD.R
 \name{TD}
 \alias{TD}
-\title{TD model for fit}
+\title{Model: TD}
 \usage{
 TD(params)
 }
@@ -13,5 +13,5 @@ TD(params)
 negative log likelihood
 }
 \description{
-TD model for fit
+Model: TD
 }

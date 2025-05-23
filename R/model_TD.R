@@ -1,4 +1,4 @@
-#' TD model for fit
+#' Model: TD
 #'
 #' @param params [vector] algorithm packages accept only one argument
 #'

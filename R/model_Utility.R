@@ -1,4 +1,4 @@
-#' Utility model for fit
+#' Model: Utility
 #'
 #' @param params [vector] algorithm packages accept only one argument
 #'

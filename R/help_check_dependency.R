@@ -13,7 +13,9 @@
 #'
 #' @returns Returns `invisible(TRUE)` if all specified packages are available,
 #'   otherwise it stops the execution via `stop()`.
-#'
+#'   
+#' @noRd
+#' 
 check_dependency <- function(pkg_names, algorithm_name) {
   
   # Check availability for each package without loading them

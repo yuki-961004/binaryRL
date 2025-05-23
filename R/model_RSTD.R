@@ -1,4 +1,4 @@
-#' RSTD model for fit
+#' Model: RSTD
 #'
 #' @param params [vector] algorithm packages accept only one argument
 #'
