@@ -26,7 +26,7 @@ Hu, M., & Liu, Z. (2025). binaryRL: A Package for Building Reinforcement Learnin
 # Install the stable version from CRAN  
 install.packages("binaryRL")
 # Install the latest version from GitHub
-devtools::install_github("yuki-961004/binaryRL") 
+remotes::install_github("yuki-961004/binaryRL@*release")
 
 library(binaryRL)
 ```
