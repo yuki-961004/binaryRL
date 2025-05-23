@@ -106,7 +106,7 @@ optimize_para <- function(
   
   set.seed(seed)
   
-  if (algorithm == "L-BFGS-B") {
+  if (algorithm[[1]] == "L-BFGS-B") {
     result <- stats::optim(
       par = initial_params,
       method = "L-BFGS-B",
@@ -118,7 +118,7 @@ optimize_para <- function(
       )
     )
   } 
-  else if (algorithm == "GenSA") {
+  else if (algorithm[[1]] == "GenSA") {
     check_dependency("GenSA", algorithm_name = "Simulated Annealing")
     
     result <- GenSA::GenSA(
@@ -132,7 +132,7 @@ optimize_para <- function(
       )
     )
   } 
-  else if (algorithm == "GA") {
+  else if (algorithm[[1]] == "GA") {
     check_dependency("GA", algorithm_name = "Genetic Algorithm")
     
     result <- GA::ga(
@@ -146,7 +146,7 @@ optimize_para <- function(
       #parallel = TRUE
     )
   } 
-  else if (algorithm == "DEoptim") {
+  else if (algorithm[[1]] == "DEoptim") {
     check_dependency("DEoptim", algorithm_name = "Differential Evolution")
     
     result <- DEoptim::DEoptim(
@@ -162,7 +162,7 @@ optimize_para <- function(
       )
     )
   }
-  else if (algorithm == "Bayesian") {
+  else if (algorithm[[1]] == "Bayesian") {
     required_pkgs <- c(
       "mlrMBO", "mlr", "ParamHelpers", "smoof", "lhs",
       "DiceKriging", "rgenoud"
@@ -203,7 +203,7 @@ optimize_para <- function(
       )
     )
   }
-  else if (algorithm == "PSO") {
+  else if (algorithm[[1]] == "PSO") {
     check_dependency("pso", algorithm_name = "Particle Swarm Optimization")
     
     result <- pso::psoptim(
@@ -217,7 +217,7 @@ optimize_para <- function(
       )
     )
   }
-  else if (algorithm == "CMA-ES") {
+  else if (algorithm[[1]] == "CMA-ES") {
     check_dependency("cmaes", algorithm_name = "Covariance Matrix Adapting")
     
     result <- cmaes::cma_es(
@@ -265,30 +265,30 @@ optimize_para <- function(
   }
   
 
-  if (algorithm == "L-BFGS-B") {
+  if (algorithm[[1]] == "L-BFGS-B") {
     fit_params <- as.vector(result$par)
   }
-  else if (algorithm == "GenSA") {
+  else if (algorithm[[1]] == "GenSA") {
     fit_params <- as.vector(result$par)
   }
-  else if (algorithm == "GA") {
+  else if (algorithm[[1]] == "GA") {
     fit_params <- as.vector(result@solution[1,])
   }
-  else if (algorithm == "DEoptim") {
+  else if (algorithm[[1]] == "DEoptim") {
     fit_params <- as.vector(result$optim$bestmem)
   }
-  else if (algorithm == "Bayesian") {
+  else if (algorithm[[1]] == "Bayesian") {
     fit_params <- as.vector(
       as.numeric(result$final.opt.state$opt.result$mbo.result$x)
     )
   }
-  else if (algorithm == "PSO") {
+  else if (algorithm[[1]] == "PSO") {
     fit_params <- as.vector(result$par)
   }
-  else if (algorithm == "CMA-ES") {
+  else if (algorithm[[1]] == "CMA-ES") {
     fit_params <- as.vector(result$par)
   }
-  else if (startsWith(algorithm, "NLOPT_")) {
+  else if (startsWith(algorithm[[1]], "NLOPT_")) {
     fit_params <- as.vector(result$solution)
   }
   else {
