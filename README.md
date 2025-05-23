@@ -348,19 +348,22 @@ Here, using the publicly available data from Mason et al. [(2024)](https://doi.o
 <!---------------------------------------------------------->
 
 ### Algorithms
-This package includes **7** algorithms:  
+This package includes **8** algorithms:  
 If you want to use an algorithm other than `L-BFGS-B`, you must install the corresponding package.  
 
 - Gradient-based 
 1. L-BFGS-B (from `stats::optim`)  
 - Heuristic-based
-2. Simulated Annealing (`GenSA::GenSA`)  
-3. Genetic Algorithm (`GA::ga`)  
-4. Differential Evolution (`DEoptim::DEoptim`).   
-5. Particle Swarm Optimization (`pso::psoptim`)
+2. Simulated Annealing (`GenSA`)  
+3. Genetic Algorithm (`GA`)  
+4. Differential Evolution (`DEoptim`).   
+5. Particle Swarm Optimization (`pso`)
 - Model-based
-6. Bayesian Optimization (`mlrMBO::mbo`)
-7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`)
+6. Bayesian Optimization (`mlrMBO`)
+7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes`)
+
+- Optimization Library
+8. Nonlinear Optimization (`nloptr`)
 
 ```r
 recovery <- binaryRL::rcv_d(
@@ -382,15 +385,18 @@ recovery <- binaryRL::rcv_d(
   iteration_f = 50,
   nc = 1,
   # Gradient-based 
-  algorithm = "L-BFGS-B"   # Gradient-Based (stats::optim)
+  algorithm = "L-BFGS-B"   # Gradient-Based (stats)
   # Heuristic-based
-  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
-  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+  #algorithm = "GenSA"     # Simulated Annealing (GenSA)
+  #algorithm = "GA"        # Genetic Algorithm (GA)
+  #algorithm = "DEoptim"   # Differential Evolution (DEoptim)
+  #algorithm = "PSO"       # Particle Swarm Optimization (pso)
   # Model-based
-  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO)
+  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes`)
+
+  # Nonlinear Optimization (nloptr)
+  #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 
 result <- dplyr::bind_rows(recovery) %>%
@@ -449,16 +455,7 @@ df_recovery <- binaryRL::recovery_data(
   upper = c(1, 1, 5),
   iteration = 30,
   nc = 1,
-  # Gradient-based 
-  algorithm = "L-BFGS-B"   # Gradient-Based (stats::optim)
-  # Heuristic-based
-  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
-  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-  # Model-based
-  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+  algorithm = "L-BFGS-B" 
 )
 ```
 
@@ -528,15 +525,18 @@ comparison <- binaryRL::fit_p(
   seed = 123,
   nc = 1,
   # Gradient-based 
-  algorithm = "L-BFGS-B"   # Gradient-Based (stats::optim)
+  algorithm = "L-BFGS-B"   # Gradient-Based (stats)
   # Heuristic-based
-  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
-  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
+  #algorithm = "GenSA"     # Simulated Annealing (GenSA)
+  #algorithm = "GA"        # Genetic Algorithm (GA)
+  #algorithm = "DEoptim"   # Differential Evolution (DEoptim)
+  #algorithm = "PSO"       # Particle Swarm Optimization (pso)
   # Model-based
-  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO)
+  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes`)
+
+  # Nonlinear Optimization (nloptr)
+  #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 
 result <- dplyr::bind_rows(comparison)
@@ -574,13 +574,7 @@ binaryRL.res <- binaryRL::optimize_para(
   upper = c(1, 1, 10),
   iteration = 30,
   seed = 123,
-  algorithm = "L-BFGS-B"   # Gradient-Based (stats::optim)
-  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
-  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
+  algorithm = "L-BFGS-B"
 )
 
 summary(binaryRL.res)
@@ -669,7 +663,7 @@ list[[3]] <- dplyr::bind_rows(
     <img src="./demo/FIGURE/Exp_Effect(Block).png" alt="RL Models" width="45%" style="display: inline;">
 </p>
 
-
+<!---------------------------------------------------------->
 
 ---
 
