@@ -52,7 +52,7 @@ mode <- function(
       data[[1]][[sub_choose]] <- data[[1]][[rob_choose]]
       data[[1]] <- data[[1]][, raw_cols]
     },
-    "review" = {
+    "replay" = {
       data <- data
     }, 
   )

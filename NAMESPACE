@@ -6,9 +6,9 @@ export(func_epsilon)
 export(func_tau)
 
 export(run_m)
-export(fit_p)
-export(rev_e)
 export(rcv_d)
+export(fit_p)
+export(rep_e)
 
 export(optimize_para)
 export(simulate_list)
