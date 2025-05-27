@@ -155,7 +155,7 @@ Model <- function(params){
   )
 
   assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
-  switch(mode, "fit" = -res$ll, "simulate" = res, "review" = res)
+  switch(mode, "fit" = -res$ll, "simulate" = res, "replay" = res)
 }
 ```
 
@@ -630,7 +630,7 @@ Users can use the simple code snippet below to load the model fitting results, r
 list <- list()
 
 list[[1]] <- dplyr::bind_rows(
-  binaryRL::rev_e(
+  binaryRL::rep_e(
     data = binaryRL::Mason_2024_Exp2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::TD,
@@ -641,7 +641,7 @@ list[[1]] <- dplyr::bind_rows(
 )
 
 list[[2]] <- dplyr::bind_rows(
-  binaryRL::rev_e(
+  binaryRL::rep_e(
     data = binaryRL::Mason_2024_Exp2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::RSTD,
@@ -652,7 +652,7 @@ list[[2]] <- dplyr::bind_rows(
 )
 
 list[[3]] <- dplyr::bind_rows(
-  binaryRL::rev_e(
+  binaryRL::rep_e(
     data = binaryRL::Mason_2024_Exp2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::Utility,
@@ -665,7 +665,7 @@ list[[3]] <- dplyr::bind_rows(
 
 <!---------------------------------------------------------->
 
-### Visualizing Experimental Effect [[Example Code]](./demo/CODE/test_4_rev_e.Rmd)
+### Visualizing Experimental Effect [[Example Code]](./demo/CODE/test_4_rep_e.Rmd)
 
 <p align="center">
     <img src="./demo/FIGURE/Exp_Effect(Frame).png" alt="RL Models" width="45%" style="display: inline;">
