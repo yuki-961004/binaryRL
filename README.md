@@ -3,7 +3,7 @@ This package is designed to simplify the process of building **model-free** rein
 
 Before using this package, please make sure you agree with this assumptions.
 
-> This experiment employs a Two-Alternative Forced Choice (TAFC) paradigm. Learning for each stimulus is independent, meaning reward outcomes for one stimulus do not affect learning for other stimuli.
+> This experiment employs a Two-Alternative Forced Choice (TAFC) paradigm. Furthermore, for any given stimulus, the reward outcomes are independently and identically distributed (i.i.d.) across trials.
 
 If you agree with this assumptions, I will introduce how to use this package.
 
