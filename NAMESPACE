@@ -8,7 +8,7 @@ export(func_tau)
 export(run_m)
 export(rcv_d)
 export(fit_p)
-export(rep_e)
+export(rpl_e)
 
 export(optimize_para)
 export(simulate_list)

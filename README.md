@@ -377,8 +377,9 @@ Here, using the publicly available data from Mason et al. [(2024)](https://doi.o
 ```r
 recovery <- binaryRL::rcv_d(
   data = binaryRL::Mason_2024_Exp2,
-  id = 1,
   n_trials = 360,
+# ╔═══════════════════════════════════════════════════════════════════════════╗ #
+# ║ --------------------------- black-box function -------------------------- ║ #
   #funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
@@ -387,15 +388,14 @@ recovery <- binaryRL::rcv_d(
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   fit_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
   fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
-  initial_params = NA,
-  initial_size = 50,
-  seed = 123,
+# ║ --------------------------- interation number --------------------------- ║ #
   iteration_s = 50,
   iteration_f = 50,
-  nc = 1,
-  # Base R Optimization  
+# ║ ------------------------------- algorithms ------------------------------ ║ #
+  nc = 1,                  # <nc > 1>: parallel computation across subjects
+  # Base R Optimization    
   algorithm = "L-BFGS-B"   # Gradient-Based (stats)
-
+# ║ ------------------------------------------------------------------------- ║ #
   # Specialized External Optimization
   #algorithm = "GenSA"     # Simulated Annealing (GenSA)
   #algorithm = "GA"        # Genetic Algorithm (GA)
@@ -403,9 +403,11 @@ recovery <- binaryRL::rcv_d(
   #algorithm = "PSO"       # Particle Swarm Optimization (pso)
   #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO)
   #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes`)
-
+# ║ ------------------------------------------------------------------------- ║ #
   # Optimization Library (nloptr)
   #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
+# ║ ------------------------------- algorithms ------------------------------ ║ #
+# ╚═══════════════════════════════════════════════════════════════════════════╝ # 
 )
 
 result <- dplyr::bind_rows(recovery) %>%
@@ -525,17 +527,20 @@ comparison <- binaryRL::fit_p(
   data = binaryRL::Mason_2024_Exp2,
   n_trials = 360,
   id = unique(binaryRL::Mason_2024_Exp2$Subject),
+# ╔═══════════════════════════════════════════════════════════════════════════╗ #
+# ║ --------------------------- black-box function -------------------------- ║ #
   #funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
+# ║ --------------------------- interation number --------------------------- ║ #
   iteration = 10,
-  seed = 123,
-  nc = 1,
+# ║ ------------------------------- algorithms ------------------------------ ║ #
+  nc = 1,                  # <nc > 1>: parallel computation across subjects
   # Base R Optimization  
   algorithm = "L-BFGS-B"   # Gradient-Based (stats)
-
+# ║ ------------------------------------------------------------------------- ║ #
   # Specialized External Optimization
   #algorithm = "GenSA"     # Simulated Annealing (GenSA)
   #algorithm = "GA"        # Genetic Algorithm (GA)
@@ -543,9 +548,11 @@ comparison <- binaryRL::fit_p(
   #algorithm = "PSO"       # Particle Swarm Optimization (pso)
   #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO)
   #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes`)
-
+# ║ ------------------------------------------------------------------------- ║ #
   # Optimization Library (nloptr)
   #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
+# ║ ------------------------------- algorithms ------------------------------ ║ #
+# ╚═══════════════════════════════════════════════════════════════════════════╝ # 
 )
 
 result <- dplyr::bind_rows(comparison)
@@ -630,7 +637,7 @@ Users can use the simple code snippet below to load the model fitting results, r
 list <- list()
 
 list[[1]] <- dplyr::bind_rows(
-  binaryRL::rep_e(
+  binaryRL::rpl_e(
     data = binaryRL::Mason_2024_Exp2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::TD,
@@ -641,7 +648,7 @@ list[[1]] <- dplyr::bind_rows(
 )
 
 list[[2]] <- dplyr::bind_rows(
-  binaryRL::rep_e(
+  binaryRL::rpl_e(
     data = binaryRL::Mason_2024_Exp2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::RSTD,
@@ -652,7 +659,7 @@ list[[2]] <- dplyr::bind_rows(
 )
 
 list[[3]] <- dplyr::bind_rows(
-  binaryRL::rep_e(
+  binaryRL::rpl_e(
     data = binaryRL::Mason_2024_Exp2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::Utility,
@@ -665,7 +672,7 @@ list[[3]] <- dplyr::bind_rows(
 
 <!---------------------------------------------------------->
 
-### Visualizing Experimental Effect [[Example Code]](./demo/CODE/test_4_rep_e.Rmd)
+### Visualizing Experimental Effect [[Example Code]](./demo/CODE/test_4_rpl_e.Rmd)
 
 <p align="center">
     <img src="./demo/FIGURE/Exp_Effect(Frame).png" alt="RL Models" width="45%" style="display: inline;">
@@ -679,14 +686,14 @@ list[[3]] <- dplyr::bind_rows(
 # Other Arguments
 ## Paralell
 ```r
-binaryRL::fit_p(
+binaryRL::rcv_d(
   ...,
   funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
   nc = 4,
   ...
 )
 
-binaryRL::rcv_d(
+binaryRL::fit_p(
   ...,
   funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
   nc = 4,

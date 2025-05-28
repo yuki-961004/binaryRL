@@ -43,7 +43,7 @@
 #' 
 #' @export
 #'
-rep_e <- function(
+rpl_e <- function(
   data, 
   result, 
   model,

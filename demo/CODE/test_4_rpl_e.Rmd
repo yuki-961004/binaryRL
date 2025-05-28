@@ -12,7 +12,7 @@ list <- list()
 
 ```{r}
 list[[1]] <- dplyr::bind_rows(
-  binaryRL::rep_e(
+  binaryRL::rpl_e(
     data = binaryRL::Mason_2024_Exp2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::TD,
@@ -27,7 +27,7 @@ list[[1]] <- dplyr::bind_rows(
 
 ```{r}
 list[[2]] <- dplyr::bind_rows(
-  binaryRL::rep_e(
+  binaryRL::rpl_e(
     data = binaryRL::Mason_2024_Exp2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::RSTD,
@@ -42,7 +42,7 @@ list[[2]] <- dplyr::bind_rows(
 
 ```{r}
 list[[3]] <- dplyr::bind_rows(
-  binaryRL::rep_e(
+  binaryRL::rpl_e(
     data = binaryRL::Mason_2024_Exp2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::Utility,
