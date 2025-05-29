@@ -835,21 +835,27 @@ Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventro
 ### Markov Decision Process
 
 $$
+\quad \Downarrow \quad
 G_t = r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \dots + \gamma^{T-t-1} r_{T}  
-\quad \Rightarrow \quad
-V_{new}(S_t) \leftarrow V_{old}(S_t) + \eta \cdot [G_t - V_{old}(S_t)]
+\quad \rightarrow \quad
+V_{new}(S_t) \leftarrow V_{old}(S_t) + \eta \cdot [G_t - V_{old}(S_t)]  
+\quad \Downarrow \quad
 
 $$
 
-###  Rescorla-Wagner Model / TD(0)  $$\downarrow$$
+###  Rescorla-Wagner Model / TD(0)
 
 $$
+\quad \Downarrow \quad
 V_{new}(S_t) \leftarrow V_{old}(S_t) + \eta \cdot [r_{t+1} + \gamma V_{old}(S_{t+1}) - V_{old}(S_t)]
+\quad \Downarrow \quad
 $$
 
-### RL in TAFC  $$\downarrow$$
+### RL in TAFC
 $$
+\quad \Rightarrow \quad
 V_{new}(S_t) \leftarrow V_{old}(S_t) + \eta \cdot [r_{t+1} - V_{old}(S_t)]  
+\quad \Leftarrow \quad
 $$
 
 ---
