@@ -833,7 +833,7 @@ Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventro
 ## Value Function
 
 $$
-\textbf{Markov Decision Process (MDP)} 
+\textbf{\Large Markov Decision Process (MDP)} 
 $$
 
 $$
@@ -855,7 +855,7 @@ $$
 $$
 
 $$
-\textbf{Temporal-Difference TD(0)} 
+\textbf{\Large Temporal-Difference TD(0)} 
 $$
 
 $$
@@ -877,7 +877,7 @@ $$
 $$
 
 $$
-\textbf{Rescorla-Wagner Model} 
+\textbf{\Large Rescorla-Wagner Model} 
 $$
 
 $$
