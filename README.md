@@ -840,7 +840,6 @@ G_t = r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \dots + \gamma^{T-t-1} r_{T}
 \quad \rightarrow \quad
 V_{new}(S_t) \leftarrow V_{old}(S_t) + \eta \cdot [G_t - V_{old}(S_t)]  
 \quad \Downarrow \quad
-
 $$
 
 ###  Rescorla-Wagner Model / TD(0)
