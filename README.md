@@ -832,27 +832,41 @@ Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventro
 
 ## Value Function
 
-### Markov Decision Process
-
 $$
-\quad \Downarrow \quad
-V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[ r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \dots + \gamma^{T - t - 1} r_{T} - V_{\text{old}}(S_t) \right]
-\quad \Downarrow \quad
-$$
-
-###  Rescorla-Wagner Model / TD(0)
-
-$$
-\quad \Downarrow \quad
-V_{new}(S_t) \leftarrow V_{old}(S_t) + \eta \cdot [r_{t+1} + \gamma V_{old}(S_{t+1}) - V_{old}(S_t)]
-\quad \Downarrow \quad
+\textbf{Markov Decision Process (MDP)} 
+\\
+V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[ 
+r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \dots + \gamma^{T - t - 1} r_T - V_{\text{old}}(S_t) 
+\right] 
 $$
 
-### RL in TAFC
 $$
-\quad \Rightarrow \quad
-V_{new}(S_t) \leftarrow V_{old}(S_t) + \eta \cdot [r_{t+1} - V_{old}(S_t)]  
-\quad \Leftarrow \quad
+\Downarrow
+\\
+\quad \text{(bootstrapping future rewards with value estimates)}
+\\ \Downarrow
+$$
+
+$$
+\textbf{Rescorla-Wagner Model / TD(0)} 
+\\
+V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[
+  r_{t+1} + \gamma V_{\text{old}}(S_{t+1}) - V_{\text{old}}(S_t)
+\right]
+$$
+
+$$
+\Downarrow
+\\
+\quad \text{(no future value estimation)} 
+\\
+\Downarrow
+$$
+
+$$
+\textbf{RL in TAFC} 
+\\
+V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[r_{t+1} - V_{\text{old}}(S_t) \right]
 $$
 
 ---
