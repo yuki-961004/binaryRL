@@ -855,7 +855,7 @@ $$
 $$
 
 $$
-\textbf{Rescorla-Wagner Model / TD(0)} 
+\textbf{Temporal-Difference TD(0)} 
 $$
 
 $$
@@ -877,7 +877,7 @@ $$
 $$
 
 $$
-\textbf{RL in TAFC} 
+\textbf{Rescorla-Wagner Model} 
 $$
 
 $$
