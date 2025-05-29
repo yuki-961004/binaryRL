@@ -832,26 +832,52 @@ Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventro
 
 ## Value Function
 
-**Value Function** independently updating the value associated with each stimulus.
+### Markov Decision Process
 
-- **Utility Function ($\gamma$)**: Some also refer to it as the _discount rate_ (for example, in the R package `ReinforcementLearning`), but I believe expressing it as people's subjective perception of objective rewards is more accurate. This is because the relationship between physical quantities and psychological quantities is not necessarily always a linear discount function; it could also be another type of power function relationship (Stevens' Power Law).  
+$$
+G_t = r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \dots + \gamma^{T-t-1} r_{T}  
+\quad \Rightarrow \quad
+V_{new}(S_t) \leftarrow V_{old}(S_t) + \eta \cdot [G_t - V_{old}(S_t)]
 
-$$  
-U(R) = R^{\gamma}  
-\quad \quad \Rightarrow \quad \quad
-V_{n} = V_{n-1} + \eta \cdot (R_{n}^{\gamma} - V_{n-1})  
-$$  
+$$
+
+###  Rescorla-Wagner Model / TD(0)  $$\downarrow$$
+
+$$
+V_{new}(S_t) \leftarrow V_{old}(S_t) + \eta \cdot [r_{t+1} + \gamma V_{old}(S_{t+1}) - V_{old}(S_t)]
+$$
+
+### RL in TAFC  $$\downarrow$$
+$$
+V_{new}(S_t) \leftarrow V_{old}(S_t) + \eta \cdot [r_{t+1} - V_{old}(S_t)]  
+$$
+
+---
+
+<br>
 
 - **Learning Rates ($\eta$)**: This parameter $\eta$ controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.
 
 $$  
-V_{n} = V_{n-1} + \eta \cdot [U(R_{n}) - V_{n-1}]  
+V_{new}(S_t) \leftarrow V_{old}(S_t) + \eta \cdot [U(r_{t+1}) - V_{old}(S_t)]  
 $$  
 
+*NOTE:* Due to the fact that rewards in TAFC tasks are delivered immediately after each choice, the task represents a more specific case of the Rescorla-Wagner model or TD(0). In this setting, there is no need to estimate future values, and therefore the discount factor parameter is not involved.
+
+<br>
+
+- **Utility Function ($\gamma$)**: People's subjective perception of objective rewards is more accurate. This is because the relationship between physical quantities and psychological quantities is not necessarily always a linear discount function; it could also be another type of power function relationship (Stevens' Power Law).  
+
+$$  
+U(r) = r^{\gamma}  
+\quad \Rightarrow \quad
+V_{new}(S_t) \leftarrow V_{old}(S_t) + \eta \cdot (r_{t+1}^{\gamma} - V_{old}(S_t))  
+$$  
+
+*NOTE:* Although both traditional reinforcement learning and my model utilize the symbol $\gamma$, its interpretation differs. In traditional RL, $\gamma$ serves as the discount rate for future rewards. In contrast, within my model, $\gamma$ functions as a parameter in the utility function.
 <!---------------------------------------------------------->
 
 ## Action Function
-**Action Function** reflecting how individuals make choices based on the value of the options.  
 
  - **Exploration Function ($\epsilon$)**: The parameter $\epsilon$ represents the probability of participants engaging in exploration (random choosing). In addition A threshold ensures participants always explore during the initial trials, after which the likelihood of exploration is determined by $\epsilon$..   
 
@@ -874,9 +900,8 @@ $$
 <!---------------------------------------------------------->
 
 ## Loss Function
-**Loss Function** quantifies the error between predicted and actual values in a machine learning model. It guides the model's training by indicating how well it's performing.  
 
-- **Log Likelihood Function** representing how similar robot behavior is to human behavior
+- **Log Likelihood** representing how similar robot behavior is to human behavior
 
 $$
 LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
