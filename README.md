@@ -1,4 +1,5 @@
-# binaryRL <img src="fig/logo.png" align="right" height="137" /></a>
+# binaryRL <a href="https://cran.r-project.org/web/packages/binaryRL/index.html"><img src="fig/logo.png" align="right" height="138" alt="binaryRL" /></a>
+
 This package is designed to simplify the process of building **model-free** reinforcement learning models. It allows beginners to easily construct a model with just an `if-else` statement, making model creation more accessible.
 
 Before using this package, please make sure you agree with this assumptions.
