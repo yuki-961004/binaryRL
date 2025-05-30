@@ -1,4 +1,4 @@
-# binaryRL <a href="https://cran.r-project.org/web/packages/binaryRL/index.html"><img src="fig/logo.png" align="right" height="138" alt="binaryRL" /></a>
+# binaryRL <img src="fig/logo.png" align="right" height="120"/>
 
 <!-- badges: start -->
 
