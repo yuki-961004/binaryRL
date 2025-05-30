@@ -1,14 +1,8 @@
-# binaryRL <a href="https://cran.r-project.org/web/packages/binaryRL/index.html"><img src="fig/logo.png" align="right" height="138" alt="binaryRL" /></a>
+# binaryRL <a href="https://cran.r-project.org/web/packages/binaryRL/index.html">
+  <img src="fig/logo.png" style="position: absolute; top: 0; right: 35; height: 150px; margin: 0; padding: 0; border: 0; transform: translateY(-4px);" alt="binaryRL">
+</a>
 
-This package is designed to simplify the process of building **model-free** reinforcement learning models. It allows beginners to easily construct a model with just an `if-else` statement, making model creation more accessible.
-
-Before using this package, please make sure you agree with this assumptions.
-
-> This experiment employs a Two-Alternative Forced Choice (TAFC) paradigm. Furthermore, for any given stimulus, the reward outcomes are independently and identically distributed (i.i.d.) across trials.
-
-If you agree with this assumptions, I will introduce how to use this package.
-
-<!---------------------------------------------------------->
+<!-- badges: start -->
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/yuki-961004/binaryRL?logo=github&logoColor=white&color=white)](https://github.com/yuki-961004/binaryRL/releases/latest)
 [![R-CMD-check](https://github.com/yuki-961004/binaryRL/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/yuki-961004/binaryRL/actions/workflows/R-CMD-check.yaml)
@@ -16,6 +10,17 @@ If you agree with this assumptions, I will introduce how to use this package.
 [![CRAN-Version](https://www.r-pkg.org/badges/version/binaryRL?color=%231E63B5)](https://CRAN.R-project.org/package=binaryRL)
 [![CRAN-Downloads](https://cranlogs.r-pkg.org/badges/grand-total/binaryRL?color=%23FA812F)](https://CRAN.R-project.org/package=binaryRL)
 
+<!-- badges: end -->
+
+## Overview
+This package is designed to help users build the **Rescorla-Wagner Model** for Two-Alternative Forced Choice (TAFC) tasks, which could be the simplest reinforcement learning models, assuming that reward outcomes are independent and identically distributed (i.i.d.) across trials. Beginners can define models using simple `if-else` logic, making model construction more accessible.
+
+- Step 1: Build Reinforcement Learning Models (`run_m`)  
+- Step 2: Parameter and Model Recovery (`rcv_d`)  
+- Step 3: Fit Real Data (`fit_p`)  
+- Step 4: Replay the Experiment (`rpl_e`)  
+
+<!---------------------------------------------------------->
 
 ## How to cite 
 YuKi. (2025). binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks. R package version 0.8.0. https://CRAN.R-project.org/package=binaryRL
