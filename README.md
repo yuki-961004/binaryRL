@@ -1,10 +1,9 @@
-# binaryRL <img src="fig/logo.png" align="right" height="120"/>
+# binaryRL | <img src="https://img.shields.io/github/v/release/yuki-961004/binaryRL?color=white&style=for-the-badge" style="vertical-align: middle;"> <img src="fig/logo.png" align="right" height="120"/>
 
 <!-- badges: start -->
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/yuki-961004/binaryRL?logo=github&logoColor=white&color=white)](https://github.com/yuki-961004/binaryRL/releases/latest)
 [![R-CMD-check](https://github.com/yuki-961004/binaryRL/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/yuki-961004/binaryRL/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/yuki-961004/binaryRL/branch/main/graph/badge.svg)](https://app.codecov.io/gh/yuki-961004/binaryRL)
+[![Code Coverage](https://codecov.io/gh/yuki-961004/binaryRL/branch/main/graph/badge.svg)](https://app.codecov.io/gh/yuki-961004/binaryRL)
 [![CRAN-Version](https://www.r-pkg.org/badges/version/binaryRL?color=%231E63B5)](https://CRAN.R-project.org/package=binaryRL)
 [![CRAN-Downloads](https://cranlogs.r-pkg.org/badges/grand-total/binaryRL?color=%23FA812F)](https://CRAN.R-project.org/package=binaryRL)
 
@@ -440,13 +439,11 @@ We also encourage advanced users to use `binaryRL::simulate_list()` and `binaryR
 ```r
 list_simulated <- binaryRL::simulate_list(
   data = binaryRL::Mason_2024_Exp2,
-  id = 1,
   obj_func = binaryRL::RSTD,
   n_params = 3, 
-  n_trials = 288,
+  n_trials = 360,
   lower = c(0, 0, 1),
   upper = c(1, 1, 1),
-  seed = 1,
   iteration = 30
 )
 ```
@@ -461,7 +458,6 @@ list_simulated <- binaryRL::simulate_list(
 ```r
 df_recovery <- binaryRL::recovery_data(
   list = list_simulated,
-  id = 1,
   fit_model = binaryRL::RSTD,
   model_name = "RSTD",
   n_params = 3,
@@ -593,7 +589,6 @@ binaryRL.res <- binaryRL::optimize_para(
   lower = c(0, 0, 0),
   upper = c(1, 1, 10),
   iteration = 30,
-  seed = 123,
   algorithm = "L-BFGS-B"
 )
 

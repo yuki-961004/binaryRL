@@ -90,12 +90,18 @@ plot <- ggplot2::ggplot(data, aes(x = metric, y = value_norm, fill = fit_model))
     stat = "summary", fun.data = "mean_se",
     position = position_dodge(width = 0.9), width = 0.2
   ) +
-  ggplot2::labs(x = "Normalized Metric", y = "", fill = "Model") +
+  ggplot2::labs(x = "", y = "", fill = "Model") +
+  ggplot2::ggtitle("Model Comparison (relative)") +
   ggplot2::scale_fill_manual(values = c("#053562", "#55c186", "#f0de36")) +
   ggplot2::coord_cartesian(ylim = c(0, 0.80)) +
   ggplot2::scale_y_continuous(labels = scales::percent) +
   papaja::theme_apa() +
   ggplot2::theme(
+    plot.margin = margin(t = 5, r = 0, b = 0, l = 0),
+    plot.title = element_text(
+      family = "serif", face = "bold",
+      size = 25, hjust = -1.4
+    ),
     legend.title = element_blank(),
     legend.position.inside = c(0.8, 0.75),  
     legend.justification = c(0, 0), 
@@ -109,7 +115,7 @@ plot <- ggplot2::ggplot(data, aes(x = metric, y = value_norm, fill = fit_model))
       family = "serif", 
       face = "bold",
       size = 20
-    )
+    ),
   )  
   
 ggplot2::ggsave(
@@ -133,8 +139,8 @@ plots <- data %>%
       ggplot2::labs(x = "", y = "", title = .x$metric[1]) +
       ggplot2::coord_cartesian(
         ylim = c(
-          mean(.x$value) - 0.3*sd(.x$value), 
-          mean(.x$value) + 0.3*sd(.x$value))
+          mean(.x$value) - 0.7*sd(.x$value), 
+          mean(.x$value) + 0.7*sd(.x$value))
       ) +
       papaja::theme_apa() +
       ggplot2::theme(
@@ -148,7 +154,17 @@ plots <- data %>%
   })
 
 # 用 patchwork 拼起來
-plot <- patchwork::wrap_plots(plots, ncol = 2)
+plot <- patchwork::wrap_plots(plots, ncol = 2) +
+  patchwork::plot_annotation(
+    title = "Model Comparison (absolute)",
+    theme = ggplot2::theme(
+      plot.title = ggplot2::element_text(
+        family = "serif", face = "bold",
+        size = 25, hjust = 0, margin = ggplot2::margin(b = 20)
+      )
+    )
+  )
+
 
 rm(plots)
 
