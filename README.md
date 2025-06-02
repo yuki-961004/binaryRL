@@ -816,7 +816,7 @@ $$
 BIC =  - 2 LL + k \times \log n
 $$ 
 
-*NOTE:* ${k}$ the number of free parameters in the model; ${n}$ represents the total number of trials in the paradigm.
+*NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model. ${k}$ the number of free parameters in the model; ${n}$ represents the total number of trials in the paradigm.
 
 ### References
 Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventromedial prefrontal cortex in abstract state-based inference during decision making in humans. *Journal of Neuroscience, 26*(32), 8360-8367. https://doi.org/10.1523/JNEUROSCI.1010-06.2006
@@ -882,11 +882,9 @@ $$
 V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[r_{t+1} - V_{\text{old}}(S_t) \right]
 $$
 
----
-
 <!---------------------------------------------------------->
 
-### **Utility Function ($\gamma$)**
+## **Utility Function ($\gamma$)**
 People's subjective perception of objective rewards is more accurate. This is because the relationship between physical quantities and psychological quantities is not necessarily always a linear discount function; it could also be another type of power function relationship (Stevens' Power Law).  
 
 $$  
@@ -895,11 +893,9 @@ $$
 
 *NOTE:* Although both traditional reinforcement learning and my model utilize the symbol $\gamma$, its interpretation differs. In traditional RL, $\gamma$ serves as the discount rate for future rewards. In contrast, within my model, $\gamma$ functions as a parameter in the utility function.
 
----
-
 <!---------------------------------------------------------->
 
-### **Learning Rates ($\eta$)**
+## **Learning Rates ($\eta$)**
 This parameter $\eta$ controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.
 
 $$
@@ -912,11 +908,9 @@ $$
 
 *NOTE:* When there's only one $\eta$ parameter, it corresponds to the TD model. If there are two $\eta$ parameters, it refers to the RSTD model.
 
----
-
 <!---------------------------------------------------------->
 
-### **Exploration Function ($\epsilon$)**
+## **Exploration Function ($\epsilon$)**
 The parameter $\epsilon$ represents the probability of participants engaging in exploration (random choosing). In addition A threshold ensures participants always explore during the initial trials, after which the likelihood of exploration is determined by $\epsilon$..   
 
 $$
@@ -927,11 +921,9 @@ P(x) =
 \end{cases}
 $$
 
----
-
 <!---------------------------------------------------------->
 
-### **Soft-Max Function ($\tau$)**
+## **Soft-Max Function ($\tau$)**
 The parameter $\tau$ represents people's sensitivity to value differences. The larger $\tau$, the more sensitive they are to the differences in value between the two options.
 
 $$
@@ -939,18 +931,5 @@ P_{L} = \frac{1}{1 + e^{-(V_{L} - V_{R}) \cdot \tau}}
 \quad \quad
 P_{R} = \frac{1}{1 + e^{-(V_{R} - V_{L}) \cdot \tau}}
 $$
-
----
-
-<!---------------------------------------------------------->
-
-### **loss fucntion**
-Log likelihood representing how similar robot behavior is to human behavior
-
-$$
-LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
-$$   
-
-*NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model.   
 
 <!---------------------------------------------------------->
