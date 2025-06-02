@@ -1,9 +1,5 @@
 
-<img src="fig/logo.png" align="right" height="120"/>
-
-<span style="font-size:30px; font-weight:bold;">binaryRL</span>
-
----
+# binaryRL <img src="fig/logo.png" align="right" height="120"/>
 
 <!-- badges: start -->
 
