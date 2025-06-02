@@ -1,4 +1,9 @@
-# binaryRL | <img src="https://img.shields.io/github/v/release/yuki-961004/binaryRL?color=white&style=for-the-badge" style="vertical-align: middle;"> <img src="fig/logo.png" align="right" height="120"/>
+
+<img src="fig/logo.png" align="right" height="120"/>
+
+<span style="font-size:30px; font-weight:bold;">binaryRL</span>
+
+---
 
 <!-- badges: start -->
 
