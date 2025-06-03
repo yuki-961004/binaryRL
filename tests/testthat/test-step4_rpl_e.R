@@ -9,7 +9,6 @@ testthat::test_that("rev_e() works with valid input", {
     model = binaryRL::TD,
     model_name = "TD", 
     param_prefix = "param_",
-    n_trials = 360
   )
   
   testthat::expect_type(replay, "list")
@@ -26,7 +25,6 @@ testthat::test_that("rev_e() works with valid input", {
     model = binaryRL::RSTD,
     model_name = "RSTD", 
     param_prefix = "param_",
-    n_trials = 360
   )
   
   testthat::expect_type(replay, "list")
@@ -43,7 +41,6 @@ testthat::test_that("rev_e() works with valid input", {
     model = binaryRL::Utility,
     model_name = "Utility", 
     param_prefix = "param_",
-    n_trials = 360
   )
   
   testthat::expect_type(replay, "list")

@@ -6,8 +6,8 @@
 \usage{
 rcv_d(
   data,
-  id = 1,
-  n_trials = 288,
+  id = NULL,
+  n_trials = NULL,
   simulate_models = list(TD, RSTD, Utility),
   simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),

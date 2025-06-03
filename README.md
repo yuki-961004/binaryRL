@@ -381,7 +381,6 @@ Here, using the publicly available data from Mason et al. [(2024)](https://doi.o
 ```r
 recovery <- binaryRL::rcv_d(
   data = binaryRL::Mason_2024_Exp2,
-  n_trials = 360,
 # ╔═══════════════════════════════════════════════════════════════════════════╗ #
 # ║ --------------------------- black-box function -------------------------- ║ #
   #funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
@@ -526,7 +525,6 @@ Following the recommendations of Wilson & Collins [(2019)](https://doi.org/10.75
 ```r
 comparison <- binaryRL::fit_p(
   data = binaryRL::Mason_2024_Exp2,
-  n_trials = 360,
   id = unique(binaryRL::Mason_2024_Exp2$Subject),
 # ╔═══════════════════════════════════════════════════════════════════════════╗ #
 # ║ --------------------------- black-box function -------------------------- ║ #
@@ -643,7 +641,6 @@ list[[1]] <- dplyr::bind_rows(
     model = binaryRL::TD,
     model_name = "TD", 
     param_prefix = "param_",
-    n_trials = 360
   )
 )
 
@@ -654,7 +651,6 @@ list[[2]] <- dplyr::bind_rows(
     model = binaryRL::RSTD,
     model_name = "RSTD", 
     param_prefix = "param_",
-    n_trials = 360
   )
 )
 
@@ -665,7 +661,6 @@ list[[3]] <- dplyr::bind_rows(
     model = binaryRL::Utility,
     param_prefix = "param_",
     model_name = "Utility", 
-    n_trials = 360
   )
 )
 ```

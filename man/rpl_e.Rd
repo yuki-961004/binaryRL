@@ -4,7 +4,7 @@
 \alias{rpl_e}
 \title{Step 4: Replaying the experiment with optimal parameters}
 \usage{
-rpl_e(data, result, model, model_name, param_prefix, n_trials)
+rpl_e(data, result, model, model_name, param_prefix, n_trials = NA)
 }
 \arguments{
 \item{data}{[data.frame]

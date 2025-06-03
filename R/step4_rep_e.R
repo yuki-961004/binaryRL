@@ -49,10 +49,13 @@ rpl_e <- function(
   model,
   model_name,
   param_prefix, 
-  n_trials
+  n_trials = NA
 ) {
-  Subject <- "Subject"
-  id <- unique(data[[Subject]])
+  # 事前准备. 探测信息
+  info <- suppressWarnings(suppressMessages(detect_information(data = data)))
+
+  Subject <- info[["sub_col_name"]]
+  id <- info[["all_ids"]]
   
   fit_model <- "fit_model"
   result <- result[result[[fit_model]] == model_name, ]

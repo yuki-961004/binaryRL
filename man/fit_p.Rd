@@ -6,8 +6,8 @@
 \usage{
 fit_p(
   data,
-  id = c(1:40),
-  n_trials,
+  id = NULL,
+  n_trials = NULL,
   fit_model = list(TD, RSTD, Utility),
   funcs = NULL,
   model_name = c("TD", "RSTD", "Utility"),

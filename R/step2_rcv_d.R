@@ -80,8 +80,8 @@
 #'
 rcv_d <- function(
   data,
-  id = 1,
-  n_trials = 288,
+  id = NULL,
+  n_trials = NULL,
   simulate_models = list(TD, RSTD, Utility),
   simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
@@ -98,13 +98,27 @@ rcv_d <- function(
   nc = 1,
   algorithm
 ){
+  # 事前准备. 探测信息
+  info <- suppressWarnings(suppressMessages(detect_information(data = data)))
+  
+  if (is.null(n_trials)) {
+    n_trials <- info[["n_trials"]]
+  }
+  
+  if (is.null(id)) {
+    id <- info[["random_id"]]
+  }
+  
+  # 需要循环多少次
   n_round_s <- length(simulate_models)
   n_round_f <- length(fit_models)
   
+  # 创建空list用于储存结果
   list_recovery <- list()
   
   df_recovery <- list()
   
+  # simulate list
   for (i in 1:n_round_s){
     np <- length(simulate_lower[[i]])
     nt <- n_trials
@@ -123,6 +137,7 @@ rcv_d <- function(
     
     names(list_simulated) <- rep(model_names[i], length(list_simulated))
     
+    # recovery data
     for (j in 1:n_round_f){
       
       message(paste0(
