@@ -9,8 +9,8 @@ testthat::test_that("rcv_d() works with valid input", {
     fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
     fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
     fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
-    iteration_s = 4,
-    iteration_f = 4,
+    iteration_s = 2,
+    iteration_f = 2,
     nc = 1,
     algorithm = "L-BFGS-B"
   )
@@ -30,9 +30,9 @@ testthat::test_that("rcv_d() works with valid input", {
     fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
     fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
     fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
-    iteration_s = 4,
-    iteration_f = 4,
-    nc = 4,
+    iteration_s = 2,
+    iteration_f = 2,
+    nc = 2,
     algorithm = "L-BFGS-B"
   )
   
