@@ -150,7 +150,12 @@ recovery_data <- function(
   }
   else {
     
-    future::plan(future::multisession, workers = nc)
+    if (base::.Platform$OS.type == "windows") {
+      future::plan(future::multisession, workers = nc)
+    } else { # 包括 macOS, Linux, Unix
+      future::plan(future::multicore, workers = nc)
+    }
+    
     doFuture::registerDoFuture()
 
     # 以迭代次数作为进度条

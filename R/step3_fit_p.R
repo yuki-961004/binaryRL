@@ -186,7 +186,12 @@ fit_p <- function(
         "\n"
       ))
       
-      future::plan(future::multisession, workers = nc)
+      if (base::.Platform$OS.type == "windows") {
+        future::plan(future::multisession, workers = nc)
+      } else { # 包括 macOS, Linux, Unix
+        future::plan(future::multicore, workers = nc)
+      }
+      
       doFuture::registerDoFuture()
       
       n_subjects <- length(id)
