@@ -6,7 +6,6 @@ on:
     paths:
       - '.github/workflows/test-coverage.yaml'
       - 'tests/testthat/**'
-
   pull_request:
     branches: [main, master]
     patchs:
