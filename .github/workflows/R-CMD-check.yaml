@@ -8,6 +8,7 @@ on:
       - 'DESCRIPTION'
       - 'NAMESPACE'
       - '.github/workflows/R-CMD-check.yaml'
+      
   pull_request:
     branches: [main, master]
     paths:

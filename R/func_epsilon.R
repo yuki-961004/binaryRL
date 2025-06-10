@@ -60,17 +60,17 @@ func_epsilon <- function(
   # epsilon-first: 在一定试次前随机尝试
   if (i <= threshold) {
     try <- 1
-  } else if (i > threshold & is.na(epsilon)) {
+  } else if (i > threshold & is.na(epsilon) & is.na(lambda)) {
     try <- 0
   # epsilon-greedy: 在整个实验中随机抽风
-  } else if (i > threshold & !(is.na(epsilon))){
+  } else if (i > threshold & !(is.na(epsilon)) & is.na(lambda)){
     try <- sample(
       c(1, 0),
       prob = c(epsilon, 1 - epsilon),
       size = 1
     )
   # epsilon-decreasing: 随机抽风的概率随着试次的上升而下降
-  } else if (!(is.na(lambda)) & is.na(epsilon)) {
+  } else if (i > threshold & is.na(epsilon) & !(is.na(lambda))) {
     try <- sample(
       c(1, 0),
       prob = c(
