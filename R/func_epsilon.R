@@ -57,20 +57,30 @@ func_epsilon <- function(
   # 额外参数
   lambda
 ){
-  # 如果没有输入epsilon, 那么只在临界值前随机选
+  # epsilon-first: 在一定试次前随机尝试
   if (i <= threshold) {
     try <- 1
-    # 除此之外说明输入了epsilon
+  } else if (i > threshold & is.na(epsilon)) {
+    try <- 0
+  # epsilon-greedy: 在整个实验中随机抽风
   } else if (i > threshold & !(is.na(epsilon))){
-    # 如果选项出现的次数超过了临界值, 那么就按照概率进行尝试
     try <- sample(
       c(1, 0),
       prob = c(epsilon, 1 - epsilon),
       size = 1
     )
-  } else if (i > threshold & is.na(epsilon)) {
-    try <- 0
-  } else {
+  # epsilon-decreasing: 随机抽风的概率随着试次的上升而下降
+  } else if (!(is.na(lambda)) & is.na(epsilon)) {
+    try <- sample(
+      c(1, 0),
+      prob = c(
+        1 / (1 + lambda * i), 
+        lambda * i / (1 + lambda * i)
+      ),
+      size = 1
+    )
+  }
+  else {
     try <- "ERROR"
   }
   

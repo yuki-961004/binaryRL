@@ -99,7 +99,7 @@ head(Mason_2024_Exp2)
 1. Your dataset needs to include these **columns**.   
 2. You can also add two **additional variables** as factors that the model needs to consider.
 
-### References
+### Reference
 Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). Rare and extreme outcomes in risky choice. Psychonomic Bulletin & Review, 31(3), 1301-1308. https://doi.org/10.3758/s13423-023-02415-x
 <!---------------------------------------------------------->
 
@@ -113,7 +113,7 @@ Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). Rare and extreme
 </p>
 
 
-### References  
+### Reference
 Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547  
 Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
 <!---------------------------------------------------------->
@@ -249,16 +249,29 @@ func_epsilon <- function(
   # parameters
   threshold, epsilon, lambda
 ){
+  # epsilon-first
   if (i <= threshold) {
     try <- 1
   } 
   else if (i > threshold & is.na(epsilon)) {
     try <- 0
   } 
+  # epsilon-greedy
   else if (i > threshold & !(is.na(epsilon))){
     try <- sample(
       c(1, 0),
       prob = c(epsilon, 1 - epsilon),
+      size = 1
+    )
+  }
+  # epsilon-decreasing
+  else if (!(is.na(lambda)) & is.na(epsilon)) {
+    try <- sample(
+      c(1, 0),
+      prob = c(
+        1 / (1 + lambda * i), 
+        lambda * i / (1 + lambda * i)
+      ),
       size = 1
     )
   }
@@ -713,7 +726,7 @@ binaryRL::run_m(
 )
 ```
 
-### References
+### Reference
 Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and confirmation biases in reinforcement learning. *Trends in Cognitive Sciences, 26*(7), 607-621. https://doi.org/10.1016/j.tics.2022.04.005
 
 <!---------------------------------------------------------->
@@ -752,22 +765,43 @@ func_gamma <- function(
 
 <!---------------------------------------------------------->
 
-## Epsilon-Greedy
+## Exploration Strategy
 Participants in the experiment may not always choose based on the value of the options, but instead select randomly on some trials. This is known as $\epsilon$-greedy. (e.g., when epsilon = 0.1 (*default: NA*), it means that the participant has a 10% probability of randomly selecting an option and a 90% probability of choosing based on the currently learned value of the options.)
 
-- In my opinion, I think that participants tend to randomly select options during the early stages of the experiment to estimate the value of each option. Therefore, I added an argument called `threshold`, which specifies the number of trials during which participants will make completely random choices. The default value is set to 1.
-
 ```r
-binaryRL::run_m(
-  ...,
-  threshold = 20,      
+# epsilon-greedy
+run_m(
+  ...
+  threshold = 1,
   epsilon = 0.1,
   ...
 )
 ```
 
-### References
-Ganger, M., Duryea, E., & Hu, W. (2016). Double Sarsa and double expected Sarsa with shallow and deep learning. Journal of Data Analysis and Information Processing, 4(04), 159. https://doi.org/10.4236/jdaip.2016.44014
+You can implement an $\epsilon$-first model by setting the `threshold` parameter in the `run_m`. For instance, if the threshold is set to `threshold = 20` (The default value is set to 1), it means that participants will choose completely randomly until trial number 20, after which their choices will be based on value. 
+
+```r
+# epsilon-first
+run_m(
+  ...
+  threshold = 20,
+  epsilon = NA,
+  ...
+)
+```
+
+You can also create an $\epsilon$-decreasing exploration strategy by setting `lambda` instead of `epsilon`. In this model, the probability of participants choosing randomly will decrease as the trial number increases.
+
+```r
+# epsilon-decreasing
+run_m(
+  ...
+  threshold = 1,
+  epsilon = NA,
+  lambda = 0.1
+  ...
+)
+```
 
 <!---------------------------------------------------------->
 
@@ -790,7 +824,7 @@ binaryRL::rcv_d(
 )
 ```
 
-### References  
+### Reference  
 Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547
 
 <!---------------------------------------------------------->
@@ -813,7 +847,7 @@ $$
 
 *NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model. ${k}$ the number of free parameters in the model; ${n}$ represents the total number of trials in the paradigm.
 
-### References
+### Reference
 Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventromedial prefrontal cortex in abstract state-based inference during decision making in humans. *Journal of Neuroscience, 26*(32), 8360-8367. https://doi.org/10.1523/JNEUROSCI.1010-06.2006
 
 
@@ -905,8 +939,19 @@ $$
 
 <!---------------------------------------------------------->
 
-## **Exploration Function ($\epsilon$)**
+## **Exploration Strategy ($\epsilon$)**
 The parameter $\epsilon$ represents the probability of participants engaging in exploration (random choosing). In addition A threshold ensures participants always explore during the initial trials, after which the likelihood of exploration is determined by $\epsilon$..   
+
+### $\epsilon$-first
+$$
+P(x) =
+\begin{cases} 
+trial \le threshold, &  x = 1 \quad \text{(random choosing)} \\
+trial > threshold, &  x = 0 \quad \text{(value-based choosing)}
+\end{cases}
+$$
+
+### $\epsilon$-greedy
 
 $$
 P(x) =
@@ -915,6 +960,19 @@ P(x) =
 1 - \epsilon, &  x = 0 \quad \text{(value-based choosing)}
 \end{cases}
 $$
+
+### $\epsilon$-decreasing
+
+$$
+P(x) =
+\begin{cases} 
+\frac{1}{1 + \lambda i}, &  x = 1 \quad \text{(random choosing)} \\
+\frac{\lambda i}{1 + \lambda i}, &  x = 0 \quad \text{(value-based choosing)}
+\end{cases}
+$$
+
+### Reference
+Namiki, N., Oyo, K., & Takahashi, T. (2014, December). How do humans handle the dilemma of exploration and exploitation in sequential decision making?. In Proceedings of the 8th International Conference on Bioinspired Information and Communications Technologies (pp. 113-117).
 
 <!---------------------------------------------------------->
 
