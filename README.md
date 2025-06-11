@@ -216,9 +216,11 @@ func_eta <- function (
   # parameters
   eta, lambda
 ){
+  # TD
   if (length(eta) == 1) {
     eta <- as.numeric(eta)
   }
+  # RSTD
   else if (length(eta) > 1 & utility <  value) {
     eta <- eta[1]
   }
@@ -252,20 +254,17 @@ func_epsilon <- function(
   # epsilon-first
   if (i <= threshold) {
     try <- 1
-  } 
-  else if (i > threshold & is.na(epsilon)) {
+  } else if (i > threshold & is.na(epsilon) & is.na(lambda)) {
     try <- 0
-  } 
   # epsilon-greedy
-  else if (i > threshold & !(is.na(epsilon))){
+  } else if (i > threshold & !(is.na(epsilon)) & is.na(lambda)){
     try <- sample(
       c(1, 0),
       prob = c(epsilon, 1 - epsilon),
       size = 1
     )
-  }
   # epsilon-decreasing
-  else if (!(is.na(lambda)) & is.na(epsilon)) {
+  } else if (i > threshold & is.na(epsilon) & !(is.na(lambda))) {
     try <- sample(
       c(1, 0),
       prob = c(
