@@ -28,12 +28,11 @@ unique_choice <- function(data, L_choice = "L_choice", R_choice = "R_choice"){
   
   # 检查L_choice 和R_choice是否包含了一样的选项
   if (!all(unique_L %in% unique_R) || !all(unique_R %in% unique_L)) {
-    stop("Error: L_choice and R_choice have different options!")
-  } 
-  else {
-    # 将所有备选项传输到函数的上一层
-    options <- sort(unique_L)
+    warning("Warning: L_choice and R_choice have different options!")
   }
+  
+  # 记录所有选项
+  options <- sort(unique(c(unique_L, unique_R)))
   
   # 把所有备选项以列名创建, 方便存放价值更新
   for (name in options) {
