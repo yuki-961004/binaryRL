@@ -4,12 +4,18 @@ on:
   push:
     branches: [main, master]
     paths:
+      - 'R/**'
+      - 'DESCRIPTION'
+      - 'NAMESPACE'
       - '.github/workflows/test-coverage.yaml'
       - 'tests/testthat/**'
-  
+
   pull_request:
     branches: [main, master]
     patchs:
+      - 'R/**'
+      - 'DESCRIPTION'
+      - 'NAMESPACE'
       - '.github/workflows/test-coverage.yaml'
       - 'tests/testthat/**'
 
