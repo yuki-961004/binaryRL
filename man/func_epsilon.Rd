@@ -2,9 +2,18 @@
 % Please edit documentation in R/func_epsilon.R
 \name{func_epsilon}
 \alias{func_epsilon}
-\title{Function: Epsilon Greedy}
+\title{Function: Exploration Strategy}
 \usage{
-func_epsilon(i, var1 = NA, var2 = NA, threshold = 1, epsilon = NA, lambda)
+func_epsilon(
+  i,
+  var1 = NA,
+  var2 = NA,
+  threshold = 1,
+  epsilon = NA,
+  lambda = NA,
+  alpha,
+  beta
+)
 }
 \arguments{
 \item{i}{The current row number. The `threshold` for random selection, which 
@@ -13,43 +22,72 @@ on this row number. This is because I believe that in the early stages of
 an experiment, participants will choose options completely at random to 
 explore the reward value associated with each option.}
 
-\item{var1}{[character] column name of extra variable 1. If your model uses 
-more than just reward and expected value, and you need other information, 
-such as whether the choice frame is Gain or Loss, then you can input the 
-'Frame' column as var1 into the model.
-e.g., `var1 = "Extra_Var1"`}
+\item{var1}{[character] 
+Column name of extra variable 1. If your model uses 
+ more than just reward and expected value, and you need other information, 
+ such as whether the choice frame is Gain or Loss, then you can input the 
+ 'Frame' column as var1 into the model.
+ e.g., `var1 = "Extra_Var1"`}
 
-\item{var2}{[character] column name of extra variable 2. If one additional 
-variable, var1, does not meet your needs, you can add another additional 
-variable, var2, into your model.
-e.g., `var2 = "Extra_Var2"`}
+\item{var2}{[character] 
+Column name of extra variable 2. If one additional 
+ variable, var1, does not meet your needs, you can add another additional 
+ variable, var2, into your model.
+ e.g., `var2 = "Extra_Var2"`}
 
-\item{threshold}{[integer] the number of initial trials during which the 
-subject makes random choices rather than choosing based on the values of 
-the options. This occurs because the subject has not yet learned the values 
-of the options. For example, `threshold = 20` means the subject will make 
-completely random choices for the first 20 trials. 
-default: `threshold = 1`}
+\item{threshold}{[integer]
+Controls the initial exploration phase in the \strong{epsilon-first} strategy.
+ This is the number of early trials where the subject makes purely random
+ choices, as they haven't yet learned the options' values. For example,
+ `threshold = 20` means random choices for the first 20 trials.
+ For \strong{epsilon-greedy} or \strong{epsilon-decreasing} strategies,
+ `threshold` should be kept at its default value.
+ Default: `threshold = 1`}
 
-\item{epsilon}{[vector] Parameters used in the Exploration Function
-`expl_func` determining whether the subject makes decisions based on the 
- relative values of the left and right options, or chooses completely 
- randomly. For example, when epsilon = 0.1, it means the subject has a 10% 
- chance of making a completely random choice and a 90% chance of choosing 
- based on the values of the options.
- e.g., `epsilon = c(0.1)`}
+\item{epsilon}{[vector]
+A parameter used in the \strong{epsilon-greedy} exploration strategy. It defines
+ the probability of making a completely random choice, as opposed to choosing
+ based on the relative values of the left and right options. For example,
+ if `epsilon = 0.1`, the subject has a 10% chance of random choice and a
+ 90% chance of value-based choice. This parameter is only relevant when
+ `threshold` is at its default value (1) and `pai` is not set.
+ e.g., `epsilon = 0.1`}
 
-\item{lambda}{[vector] Extra parameters that may be used in functions. 
-e.g., `lambda = c(0.4, 0.7, 20, 60)`}
+\item{lambda}{[vector] 
+A numeric value that controls the decay rate of exploration probability
+ in the \strong{epsilon-decreasing} strategy. A higher `lambda` value
+ means the probability of random choice will decrease more rapidly
+ as the number of trials increases.}
+
+\item{alpha}{[vector]
+Extra parameters that may be used in functions.}
+
+\item{beta}{[vector]
+Extra parameters that may be used in functions.}
 }
 \value{
-explore or not
+A numeric value, either 0 or 1. 0 indicates no exploration (choice based 
+ on value), and 1 indicates exploration (random choice) for that trial.
 }
 \description{
-Function: Epsilon Greedy
+The exploration strategy parameters are `threshold`, `epsilon`, and `pai`.
+
+  \itemize{
+    \item \strong{Epsilon-first strategy:} Used when only `threshold` is set. 
+      Subjects choose randomly for trials less than `threshold` and by value 
+      for trials greater than `threshold`.
+    \item \strong{Epsilon-greedy strategy:} Used if `threshold` is default 
+      (1) and `epsilon` is set. Subjects explore with probability `epsilon` 
+      throughout the experiment.
+    \item \strong{Epsilon-decreasing strategy:} Used if `threshold` is 
+      default (1), and `pai` is set. In this strategy, the probability of 
+      random choice (exploration) decreases as trials increase. The 
+      parameter `pai` controls the rate at which this probability declines 
+      with each trial.
+  }
 }
 \note{
-When customizing these functions, please ensure that you do not modify 
-the arguments. Instead, only modify the `if-else` statements or the internal 
-logic to adapt the function to your needs.
+When customizing these functions, please ensure that you do not modify the 
+ arguments. Instead, only modify the `if-else` statements or the internal 
+ logic to adapt the function to your needs.
 }

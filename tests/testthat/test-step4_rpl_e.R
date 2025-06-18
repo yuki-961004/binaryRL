@@ -1,5 +1,6 @@
 # TD
 testthat::test_that("rev_e() works with valid input", {
+  
   filepath <- testthat::test_path("testdata", "result_comparison.csv")
   comparison <- utils::read.csv(filepath)
   
@@ -16,6 +17,7 @@ testthat::test_that("rev_e() works with valid input", {
 
 # RSTD
 testthat::test_that("rev_e() works with valid input", {
+  
   filepath <- testthat::test_path("testdata", "result_comparison.csv")
   comparison <- utils::read.csv(filepath)
   
@@ -32,6 +34,7 @@ testthat::test_that("rev_e() works with valid input", {
 
 # Utility
 testthat::test_that("rev_e() works with valid input", {
+  
   filepath <- testthat::test_path("testdata", "result_comparison.csv")
   comparison <- utils::read.csv(filepath)
   

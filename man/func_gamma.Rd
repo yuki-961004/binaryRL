@@ -12,7 +12,8 @@ func_gamma(
   var1 = NA,
   var2 = NA,
   gamma = 1,
-  lambda
+  alpha,
+  beta
 )
 }
 \arguments{
@@ -46,8 +47,11 @@ to the Stevens' power function, reflecting humans' nonlinear perception
 of physical quantities. 
 e.g., `gamma = c(0.7)`.}
 
-\item{lambda}{[vector] Extra parameters that may be used in functions. 
-e.g., `lambda = c(0.4, 0.7, 20, 60)`}
+\item{alpha}{[vector]
+Extra parameters that may be used in functions.}
+
+\item{beta}{[vector]
+Extra parameters that may be used in functions.}
 }
 \value{
 Discount rate and utility

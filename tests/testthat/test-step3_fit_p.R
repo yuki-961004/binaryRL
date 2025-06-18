@@ -1,5 +1,6 @@
 # L-BFGS-B (nc = 1)
 testthat::test_that("fit_p() works with valid input", {
+  
   comparison <- binaryRL::fit_p(
     data = binaryRL::Mason_2024_Exp2,
     id = c(1:2),
@@ -17,6 +18,7 @@ testthat::test_that("fit_p() works with valid input", {
 
 # L-BFGS-B (nc > 1)
 testthat::test_that("fit_p() works with valid input", {
+  
   comparison <- binaryRL::fit_p(
     data = binaryRL::Mason_2024_Exp2,
     id = c(1:2),

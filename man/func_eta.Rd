@@ -4,7 +4,17 @@
 \alias{func_eta}
 \title{Function: Learning Rate}
 \usage{
-func_eta(value, utility, reward, occurrence, var1 = NA, var2 = NA, eta, lambda)
+func_eta(
+  value,
+  utility,
+  reward,
+  occurrence,
+  var1 = NA,
+  var2 = NA,
+  eta,
+  alpha,
+  beta
+)
 }
 \arguments{
 \item{value}{The expected value of the stimulus in the subject's mind at 
@@ -37,8 +47,11 @@ e.g., `var2 = "Extra_Var2"`}
  are used when the reward is higher or lower than the expected value.
  e.g., `eta = c(0.3, 0.7)`}
 
-\item{lambda}{[vector] Extra parameters that may be used in functions. 
-e.g., `lambda = c(0.4, 0.7, 20, 60)`}
+\item{alpha}{[vector]
+Extra parameters that may be used in functions.}
+
+\item{beta}{[vector]
+Extra parameters that may be used in functions.}
 }
 \value{
 learning rate eta

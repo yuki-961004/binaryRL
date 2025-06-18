@@ -1,11 +1,14 @@
 #' Create NULL columns and the line 0
 #'
-#' @param data [data.frame] A data frame resulting from the 'step2' process of the `arrange_data` function. 
+#' @param data [data.frame] 
+#' A data frame resulting from the 'step2' process of the `arrange_data` function. 
 #'
 #' @returns data frame:
-#'   \itemize{
-#'     \item{\code{data}: step2 + row[0] for initial value + null cols [Reward, gamma, R_utility, ...].}
-#'   }
+#'  \itemize{
+#'    \item{
+#'      \code{data}: step2 + row[0] for initial value + null cols 
+#'      [Reward, gamma, R_utility, ...].}
+#'  }
 #'   
 #' @noRd
 #' 

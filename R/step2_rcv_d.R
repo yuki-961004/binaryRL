@@ -6,11 +6,7 @@
 #'  and parameter bounds. If you prefer to handle the process manually,  
 #'  you can use the internal functions `simulate_list` and `recovery_data`.
 #'  
-#'  For more information, please refer to the GitHub repository:
-#'  https://github.com/yuki-961004/binaryRL
-#'  
-#' @param data [data.frame] raw data. 
-#'  This data should include the following mandatory columns: 
+#'  The function provides several optimization algorithms:
 #'   \itemize{
 #'     \item 1. L-BFGS-B (from `stats::optim`);
 #'     \item 2. Simulated Annealing (`GenSA`);
@@ -21,50 +17,87 @@
 #'     \item 7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes`);
 #'     \item 8. Nonlinear Optimization (`nloptr`)
 #'   }
+#' 
+#'  For more information, please refer to the GitHub repository:
+#'  \url{https://github.com/yuki-961004/binaryRL}
 #'  
-#' @param id [vector] Specifies which subject is being analyzed.
+#' @param data [data.frame] raw data. 
+#'  This data should include the following mandatory columns: 
+#'   \itemize{
+#'     \item "sub"
+#'     \item "time_line" (e.g., "Block", "Trial")
+#'     \item "L_choice"
+#'     \item "R_choice"
+#'     \item "L_reward"
+#'     \item "R_reward"
+#'     \item "sub_choose"
+#'   }
+#'  
+#' @param id [vector] 
+#' Specifies which subject is being analyzed.
 #'  In recovery analyses, individual subject information is not needed;
 #'  trials from the same experimental procedure can be used across all
 #'  "subjects". Therefore, `id` can be set to `1`. For example, `id = 1`.
 #'  
-#' @param n_trials [integer] number of total trials
+#' @param n_trials [integer] 
+#' Number of total trials
 #'  
-#' @param simulate_models [list] A collection of functions used to 
-#'  generate simulated data.
-#' @param simulate_lower [list] The lower bounds for simulate models
-#' @param simulate_upper [list] The upper bounds for simulate models
+#' @param simulate_models [list] 
+#' A collection of functions used to generate simulated data.
 #' 
-#' @param fit_models [list] A collection of functions applied to 
-#'  fit models to the data.
-#' @param fit_lower [list] The lower bounds for model fit models
-#' @param fit_upper [list] The upper bounds for model fit models
+#' @param simulate_lower [list] 
+#' The lower bounds for simulate models
 #' 
-#' @param model_names [list] the names of fit modals
+#' @param simulate_upper [list] 
+#' The upper bounds for simulate models
 #' 
-#' @param funcs [vector] A character vector containing the names of all 
-#'  user-defined functions required for the computation.
+#' @param fit_models [list] 
+#' A collection of functions applied to fit models to the data.
 #' 
-#' @param initial_params [vector] Initial values for the free parameters. 
-#'  These need to be set only when using L-BFGS-B. Other algorithms 
-#'  automatically generate initial values.
-#'  for `L-BFGS-B`, `GenSA`, set `initial = c(0, 0, ...)`
+#' @param fit_lower [list] 
+#' The lower bounds for model fit models
+#' 
+#' @param fit_upper [list] 
+#' The upper bounds for model fit models
+#' 
+#' @param model_names [list] 
+#' The names of fit modals
+#' 
+#' @param funcs [vector] 
+#' A character vector containing the names of all user-defined functions 
+#'  required for the computation.
+#' 
+#' @param initial_params [numeric]
+#' Initial values for the free parameters that the optimization algorithm will
+#'  search from. These are primarily relevant when using algorithms that require
+#'  an explicit starting point, such as \code{L-BFGS-B}. If not specified,
+#'  the function will automatically generate initial values close to zero.
+#'  For example, when using \code{L-BFGS-B} or \code{GenSA}, you might set
+#'  `initial_params = c(0, 0, ...)` with a vector matching the number of parameters.
+#'
+#' @param initial_size [integer]
+#' This parameter corresponds to the \strong{population size} in genetic algorithms
+#'  (like those used in `GA`). It specifies the number of initial candidate
+#'  solutions that the algorithm starts with for its evolutionary search.
+#'  This parameter is only required for optimization algorithms that operate on
+#'  a population, such as `GA` or `DEoptim`. 
+#'  \code{Default: `initial_size = 50`}.
 #'  
-#' @param initial_size [integer] Initial values for the free parameters. 
-#'  These need to be set only when using L-BFGS-B. Other algorithms 
-#'  automatically generate initial values.
-#'  for `Bayesian`, `GA`, set `initial = 50`
-#'  
-#' @param iteration_s [integer] the number of iteration in simulation (simulate)
+#' @param iteration_s [integer] 
+#' The number of iteration in simulation (simulate)
 #' 
-#' @param iteration_f [integer] the number of iteration in algorithm (fit)
+#' @param iteration_f [integer] 
+#' The number of iteration in algorithm (fit)
 #' 
-#' @param seed [integer] random seed. This ensures that the results are 
+#' @param seed [integer] 
+#' Random seed. This ensures that the results are 
 #'  reproducible and remain the same each time the function is run. 
-#'  default: `seed = 123` 
+#'  \code{Default: `seed = 123`}
 #'  
 #' @param nc [integer] Number of CPU cores to use for parallel computation.
 #'  
-#' @param algorithm [character] Choose an algorithm package from
+#' @param algorithm [character] 
+#' Choose an algorithm package from
 #'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `PSO`, `Bayesian`, `CMA-ES`.
 #'  In addition, any algorithm from the `nloptr` package is also
 #'  supported. If your chosen `nloptr` algorithm requires a local search,
@@ -72,12 +105,11 @@
 #'  the algorithm used for global search, and the second element represents
 #'  the algorithm used for local search.
 #'
-#' @returns A list where each element is a data.frame. 
+#' @returns 
+#' A list where each element is a data.frame. 
 #'  Each data.frame within this list records the results of fitting synthetic 
 #'  data (generated by Model A) with Model B.
-#' 
-#' @export
-#'
+#'  
 rcv_d <- function(
   data,
   id = NULL,

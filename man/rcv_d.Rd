@@ -29,69 +29,86 @@ rcv_d(
 \item{data}{[data.frame] raw data. 
 This data should include the following mandatory columns: 
  \itemize{
-   \item 1. L-BFGS-B (from `stats::optim`);
-   \item 2. Simulated Annealing (`GenSA`);
-   \item 3. Genetic Algorithm (`GA`);
-   \item 4. Differential Evolution (`DEoptim`);
-   \item 5. Particle Swarm Optimization (`pso`);
-   \item 6. Bayesian Optimization (`mlrMBO`);
-   \item 7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes`);
-   \item 8. Nonlinear Optimization (`nloptr`)
+   \item "sub"
+   \item "time_line" (e.g., "Block", "Trial")
+   \item "L_choice"
+   \item "R_choice"
+   \item "L_reward"
+   \item "R_reward"
+   \item "sub_choose"
  }}
 
-\item{id}{[vector] Specifies which subject is being analyzed.
-In recovery analyses, individual subject information is not needed;
-trials from the same experimental procedure can be used across all
-"subjects". Therefore, `id` can be set to `1`. For example, `id = 1`.}
+\item{id}{[vector] 
+Specifies which subject is being analyzed.
+ In recovery analyses, individual subject information is not needed;
+ trials from the same experimental procedure can be used across all
+ "subjects". Therefore, `id` can be set to `1`. For example, `id = 1`.}
 
-\item{n_trials}{[integer] number of total trials}
+\item{n_trials}{[integer] 
+Number of total trials}
 
-\item{simulate_models}{[list] A collection of functions used to 
-generate simulated data.}
+\item{simulate_models}{[list] 
+A collection of functions used to generate simulated data.}
 
-\item{simulate_lower}{[list] The lower bounds for simulate models}
+\item{simulate_lower}{[list] 
+The lower bounds for simulate models}
 
-\item{simulate_upper}{[list] The upper bounds for simulate models}
+\item{simulate_upper}{[list] 
+The upper bounds for simulate models}
 
-\item{fit_models}{[list] A collection of functions applied to 
-fit models to the data.}
+\item{fit_models}{[list] 
+A collection of functions applied to fit models to the data.}
 
-\item{fit_lower}{[list] The lower bounds for model fit models}
+\item{fit_lower}{[list] 
+The lower bounds for model fit models}
 
-\item{fit_upper}{[list] The upper bounds for model fit models}
+\item{fit_upper}{[list] 
+The upper bounds for model fit models}
 
-\item{model_names}{[list] the names of fit modals}
+\item{model_names}{[list] 
+The names of fit modals}
 
-\item{funcs}{[vector] A character vector containing the names of all 
-user-defined functions required for the computation.}
+\item{funcs}{[vector] 
+A character vector containing the names of all user-defined functions 
+ required for the computation.}
 
-\item{initial_params}{[vector] Initial values for the free parameters. 
-These need to be set only when using L-BFGS-B. Other algorithms 
-automatically generate initial values.
-for `L-BFGS-B`, `GenSA`, set `initial = c(0, 0, ...)`}
+\item{initial_params}{[numeric]
+Initial values for the free parameters that the optimization algorithm will
+ search from. These are primarily relevant when using algorithms that require
+ an explicit starting point, such as \code{L-BFGS-B}. If not specified,
+ the function will automatically generate initial values close to zero.
+ For example, when using \code{L-BFGS-B} or \code{GenSA}, you might set
+ `initial_params = c(0, 0, ...)` with a vector matching the number of parameters.}
 
-\item{initial_size}{[integer] Initial values for the free parameters. 
-These need to be set only when using L-BFGS-B. Other algorithms 
-automatically generate initial values.
-for `Bayesian`, `GA`, set `initial = 50`}
+\item{initial_size}{[integer]
+This parameter corresponds to the \strong{population size} in genetic algorithms
+ (like those used in `GA`). It specifies the number of initial candidate
+ solutions that the algorithm starts with for its evolutionary search.
+ This parameter is only required for optimization algorithms that operate on
+ a population, such as `GA` or `DEoptim`. 
+ \code{Default: `initial_size = 50`}.}
 
-\item{iteration_s}{[integer] the number of iteration in simulation (simulate)}
+\item{iteration_s}{[integer] 
+The number of iteration in simulation (simulate)}
 
-\item{iteration_f}{[integer] the number of iteration in algorithm (fit)}
+\item{iteration_f}{[integer] 
+The number of iteration in algorithm (fit)}
 
-\item{seed}{[integer] random seed. This ensures that the results are 
-reproducible and remain the same each time the function is run. 
-default: `seed = 123`}
+\item{seed}{[integer] 
+Random seed. This ensures that the results are 
+ reproducible and remain the same each time the function is run. 
+ \code{Default: `seed = 123`}}
 
 \item{nc}{[integer] Number of CPU cores to use for parallel computation.}
 
-\item{algorithm}{[character] Choose an algorithm package from
-`L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `PSO`, `Bayesian`, `CMA-ES`.
-In addition, any algorithm from the `nloptr` package is also
-supported. If your chosen `nloptr` algorithm requires a local search,
-you need to input a character vector. The first element represents
-the algorithm used for global search, and the second element represents
-the algorithm used for local search.}
+\item{algorithm}{[character] 
+Choose an algorithm package from
+ `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `PSO`, `Bayesian`, `CMA-ES`.
+ In addition, any algorithm from the `nloptr` package is also
+ supported. If your chosen `nloptr` algorithm requires a local search,
+ you need to input a character vector. The first element represents
+ the algorithm used for global search, and the second element represents
+ the algorithm used for local search.}
 }
 \value{
 A list where each element is a data.frame. 
@@ -104,6 +121,18 @@ This function fits multiple sets of simulated data using a loop.
  and parameter bounds. If you prefer to handle the process manually,  
  you can use the internal functions `simulate_list` and `recovery_data`.
  
+ The function provides several optimization algorithms:
+  \itemize{
+    \item 1. L-BFGS-B (from `stats::optim`);
+    \item 2. Simulated Annealing (`GenSA`);
+    \item 3. Genetic Algorithm (`GA`);
+    \item 4. Differential Evolution (`DEoptim`);
+    \item 5. Particle Swarm Optimization (`pso`);
+    \item 6. Bayesian Optimization (`mlrMBO`);
+    \item 7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes`);
+    \item 8. Nonlinear Optimization (`nloptr`)
+  }
+
  For more information, please refer to the GitHub repository:
- https://github.com/yuki-961004/binaryRL
+ \url{https://github.com/yuki-961004/binaryRL}
 }

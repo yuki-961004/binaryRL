@@ -6,8 +6,27 @@
 #' 
 #' @param n_trials [integer] The total number of trials in your experiment.
 #' 
-#' @param lambda [vector] Extra parameters that may be used in functions. 
-#'  e.g., `lambda = c(0.4, 0.7, 20, 60)`
+#' @param initial_value [numeric] 
+#' Subject's initial expected value for each stimulus's reward. If this value 
+#'  is not set (`initial_value = NA`), the subject will use the reward received 
+#'  after the first trial as the initial value for that stimulus. In other 
+#'  words, the learning rate for the first trial is 100%. 
+#'  default: `initial_value = NA` e.g., `initial_value = 0`
+#'  
+#' @param threshold [integer]
+#' Controls the initial exploration phase in the \strong{epsilon-first} strategy.
+#'  This is the number of early trials where the subject makes purely random
+#'  choices, as they haven't yet learned the options' values. For example,
+#'  `threshold = 20` means random choices for the first 20 trials.
+#'  For \strong{epsilon-greedy} or \strong{epsilon-decreasing} strategies,
+#'  `threshold` should be kept at its default value.
+#'  Default: `threshold = 1`
+#'  
+#' @param alpha [vector]
+#' Extra parameters that may be used in functions. 
+#'
+#' @param beta [vector]
+#' Extra parameters that may be used in functions. 
 #' 
 #' @param gamma [vector] Parameters used in the `util_func` (Utility Function), 
 #'  often referred to as the discount rate. For example, 
@@ -23,13 +42,20 @@
 #'  are used when the reward is higher or lower than the expected value.
 #'  e.g., `eta = c(0.3, 0.7)`
 #' 
-#' @param epsilon [vector] Parameters used in the `expl_func` (Exploration Function), 
-#'  determining whether the subject makes decisions based on the relative values 
-#'  of the left and right options, or chooses completely randomly. For example, 
-#'  when epsilon = 0.1, it means the subject has a 10% chance of making a 
-#'  completely random choice and a 90% chance of choosing based on the values 
-#'  of the options.
-#'  e.g., `epsilon = c(0.1)`
+#' @param epsilon [numeric]
+#' A parameter used in the \strong{epsilon-greedy} exploration strategy. It defines
+#'  the probability of making a completely random choice, as opposed to choosing
+#'  based on the relative values of the left and right options. For example,
+#'  if `epsilon = 0.1`, the subject has a 10% chance of random choice and a
+#'  90% chance of value-based choice. This parameter is only relevant when
+#'  `threshold` is at its default value (1) and `pai` is not set.
+#'  e.g., `epsilon = 0.1`
+#' 
+#' @param lambda [vector] 
+#' A numeric value that controls the decay rate of exploration probability
+#'  in the \strong{epsilon-decreasing} strategy. A higher `lambda` value
+#'  means the probability of random choice will decrease more rapidly
+#'  as the number of trials increases.
 #' 
 #' @param tau [vector] Parameters used in the `prob_func` (Soft-Max Function), 
 #'  representing the sensitivity of the subject to the value difference when 
@@ -55,13 +81,19 @@
 output <- function(
     data, 
     n_params, n_trials, 
-    gamma, eta, epsilon, tau, lambda
+    initial_value, threshold,
+    alpha, beta, gamma, eta, epsilon, lambda, tau
 ){
   params <- list(
-    lambda = c(lambda),
+    EV_1 = initial_value,
+    threshold = threshold,
+    
+    alpha = c(alpha),
+    beta = c(beta),
     gamma = c(gamma),
     eta = c(eta), 
     epsilon = c(epsilon),
+    lambda = c(lambda),
     tau = c(tau)
   )
   

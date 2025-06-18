@@ -7,16 +7,35 @@
 #' 
 #' 
 summary.binaryRL <- function(object, ...) {
+
+  if (is.na(object$params$EV_1)) {
+    message(
+      "  This fitting was performed assuming the agent's initial values for 
+      each option are based on their first encounter, and the agent chooses 
+      randomly when trial count is less than or equal to", 
+      object$params$threshold, ".\n"
+    )
+  } else {
+    message(
+      "  This fitting was performed assuming the agent's initial values for 
+      each option are set to", object$params$EV_1, ", and the agent chooses 
+      randomly when trial count is less than or equal to", 
+      object$params$threshold, ".\n"
+    )
+  }
+  
   cat("Results of the Reinforcement Learning Model:\n")
   
   object$data <- NULL
   
-  cat("\nParameters:\n")
+  cat("\nFree Parameters:\n")
   
-  cat("  ", "\u03BB: ", round(object$params$lambda, 3), "\n")
+  cat("  ", "\u03B1: ", round(object$params$alpha, 3), "\n")
+  cat("  ", "\u03B2: ", round(object$params$beta, 3), "\n")  
   cat("  ", "\u03B3: ", round(object$params$gamma, 3), "\n")
   cat("  ", "\u03B7: ", round(object$params$eta, 3), "\n")
   cat("  ", "\u03B5: ", round(object$params$epsilon, 3), "\n")
+  cat("  ", "\u03BB: ", round(object$params$lambda, 3), "\n")
   cat("  ", "\u03C4: ", round(object$params$tau, 3), "\n")
   
   
@@ -41,14 +60,15 @@ summary.binaryRL <- function(object, ...) {
   
   # 根据最大值数目动态创建 Value 列
   for (i in 1:max_values) {
-    param_list[[paste("Value", i, sep = "")]] <- sapply(object$params, function(param) {
-      if (length(param) >= i) {
-        return(round(param[i], 5))  # 取第 i 个值并保留5位小数
-      } else {
-        return(NA)  # 如果参数没有第 i 个值，填充 NA
-      }
-    })
-  }
+    param_list[[paste("Value", i, sep = "")]] <- sapply(
+      object$params, function(param) {
+        if (length(param) >= i) {
+          return(round(param[i], 5))  # 取第 i 个值并保留5位小数
+        } else {
+          return(NA)  # 如果参数没有第 i 个值，填充 NA
+        }
+      })
+    }
   
   # 将 param_list 转换为数据框
   params_df <- as.data.frame(param_list)

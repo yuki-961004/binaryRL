@@ -1,7 +1,6 @@
 # epsilon-first & greedy
 testthat::test_that("run_m() works with valid input", {
-  library(binaryRL)
-
+  
   data <- binaryRL::Mason_2024_Exp2
   
   binaryRL.res <- binaryRL::run_m(
@@ -21,8 +20,7 @@ testthat::test_that("run_m() works with valid input", {
 
 # epsilon-decreasing
 testthat::test_that("run_m() works with valid input", {
-  library(binaryRL)
-  
+
   data <- binaryRL::Mason_2024_Exp2
   
   binaryRL.res <- binaryRL::run_m(

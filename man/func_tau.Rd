@@ -4,7 +4,7 @@
 \alias{func_tau}
 \title{Function: Soft-Max Function}
 \usage{
-func_tau(LR, try, L_value, R_value, var1 = NA, var2 = NA, tau = 1, lambda)
+func_tau(LR, try, L_value, R_value, var1 = NA, var2 = NA, tau = 1, alpha, beta)
 }
 \arguments{
 \item{LR}{Are you calculating the probability for the left option or the 
@@ -37,8 +37,11 @@ e.g., `var2 = "Extra_Var2"`}
  subject more likely to choose the higher-value option. 
  e.g., `tau = c(0.5)`}
 
-\item{lambda}{[vector] Extra parameters that may be used in functions. 
-e.g., `lambda = c(0.4, 0.7, 20, 60)`}
+\item{alpha}{[vector]
+Extra parameters that may be used in functions.}
+
+\item{beta}{[vector]
+Extra parameters that may be used in functions.}
 }
 \value{
 The probability of choosing this option

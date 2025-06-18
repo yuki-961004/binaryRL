@@ -31,8 +31,11 @@
 #'  subject more likely to choose the higher-value option. 
 #'  e.g., `tau = c(0.5)`
 #' 
-#' @param lambda [vector] Extra parameters that may be used in functions. 
-#'  e.g., `lambda = c(0.4, 0.7, 20, 60)`
+#' @param alpha [vector]
+#' Extra parameters that may be used in functions. 
+#'
+#' @param beta [vector]
+#' Extra parameters that may be used in functions. 
 #' 
 #' @return The probability of choosing this option
 #' @export
@@ -53,7 +56,8 @@ func_tau <- function(
   # softmax固有参数, 表示对左右差异的敏感性
   tau = 1,
   # 额外参数
-  lambda
+  alpha,
+  beta
 ){
   if (!(LR %in% c("L", "R"))) {
     stop("LR = 'L' or 'R'")

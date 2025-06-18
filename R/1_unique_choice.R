@@ -1,20 +1,30 @@
 #' Figure out how many options exist
 #'
-#' @param data [data.frame] raw data. 
-#'  This data should include the following mandatory columns: 
-#'  - "sub", "time_line", "L_choice", "R_choice", "L_reward", "R_reward". 
+#' @param data [data.frame] 
+#' This data should include the following mandatory columns: 
+#'  \itemize{
+#'    \item "sub"
+#'    \item "time_line" (e.g., "Block", "Trial")
+#'    \item "L_choice"
+#'    \item "R_choice"
+#'    \item "L_reward"
+#'    \item "R_reward"
+#'    \item "sub_choose"
+#'  }
 #' 
-#' @param L_choice [character] column name of left choice. 
+#' @param L_choice [character] 
+#' Column name of left choice. 
 #'  e.g., `L_choice = "Left_Choice"`
 #' 
-#' @param R_choice [character] column name of right choice. 
+#' @param R_choice [character] 
+#' Column name of right choice. 
 #'  e.g., `R_choice = "Right_Choice"`
 #'
 #' @returns list:
-#'   \itemize{
-#'     \item{\code{data}: raw data frame + null cols [options].}
-#'     \item{\code{options}: a vector containing all options.}
-#'   }
+#'  \itemize{
+#'    \item{\code{data}: raw data frame + null cols [options].}
+#'    \item{\code{options}: a vector containing all options.}
+#'  }
 #'
 #' @noRd
 #' 

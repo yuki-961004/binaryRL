@@ -1,5 +1,6 @@
 # L-BFGS-B (nc = 1)
 testthat::test_that("rcv_d() works with valid input", {
+  
   recovery <- binaryRL::rcv_d(
     data = binaryRL::Mason_2024_Exp2,
     model_names = c("TD", "RSTD", "Utility"),
@@ -21,6 +22,7 @@ testthat::test_that("rcv_d() works with valid input", {
 
 # L-BFGS-B (nc > 1)
 testthat::test_that("rcv_d() works with valid input", {
+  
   recovery <- binaryRL::rcv_d(
     data = binaryRL::Mason_2024_Exp2,
     model_names = c("TD", "RSTD", "Utility"),

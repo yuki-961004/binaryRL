@@ -31,8 +31,11 @@
 #'  are used when the reward is higher or lower than the expected value.
 #'  e.g., `eta = c(0.3, 0.7)`
 #' 
-#' @param lambda [vector] Extra parameters that may be used in functions. 
-#'  e.g., `lambda = c(0.4, 0.7, 20, 60)`
+#' @param alpha [vector]
+#' Extra parameters that may be used in functions. 
+#'
+#' @param beta [vector]
+#' Extra parameters that may be used in functions. 
 #' 
 #' @return learning rate eta
 #' @export
@@ -53,7 +56,8 @@ func_eta <- function(
   # 使用的参数
   eta,
   # 额外参数
-  lambda
+  alpha,
+  beta
   ################################# [function start] #############################
 ){
   #################################### [ TD ] ####################################

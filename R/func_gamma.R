@@ -31,8 +31,11 @@
 #'  of physical quantities. 
 #'  e.g., `gamma = c(0.7)`.
 #' 
-#' @param lambda [vector] Extra parameters that may be used in functions. 
-#'  e.g., `lambda = c(0.4, 0.7, 20, 60)`
+#' @param alpha [vector]
+#' Extra parameters that may be used in functions. 
+#'
+#' @param beta [vector]
+#' Extra parameters that may be used in functions. 
 #' 
 #' @return Discount rate and utility
 #' @export
@@ -53,7 +56,8 @@ func_gamma <- function(
   # 使用的参数
   gamma = 1,
   # 额外参数
-  lambda
+  alpha,
+  beta
   ################################# [function start] #############################
 ){
   ################################# [ Utility ] ##################################

@@ -4,86 +4,97 @@
 #' 
 #' @param options [vector] all alternative options from 'step1' `unique_choice`
 #' 
-#' @param L_choice [character] column name of left choice. 
-#'  e.g., `L_choice = "Left_Choice"`
+#' @param initial_value [numeric] 
+#' Subject's initial expected value for each stimulus's reward. If this value 
+#'  is not set (`initial_value = NA`), the subject will use the reward received 
+#'  after the first trial as the initial value for that stimulus. In other 
+#'  words, the learning rate for the first trial is 100%. 
+#'  \code{default: `initial_value = NA` e.g., `initial_value = 0`}
+#'  
+#' @param threshold [integer]
+#' Controls the initial exploration phase in the \strong{epsilon-first} strategy.
+#'  This is the number of early trials where the subject makes purely random
+#'  choices, as they haven't yet learned the options' values. For example,
+#'  `threshold = 20` means random choices for the first 20 trials.
+#'  For \strong{epsilon-greedy} or \strong{epsilon-decreasing} strategies,
+#'  `threshold` should be kept at its default value.
+#'  \code{Default: `threshold = 1`}
+#'  
+#' @param softmax [logical]
+#'  Whether to use the softmax function.
+#'    \itemize{
+#'      \item \strong{\code{TRUE}}: The value of each option directly influences
+#'       the probability of selecting that option. Higher values lead to a
+#'       higher probability of selection.
+#'      \item \strong{\code{FALSE}}: The subject will always choose the option
+#'       with the higher value. There is no possibility of selecting the
+#'       lower-value option.
+#'  }
+#'  \code{Default: `softmax = TRUE`}
 #' 
-#' @param R_choice [character] column name of right choice. 
-#'  e.g., `R_choice = "Right_Choice"`
-#' 
-#' @param L_reward [character] column name of the reward of left choice 
-#'  e.g., `L_reward = "Left_reward"`
-#' 
-#' @param R_reward [character] column name of the reward of right choice 
-#'  e.g., `R_reward = "Right_reward"`
-#' 
-#' @param var1 [character] column name of extra variable 1. If your model uses 
-#'  more than just reward and expected value, and you need other information, 
-#'  such as whether the choice frame is Gain or Loss, then you can input the 
-#'  'Frame' column as var1 into the model.
-#'  e.g., `var1 = "Extra_Var1"`
-#' 
-#' @param var2 [character] column name of extra variable 2. If one additional 
-#'  variable, var1, does not meet your needs, you can add another additional 
-#'  variable, var2, into your model.
-#'  e.g., `var2 = "Extra_Var2"`
-#' 
-#' @param softmax [logical] whether to use the softmax function. 
-#'  When softmax = TRUE, the value of each option influences the probability 
-#'  of selecting that option. Higher values increase the probability of 
-#'  selecting that option. When softmax = FALSE, the subject will always 
-#'  choose the option with the higher value, with no possibility of selecting 
-#'  the lower-value option. default: `softmax = TRUE`
-#' 
-#' @param seed [integer] random seed. This ensures that the results are 
+#' @param seed [integer] 
+#' Random seed. This ensures that the results are 
 #'  reproducible and remain the same each time the function is run. 
-#'  default: `seed = 123` 
+#'  \code{Default: `seed = 123`}
 #' 
-#' @param initial_value [numeric] subject's initial expected value for each 
-#'  stimulus's reward. If this value is not set (`initial_value = NA`), 
-#'  the subject will use the reward received after the first trial as the 
-#'  initial value for that stimulus. In other words, the learning rate for the 
-#'  first trial is 100%. default: `initial_value = NA` 
-#'  e.g., `initial_value = 0`
+#' @param alpha [vector]
+#' Extra parameters that may be used in functions. 
+#'
+#' @param beta [vector]
+#' Extra parameters that may be used in functions. 
 #' 
-#' @param threshold [integer] the number of initial trials during which the 
-#'  subject makes random choices rather than choosing based on the values of 
-#'  the options. This occurs because the subject has not yet learned the values 
-#'  of the options. For example, threshold = 20 means the subject will make 
-#'  completely random choices for the first 20 trials. default: `threshold = 1`
+#' @param gamma [vector]
+#' This parameter represents the exponent in \bold{Stevens' Power Law} within the
+#'  Utility Function, where utility is modeled as 
+#'  \eqn{\mathrm{u(x)} = \mathrm{x}^{\gamma_1}}.
+#'
+#' In \bold{Kahneman's Prospect Theory}, this exponent is applied differently:
+#' \itemize{
+#'   \item \eqn{\mathrm{utility} = \mathrm{reward}^{\gamma_{1}}}, \eqn{reward > 0}.
+#'   \item \eqn{\mathrm{utility} = \beta \times \mathrm{reward}^{\gamma_{2}}}, \eqn{reward < 0}.
+#' }
 #' 
-#' @param lambda [vector] Extra parameters that may be used in functions. 
-#'  e.g., `lambda = c(0.4, 0.7, 20, 60)`
+#' @param eta [numeric]
+#' Parameters used in the Learning Rate Function, \code{rate_func}, representing
+#'  the rate at which the subject updates the difference (prediction error)
+#'  between the reward and the expected value in the subject's mind.
+#'
+#'  The structure of \code{eta} depends on the model type:
+#'  \itemize{
+#'    \item For the \strong{Temporal Difference (TD) model}, 
+#'    where a single learning rate is used throughout the experiment 
+#'      \eqn{\eta, & |p| = 1 \text{ (TD)}}
+#'    \item For the \strong{Risk-Sensitive Temporal Difference (RDTD) model},
+#'    where two different learning rates are used depending on whether the 
+#'    reward is lower or higher than the expected value:
+#'      \eqn{\eta_-; \eta_+, & |p| = 2 \text{ (RDTD)}}.
+#'  }
+#'  e.g., \code{eta = 0.3} for TD, or \code{eta = c(0.3, 0.7)} for RDTD.
+#'
+#' @param epsilon [numeric]
+#' A parameter used in the \strong{epsilon-greedy} exploration strategy. It defines
+#'  the probability of making a completely random choice, as opposed to choosing
+#'  based on the relative values of the left and right options. For example,
+#'  if `epsilon = 0.1`, the subject has a 10% chance of random choice and a
+#'  90% chance of value-based choice. This parameter is only relevant when
+#'  `threshold` is at its default value (1) and `lambda` is not set.
+#'  \code{e.g., `epsilon = 0.1`}
 #' 
-#' @param gamma [vector] Parameters used in the `util_func` (Utility Function), 
-#'  often referred to as the discount rate. For example, 
-#'  `utility = gamma * reward`, if gamma < 1, it indicates that people 
-#'  tend to discount the objective reward. Provide the value as a vector 
-#'  e.g., `gamma = c(0.7)`
+#' @param lambda [vector] 
+#' A numeric value that controls the decay rate of exploration probability
+#'  in the \strong{epsilon-decreasing} strategy. A higher `lambda` value
+#'  means the probability of random choice will decrease more rapidly
+#'  as the number of trials increases.
 #' 
-#' @param eta [vector] Parameters used in the `rate_func` (Learning Rate Function), 
-#'  representing the rate at which the subject updates the 
-#'  difference (prediction error) between the reward and the expected value 
-#'  in the subject's mind. In the TD model, there is a single learning rate 
-#'  throughout the experiment. In the RSTD model, two different learning rates 
-#'  are used when the reward is higher or lower than the expected value.
-#'  e.g., `eta = c(0.3, 0.7)`
-#' 
-#' @param epsilon [vector] Parameters used in the `expl_func` (Exploration Function), 
-#'  determining whether the subject makes decisions based on the relative values 
-#'  of the left and right options, or chooses completely randomly. For example, 
-#'  when epsilon = 0.1, it means the subject has a 10% chance of making a 
-#'  completely random choice and a 90% chance of choosing based on the values 
-#'  of the options.
-#'  e.g., `epsilon = c(0.1)`
-#' 
-#' @param tau [vector] Parameters used in the `prob_func` (Soft-Max Function), 
-#'  representing the sensitivity of the subject to the value difference when 
-#'  making decisions. It determines the probability of selecting the left option 
-#'  versus the right option based on their values. A larger value of tau 
-#'  indicates greater sensitivity to the value difference between the options. 
-#'  In other words, even a small difference in value will make the subject more 
-#'  likely to choose the higher-value option. 
-#'  e.g., `tau = c(0.5)`
+#' @param tau [vector] 
+#' Parameters used in the Soft-Max Function. `prob_func` representing the 
+#'  sensitivity of the subject to the value difference when making decisions. 
+#'  It determines the probability of selecting the left option versus the right 
+#'  option based on their values. A larger value of tau indicates greater 
+#'  sensitivity to the value difference between the options. In other words, 
+#'  even a small difference in value will make the subject more likely to 
+#'  choose the higher-value option. 
+#'  \code{e.g., `tau = c(0.5)`}
 #' 
 #' @param util_func [function] Utility Function.
 #' 
@@ -92,6 +103,35 @@
 #' @param expl_func [function] Exploration Function.
 #' 
 #' @param prob_func [function] Soft-Max Function.
+#' 
+#' @param L_choice [character] 
+#' Column name of left choice. 
+#'  \code{e.g., `L_choice = "Left_Choice"`}
+#' 
+#' @param R_choice [character] 
+#' Column name of right choice. 
+#'  \code{e.g., `R_choice = "Right_Choice"`}
+#'  
+#' @param L_reward [character] 
+#' Column name of the reward of left choice 
+#'  \code{e.g., `L_reward = "Left_reward"`}
+#' 
+#' @param R_reward [character] 
+#' Column name of the reward of right choice 
+#'  \code{e.g., `R_reward = "Right_reward"`}
+#'  
+#' @param var1 [character] 
+#' Column name of extra variable 1. If your model uses more than just reward 
+#'  and expected value, and you need other information, such as whether the 
+#'  choice frame is Gain or Loss, then you can input the 'Frame' column as 
+#'  var1 into the model.
+#'  \code{e.g., `var1 = "Extra_Var1"`}
+#' 
+#' @param var2 [character] 
+#' Column name of extra variable 2. If one additional variable, var1, does not 
+#'  meet your needs, you can add another additional variable, var2, into your 
+#'  model.
+#'  e.g., `var2 = "Extra_Var2"`
 #'
 #' @returns data frame:
 #'   \itemize{
@@ -105,19 +145,19 @@ decision_making <- function(
     data, 
     options,
     
-    L_choice = "L_choice", R_choice = "R_choice",
-    L_reward = "L_reward", R_reward = "R_reward", 
-    var1 = NA, var2 = NA,
-    
     seed = 123, initial_value,
     softmax = TRUE, threshold = 1,
     
-    gamma, eta, epsilon, tau, lambda, 
+    alpha, beta, gamma, eta, epsilon, lambda, tau, 
     
     expl_func = func_epsilon,
     prob_func = func_tau,
     util_func = func_gamma,
-    rate_func = func_eta
+    rate_func = func_eta,
+    
+    L_choice = "L_choice", R_choice = "R_choice",
+    L_reward = "L_reward", R_reward = "R_reward", 
+    var1 = NA, var2 = NA
 ){
 ########################### [update row by row] ################################  
   # 逐行更新Value
@@ -145,7 +185,9 @@ decision_making <- function(
       var2 = data[[var2]][i],
       threshold = threshold,
       epsilon = epsilon,
-      lambda = lambda
+      lambda = lambda,
+      alpha = alpha,
+      beta = beta
     )
     
     # [ 1+ CHOOSE ]  
@@ -164,7 +206,8 @@ decision_making <- function(
         var2 = data[[var2]][i],
         LR = "L", 
         tau = tau,
-        lambda = lambda
+        alpha = alpha,
+        beta = beta
       )
       # prob_func -> data$R_prob[i] 计算选R概率
       data$R_prob[i] <- prob_func(
@@ -175,7 +218,8 @@ decision_making <- function(
         var2 = data[[var2]][i],
         LR = "R", 
         tau = tau,
-        lambda = lambda
+        alpha = alpha,
+        beta = beta
       )
       # [ 1st CHOOSE ] #
     } else if (!(data[[L_choice]][i] %in% chosen) & (data[[R_choice]][i] %in% chosen)) {
@@ -270,7 +314,8 @@ decision_making <- function(
       var1 = data[[var1]][i],
       var2 = data[[var2]][i],
       gamma = gamma,
-      lambda = lambda
+      alpha = alpha,
+      beta = beta
     )
     data$gamma[i] <- as.numeric(gamma_utility[[1]])
     data$R_utility[i] <- as.numeric(gamma_utility[[2]])
@@ -284,7 +329,8 @@ decision_making <- function(
       var1 = data[[var1]][i],
       var2 = data[[var2]][i],
       eta = eta,
-      lambda = lambda
+      alpha = alpha,
+      beta = beta
     )
 ############################ [1st Learning Rate] ############################### 
     
