@@ -1,5 +1,28 @@
 #' Function: Utility Function
+#' 
+#' @description
+#' This function represents an exponent used in calculating utility
+#' from reward. Its application varies depending on the specific model:
+#'  \itemize{
+#'    \item \strong{Stevens' Power Law}:
+#'    Here, utility is calculated by raising the reward to the power
+#'    of \code{gamma}. This describes how the subjective value (utility) of a
+#'    reward changes non-linearly with its objective magnitude.
 #'
+#'    \item \strong{Kahneman's Prospect Theory}:
+#'    This theory applies exponents differently for gains and losses,
+#'    and introduces a loss aversion coefficient:
+#'    \itemize{
+#'      \item For positive rewards (gains), utility is the reward
+#'      raised to the power of \code{gamma[1]}.
+#'      \item For negative rewards (losses), utility is calculated
+#'      by first multiplying the reward by \code{beta}, and then raising
+#'      this product to the power of \code{gamma[2]}. Here, \code{beta} acts 
+#'      as a loss aversion parameter, accounting for the greater psychological 
+#'      impact of losses compared to equivalent gains.
+#'    }
+#'  }
+#' 
 #' @note When customizing these functions, please ensure that you do not modify 
 #' the arguments. Instead, only modify the `if-else` statements or the internal 
 #' logic to adapt the function to your needs.
@@ -12,24 +35,32 @@
 #'  a stimulus.
 #' @param occurrence The number of times the same stimulus has appeared.
 #' 
-#' @param var1 [character] column name of extra variable 1. If your model uses 
-#'  more than just reward and expected value, and you need other information, 
-#'  such as whether the choice frame is Gain or Loss, then you can input the 
-#'  'Frame' column as var1 into the model.
-#'  e.g., `var1 = "Extra_Var1"`
+#' @param var1 [character] 
+#' Column name of extra variable 1. If your model uses more than just reward 
+#'  and expected value, and you need other information, such as whether the 
+#'  choice frame is Gain or Loss, then you can input the 'Frame' column as 
+#'  var1 into the model.
+#'  
+#'  \code{default: var1 = "Extra_Var1"}
 #' 
-#' @param var2 [character] column name of extra variable 2. If one additional 
-#'  variable, var1, does not meet your needs, you can add another additional 
-#'  variable, var2, into your model.
-#'  e.g., `var2 = "Extra_Var2"`
+#' @param var2 [character] 
+#' Column name of extra variable 2. If one additional variable, var1, does not 
+#'  meet your needs, you can add another additional variable, var2, into your 
+#'  model.
+#'  
+#'  \code{default: var2 = "Extra_Var2"}
 #' 
-#' @param gamma [vector] Parameters used in the Utility Function 
-#'  `util_func`, often referred to as the discount rate. For example,
-#'  `utility = reward^gamma`. If `gamma < 1`, it indicates that people
-#'  tend to discount the objective reward. This equation is very similar
-#'  to the Stevens' power function, reflecting humans' nonlinear perception
-#'  of physical quantities. 
-#'  e.g., `gamma = c(0.7)`.
+#' @param gamma [vector]
+#' This parameter represents the exponent in \bold{Stevens' Power Law} within the
+#'  Utility Function, where utility is modeled as 
+#'
+#'  \deqn{U = {R}^{\gamma}}
+#'
+#' In \bold{Kahneman's Prospect Theory}, this exponent is applied differently:
+#'  \deqn{U = \begin{cases}
+#'    R^{\gamma_{1}}, & R > 0 \\
+#'    \beta \cdot R^{\gamma_{2}}, & R < 0
+#'  \end{cases}}
 #' 
 #' @param alpha [vector]
 #' Extra parameters that may be used in functions. 
@@ -38,8 +69,40 @@
 #' Extra parameters that may be used in functions. 
 #' 
 #' @return Discount rate and utility
-#' @export
 #'
+#' @examples
+#' \dontrun{
+#' func_gamma <- function(
+#'   # Expected value for this stimulus
+#'   value,
+#'   # Subjective utility
+#'   utility,
+#'   # Reward observed after choice
+#'   reward,
+#'   # Occurrence count for this stimulus
+#'   occurrence,
+#'   # Extra variables
+#'   var1 = NA,
+#'   var2 = NA,
+#'   # Free Parameter
+#'   gamma = 1,
+#'   # Extra parameters
+#'   alpha,
+#'   beta
+#' ){
+#' ############################## [ Utility ] ##################################
+#'   if (length(gamma) == 1) {
+#'     gamma <- as.numeric(gamma)
+#'     utility <- sign(reward) * (abs(reward) ^ gamma)
+#'   }
+#' ############################### [ Error ] ###################################
+#'   else {
+#'     utility <- "ERROR" 
+#'   }
+#'   return(list(gamma, utility))
+#' }
+#' }
+#' 
 func_gamma <- function(
   # 此时心中对该刺激的的value
   value, 
@@ -49,24 +112,21 @@ func_gamma <- function(
   reward, 
   # 第几次看到这个刺激
   occurrence, 
-  # 额外需要用到的变量1
+  # 额外变量
   var1 = NA,
-  # 额外需要用到的变量2
   var2 = NA,
-  # 使用的参数
+  # 自由参数
   gamma = 1,
   # 额外参数
   alpha,
   beta
-  ################################# [function start] #############################
 ){
-  ################################# [ Utility ] ##################################
-  # 如果gamma只有一种, 则直接用这个gamma计算temp
+################################# [ Utility ] ##################################
   if (length(gamma) == 1) {
     gamma <- as.numeric(gamma)
     utility <- sign(reward) * (abs(reward) ^ gamma)
   }
-  ################################# [ Utility ] ##################################
+################################## [ Error ] ###################################
   else {
     utility <- "ERROR" # 检查错误
   }
