@@ -330,7 +330,7 @@ For more information, please refer to the GitHub repository:
 \examples{
 data <- binaryRL::Mason_2024_Exp1
 
-test <- binaryRL::run_m(
+binaryRL.res <- binaryRL::run_m(
   mode = "simulate",
   data = data,
   id = 18,
@@ -339,6 +339,6 @@ test <- binaryRL::run_m(
   n_trials = 360
 )
 
-summary(test)
+summary(binaryRL.res)
 
 }

@@ -1,8 +1,11 @@
 #' Process: Optimizing Parameters
 #' 
 #' @description
-#'  This function is an internal function of `fit_p`. 
-#'  We isolate it from direct use by capable users.
+#' This is an internal helper function for `fit_p`. Its primary purpose
+#'  is to provide a unified interface for users to interact with various
+#'  optimization algorithm packages. It adapts the inputs and outputs
+#'  to be compatible with eight distinct algorithms, ensuring a seamless
+#'  experience regardless of the underlying solver used.
 #'
 #'  The function provides several optimization algorithms:
 #'   \itemize{
@@ -31,46 +34,72 @@
 #'     \item "sub_choose"
 #'   }
 #'  
-#' @param id [integer] which subject is going to be analyzed.
-#'  is being analyzed. The value should correspond to an entry in the "sub" 
-#'  column, which must contain the subject IDs. 
-#'  e.g., `id = 18`
+#' @param id [character]
+#' Specifies the ID of the subject whose optimal parameters will be fitted.
+#'  This parameter accepts either string or numeric values. The provided
+#'  ID must correspond to an existing subject identifier within the raw
+#'  dataset provided to the function.
 #' 
-#' @param obj_func [function] A function with only ONE argument `params`.
-#'  Refer to `binaryRL::TD` to mimic the establishment of an objective function.
+#' @param obj_func [function]
+#' The objective function that the optimization algorithm package accepts.
+#'  This function must strictly take only one argument, `params` (a vector
+#'  of model parameters). Its output must be a single numeric value
+#'  representing the loss function to be minimized. For more detailed
+#'  requirements and examples, please refer to the relevant documentation 
+#'  (
+#'     \code{\link[binaryRL]{TD}}, 
+#'     \code{\link[binaryRL]{RSTD}}, 
+#'     \code{\link[binaryRL]{Utility}}
+#'  ).
 #'  
-#' @param n_params [integer] The number of free parameters in your model. 
+#' @param n_params [integer] 
+#' The number of free parameters in your model. 
 #' 
-#' @param n_trials [integer] The total number of trials in your experiment.
+#' @param n_trials [integer] 
+#' The total number of trials in your experiment.
 #' 
-#' @param lower [vector] lower bounds of free parameters
+#' @param lower [vector] 
+#' The lower bounds for model fit models
 #' 
-#' @param upper [vector] upper bounds of free parameters
+#' @param upper [vector] 
+#' The upper bounds for model fit models
 #' 
-#' @param initial_params [vector] Initial values for the free parameters. 
-#'  automatically generate initial values.
-#'  for `L-BFGS-B`, `GenSA`, set `initial = c(0, 0, ...)`
+#' @param initial_params [vector]
+#' Initial values for the free parameters that the optimization algorithm will
+#'  search from. These are primarily relevant when using algorithms that require
+#'  an explicit starting point, such as \code{L-BFGS-B}. If not specified,
+#'  the function will automatically generate initial values close to zero.
 #'  
-#' @param initial_size [integer] Initial population size for the free parameters. 
-#'  automatically generate initial values.
-#'  for `Bayesian`, `GA`, set `initial = 50`
+#'  \code{Default: initial_params = NA}.
+#'
+#' @param initial_size [integer]
+#' This parameter corresponds to the \strong{population size} in genetic 
+#'  algorithms (\code{GA}). It specifies the number of initial candidate
+#'  solutions that the algorithm starts with for its evolutionary search.
+#'  This parameter is only required for optimization algorithms that operate on
+#'  a population, such as `GA` or `DEoptim`. 
+#'  
+#'  \code{Default: initial_size = 50}.
 #'  
 #' @param iteration [integer] the number of iteration
 #' 
-#' @param seed [integer] random seed. This ensures that the results are 
+#' @param seed [integer] 
+#' Random seed. This ensures that the results are 
 #'  reproducible and remain the same each time the function is run. 
-#'  default: `seed = 123` 
 #'  
-#' @param algorithm [character] Choose an algorithm package from
+#'  \code{default: seed = 123}
+#'  
+#' @param algorithm [character] 
+#' Choose an algorithm package from
 #'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `PSO`, `Bayesian`, `CMA-ES`.
-#'  In addition, any algorithm from the `nloptr` package is also
+#'  
+#' In addition, any algorithm from the `nloptr` package is also
 #'  supported. If your chosen `nloptr` algorithm requires a local search,
 #'  you need to input a character vector. The first element represents
 #'  the algorithm used for global search, and the second element represents
 #'  the algorithm used for local search.
 #' 
 #' @returns the result of binaryRL with optimal parameters
-#' @export
 #'
 
 optimize_para <- function(

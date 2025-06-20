@@ -289,7 +289,7 @@
 #' @examples
 #' data <- binaryRL::Mason_2024_Exp1
 #' 
-#' test <- binaryRL::run_m(
+#' binaryRL.res <- binaryRL::run_m(
 #'   mode = "simulate",
 #'   data = data,
 #'   id = 18,
@@ -298,7 +298,7 @@
 #'   n_trials = 360
 #' )
 #' 
-#' summary(test)
+#' summary(binaryRL.res)
 #' 
 run_m <- function(
   mode = c("simulate", "fit", "replay"),

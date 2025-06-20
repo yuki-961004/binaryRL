@@ -44,16 +44,19 @@ Column name of extra variable 2. If one additional variable, var1, does not
  \code{default: var2 = "Extra_Var2"}}
 
 \item{gamma}{[vector]
-This parameter represents the exponent in \bold{Stevens' Power Law} within the
- Utility Function, where utility is modeled as 
+This parameter represents the exponent in utility functions, specifically:
+ \itemize{
+   \item \strong{Stevens' Power Law}:
+   Utility is modeled as:
+   \deqn{U = {R}^{\gamma}}
 
- \deqn{U = {R}^{\gamma}}
-
-In \bold{Kahneman's Prospect Theory}, this exponent is applied differently:
- \deqn{U = \begin{cases}
-   R^{\gamma_{1}}, & R > 0 \\
-   \beta \cdot R^{\gamma_{2}}, & R < 0
- \end{cases}}}
+   \item \strong{Kahneman's Prospect Theory}:
+   This exponent is applied differently based on the sign of the reward:
+   \deqn{U = \begin{cases}
+     R^{\gamma_{1}}, & R > 0 \\
+     \beta \cdot R^{\gamma_{2}}, & R < 0
+   \end{cases}}
+ }}
 
 \item{alpha}{[vector]
 Extra parameters that may be used in functions.}
