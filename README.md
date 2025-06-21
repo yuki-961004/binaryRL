@@ -1,5 +1,4 @@
-
-# binaryRL <img src="fig/logo.png" align="right" height="120"/>
+# binaryRL <img src="./fig/logo.png" style="float: right; height: 120px;" alt="binaryRL logo" />
 
 <!-- badges: start -->
 
