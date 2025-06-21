@@ -4,6 +4,14 @@
 #' 
 #' @title binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks.
 #'
+#' @section Example Data:
+#'  \itemize{
+#'    \item \code{\link[binaryRL]{Mason_2024_Exp1}}: 
+#'      Experiment 1 of Mason et al. (2024)
+#'    \item \code{\link[binaryRL]{Mason_2024_Exp2}}: 
+#'      Experiment 2 of Mason et al. (2024)
+#' }
+#'
 #' @section Steps:
 #'  \itemize{
 #'    \item \code{\link[binaryRL]{run_m}}: 

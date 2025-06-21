@@ -1,0 +1,36 @@
+reference:
+
+  - title: "Example Datasets"
+    contents:
+      - Mason_2024_Exp1
+      - Mason_2024_Exp2
+
+  - title: "Steps"
+    contents:
+      - run_m
+      - rcv_d
+      - fit_p
+      - rpl_e
+
+  - title: "Models"
+    contents:
+      - TD
+      - RSTD
+      - Utility
+
+  - title: "Functions"
+    contents:
+      - func_gamma
+      - func_eta
+      - func_epsilon
+      - func_tau
+
+  - title: "Processes"
+    contents:
+      - optimize_para
+      - simulate_list
+      - recovery_data
+
+  - title: "Summary"
+    contents:
+      - summary.binaryRL

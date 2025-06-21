@@ -8,6 +8,16 @@
 \description{
 Tools for building reinforcement learning (RL) models specifically tailored for Two-Alternative Forced Choice (TAFC) tasks, commonly employed in psychological research. These models build upon the foundational principles of model-free reinforcement learning detailed in Sutton and Barto (1998) <ISBN:0262039249>. The package allows for the intuitive definition of RL models using simple if-else statements. Our approach to constructing and evaluating these computational models is informed by the guidelines proposed in Wilson & Collins (2019) \doi{10.7554/eLife.49547}. Example datasets included with the package are sourced from the work of Mason et al. (2024) \doi{10.3758/s13423-023-02415-x}.
 }
+\section{Example Data}{
+
+ \itemize{
+   \item \code{\link[binaryRL]{Mason_2024_Exp1}}: 
+     Experiment 1 of Mason et al. (2024)
+   \item \code{\link[binaryRL]{Mason_2024_Exp2}}: 
+     Experiment 2 of Mason et al. (2024)
+}
+}
+
 \section{Steps}{
 
  \itemize{
