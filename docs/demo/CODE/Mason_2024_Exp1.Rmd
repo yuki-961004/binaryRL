@@ -1,0 +1,101 @@
+Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). 
+Rare and extreme outcomes in risky choice. 
+Psychonomic Bulletin & Review, 31(3), 1301-1308.
+https://doi.org/10.3758/s13423-023-02415-x
+
+https://osf.io/hy3q4/
+
+```{r}
+Mason_2024 <- read.csv(
+  file = "../DATA/Hfraredata.csv"
+) %>%
+  dplyr::select(
+    ExperimentName,
+    Subject, Block, Trial, 
+    StimType, 
+    L_reward = L,
+    R_reward = R,
+    Sub_Choose = Click.Stim, 
+    NetWorth = CumulativeReward, 
+    RT = Click.RT, 
+  ) %>%
+  dplyr::filter(RT != "NULL") %>% # exclude NULL rows
+  tidyr::separate(
+    StimType, 
+    into = c("L_choice", "R_choice"), 
+    sep = "0", 
+    remove = FALSE, 
+    extra = "drop"
+  ) %>%
+  dplyr::mutate(
+    Exp = case_when(
+      ExperimentName == "HFrare2016_g1_v3_CRM_ms" ~ 1,
+      ExperimentName == "HFrare2016_g2_v3_CRM_ms" ~ 2,
+    ),
+    Block = (Block + 1) / 2,
+    Frame = dplyr::case_when(
+      L_choice %in% c(1, 2) & R_choice %in% c(1, 2) ~ "Gain",
+      L_choice %in% c(3, 4) & R_choice %in% c(3, 4) ~ "Loss",
+      L_choice %in% c(1, 2) & R_choice %in% c(3, 4) ~ "Catch",
+      L_choice %in% c(3, 4) & R_choice %in% c(1, 2) ~ "Catch",
+    ),
+    L_choice = dplyr::recode(
+      L_choice, `1` = "A", `2` = "B", `3` = "C", `4` = "D"
+    ),
+    R_choice = dplyr::recode(
+      R_choice, `1` = "A", `2` = "B", `3` = "C", `4` = "D"
+    ),
+    L_reward = gsub("Win", "+", gsub("Lose", "-", L_reward)),  
+    R_reward = gsub("Win", "+", gsub("Lose", "-", R_reward)),  
+    Sub_Choose = dplyr::case_when(
+      Sub_Choose == "Door1" ~ "A",
+      Sub_Choose == "Door2" ~ "B",
+      Sub_Choose == "Door3" ~ "C",
+      Sub_Choose == "Door4" ~ "D",
+    )
+  ) %>%
+  dplyr::mutate_at(
+    vars(
+      Exp, Subject, Block, Trial, Frame,
+      L_choice, R_choice,
+      Sub_Choose
+    ),
+    factor
+  ) %>%
+  dplyr::mutate_at(
+    vars(
+      L_reward, R_reward,
+      RT, NetWorth
+    ),
+    as.numeric
+  ) %>%
+  dplyr::select(
+    Exp, Subject, Block, Trial, Frame,
+    L_choice, R_choice,
+    L_reward, R_reward,
+    Sub_Choose, 
+    NetWorth, RT
+  ) %>%
+  dplyr::arrange(Exp, Subject, Block, Trial)
+
+summary(Mason_2024)
+```
+
+```{r}
+Mason_2024_Exp1 <- Mason_2024 %>%
+  dplyr::filter(Exp == 1) %>%
+  dplyr::select(-Exp)
+
+summary(Mason_2024_Exp1)
+
+usethis::use_data(Mason_2024_Exp1, overwrite = TRUE)
+
+Mason_2024_Exp2 <- Mason_2024 %>%
+  dplyr::filter(Exp == 2) %>%
+  dplyr::select(-Exp)
+
+summary(Mason_2024_Exp2)
+
+usethis::use_data(Mason_2024_Exp2, overwrite = TRUE)
+```
+
