@@ -45,10 +45,13 @@ Controls the initial exploration phase in the \strong{epsilon-first} strategy.
  For \strong{epsilon-greedy} or \strong{epsilon-decreasing} strategies,
  `threshold` should be kept at its default value.
  
- \deqn{P(x) = \begin{cases}
+ \deqn{
+ P(x) = 
+ \begin{cases}
    \text{trial} \le \text{threshold}, & x=1 \text{ (random choosing)} \\
    \text{trial} > \text{threshold}, & x=0 \text{ (value-based choosing)}
- \end{cases}}
+ \end{cases}
+ }
  
  \code{default: threshold = 1}
  
@@ -62,10 +65,13 @@ A parameter used in the \strong{epsilon-greedy} exploration strategy. It defines
  90% chance of value-based choice. This parameter is only relevant when
  `threshold` is at its default value (1) and `lambda` is not set.
  
- \deqn{P(x) = \begin{cases}
+ \deqn{
+ P(x) = 
+ \begin{cases}
    \epsilon, & x=1 \text{ (random choosing)} \\
    1-\epsilon, & x=0 \text{ (value-based choosing)}
- \end{cases}}
+ \end{cases}
+ }
 
  \code{epsilon-greedy: threshold = 1, epsilon = 0.1, lambda = NA}}
 
@@ -75,10 +81,13 @@ A numeric value that controls the decay rate of exploration probability
  means the probability of random choice will decrease more rapidly
  as the number of trials increases.
  
- \deqn{P(x) = \begin{cases}
+ \deqn{
+ P(x) = 
+ \begin{cases}
    \frac{1}{1+\lambda \cdot trial}, & x=1 \text{ (random choosing)} \\
    \frac{\lambda \cdot trial}{1+\lambda \cdot trial}, & x=0 \text{ (value-based choosing)}
- \end{cases}}
+ \end{cases}
+ }
  
  \code{epsilon-decreasing threshold = 1, epsilon = NA, lambda = 0.5}}
 

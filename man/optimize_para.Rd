@@ -20,7 +20,7 @@ optimize_para(
 )
 }
 \arguments{
-\item{data}{[data.frame] raw data. 
+\item{data}{[data.frame] 
 This data should include the following mandatory columns: 
  \itemize{
    \item "sub"
@@ -57,10 +57,10 @@ The number of free parameters in your model.}
 The total number of trials in your experiment.}
 
 \item{lower}{[vector] 
-The lower bounds for model fit models}
+Lower bounds of free parameters}
 
 \item{upper}{[vector] 
-The upper bounds for model fit models}
+Upper bounds of free parameters}
 
 \item{initial_params}{[vector]
 Initial values for the free parameters that the optimization algorithm will
@@ -68,7 +68,7 @@ Initial values for the free parameters that the optimization algorithm will
  an explicit starting point, such as \code{L-BFGS-B}. If not specified,
  the function will automatically generate initial values close to zero.
  
- \code{Default: initial_params = NA}.}
+ \code{default: initial_params = NA}.}
 
 \item{initial_size}{[integer]
 This parameter corresponds to the \strong{population size} in genetic 
@@ -77,9 +77,13 @@ This parameter corresponds to the \strong{population size} in genetic
  This parameter is only required for optimization algorithms that operate on
  a population, such as `GA` or `DEoptim`. 
  
- \code{Default: initial_size = 50}.}
+ \code{default: initial_size = 50}.}
 
-\item{iteration}{[integer] the number of iteration}
+\item{iteration}{[integer] 
+The number of iterations the optimization algorithm will perform
+ when searching for the best-fitting parameters during the fitting
+ phase. A higher number of iterations may increase the likelihood of 
+ finding a global optimum but also increases computation time.}
 
 \item{seed}{[integer] 
 Random seed. This ensures that the results are 
@@ -121,4 +125,31 @@ This is an internal helper function for `fit_p`. Its primary purpose
 
  For more information, please refer to the GitHub repository:
  https://github.com/yuki-961004/binaryRL
+}
+\examples{
+\dontrun{
+list_simulated <- binaryRL::simulate_list(
+  data = binaryRL::Mason_2024_Exp2,
+  obj_func = binaryRL::RSTD,
+  n_params = 3,
+  n_trials = 360,
+  lower = c(0, 0, 1),
+  upper = c(1, 1, 1),
+  iteration = 100
+)
+
+df_recovery <- binaryRL::recovery_data(
+  list = list_simulated,
+  fit_model = binaryRL::RSTD,
+  model_name = "RSTD",
+  n_params = 3,
+  n_trials = 360,
+  lower = c(0, 0, 1),
+  upper = c(1, 1, 5),
+  iteration = 100,
+  nc = 1,
+  algorithm = "L-BFGS-B"
+)
+}
+
 }

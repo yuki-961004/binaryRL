@@ -1,3 +1,4 @@
+#' @title 
 #' Step 4: Replaying the experiment with optimal parameters
 #'
 #' @description

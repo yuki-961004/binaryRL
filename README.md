@@ -32,7 +32,10 @@ install.packages("binaryRL")
 # Install the latest version from GitHub
 remotes::install_github("yuki-961004/binaryRL@*release")
 
+# Load package
 library(binaryRL)
+# Obtain help document
+?binaryRL
 ```
 
 <pre>
@@ -186,7 +189,7 @@ func_gamma <- function(
   # variables
   value, utility, reward, occurrence, var1, var2, 
   # parameters
-  gamma, lambda
+  gamma, alpha, beta 
 ){
   if (length(gamma) == 1) {
     gamma <- gamma
@@ -214,7 +217,7 @@ func_eta <- function (
   # variables
   value, utility, reward, occurrence, var1, var2, 
   # parameters
-  eta, lambda
+  eta, alpha, beta 
 ){
   # TD
   if (length(eta) == 1) {
@@ -249,7 +252,7 @@ func_epsilon <- function(
   # variables
   i, var1, var2, 
   # parameters
-  threshold, epsilon, lambda
+  threshold, epsilon, lambda, alpha, beta 
 ){
   # epsilon-first
   if (i <= threshold) {
@@ -277,6 +280,7 @@ func_epsilon <- function(
   else {
     try <- "ERROR"
   }
+  
   return(try)
 }
 ```
@@ -296,7 +300,7 @@ func_tau <- function (
   # variables
   LR, try, L_value, R_value, var1, var2, 
   # parameters
-  tau, lambda 
+  tau, alpha, beta 
 ){
   if (!(LR %in% c("L", "R"))) {
     stop("LR = 'L' or 'R'")
@@ -417,7 +421,7 @@ recovery <- binaryRL::rcv_d(
   #algorithm = "DEoptim"   # Differential Evolution (DEoptim)
   #algorithm = "PSO"       # Particle Swarm Optimization (pso)
   #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO)
-  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes`)
+  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (cmaes)
 # ║ ------------------------------------------------------------------------- ║ #
   # Optimization Library (nloptr)
   #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
@@ -558,7 +562,7 @@ comparison <- binaryRL::fit_p(
   #algorithm = "DEoptim"   # Differential Evolution (DEoptim)
   #algorithm = "PSO"       # Particle Swarm Optimization (pso)
   #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO)
-  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes`)
+  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (cmaes)
 # ║ ------------------------------------------------------------------------- ║ #
   # Optimization Library (nloptr)
   #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
@@ -610,10 +614,12 @@ summary(binaryRL.res)
 #> Results of the Reinforcement Learning Model:
 #> 
 #> Parameters:
-#>    λ:  NA 
+#>    α:  NA 
+#>    β:  NA 
 #>    γ:  1 
-#>    η:  0.001 0 
+#>    η:  0.123 0.456 
 #>    ε:  NA 
+#>    λ:  NA 
 #>    τ:  0.029 
 #> 
 #> Model Fit:
@@ -732,28 +738,30 @@ Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and
 ## Utility Function
 The subjective value of objective rewards is a topic that requires discussion, as different scholars may have different perspectives. This can be traced back to the `Stevens's Power Law`. In this model, you can customize your utility function. By default, I use a power function based on Stevens' power law to model the relationship between subjective and objective value.
 
-$$
-U(R) = \gamma \cdot R
-\quad | \quad
-U(R) = \gamma \cdot R^2
-\quad | \quad
-U(R) = R ^ \gamma
-\quad | \quad
-U(R) = log_\gamma R
-$$
+According to **Kahneman's Prospect Theory**, individuals exhibit distinct utility functions for **gains** and **losses**. Referencing Nilsson et al. (2012), we have implemented the model below. By replacing `util_func` with the specified form that follows, you can enable the model to run a utility function based on **Kahneman's Prospect Theory**.
+
 
 ```r
 func_gamma <- function(
-  value, utility, reward, occurrence, var1, var2, gamma, lambda
+  value, utility, reward, occurrence, var1, var2, gamma, alpha, beta
 ){
+  # Stevens's Power Law
   if (length(gamma) == 1) {
-    gamma <- gamma
+    gamma <- as.numeric(gamma)
     utility <- sign(reward) * (abs(reward) ^ gamma)
-    # Custom your utility function
-    # utility <- (reward ^ 2) * gamma
-    # utility <- reward ^ gamma
-    # utility <- log(reward, base = gamma)
-    # ...
+  }
+  # Prospect Theory
+  else if (length(gamma) == 2 & reward < 0) {
+    gamma <- as.numeric(gamma[1])
+    beta <- as.numeric(beta)
+    
+    utility <- beta * sign(reward) * (abs(reward) ^ gamma)
+  }
+  else if (length(gamma) == 2 & reward >= 0) {
+    gamma <- as.numeric(gamma[2])
+    beta <- 1
+    
+    utility <- beta * sign(reward) * (abs(reward) ^ gamma)
   }
   else {
     utility <- "ERROR" 
@@ -762,22 +770,13 @@ func_gamma <- function(
 }
 ```
 
+### Reference
+Kahneman, D., & Tversky, A. (2013). Prospect theory: An analysis of decision under risk. In Handbook of the fundamentals of financial decision making: Part I (pp. 99-127).  https://doi.org/10.1142/9789814417358_0006  
+Nilsson, H., Rieskamp, J., & Wagenmakers, E. J. (2011). Hierarchical Bayesian parameter estimation for cumulative prospect theory. *Journal of Mathematical Psychology, 55*(1), 84-93. https://doi.org/10.1016/j.jmp.2010.08.006
 <!---------------------------------------------------------->
 
 ## Exploration Strategy
-Participants in the experiment may not always choose based on the value of the options, but instead select randomly on some trials. This is known as $\epsilon$-greedy. (e.g., when epsilon = 0.1 (*default: NA*), it means that the participant has a 10% probability of randomly selecting an option and a 90% probability of choosing based on the currently learned value of the options.)
-
-```r
-# epsilon-greedy
-run_m(
-  ...
-  threshold = 1,
-  epsilon = 0.1,
-  ...
-)
-```
-
-You can implement an $\epsilon$-first model by setting the `threshold` parameter in the `run_m`. For instance, if the threshold is set to `threshold = 20` (The default value is set to 1), it means that participants will choose completely randomly until trial number 20, after which their choices will be based on value. 
+Participants in the experiment may not always choose based on the value of the options, but instead select randomly on some trials. This is known as exploration strategy. You can implement an $\epsilon$-first model by setting the `threshold` parameter in the `run_m`. For instance, if the threshold is set to `threshold = 20` (The default value is set to 1), it means that participants will choose completely randomly until trial number 20, after which their choices will be based on value. 
 
 ```r
 # epsilon-first
@@ -785,6 +784,20 @@ run_m(
   ...
   threshold = 20,
   epsilon = NA,
+  lambda = NA
+  ...
+)
+```
+
+The $\epsilon$-greedy strategy is commonly employed in reinforcement learning models. With this approach (`epsilon = 0.1`), the participant has a 10% probability of randomly selecting an option and a 90% probability of choosing based on the currently learned value of the options.
+
+```r
+# epsilon-greedy
+run_m(
+  ...
+  threshold = 1,
+  epsilon = 0.1,
+  lambda = NA
   ...
 )
 ```
@@ -802,6 +815,8 @@ run_m(
 )
 ```
 
+### Reference
+Namiki, N., Oyo, K., & Takahashi, T. (2014, December). How do humans handle the dilemma of exploration and exploitation in sequential decision making?. In Proceedings of the 8th International Conference on Bioinspired Information and Communications Technologies (pp. 113-117). https://doi.org/10.4108/icst.bict.2014.258045  
 <!---------------------------------------------------------->
 
 ## Soft-Max Function
@@ -919,7 +934,17 @@ $$
 U(r) = r^{\gamma}  
 $$  
 
-*NOTE:* Although both traditional reinforcement learning and my model utilize the symbol $\gamma$, its interpretation differs. In traditional RL, $\gamma$ serves as the discount rate for future rewards. In contrast, within my model, $\gamma$ functions as a parameter in the utility function.
+According to **Kahneman's Prospect Theory**, individuals exhibit distinct utility functions for **gains** and **losses**. Referencing Nilsson et al. (2012), we have implemented the model below. By replacing `util_func` with the specified form that follows, you can enable the model to run a utility function based on **Kahneman's Prospect Theory**.
+
+$$
+U(R) = \begin{cases}
+    
+    -\beta \cdot (-R)^{\gamma_{1}}, & \text{if } x \le 0 \\
+    R^{\gamma_{2}}, & \text{if } x > 0 \\
+\end{cases}
+$$
+
+*NOTE:* Although both traditional reinforcement learning and my model utilize the symbol $\gamma$, its interpretation differs. In traditional RL, $\gamma$ serves as the discount rate for future rewards. In contrast, within this package, $\gamma$ functions as a parameter in the utility function.
 
 <!---------------------------------------------------------->
 
@@ -945,8 +970,8 @@ The parameter $\epsilon$ represents the probability of participants engaging in 
 $$
 P(x) =
 \begin{cases} 
-trial \le threshold, &  x = 1 \quad \text{(random choosing)} \\
-trial > threshold, &  x = 0 \quad \text{(value-based choosing)}
+  trial \le threshold, &  x = 1 \quad \text{(random choosing)} \\
+  trial > threshold, &  x = 0 \quad \text{(value-based choosing)}
 \end{cases}
 $$
 
@@ -955,8 +980,8 @@ $$
 $$
 P(x) =
 \begin{cases} 
-\epsilon, &  x = 1 \quad \text{(random choosing)} \\
-1 - \epsilon, &  x = 0 \quad \text{(value-based choosing)}
+  \epsilon, &  x = 1 \quad \text{(random choosing)} \\
+  1 - \epsilon, &  x = 0 \quad \text{(value-based choosing)}
 \end{cases}
 $$
 
@@ -965,8 +990,8 @@ $$
 $$
 P(x) =
 \begin{cases} 
-\frac{1}{1 + \lambda i}, &  x = 1 \quad \text{(random choosing)} \\
-\frac{\lambda i}{1 + \lambda i}, &  x = 0 \quad \text{(value-based choosing)}
+  \frac{1}{1 + \lambda i}, &  x = 1 \quad \text{(random choosing)} \\
+  \frac{\lambda i}{1 + \lambda i}, &  x = 0 \quad \text{(value-based choosing)}
 \end{cases}
 $$
 

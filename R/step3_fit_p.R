@@ -1,3 +1,4 @@
+#' @title 
 #' Step 3: Optimizing parameters to fit real data
 #' 
 #' @description
@@ -109,7 +110,7 @@
 #'  an explicit starting point, such as \code{L-BFGS-B}. If not specified,
 #'  the function will automatically generate initial values close to zero.
 #'  
-#'  \code{Default: initial_params = NA}.
+#'  \code{default: initial_params = NA}.
 #'
 #' @param initial_size [integer]
 #' This parameter corresponds to the \strong{population size} in genetic 
@@ -118,7 +119,7 @@
 #'  This parameter is only required for optimization algorithms that operate on
 #'  a population, such as `GA` or `DEoptim`. 
 #'  
-#'  \code{Default: initial_size = 50}.
+#'  \code{default: initial_size = 50}.
 #'  
 #' @param iteration [integer] 
 #' The number of iterations the optimization algorithm will perform
