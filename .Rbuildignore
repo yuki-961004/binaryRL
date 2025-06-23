@@ -12,7 +12,7 @@
 
 ^_pkgdown.yml
 ^docs/
-
+^vignettes/
 
 
 

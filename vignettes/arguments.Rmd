@@ -1,0 +1,176 @@
+---
+title: "Arguments"
+author: "YuKi"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Arguments}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+# Arguments
+## Paralell
+```{r eval=FALSE}
+binaryRL::rcv_d(
+  ...,
+  funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
+  nc = 4,
+  ...
+)
+
+binaryRL::fit_p(
+  ...,
+  funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
+  nc = 4,
+  ...
+)
+```
+Both `rcv_d` and `fit_p` support parallel computation, meaning they can fit multiple participants' datasets simultaneously as long as `nc > 1`.  
+Since parallel execution runs in a separate environment, if you have customized any of the four core functions, you must explicitly pass the function names to `binaryRL` via the `funcs` argument.
+
+## Initial Value
+In `run_m`, there is an argument called `initial_value`. Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
+
+> "Comparisons between the two learning rates generally revealed a positivity bias ($\alpha_{+} > \alpha_{-}$)"  
+> "However, that on some occasions, studies failed to find a positivity bias or even reported a negativity bias ($\alpha_{+} < \alpha_{-}$)."  
+> "Because Q-values initialization markedly affect learning rate and learning bias estimates."
+
+```{r eval=FALSE}
+binaryRL::run_m(
+  ...,
+  initial_value = NA,
+  ...
+)
+```
+
+**Reference**  
+Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and confirmation biases in reinforcement learning. *Trends in Cognitive Sciences, 26*(7), 607-621. https://doi.org/10.1016/j.tics.2022.04.005
+
+<!---------------------------------------------------------->
+## Utility Function
+The subjective value of objective rewards is a topic that requires discussion, as different scholars may have different perspectives. This can be traced back to the `Stevens's Power Law`. In this model, you can customize your utility function. By default, I use a power function based on Stevens' power law to model the relationship between subjective and objective value.
+
+According to **Kahneman's Prospect Theory**, individuals exhibit distinct utility functions for **gains** and **losses**. Referencing Nilsson et al. (2012), we have implemented the model below. By replacing `util_func` with the specified form that follows, you can enable the model to run a utility function based on **Kahneman's Prospect Theory**.
+
+
+```{r eval=FALSE}
+func_gamma <- function(
+  value, utility, reward, occurrence, var1, var2, gamma, alpha, beta
+){
+  # Stevens's Power Law
+  if (length(gamma) == 1) {
+    gamma <- as.numeric(gamma)
+    utility <- sign(reward) * (abs(reward) ^ gamma)
+  }
+  # Prospect Theory
+  else if (length(gamma) == 2 & reward < 0) {
+    gamma <- as.numeric(gamma[1])
+    beta <- as.numeric(beta)
+    
+    utility <- beta * sign(reward) * (abs(reward) ^ gamma)
+  }
+  else if (length(gamma) == 2 & reward >= 0) {
+    gamma <- as.numeric(gamma[2])
+    beta <- 1
+    
+    utility <- beta * sign(reward) * (abs(reward) ^ gamma)
+  }
+  else {
+    utility <- "ERROR" 
+  }
+  return(list(gamma, utility))
+}
+```
+
+**Reference**  
+Kahneman, D., & Tversky, A. (2013). Prospect theory: An analysis of decision under risk. In Handbook of the fundamentals of financial decision making: Part I (pp. 99-127).  https://doi.org/10.1142/9789814417358_0006  
+Nilsson, H., Rieskamp, J., & Wagenmakers, E. J. (2011). Hierarchical Bayesian parameter estimation for cumulative prospect theory. *Journal of Mathematical Psychology, 55*(1), 84-93. https://doi.org/10.1016/j.jmp.2010.08.006
+<!---------------------------------------------------------->
+
+## Exploration Strategy
+Participants in the experiment may not always choose based on the value of the options, but instead select randomly on some trials. This is known as exploration strategy. You can implement an $\epsilon$-first model by setting the `threshold` parameter in the `run_m`. For instance, if the threshold is set to `threshold = 20` (The default value is set to 1), it means that participants will choose completely randomly until trial number 20, after which their choices will be based on value. 
+
+```{r eval=FALSE}
+# epsilon-first
+run_m(
+  ...
+  threshold = 20,
+  epsilon = NA,
+  lambda = NA
+  ...
+)
+```
+
+The $\epsilon$-greedy strategy is commonly employed in reinforcement learning models. With this approach (`epsilon = 0.1`), the participant has a 10% probability of randomly selecting an option and a 90% probability of choosing based on the currently learned value of the options.
+
+```{r eval=FALSE}
+# epsilon-greedy
+run_m(
+  ...
+  threshold = 1,
+  epsilon = 0.1,
+  lambda = NA
+  ...
+)
+```
+
+You can also create an $\epsilon$-decreasing exploration strategy by setting `lambda` instead of `epsilon`. In this model, the probability of participants choosing randomly will decrease as the trial number increases.
+
+```{r eval=FALSE}
+# epsilon-decreasing
+run_m(
+  ...
+  threshold = 1,
+  epsilon = NA,
+  lambda = 0.1
+  ...
+)
+```
+
+**Reference**  
+Namiki, N., Oyo, K., & Takahashi, T. (2014, December). How do humans handle the dilemma of exploration and exploitation in sequential decision making?. In Proceedings of the 8th International Conference on Bioinspired Information and Communications Technologies (pp. 113-117). https://doi.org/10.4108/icst.bict.2014.258045  
+<!---------------------------------------------------------->
+
+## Soft-Max Function
+During the recovery process, the last element of both `simulate_lower` and `simulate_upper` corresponds to the $\tau$ parameter used in the softmax function.
+
+- `simulate_lower` represents a fixed positive increment applied to all $\tau$ values.   
+if this value is set to 1, it means that 1 is added to every $\tau$ during simulation.
+
+- `simulate_upper` specifies the rate parameter of an exponential distribution from which $\tau$ is sampled.  
+if this value is 1, then $\tau$ is drawn from an exponential distribution with a rate of 10, i.e., $\tau \sim \text{Exp}(1)$.
+
+
+```{r eval=FALSE}
+binaryRL::rcv_d(
+  ...
+  simulate_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
+  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  ...
+)
+```
+
+**Reference**  
+Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547
+
+<!---------------------------------------------------------->
+
+## Model Fit
+
+LL represents the similarity between the model's choices and human choices. The larger this value, the better the model.
+
+$$
+LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
+$$   
+
+$$
+AIC =  - 2 LL + 2 k
+$$
+
+$$
+BIC =  - 2 LL + k \times \log n
+$$ 
+
+*NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model. ${k}$ the number of free parameters in the model; ${n}$ represents the total number of trials in the paradigm.
+
+**Reference**  
+Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventromedial prefrontal cortex in abstract state-based inference during decision making in humans. *Journal of Neuroscience, 26*(32), 8360-8367. https://doi.org/10.1523/JNEUROSCI.1010-06.2006
+

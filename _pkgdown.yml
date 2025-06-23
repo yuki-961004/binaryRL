@@ -1,3 +1,6 @@
+template:
+  bootstrap: 5
+
 reference:
 
   - title: "Example Datasets"
@@ -34,3 +37,8 @@ reference:
   - title: "Summary"
     contents:
       - summary.binaryRL
+
+navbar:
+  structure:
+    left: [intro, reference, news, articles, extensions]
+    right: [search, github]

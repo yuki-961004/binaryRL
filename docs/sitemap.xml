@@ -1,5 +1,15 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
+<url><loc>/articles/arguments.html</loc></url>
+<url><loc>/articles/binaryRL.html</loc></url>
+<url><loc>/articles/demo/CODE/test_1_run_m.html</loc></url>
+<url><loc>/articles/demo/CODE/test_2_rcv_d.html</loc></url>
+<url><loc>/articles/demo/CODE/test_3_fit_p.html</loc></url>
+<url><loc>/articles/demo/CODE/test_4_rpl_e.html</loc></url>
+<url><loc>/articles/demo/OUTPUT/result_comparison.html</loc></url>
+<url><loc>/articles/demo/OUTPUT/result_recovery.html</loc></url>
+<url><loc>/articles/functions.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/LICENSE-text.html</loc></url>

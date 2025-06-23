@@ -1,0 +1,64 @@
+---
+title: "Step 1: run_m"
+author: "YuKi"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Step 1: run_m}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+```{r}
+library(binaryRL)
+```
+
+```{r}
+head(binaryRL::Mason_2024_Exp2)
+```
+
+## TD
+
+```{r}
+binaryRL.res <- binaryRL::run_m(
+  data = binaryRL::Mason_2024_Exp2,                    
+  id = 1,                       
+  eta = c(0.123),  
+  tau = c(0.789),
+  n_params = 2,            
+  n_trials = 360,            
+  mode = "fit"
+)
+
+summary(binaryRL.res)
+```
+
+## RSTD
+
+```{r}
+binaryRL.res <- binaryRL::run_m(
+  data = binaryRL::Mason_2024_Exp2,
+  id = 1,
+  n_params = 3,
+  n_trials = 360,
+  eta = c(0.123, 0.456),
+  tau = c(0.789),            
+  mode = "fit"
+)
+
+summary(binaryRL.res)
+```
+
+## Utility
+
+```{r}
+binaryRL.res <- binaryRL::run_m(
+  data = binaryRL::Mason_2024_Exp2,
+  id = 1,
+  n_params = 3,
+  n_trials = 360,
+  eta = c(0.123),
+  gamma = c(0.456),
+  tau = c(0.789),            
+  mode = "fit"
+)
+
+summary(binaryRL.res)
+```
