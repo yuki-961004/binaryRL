@@ -15,10 +15,10 @@ https://yuki-961004.github.io/binaryRL/
 ## Overview
 This package is designed to help users build the **Rescorla-Wagner Model** for Two-Alternative Forced Choice (TAFC) tasks, which could be the simplest reinforcement learning models, assuming that reward outcomes are independent and identically distributed (i.i.d.) across trials. Beginners can define models using simple `if-else` logic, making model construction more accessible.
 
-* [Step 1](./articles/binaryRL.html#1-run-model): Build Reinforcement Learning Models `run_m`
-* [Step 2](./articles/binaryRL.html#2-recovery): Parameter and Model Recovery `rcv_d`
-* [Step 3](./articles/binaryRL.html#3-fit-real-data): Fit Real Data `fit_p`
-* [Step 4](./articles/binaryRL.html#4-replay-the-experiment): Replay the Experiment `rpl_e` 
+* [Step 1](./articles/binaryRL.html#id_1-run-model): Build Reinforcement Learning Models `run_m`
+* [Step 2](./articles/binaryRL.html#id_2-recovery): Parameter and Model Recovery `rcv_d`
+* [Step 3](./articles/binaryRL.html#id_3-fit-real-data): Fit Real Data `fit_p`
+* [Step 4](./articles/binaryRL.html#id_4-replay-the-experiment): Replay the Experiment `rpl_e` 
 
 <!---------------------------------------------------------->
 
