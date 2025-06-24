@@ -64,7 +64,7 @@ $$
 
 <!---------------------------------------------------------->
 
-## **Utility Function ($\gamma$)**
+## **Utility Function (γ)**
 People's subjective perception of objective rewards is more accurate. This is because the relationship between physical quantities and psychological quantities is not necessarily always a linear discount function; it could also be another type of power function relationship (Stevens' Power Law).  
 
 $$  
@@ -86,7 +86,7 @@ $$
 
 <!---------------------------------------------------------->
 
-## **Learning Rates ($\eta$)**
+## **Learning Rates (η)**
 This parameter $\eta$ controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.
 
 $$
@@ -102,10 +102,10 @@ $$
 
 <!---------------------------------------------------------->
 
-## **Exploration Strategy ($\epsilon$)**
+## **Exploration Strategy (ε)**
 The parameter $\epsilon$ represents the probability of participants engaging in exploration (random choosing). In addition A threshold ensures participants always explore during the initial trials, after which the likelihood of exploration is determined by $\epsilon$..   
 
-### $\epsilon$-first
+### ε-first
 $$
 P(x) =
 \begin{cases} 
@@ -115,7 +115,7 @@ P(x) =
 \end{cases}
 $$
 
-### $\epsilon$-greedy
+### ε-greedy
 
 $$
 P(x) =
@@ -126,7 +126,7 @@ P(x) =
 \end{cases}
 $$
 
-### $\epsilon$-decreasing
+### ε-decreasing
 
 $$
 P(x) =
@@ -142,7 +142,7 @@ Namiki, N., Oyo, K., & Takahashi, T. (2014, December). How do humans handle the 
 
 <!---------------------------------------------------------->
 
-## **Soft-Max Function ($\tau$)**
+## **Soft-Max Function (τ)**
 The parameter $\tau$ represents people's sensitivity to value differences. The larger $\tau$, the more sensitive they are to the differences in value between the two options.
 
 $$

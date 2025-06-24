@@ -1,5 +1,7 @@
 template:
   bootstrap: 5
+  params:
+    ganalytics: G-BBRBG6HVWB
 
 reference:
 
