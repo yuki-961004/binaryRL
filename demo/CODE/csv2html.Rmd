@@ -1,0 +1,87 @@
+---
+title: "Untitled"
+author: "yuki"
+date: "2025-06-24"
+output: html_document
+---
+```{r}
+# 1. 读取 CSV 文件，**关键：在这里指定编码**
+# 尝试使用 UTF-8 编码
+data <- readr::read_csv(
+  "../OUTPUT/result_recovery.csv",
+  locale = readr::locale(encoding = "UTF-8")
+)
+
+# 如果 UTF-8 仍然乱码，尝试使用 GBK 或 CP936 (中文 Windows 常见编码)
+# data <- readr::read_csv(
+#   "../OUTPUT/result_recovery.csv",
+# # locale = readr::locale(encoding = "GBK")
+# # locale = readr::locale(encoding = "CP936")
+# )
+
+# 2. 将数据框转换为 HTML 表格字符串
+html_table_string <- knitr::kable(data, format = "html")
+
+# 3. 构建完整的 HTML 页面并保存
+html_doc <- htmltools::tagList(
+  htmltools::tags$head(
+    htmltools::tags$meta(charset = "UTF-8"), # 确保 HTML 文件也声明为 UTF-8
+    htmltools::tags$title("Recovery"),
+    htmltools::tags$style(
+      "table { width: 100%; border-collapse: collapse; font-family: sans-serif; }",
+      "th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }",
+      "th { background-color: #f2f2f2; }"
+    )
+  ),
+  htmltools::tags$body(
+    htmltools::tags$h1("Recovery"),
+    htmltools::HTML(html_table_string)
+  )
+)
+
+output_html_path <- "../OUTPUT/result_recovery.html"
+htmltools::save_html(html_doc, file = output_html_path)
+
+cat(paste0("CSV 数据已成功保存为 HTML 文件：", output_html_path, "\n"))
+```
+
+```{r}
+# 1. 读取 CSV 文件，**关键：在这里指定编码**
+# 尝试使用 UTF-8 编码
+data <- readr::read_csv(
+  "../OUTPUT/result_comparison.csv",
+  locale = readr::locale(encoding = "UTF-8")
+)
+
+# 如果 UTF-8 仍然乱码，尝试使用 GBK 或 CP936 (中文 Windows 常见编码)
+# data <- readr::read_csv(
+#   "../OUTPUT/result_recovery.csv",
+# # locale = readr::locale(encoding = "GBK")
+# # locale = readr::locale(encoding = "CP936")
+# )
+
+# 2. 将数据框转换为 HTML 表格字符串
+html_table_string <- knitr::kable(data, format = "html")
+
+# 3. 构建完整的 HTML 页面并保存
+html_doc <- htmltools::tagList(
+  htmltools::tags$head(
+    htmltools::tags$meta(charset = "UTF-8"), # 确保 HTML 文件也声明为 UTF-8
+    htmltools::tags$title("Comparison"),
+    htmltools::tags$style(
+      "table { width: 100%; border-collapse: collapse; font-family: sans-serif; }",
+      "th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }",
+      "th { background-color: #f2f2f2; }"
+    )
+  ),
+  htmltools::tags$body(
+    htmltools::tags$h1("Comparison"),
+    htmltools::HTML(html_table_string)
+  )
+)
+
+output_html_path <- "../OUTPUT/result_comparison.html"
+htmltools::save_html(html_doc, file = output_html_path)
+
+cat(paste0("CSV 数据已成功保存为 HTML 文件：", output_html_path, "\n"))
+```

@@ -81,9 +81,6 @@
 
     
     
-<div class="section level2">
-<h2 id="tutorial">Tutorial<a class="anchor" aria-label="anchor" href="#tutorial"></a>
-</h2>
 <p><em>-</em> The development and usage workflow of this R package
 adheres to the <strong>four</strong> stages (ten rules) recommended by
 Wilson &amp; Collins <a href="https://doi.org/10.7554/eLife.49547" class="external-link">(2019)</a>.<br><em>-</em> The <strong>three</strong> basic models built into this R
@@ -92,14 +89,14 @@ package are referenced from Niv et al. <a href="https://doi.org/10.1523/JNEUROS
 <img src="fig/rl_process.png" alt="RL Process" width="34.25%" style="display: inline;"><img src="fig/rl_models.png" alt="RL Models" width="61%" style="display: inline;"></p>
 <p><strong>Reference</strong><br>
 Wilson, R. C., &amp; Collins, A. G. (2019). Ten simple rules for the
-computational modeling of behavioral data. <em>Elife</em>, 8, e49547. <a href="https://doi.org/10.7554/eLife.49547" class="external-link uri">https://doi.org/10.7554/eLife.49547</a><br>
+computational modeling of behavioral data. <em>Elife, 8</em>, e49547. <a href="https://doi.org/10.7554/eLife.49547" class="external-link uri">https://doi.org/10.7554/eLife.49547</a><br>
 Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural
 prediction errors reveal a risk-sensitive reinforcement-learning process
 in the human brain. <em>Journal of Neuroscience, 32</em>(2), 551-562. <a href="https://doi.org/10.1523/JNEUROSCI.5498-10.2012" class="external-link uri">https://doi.org/10.1523/JNEUROSCI.5498-10.2012</a>
 <!----------------------------------------------------------></p>
-<div class="section level3">
-<h3 id="id_1-run-model">1. Run Model<a class="anchor" aria-label="anchor" href="#id_1-run-model"></a>
-</h3>
+<div class="section level2">
+<h2 id="id_1-run-model">1. Run Model<a class="anchor" aria-label="anchor" href="#id_1-run-model"></a>
+</h2>
 <p>Create a function with <strong>ONLY ONE</strong> argument,
 <code>params</code></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -142,9 +139,9 @@ in the human brain. <em>Journal of Neuroscience, 32</em>(2), 551-562. <a href="h
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch</a></span><span class="op">(</span><span class="va">mode</span>, <span class="st">"fit"</span> <span class="op">=</span> <span class="op">-</span><span class="va">res</span><span class="op">$</span><span class="va">ll</span>, <span class="st">"simulate"</span> <span class="op">=</span> <span class="va">res</span>, <span class="st">"replay"</span> <span class="op">=</span> <span class="va">res</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <!---------------------------------------------------------->
-<div class="section level4">
-<h4 id="custom-functions">Custom Functions<a class="anchor" aria-label="anchor" href="#custom-functions"></a>
-</h4>
+<div class="section level3">
+<h3 id="custom-functions">Custom Functions<a class="anchor" aria-label="anchor" href="#custom-functions"></a>
+</h3>
 <!---------------------------------------------------------->
 <p>You can also customize all four functions to build your own RL model.
 - The default function is applicable to three basic models
@@ -267,17 +264,17 @@ Soft-Max Function (τ)
 <span><span class="op">}</span></span></code></pre></div>
 </details><!---------------------------------------------------------->
 </div>
-<div class="section level4">
-<h4 id="three-classic-rl-models">Three Classic RL Models<a class="anchor" aria-label="anchor" href="#three-classic-rl-models"></a>
-</h4>
+<div class="section level3">
+<h3 id="three-classic-rl-models">Three Classic RL Models<a class="anchor" aria-label="anchor" href="#three-classic-rl-models"></a>
+</h3>
 <p>These basic models are built into the package. You can use them using
 <code>binaryRL::TD.fit</code>, <code>binaryRL::RSTD.fit</code>,
 <code>binaryRL::Utility.fit</code>.</p>
 <!---------------------------------------------------------->
-<div class="section level5">
-<h5 id="td-model-eta">1. TD Model
+<div class="section level4">
+<h4 id="td-model-eta">1. TD Model
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>)<a class="anchor" aria-label="anchor" href="#td-model-eta"></a>
-</h5>
+</h4>
 <blockquote>
 <p>“The TD model is a standard temporal difference learning model
 (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998).”</p>
@@ -295,11 +292,11 @@ is set as a free paramters, it represents the TD model.</strong></p>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level5">
-<h5 id="risk-sensitive-td-model-eta_--eta_">2. Risk-Sensitive TD Model
+<div class="section level4">
+<h4 id="risk-sensitive-td-model-eta_--eta_">2. Risk-Sensitive TD Model
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>η</mi><mo>−</mo></msub><annotation encoding="application/x-tex">\eta_{-}</annotation></semantics></math>,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>η</mi><mo>+</mo></msub><annotation encoding="application/x-tex">\eta_{+}</annotation></semantics></math>)<a class="anchor" aria-label="anchor" href="#risk-sensitive-td-model-eta_--eta_"></a>
-</h5>
+</h4>
 <blockquote>
 <p>“In the risk-sensitive TD (RSTD) model, positive and negative
 prediction errors have asymmetric effects on learning (Mihatsch and
@@ -318,11 +315,11 @@ are set as free parameters, it represents the RSTD model.</strong></p>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level5">
-<h5 id="utility-model-eta-gamma">3. Utility Model
+<div class="section level4">
+<h4 id="utility-model-eta-gamma">3. Utility Model
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>)<a class="anchor" aria-label="anchor" href="#utility-model-eta-gamma"></a>
-</h5>
+</h4>
 <blockquote>
 <p>“The utility model is a TD learning model that incorporates nonlinear
 subjective utilities (Bernoulli, 1954)”</p>
@@ -346,9 +343,9 @@ model.</strong></p>
 </div>
 </div>
 </div>
-<div class="section level3">
-<h3 id="id_2-recovery">2. Recovery<a class="anchor" aria-label="anchor" href="#id_2-recovery"></a>
-</h3>
+<div class="section level2">
+<h2 id="id_2-recovery">2. Recovery<a class="anchor" aria-label="anchor" href="#id_2-recovery"></a>
+</h2>
 <p>Here, using the publicly available data from Mason et al. <a href="https://doi.org/10.3758/s13423-023-02415-x" class="external-link">(2024)</a>, we
 demonstrate how to perform parameter recovery and model recovery
 following the method suggested by Wilson &amp; Collins <a href="https://doi.org/10.7554/eLife.49547" class="external-link">(2019)</a>.</p>
@@ -372,10 +369,10 @@ and circumstances.</li>
 <span>  <span class="co">#funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),</span></span>
 <span>  model_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TD"</span>, <span class="st">"RSTD"</span>, <span class="st">"Utility"</span><span class="op">)</span>,</span>
 <span>  simulate_models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/Utility.html">Utility</a></span><span class="op">)</span>,</span>
-<span>  simulate_lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  simulate_lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  simulate_upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  fit_models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/Utility.html">Utility</a></span><span class="op">)</span>,</span>
-<span>  fit_lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  fit_lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  fit_upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
 <span><span class="co"># ║ --------------------------- interation number --------------------------- ║ #</span></span>
 <span>  iteration_s <span class="op">=</span> <span class="fl">50</span>,</span>
@@ -445,9 +442,9 @@ binaryRL::recovery_data()
 <span>  nc <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  algorithm <span class="op">=</span> <span class="st">"L-BFGS-B"</span> </span>
 <span><span class="op">)</span></span></code></pre></div>
-</details><!----------------------------------------------------------><div class="section level4">
-<h4 id="parameter-recovery">Parameter Recovery<a class="anchor" aria-label="anchor" href="#parameter-recovery"></a>
-</h4>
+</details><!----------------------------------------------------------><div class="section level3">
+<h3 id="parameter-recovery">Parameter Recovery<a class="anchor" aria-label="anchor" href="#parameter-recovery"></a>
+</h3>
 <blockquote>
 <p>“Before reading too much into the best-fitting parameter values,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>θ</mi><mi>m</mi><mrow><mi>M</mi><mi>L</mi><mi>E</mi></mrow></msubsup><annotation encoding="application/x-tex">\theta_{m}^{MLE}</annotation></semantics></math>,
@@ -476,9 +473,9 @@ itself.</p>
 <img src="demo/FIGURE/param_rcv/lower_1/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/param_rcv/lower_1/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;"></p>
 <!---------------------------------------------------------->
 </div>
-<div class="section level4">
-<h4 id="model-recovery">Model Recovery<a class="anchor" aria-label="anchor" href="#model-recovery"></a>
-</h4>
+<div class="section level3">
+<h3 id="model-recovery">Model Recovery<a class="anchor" aria-label="anchor" href="#model-recovery"></a>
+</h3>
 <blockquote>
 <p>“More specifically, model recovery involves simulating data from all
 models (with a range of parameter values carefully selected as in the
@@ -507,9 +504,9 @@ corresponding confusion matrix more diagonal.”</p>
 <!---------------------------------------------------------->
 </div>
 </div>
-<div class="section level3">
-<h3 id="id_3-fit-real-data">3. Fit Real Data<a class="anchor" aria-label="anchor" href="#id_3-fit-real-data"></a>
-</h3>
+<div class="section level2">
+<h2 id="id_3-fit-real-data">3. Fit Real Data<a class="anchor" aria-label="anchor" href="#id_3-fit-real-data"></a>
+</h2>
 <p>Following the recommendations of Wilson &amp; Collins <a href="https://doi.org/10.7554/eLife.49547" class="external-link">(2019)</a>, a model is only
 worth fitting to real data if it demonstrates good performance in the
 parameter recovery and model recovery.</p>
@@ -613,24 +610,24 @@ binaryRL::optimize_para()
 #&gt;    BIC:  505.04 
 ```
 </pre>
-</details><div class="section level4">
-<h4 id="model-comparison">Model Comparison<a class="anchor" aria-label="anchor" href="#model-comparison"></a>
-</h4>
+</details><div class="section level3">
+<h3 id="model-comparison">Model Comparison<a class="anchor" aria-label="anchor" href="#model-comparison"></a>
+</h3>
 <p>Using the result file generated by <code><a href="../reference/fit_p.html">binaryRL::fit_p</a></code>, you
 can compare models and select the best one.</p>
 <!---------------------------------------------------------->
-<div class="section level5">
-<h5 id="visualizing-model-comparison">Visualizing Model Comparison<a class="anchor" aria-label="anchor" href="#visualizing-model-comparison"></a>
-</h5>
+<div class="section level4">
+<h4 id="visualizing-model-comparison">Visualizing Model Comparison<a class="anchor" aria-label="anchor" href="#visualizing-model-comparison"></a>
+</h4>
 <p align="center">
 <img src="demo/FIGURE/model_comparison(abs).png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/model_comparison(rel).png" alt="RL Models" width="45%" style="display: inline;"></p>
 <!---------------------------------------------------------->
 </div>
 </div>
 </div>
-<div class="section level3">
-<h3 id="id_4-replay-the-experiment">4. Replay the Experiment<a class="anchor" aria-label="anchor" href="#id_4-replay-the-experiment"></a>
-</h3>
+<div class="section level2">
+<h2 id="id_4-replay-the-experiment">4. Replay the Experiment<a class="anchor" aria-label="anchor" href="#id_4-replay-the-experiment"></a>
+</h2>
 <p>Users can use the simple code snippet below to load the model fitting
 results, retrieve the best-fitting parameters, and feed them back into
 the model to reproduce the behavioral data generated by each
@@ -668,13 +665,12 @@ reinforcement learning model.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <!---------------------------------------------------------->
-<div class="section level4">
-<h4 id="visualizing-experimental-effect">Visualizing Experimental Effect<a class="anchor" aria-label="anchor" href="#visualizing-experimental-effect"></a>
-</h4>
+<div class="section level3">
+<h3 id="visualizing-experimental-effect">Visualizing Experimental Effect<a class="anchor" aria-label="anchor" href="#visualizing-experimental-effect"></a>
+</h3>
 <p align="center">
 <img src="demo/FIGURE/Exp_Effect(Frame).png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/Exp_Effect(Block).png" alt="RL Models" width="45%" style="display: inline;"></p>
 <!---------------------------------------------------------->
-</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

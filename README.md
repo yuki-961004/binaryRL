@@ -9,9 +9,6 @@
 
 <!-- badges: end -->
 
-## Homepage
-https://yuki-961004.github.io/binaryRL/
-
 ## Overview
 This package is designed to help users build the **Rescorla-Wagner Model** for Two-Alternative Forced Choice (TAFC) tasks, which could be the simplest reinforcement learning models, assuming that reward outcomes are independent and identically distributed (i.i.d.) across trials. Beginners can define models using simple `if-else` logic, making model construction more accessible.
 
@@ -23,11 +20,11 @@ This package is designed to help users build the **Rescorla-Wagner Model** for T
 <!---------------------------------------------------------->
 
 ## How to cite 
-YuKi. (2025). binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks. R package version 0.8.0. https://CRAN.R-project.org/package=binaryRL
+YuKi. (2025). binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks. R package version 0.8.10. https://CRAN.R-project.org/package=binaryRL
 
-Hu, M., & Liu, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal*(7), 100-123. https://doi.org/
+Hu, M., & Liu, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal(7)*, 100-123. https://doi.org/
 
-## Install and Load Pacakge
+## Installation
 ```r
 # Install the stable version from CRAN  
 install.packages("binaryRL")
@@ -55,40 +52,28 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |   ███�
 
 <!---------------------------------------------------------->
 
-## Algorithms for Parallel Data Fitting
-While this R package is primarily designed for constructing reinforcement learning (RL) models (with `run_m` at its core), its flexibility extends further. 
+# Tutorial
+*-* The development and usage workflow of this R package adheres to the **four** stages (ten rules) recommended by Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547).  
+*-* The **three** basic models built into this R package are referenced from Niv et al. [(2012)](https://doi.org/10.1523/JNEUROSCI.5498-10.2012).
 
-The key functions, `rcv_d` and `fit_p`, provide a unified interface to seamlessly integrate a diverse range of optimization algorithms. Crucially, they offer a parallel solution for tasks like parameter optimization, parameter recovery, and model recovery.
+<p align="center">
+    <img src="./fig/rl_process.png" alt="RL Process" width="34.25%" style="display: inline;">
+    <img src="./fig/rl_models.png" alt="RL Models" width="61%" style="display: inline;">
+</p>
 
-This means you can leverage this package not only for building and fitting RL models, but also as a versatile algorithm library for fitting other **"black-box functions"** in parallel for each subject. This significantly reduces processing time, provided your function's parameters can be optimized independently for each subject.
 
-**Base R Optimization**  
-  - L-BFGS-B (from `stats::optim`)   
-
-**Specialized External Optimization**  
-  - Simulated Annealing (`GenSA`)  
-  - Genetic Algorithm (`GA`)  
-  - Differential Evolution (`DEoptim`).   
-  - Particle Swarm Optimization (`pso`)
-  - Bayesian Optimization (`mlrMBO`)
-  - Covariance Matrix Adapting Evolutionary Strategy (`cmaes`)
-
-**Optimization Library**  
-  - Nonlinear Optimization (`nloptr`)
-
-<br>
-
-*NOTE:* If you want to use an algorithm other than `L-BFGS-B`, you must install the corresponding package. 
-
+**Reference**  
+Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife, 8*, e49547. https://doi.org/10.7554/eLife.49547  
+Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
 <!---------------------------------------------------------->
 
-## Read your Raw Data
+## Example Data
 
 Our package includes a minimally processed version of a publicly available dataset from Mason et al. [(2024)](https://doi.org/10.3758/s13423-023-02415-x) as example data. This dataset represents a classic Two-Armed Bandit task, a typical example of a Two-Alternative Forced Choice (TAFC) paradigm.
 
 ```r
 # An open data from Mason et. al. (2024) https://osf.io/hy3q4/
-head(Mason_2024_Exp2)
+head(binaryRL::Mason_2024_Exp2)
 ```
 
 | Subject | Block | Trial | L_choice | R_choice | L_reward | R_reward | Sub_Choose |
@@ -99,13 +84,38 @@ head(Mason_2024_Exp2)
 | 1       | 1     | 4     | D        | C        | 0        | -36      | D          |
 | ...     | ...   | ...   | ...      | ...      | ...      | ...      | ...        |
 
-*NOTES*
-
-1. Your dataset needs to include these **columns**.   
-2. You can also add two **additional variables** as factors that the model needs to consider.
-
 ### Reference
 Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). Rare and extreme outcomes in risky choice. Psychonomic Bulletin & Review, 31(3), 1301-1308. https://doi.org/10.3758/s13423-023-02415-x
+
 <!---------------------------------------------------------->
+
+## Parallel Data Fitting
+
+While this R package is primarily designed for constructing **Reinforcement Learning (RL)** models (with `binaryRL::run_m` at its core), its flexibility extends further. 
+
+The key functions, `binaryRL::rcv_d` and `binaryRL::fit_p`, provide a unified interface to seamlessly integrate a diverse range of optimization algorithms. Crucially, they offer a parallel solution for tasks like parameter optimization, parameter recovery, and model recovery.
+
+This means you can leverage this package not only for building and fitting RL models, but also as a versatile algorithm library for fitting other **"black-box functions"** in parallel for each subject. This significantly reduces processing time, provided your function's parameters can be optimized independently for each subject.
+
+**Base R Optimization**  
+  - L-BFGS-B (from `stats::optim`)   
+
+**Specialized External Optimization**  
+  - Simulated Annealing (`GenSA::GenSA`)  
+  - Genetic Algorithm (`GA::ga`)  
+  - Differential Evolution (`DEoptim::DEoptim`).   
+  - Particle Swarm Optimization (`pso::psoptim`)  
+  - Bayesian Optimization (`mlrMBO::mbo`)  
+  - Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`)  
+
+**Optimization Library**  
+  - Nonlinear Optimization (`nloptr::nloptr`)
+  </p>
+
+*NOTE:* If you want to use an algorithm other than `L-BFGS-B`, you must install the corresponding package. 
+
+<!---------------------------------------------------------->
+
+
 
 
