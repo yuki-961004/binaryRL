@@ -9,6 +9,7 @@ func_gamma(
   utility,
   reward,
   occurrence,
+  i,
   var1 = NA,
   var2 = NA,
   gamma = 1,
@@ -17,16 +18,15 @@ func_gamma(
 )
 }
 \arguments{
-\item{value}{The expected value of the stimulus in the subject's mind at 
-this point in time.}
+\item{value}{The expected value of the stimulus in the subject's mind at this point in time.}
 
-\item{utility}{The subjective value that the subject assigns to the 
-objective reward.}
+\item{utility}{The subjective value that the subject assigns to the objective reward.}
 
-\item{reward}{The objective reward received by the subject after selecting 
-a stimulus.}
+\item{reward}{The objective reward received by the subject after selecting a stimulus.}
 
 \item{occurrence}{The number of times the same stimulus has appeared.}
+
+\item{i}{The current row number.}
 
 \item{var1}{[character] 
 Column name of extra variable 1. If your model uses more than just reward 
@@ -48,11 +48,11 @@ This parameter represents the exponent in utility functions, specifically:
  \itemize{
    \item \strong{Stevens' Power Law}:
    Utility is modeled as:
-   \deqn{U = {R}^{\gamma}}
+   \deqn{U(R) = {R}^{\gamma}}
 
    \item \strong{Kahneman's Prospect Theory}:
    This exponent is applied differently based on the sign of the reward:
-   \deqn{U = \begin{cases}
+   \deqn{U(R) = \begin{cases}
      R^{\gamma_{1}}, & R > 0 \\
      \beta \cdot R^{\gamma_{2}}, & R < 0
    \end{cases}}
@@ -92,8 +92,8 @@ from reward. Its application varies depending on the specific model:
 }
 \note{
 When customizing these functions, please ensure that you do not modify 
-the arguments. Instead, only modify the `if-else` statements or the internal 
-logic to adapt the function to your needs.
+ the arguments. Instead, only modify the `if-else` statements or the internal 
+ logic to adapt the function to your needs.
 }
 \examples{
 \dontrun{
@@ -106,6 +106,8 @@ func_gamma <- function(
   reward,
   # Occurrence count for this stimulus
   occurrence,
+  # Current trial number
+  i,
   # Extra variables
   var1 = NA,
   var2 = NA,

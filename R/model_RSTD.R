@@ -1,8 +1,8 @@
 #' Model: RSTD
 #'
 #' @description
-#'  \deqn{V_{new} = V_{old} + \eta_{+} \cdot (R - V_{old}), Reward > V_{old}}
-#'  \deqn{V_{new} = V_{old} + \eta_{-} \cdot (R - V_{old}), Reward < V_{old}}
+#'  \deqn{V_{new} = V_{old} + \eta_{+} \cdot (R - V_{old}), R > V_{old}}
+#'  \deqn{V_{new} = V_{old} + \eta_{-} \cdot (R - V_{old}), R < V_{old}}
 #' 
 #' @param params [vector] algorithm packages accept only one argument
 #'

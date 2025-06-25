@@ -4,18 +4,30 @@
 \alias{func_tau}
 \title{Function: Soft-Max Function}
 \usage{
-func_tau(LR, try, L_value, R_value, var1 = NA, var2 = NA, tau = 1, alpha, beta)
+func_tau(
+  LR,
+  try,
+  L_value,
+  R_value,
+  i,
+  var1 = NA,
+  var2 = NA,
+  tau = 1,
+  alpha,
+  beta
+)
 }
 \arguments{
-\item{LR}{Are you calculating the probability for the left option or the 
-right option?}
+\item{LR}{Are you calculating the probability for the left option or the right option?}
 
-\item{try}{If the choice was random, the value is 1; if the choice was 
-based on value, the value is 0.}
+\item{try}{If the choice was random, the value is 1; 
+If the choice was based on value, the value is 0.}
 
 \item{L_value}{The value of the left option}
 
 \item{R_value}{The value of the right option}
+
+\item{i}{The current row number.}
 
 \item{var1}{[character] 
 Column name of extra variable 1. If your model uses more than just reward 
@@ -64,8 +76,8 @@ The softmax function describes a probabilistic choice rule. It implies
 }
 \note{
 When customizing these functions, please ensure that you do not modify 
-the arguments. Instead, only modify the `if-else` statements or the internal 
-logic to adapt the function to your needs.
+ the arguments. Instead, only modify the `if-else` statements or the internal 
+ logic to adapt the function to your needs.
 }
 \examples{
 \dontrun{
@@ -78,6 +90,8 @@ func_tau <- function(
   L_value,
   # Value of the right option
   R_value,
+  # Current trial number
+  i,
   # Additional variables
   var1 = NA,
   var2 = NA,

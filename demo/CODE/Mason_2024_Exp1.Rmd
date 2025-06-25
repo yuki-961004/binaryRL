@@ -70,11 +70,11 @@ Mason_2024 <- read.csv(
     as.numeric
   ) %>%
   dplyr::select(
-    Exp, Subject, Block, Trial, Frame,
+    Exp, Subject, Block, Trial,
     L_choice, R_choice,
     L_reward, R_reward,
     Sub_Choose, 
-    NetWorth, RT
+    Frame, NetWorth, RT
   ) %>%
   dplyr::arrange(Exp, Subject, Block, Trial)
 

@@ -11,7 +11,42 @@ library(dplyr)
 library(ggplot2)
 ```
 
-# Recovery
+```{r eval=FALSE}
+recovery <- binaryRL::rcv_d(
+  data = binaryRL::Mason_2024_Exp2,
+  id = 1,
+  n_trials = 360,
+  model_names = c("TD", "RSTD", "Utility"),
+  simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
+  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
+  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
+  initial_params = NA,
+  initial_size = 50,
+  seed = 123,
+  iteration_s = 50,
+  iteration_f = 50,
+  nc = 16,
+  #algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)
+  #algorithm = "GenSA"        # Simulated Annealing (GenSA)
+  #algorithm = "GA"           # Genetic Algorithm (GA)
+  algorithm = "DEoptim"      # Differential Evolution (DEoptim)
+  #algorithm = "PSO"          # Particle Swarm Optimization (pso)
+  #algorithm = "Bayesian"     # Bayesian Optimization (mlrMBO)
+  #algorithm = "CMA-ES"       # Covariance Matrix Adapting (cmaes)
+  #algorithm = "NLOPT_GN_MLSL"# Nonlinear Optimization (nloptr)
+)
+
+result <- dplyr::bind_rows(recovery) %>%
+  dplyr::select(simulate_model, fit_model, iteration, everything())
+
+write.csv(result, file = "../OUTPUT/result_recovery.csv", row.names = FALSE)
+```
+
+<details>
+<summary>Process</summary>
 ```{r eval=FALSE}
 list_simulated <- binaryRL::simulate_list(
   data = binaryRL::Mason_2024_Exp2,
@@ -37,42 +72,10 @@ df_recovery <- binaryRL::recovery_data(
   lower = c(0, 0, 1),
   upper = c(1, 1, 2),
   iteration = 50,
-  algorithm = "Bayesian"
+  algorithm = "DEoptim"
 )
 ```
-
-```{r eval=FALSE}
-recovery <- binaryRL::rcv_d(
-  data = binaryRL::Mason_2024_Exp2,
-  id = 1,
-  n_trials = 360,
-  model_names = c("TD", "RSTD", "Utility"),
-  simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
-  initial_params = NA,
-  initial_size = 50,
-  seed = 123,
-  iteration_s = 50,
-  iteration_f = 50,
-  nc = 16,
-  #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
-  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-  algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
-)
-
-result <- dplyr::bind_rows(recovery) %>%
-  dplyr::select(simulate_model, fit_model, iteration, everything())
-
-write.csv(result, file = "../OUTPUT/result_recovery.csv", row.names = FALSE)
-```
+</details>
 
 ## Parameter Recovery
 

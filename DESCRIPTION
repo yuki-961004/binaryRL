@@ -1,5 +1,5 @@
 Package: binaryRL
-Version: 0.8.10
+Version: 0.8.11
 Title: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks
 Description: Tools for building reinforcement learning (RL) models
   specifically tailored for Two-Alternative Forced Choice (TAFC) tasks,
@@ -20,7 +20,7 @@ Authors@R:
     comment = c(ORCID = "0009-0000-1378-1318")
   ))
 Maintainer: YuKi <hmz1969a@gmail.com>
-URL: https://github.com/yuki-961004/binaryRL
+URL: https://yuki-961004.github.io/binaryRL/, https://github.com/yuki-961004/binaryRL
 BugReports: https://github.com/yuki-961004/binaryRL/issues
 License: GPL-3
 Encoding: UTF-8

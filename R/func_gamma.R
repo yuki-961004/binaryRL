@@ -23,17 +23,25 @@
 #'    }
 #'  }
 #' 
-#' @note When customizing these functions, please ensure that you do not modify 
-#' the arguments. Instead, only modify the `if-else` statements or the internal 
-#' logic to adapt the function to your needs.
+#' @note 
+#' When customizing these functions, please ensure that you do not modify 
+#'  the arguments. Instead, only modify the `if-else` statements or the internal 
+#'  logic to adapt the function to your needs.
 #'
-#' @param value The expected value of the stimulus in the subject's mind at 
-#'  this point in time.
-#' @param utility The subjective value that the subject assigns to the 
-#'  objective reward.
-#' @param reward The objective reward received by the subject after selecting 
-#'  a stimulus.
-#' @param occurrence The number of times the same stimulus has appeared.
+#' @param value 
+#' The expected value of the stimulus in the subject's mind at this point in time.
+#'  
+#' @param utility 
+#' The subjective value that the subject assigns to the objective reward.
+#'  
+#' @param reward 
+#' The objective reward received by the subject after selecting a stimulus.
+#'  
+#' @param occurrence 
+#' The number of times the same stimulus has appeared.
+#' 
+#' @param i 
+#' The current row number. 
 #' 
 #' @param var1 [character] 
 #' Column name of extra variable 1. If your model uses more than just reward 
@@ -55,11 +63,11 @@
 #'  \itemize{
 #'    \item \strong{Stevens' Power Law}:
 #'    Utility is modeled as:
-#'    \deqn{U = {R}^{\gamma}}
+#'    \deqn{U(R) = {R}^{\gamma}}
 #'
 #'    \item \strong{Kahneman's Prospect Theory}:
 #'    This exponent is applied differently based on the sign of the reward:
-#'    \deqn{U = \begin{cases}
+#'    \deqn{U(R) = \begin{cases}
 #'      R^{\gamma_{1}}, & R > 0 \\
 #'      \beta \cdot R^{\gamma_{2}}, & R < 0
 #'    \end{cases}}
@@ -84,6 +92,8 @@
 #'   reward,
 #'   # Occurrence count for this stimulus
 #'   occurrence,
+#'   # Current trial number
+#'   i,
 #'   # Extra variables
 #'   var1 = NA,
 #'   var2 = NA,
@@ -115,6 +125,8 @@ func_gamma <- function(
   reward, 
   # 第几次看到这个刺激
   occurrence, 
+  # 试次序号
+  i,
   # 额外变量
   var1 = NA,
   var2 = NA,

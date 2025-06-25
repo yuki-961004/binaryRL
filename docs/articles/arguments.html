@@ -6,7 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Arguments • binaryRL</title>
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -27,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -112,17 +118,15 @@ argument.</p>
 <p>In <code>run_m</code>, there is an argument called
 <code>initial_value</code>. Considering that the initial value has a
 significant impact on the parameter estimation of the <strong>learning
-rates
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>)</strong>
-When the initial value is not set (<code>initial_value = NA</code>), it
-is taken to be the reward received for that stimulus the first time.</p>
+rates (<span class="math inline">\(\eta\)</span>)</strong> When the
+initial value is not set (<code>initial_value = NA</code>), it is taken
+to be the reward received for that stimulus the first time.</p>
 <blockquote>
 <p>“Comparisons between the two learning rates generally revealed a
-positivity bias
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mo>+</mo></msub><mo>&gt;</mo><msub><mi>α</mi><mo>−</mo></msub></mrow><annotation encoding="application/x-tex">\alpha_{+} &gt; \alpha_{-}</annotation></semantics></math>)”<br>
+positivity bias (<span class="math inline">\(\alpha_{+} &gt;
+\alpha_{-}\)</span>)”<br>
 “However, that on some occasions, studies failed to find a positivity
-bias or even reported a negativity bias
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mo>+</mo></msub><mo>&lt;</mo><msub><mi>α</mi><mo>−</mo></msub></mrow><annotation encoding="application/x-tex">\alpha_{+} &lt; \alpha_{-}</annotation></semantics></math>).”<br>
+bias or even reported a negativity bias (<span class="math inline">\(\alpha_{+} &lt; \alpha_{-}\)</span>).”<br>
 “Because Q-values initialization markedly affect learning rate and
 learning bias estimates.”</p>
 </blockquote>
@@ -195,13 +199,12 @@ Bayesian parameter estimation for cumulative prospect theory.
 </h3>
 <p>Participants in the experiment may not always choose based on the
 value of the options, but instead select randomly on some trials. This
-is known as exploration strategy. You can implement an
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math>-first
-model by setting the <code>threshold</code> parameter in the
-<code>run_m</code>. For instance, if the threshold is set to
-<code>threshold = 20</code> (The default value is set to 1), it means
-that participants will choose completely randomly until trial number 20,
-after which their choices will be based on value.</p>
+is known as exploration strategy. You can implement an <span class="math inline">\(\epsilon\)</span>-first model by setting the
+<code>threshold</code> parameter in the <code>run_m</code>. For
+instance, if the threshold is set to <code>threshold = 20</code> (The
+default value is set to 1), it means that participants will choose
+completely randomly until trial number 20, after which their choices
+will be based on value.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># epsilon-first</span></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  ...</span>
@@ -210,12 +213,11 @@ after which their choices will be based on value.</p>
 <span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="cn">NA</span></span>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  ...</span>
 <span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>)</span></code></pre></div>
-<p>The
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math>-greedy
-strategy is commonly employed in reinforcement learning models. With
-this approach (<code>epsilon = 0.1</code>), the participant has a 10%
-probability of randomly selecting an option and a 90% probability of
-choosing based on the currently learned value of the options.</p>
+<p>The <span class="math inline">\(\epsilon\)</span>-greedy strategy is
+commonly employed in reinforcement learning models. With this approach
+(<code>epsilon = 0.1</code>), the participant has a 10% probability of
+randomly selecting an option and a 90% probability of choosing based on
+the currently learned value of the options.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># epsilon-greedy</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  ...</span>
@@ -224,11 +226,10 @@ choosing based on the currently learned value of the options.</p>
 <span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="cn">NA</span></span>
 <span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  ...</span>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>)</span></code></pre></div>
-<p>You can also create an
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math>-decreasing
-exploration strategy by setting <code>lambda</code> instead of
-<code>epsilon</code>. In this model, the probability of participants
-choosing randomly will decrease as the trial number increases.</p>
+<p>You can also create an <span class="math inline">\(\epsilon\)</span>-decreasing exploration strategy
+by setting <code>lambda</code> instead of <code>epsilon</code>. In this
+model, the probability of participants choosing randomly will decrease
+as the trial number increases.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># epsilon-decreasing</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
 <span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  ...</span>
@@ -249,25 +250,16 @@ Bioinspired Information and Communications Technologies (pp. 113-117).
 </h3>
 <p>During the recovery process, the last element of both
 <code>simulate_lower</code> and <code>simulate_upper</code> corresponds
-to the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-parameter used in the softmax function.</p>
+to the <span class="math inline">\(\tau\)</span> parameter used in the
+softmax function.</p>
 <ul>
 <li><p><code>simulate_lower</code> represents a fixed positive increment
-applied to all
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-values.<br>
-if this value is set to 1, it means that 1 is added to every
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-during simulation.</p></li>
+applied to all <span class="math inline">\(\tau\)</span> values.<br>
+if this value is set to 1, it means that 1 is added to every <span class="math inline">\(\tau\)</span> during simulation.</p></li>
 <li><p><code>simulate_upper</code> specifies the rate parameter of an
-exponential distribution from which
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-is sampled.<br>
-if this value is 1, then
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-is drawn from an exponential distribution with a rate of 10, i.e.,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>∼</mo><mtext mathvariant="normal">Exp</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\tau \sim \text{Exp}(1)</annotation></semantics></math>.</p></li>
+exponential distribution from which <span class="math inline">\(\tau\)</span> is sampled.<br>
+if this value is 1, then <span class="math inline">\(\tau\)</span> is
+drawn from an exponential distribution with a rate of 10, i.e., <span class="math inline">\(\tau \sim \text{Exp}(1)\)</span>.</p></li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>binaryRL<span class="sc">::</span><span class="fu">rcv_d</span>(</span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  ...</span>
@@ -285,32 +277,22 @@ computational modeling of behavioral data. <em>Elife</em>, 8, e49547. <a href="h
 </h3>
 <p>LL represents the similarity between the model’s choices and human
 choices. The larger this value, the better the model.</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mi>L</mi><mo>=</mo><mo>∑</mo><msub><mi>B</mi><mi>L</mi></msub><mo>×</mo><mo>log</mo><msub><mi>P</mi><mi>L</mi></msub><mo>+</mo><mo>∑</mo><msub><mi>B</mi><mi>R</mi></msub><mo>×</mo><mo>log</mo><msub><mi>P</mi><mi>R</mi></msub></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">\[
 LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
-</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>I</mi><mi>C</mi><mo>=</mo><mi>−</mi><mn>2</mn><mi>L</mi><mi>L</mi><mo>+</mo><mn>2</mn><mi>k</mi></mrow><annotation encoding="application/x-tex">
+\]</span></p>
+<p><span class="math display">\[
 AIC =  - 2 LL + 2 k
-</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>I</mi><mi>C</mi><mo>=</mo><mi>−</mi><mn>2</mn><mi>L</mi><mi>L</mi><mo>+</mo><mi>k</mi><mo>×</mo><mo>log</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">
+\]</span></p>
+<p><span class="math display">\[
 BIC =  - 2 LL + k \times \log n
-</annotation></semantics></math></p>
-<p><em>NOTE:</em>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mi>L</mi></msub><annotation encoding="application/x-tex">B_{L}</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mi>R</mi></msub><annotation encoding="application/x-tex">B_{R}</annotation></semantics></math>
-the option that the subject chooses.
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mi>L</mi></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">B_{L} = 1</annotation></semantics></math>:
-subject chooses the left option;
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mi>R</mi></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">B_{R} = 1</annotation></semantics></math>:
-subject chooses the right option);
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>P</mi><mi>L</mi></msub><annotation encoding="application/x-tex">P_{L}</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>P</mi><mi>R</mi></msub><annotation encoding="application/x-tex">P_{R}</annotation></semantics></math>
-represent the probabilities of selecting the left or right option, as
-predicted by the reinforcement learning model.
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">{k}</annotation></semantics></math>
-the number of free parameters in the model;
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">{n}</annotation></semantics></math>
+\]</span></p>
+<p><em>NOTE:</em> <span class="math inline">\(B_{L}\)</span> and <span class="math inline">\(B_{R}\)</span> the option that the subject
+chooses. (<span class="math inline">\(B_{L} = 1\)</span>: subject
+chooses the left option; <span class="math inline">\(B_{R} = 1\)</span>:
+subject chooses the right option); <span class="math inline">\(P_{L}\)</span> and <span class="math inline">\(P_{R}\)</span> represent the probabilities of
+selecting the left or right option, as predicted by the reinforcement
+learning model. <span class="math inline">\({k}\)</span> the number of
+free parameters in the model; <span class="math inline">\({n}\)</span>
 represents the total number of trials in the paradigm.</p>
 <p><strong>Reference</strong><br>
 Hampton, A. N., Bossaerts, P., &amp; O’doherty, J. P. (2006). The role

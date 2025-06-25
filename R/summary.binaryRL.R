@@ -10,17 +10,21 @@ summary.binaryRL <- function(object, ...) {
 
   if (is.na(object$params$EV_1)) {
     message(
-      "  This fitting was performed assuming the agent's initial values for 
-      each option are based on their first encounter, and the agent chooses 
-      randomly when trial count is less than or equal to", 
-      object$params$threshold, ".\n"
+      paste0(
+        "Preconditions for this fitting:", "\n",
+        " - Initial value of options: ", "Initial reward received", "\n",
+        " - Random choice threshold: ", object$params$threshold, "\n",
+        "\n"
+      )
     )
   } else {
     message(
-      "  This fitting was performed assuming the agent's initial values for 
-      each option are set to", object$params$EV_1, ", and the agent chooses 
-      randomly when trial count is less than or equal to", 
-      object$params$threshold, ".\n"
+      paste0(
+        "Preconditions for this fitting:", "\n",
+        " - Initial value of options: ", object$params$EV_1, "\n",
+        " - Random choice threshold: ", object$params$threshold, "\n",
+        "\n"
+      )
     )
   }
   

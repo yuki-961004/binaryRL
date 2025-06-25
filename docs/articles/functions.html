@@ -6,7 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Functions • binaryRL</title>
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -27,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,46 +88,48 @@
 <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a>
 </h2>
 <!---------------------------------------------------------->
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="bold">𝐌𝐚𝐫𝐤𝐨𝐯 𝐃𝐞𝐜𝐢𝐬𝐢𝐨𝐧 𝐏𝐫𝐨𝐜𝐞𝐬𝐬 (𝐌𝐃𝐏)</mtext><annotation encoding="application/x-tex">
-\textbf{Markov Decision Process (MDP)} 
-</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mtext mathvariant="normal">new</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>←</mo><msub><mi>V</mi><mtext mathvariant="normal">old</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>η</mi><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>r</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>+</mo><mi>γ</mi><msub><mi>r</mi><mrow><mi>t</mi><mo>+</mo><mn>2</mn></mrow></msub><mo>+</mo><msup><mi>γ</mi><mn>2</mn></msup><msub><mi>r</mi><mrow><mi>t</mi><mo>+</mo><mn>3</mn></mrow></msub><mo>+</mo><mi>…</mi><mo>+</mo><msup><mi>γ</mi><mrow><mi>T</mi><mo>−</mo><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msup><msub><mi>r</mi><mi>T</mi></msub><mo>−</mo><msub><mi>V</mi><mtext mathvariant="normal">old</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">
-V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[ 
-r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \dots + \gamma^{T - t - 1} r_T - V_{\text{old}}(S_t) 
-\right] 
-</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⇓</mo><annotation encoding="application/x-tex">
+<p><span class="math display">\[
+\textbf{Markov Decision Process (MDP)}
+\]</span></p>
+<p><span class="math display">\[
+V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[
+r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \dots + \gamma^{T - t - 1}
+r_T - V_{\text{old}}(S_t)
+\right]
+\]</span></p>
+<p><span class="math display">\[
 \Downarrow
-</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mspace width="1.0em"></mspace><mtext mathvariant="normal">(bootstrapping future rewards with value estimates)</mtext></mrow><annotation encoding="application/x-tex">
+\]</span></p>
+<p><span class="math display">\[
 \quad \text{(bootstrapping future rewards with value estimates)}
-</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⇓</mo><annotation encoding="application/x-tex">
+\]</span></p>
+<p><span class="math display">\[
 \Downarrow
-</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="bold">𝐓𝐞𝐦𝐩𝐨𝐫𝐚𝐥-𝐃𝐢𝐟𝐟𝐞𝐫𝐞𝐧𝐜𝐞 𝐓𝐃(𝟎)</mtext><annotation encoding="application/x-tex">
-\textbf{Temporal-Difference TD(0)} 
-</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mtext mathvariant="normal">new</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>←</mo><msub><mi>V</mi><mtext mathvariant="normal">old</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>η</mi><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>r</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>+</mo><mi>γ</mi><msub><mi>V</mi><mtext mathvariant="normal">old</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>V</mi><mtext mathvariant="normal">old</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">
+\]</span></p>
+<p><span class="math display">\[
+\textbf{Temporal-Difference TD(0)}
+\]</span></p>
+<p><span class="math display">\[
 V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[
   r_{t+1} + \gamma V_{\text{old}}(S_{t+1}) - V_{\text{old}}(S_t)
 \right]
-</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⇓</mo><annotation encoding="application/x-tex">
+\]</span></p>
+<p><span class="math display">\[
 \Downarrow
-</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mspace width="1.0em"></mspace><mtext mathvariant="normal">(no future value estimation)</mtext></mrow><annotation encoding="application/x-tex">
-\quad \text{(no future value estimation)} 
-</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⇓</mo><annotation encoding="application/x-tex">
+\]</span></p>
+<p><span class="math display">\[
+\quad \text{(no future value estimation)}
+\]</span></p>
+<p><span class="math display">\[
 \Downarrow
-</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="bold">𝐑𝐞𝐬𝐜𝐨𝐫𝐥𝐚-𝐖𝐚𝐠𝐧𝐞𝐫 𝐌𝐨𝐝𝐞𝐥</mtext><annotation encoding="application/x-tex">
-\textbf{Rescorla-Wagner Model} 
-</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mtext mathvariant="normal">new</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>←</mo><msub><mi>V</mi><mtext mathvariant="normal">old</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>η</mi><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>r</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>−</mo><msub><mi>V</mi><mtext mathvariant="normal">old</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">
-V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[r_{t+1} - V_{\text{old}}(S_t) \right]
-</annotation></semantics></math></p>
+\]</span></p>
+<p><span class="math display">\[
+\textbf{Rescorla-Wagner Model}
+\]</span></p>
+<p><span class="math display">\[
+V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot
+\left[r_{t+1} - V_{\text{old}}(S_t) \right]
+\]</span></p>
 <!---------------------------------------------------------->
 <div class="section level3">
 <h3 id="utility-function-γ">
@@ -132,9 +140,9 @@ This is because the relationship between physical quantities and
 psychological quantities is not necessarily always a linear discount
 function; it could also be another type of power function relationship
 (Stevens’ Power Law).</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>r</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>r</mi><mi>γ</mi></msup></mrow><annotation encoding="application/x-tex">  
+<p><span class="math display">\[  
 U(r) = r^{\gamma}  
-</annotation></semantics></math></p>
+\]</span></p>
 <p>According to <strong>Kahneman’s Prospect Theory</strong>, individuals
 exhibit distinct utility functions for <strong>gains</strong> and
 <strong>losses</strong>. Referencing Nilsson et al. <a href="https://doi.org/10.1016/j.jmp.2010.08.006" class="external-link">(2012)</a>, we have
@@ -142,47 +150,39 @@ implemented the model below. By replacing <code>util_func</code> with
 the specified form that follows, you can enable the model to run a
 utility function based on <strong>Kahneman’s Prospect
 Theory</strong>.</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>R</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>−</mi><mi>β</mi><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mi>R</mi><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>γ</mi><mn>1</mn></msub></msup><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>x</mi><mo>≤</mo><mn>0</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msup><mi>R</mi><msub><mi>γ</mi><mn>2</mn></msub></msup><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>x</mi><mo>&gt;</mo><mn>0</mn></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
-U(R) = 
+<p><span class="math display">\[
+U(R) =
 \begin{cases}
-  -\beta \cdot (-R)^{\gamma_{1}}, &amp; \text{if } x \le 0 
+  -\beta \cdot (-R)^{\gamma_{1}}, &amp; \text{if } x \le 0
   \\
-  R^{\gamma_{2}}, &amp; \text{if } x &gt; 0 
+  R^{\gamma_{2}}, &amp; \text{if } x &gt; 0
 \end{cases}
-</annotation></semantics></math></p>
+\]</span></p>
 <p><em>NOTE:</em> Although both traditional reinforcement learning and
-my model utilize the symbol
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>,
-its interpretation differs. In traditional RL,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>
-serves as the discount rate for future rewards. In contrast, within this
-package,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>
-functions as a parameter in the utility function.</p>
+my model utilize the symbol <span class="math inline">\(\gamma\)</span>,
+its interpretation differs. In traditional RL, <span class="math inline">\(\gamma\)</span> serves as the discount rate for
+future rewards. In contrast, within this package, <span class="math inline">\(\gamma\)</span> functions as a parameter in the
+utility function.</p>
 <!---------------------------------------------------------->
 </div>
 <div class="section level3">
 <h3 id="learning-rates-η">
 <strong>Learning Rates (η)</strong><a class="anchor" aria-label="anchor" href="#learning-rates-%CE%B7"></a>
 </h3>
-<p>This parameter
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
-controls how quickly an agent updates its value estimates based on new
-information. The closer
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
-is to 1, the faster the learning rate.</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>η</mi><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mo stretchy="true" form="prefix">|</mo><mi>𝐩</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>1</mn><mspace width="1.0em"></mspace><mtext mathvariant="normal">(TD)</mtext></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>η</mi><mo>−</mo></msub><mo>;</mo><msub><mi>η</mi><mo>+</mo></msub><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mo stretchy="true" form="prefix">|</mo><mi>𝐩</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>2</mn><mspace width="1.0em"></mspace><mtext mathvariant="normal">(RDTD)</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+<p>This parameter <span class="math inline">\(\eta\)</span> controls how
+quickly an agent updates its value estimates based on new information.
+The closer <span class="math inline">\(\eta\)</span> is to 1, the faster
+the learning rate.</p>
+<p><span class="math display">\[
 \eta(p) =
-\begin{cases} 
-  \eta, &amp;  |\mathbf{p}| = 1 \quad \text{(TD)} 
+\begin{cases}
+  \eta, &amp;  |\mathbf{p}| = 1 \quad \text{(TD)}
   \\
   \eta_{-}; \eta_{+}, &amp;  |\mathbf{p}| = 2 \quad \text{(RDTD)}
 \end{cases}
-</annotation></semantics></math></p>
-<p><em>NOTE:</em> When there’s only one
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
-parameter, it corresponds to the TD model. If there are two
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+\]</span></p>
+<p><em>NOTE:</em> When there’s only one <span class="math inline">\(\eta\)</span> parameter, it corresponds to the TD
+model. If there are two <span class="math inline">\(\eta\)</span>
 parameters, it refers to the RSTD model.</p>
 <!---------------------------------------------------------->
 </div>
@@ -190,48 +190,47 @@ parameters, it refers to the RSTD model.</p>
 <h3 id="exploration-strategy-ε">
 <strong>Exploration Strategy (ε)</strong><a class="anchor" aria-label="anchor" href="#exploration-strategy-%CE%B5"></a>
 </h3>
-<p>The parameter
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math>
+<p>The parameter <span class="math inline">\(\epsilon\)</span>
 represents the probability of participants engaging in exploration
 (random choosing). In addition A threshold ensures participants always
 explore during the initial trials, after which the likelihood of
-exploration is determined by
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math>..</p>
+exploration is determined by <span class="math inline">\(\epsilon\)</span>..</p>
 <div class="section level4">
 <h4 id="ε-first">ε-first<a class="anchor" aria-label="anchor" href="#%CE%B5-first"></a>
 </h4>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>t</mi><mi>r</mi><mi>i</mi><mi>a</mi><mi>l</mi><mo>≤</mo><mi>t</mi><mi>h</mi><mi>r</mi><mi>e</mi><mi>s</mi><mi>h</mi><mi>o</mi><mi>l</mi><mi>d</mi><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>x</mi><mo>=</mo><mn>1</mn><mspace width="1.0em"></mspace><mtext mathvariant="normal">(random choosing)</mtext></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mi>t</mi><mi>r</mi><mi>i</mi><mi>a</mi><mi>l</mi><mo>&gt;</mo><mi>t</mi><mi>h</mi><mi>r</mi><mi>e</mi><mi>s</mi><mi>h</mi><mi>o</mi><mi>l</mi><mi>d</mi><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>x</mi><mo>=</mo><mn>0</mn><mspace width="1.0em"></mspace><mtext mathvariant="normal">(value-based choosing)</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">\[
 P(x) =
-\begin{cases} 
-  trial \le threshold, &amp;  x = 1 \quad \text{(random choosing)} 
+\begin{cases}
+  trial \le threshold, &amp;  x = 1 \quad \text{(random choosing)}
   \\
   trial &gt; threshold, &amp;  x = 0 \quad \text{(value-based choosing)}
 \end{cases}
-</annotation></semantics></math></p>
+\]</span></p>
 </div>
 <div class="section level4">
 <h4 id="ε-greedy">ε-greedy<a class="anchor" aria-label="anchor" href="#%CE%B5-greedy"></a>
 </h4>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>ϵ</mi><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>x</mi><mo>=</mo><mn>1</mn><mspace width="1.0em"></mspace><mtext mathvariant="normal">(random choosing)</mtext></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn><mo>−</mo><mi>ϵ</mi><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>x</mi><mo>=</mo><mn>0</mn><mspace width="1.0em"></mspace><mtext mathvariant="normal">(value-based choosing)</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">\[
 P(x) =
-\begin{cases} 
-  \epsilon, &amp;  x = 1 \quad \text{(random choosing)} 
+\begin{cases}
+  \epsilon, &amp;  x = 1 \quad \text{(random choosing)}
   \\
   1 - \epsilon, &amp;  x = 0 \quad \text{(value-based choosing)}
 \end{cases}
-</annotation></semantics></math></p>
+\]</span></p>
 </div>
 <div class="section level4">
 <h4 id="ε-decreasing">ε-decreasing<a class="anchor" aria-label="anchor" href="#%CE%B5-decreasing"></a>
 </h4>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>λ</mi><mi>i</mi></mrow></mfrac><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>x</mi><mo>=</mo><mn>1</mn><mspace width="1.0em"></mspace><mtext mathvariant="normal">(random choosing)</mtext></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mfrac><mrow><mi>λ</mi><mi>i</mi></mrow><mrow><mn>1</mn><mo>+</mo><mi>λ</mi><mi>i</mi></mrow></mfrac><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>x</mi><mo>=</mo><mn>0</mn><mspace width="1.0em"></mspace><mtext mathvariant="normal">(value-based choosing)</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">\[
 P(x) =
-\begin{cases} 
-  \frac{1}{1 + \lambda i}, &amp;  x = 1 \quad \text{(random choosing)} 
+\begin{cases}
+  \frac{1}{1 + \lambda i}, &amp;  x = 1 \quad \text{(random choosing)}
   \\
-  \frac{\lambda i}{1 + \lambda i}, &amp;  x = 0 \quad \text{(value-based choosing)}
+  \frac{\lambda i}{1 + \lambda i}, &amp;  x = 0 \quad \text{(value-based
+choosing)}
 \end{cases}
-</annotation></semantics></math></p>
+\]</span></p>
 <p><strong>Reference</strong> Namiki, N., Oyo, K., &amp; Takahashi, T.
 (2014, December). How do humans handle the dilemma of exploration and
 exploitation in sequential decision making?. In Proceedings of the 8th
@@ -244,17 +243,14 @@ Technologies (pp. 113-117).</p>
 <h3 id="soft-max-function-τ">
 <strong>Soft-Max Function (τ)</strong><a class="anchor" aria-label="anchor" href="#soft-max-function-%CF%84"></a>
 </h3>
-<p>The parameter
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-represents people’s sensitivity to value differences. The larger
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>,
-the more sensitive they are to the differences in value between the two
-options.</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>L</mi></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>V</mi><mi>L</mi></msub><mo>−</mo><msub><mi>V</mi><mi>R</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mi>τ</mi></mrow></msup></mrow></mfrac><mspace width="1.0em"></mspace><mspace width="1.0em"></mspace><msub><mi>P</mi><mi>R</mi></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>V</mi><mi>R</mi></msub><mo>−</mo><msub><mi>V</mi><mi>L</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mi>τ</mi></mrow></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+<p>The parameter <span class="math inline">\(\tau\)</span> represents
+people’s sensitivity to value differences. The larger <span class="math inline">\(\tau\)</span>, the more sensitive they are to the
+differences in value between the two options.</p>
+<p><span class="math display">\[
 P_{L} = \frac{1}{1 + e^{-(V_{L} - V_{R}) \cdot \tau}}
 \quad \quad
 P_{R} = \frac{1}{1 + e^{-(V_{R} - V_{L}) \cdot \tau}}
-</annotation></semantics></math></p>
+\]</span></p>
 <!---------------------------------------------------------->
 </div>
 </div>

@@ -7,19 +7,26 @@
 #'  A higher \code{tau} indicates greater sensitivity to value differences, making
 #'  choices more deterministic.
 #' 
-#' @note When customizing these functions, please ensure that you do not modify 
-#' the arguments. Instead, only modify the `if-else` statements or the internal 
-#' logic to adapt the function to your needs.
+#' @note 
+#' When customizing these functions, please ensure that you do not modify 
+#'  the arguments. Instead, only modify the `if-else` statements or the internal 
+#'  logic to adapt the function to your needs.
 #' 
-#' @param LR Are you calculating the probability for the left option or the 
-#'  right option?
+#' @param LR 
+#' Are you calculating the probability for the left option or the right option?
 #'  
-#' @param try If the choice was random, the value is 1; if the choice was 
-#'  based on value, the value is 0.
+#' @param try 
+#' If the choice was random, the value is 1; 
+#' If the choice was based on value, the value is 0.
 #'  
-#' @param L_value The value of the left option
+#' @param L_value 
+#' The value of the left option
 #' 
-#' @param R_value The value of the right option
+#' @param R_value 
+#' The value of the right option
+#' 
+#' @param i 
+#' The current row number.
 #' 
 #' @param var1 [character] 
 #' Column name of extra variable 1. If your model uses more than just reward 
@@ -68,6 +75,8 @@
 #'   L_value,
 #'   # Value of the right option
 #'   R_value,
+#'   # Current trial number
+#'   i,
 #'   # Additional variables
 #'   var1 = NA,
 #'   var2 = NA,
@@ -108,6 +117,8 @@ func_tau <- function(
   L_value,
   # 右边选项的价值
   R_value,
+  # 试次序号
+  i,
   # 额外变量
   var1 = NA,
   var2 = NA,

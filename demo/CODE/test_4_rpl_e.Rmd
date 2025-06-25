@@ -1,31 +1,32 @@
 ---
-title: "Untitled"
-author: "yuki"
-date: "2025-05-02"
-output: html_document
+title: "Step 4: rpl_e"
+author: "YuKi"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Step 4: rpl_e}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
-```{r}
+## Replay the Experiment
+```{r eval=FALSE}
 list <- list()
 ```
 
-## TD
-
-```{r}
+### TD
+```{r eval=FALSE}
 list[[1]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
     data = binaryRL::Mason_2024_Exp2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::TD,
-    model_name = "TD", 
+    model_name = "TD",
     param_prefix = "param_",
     n_trials = 360
   )
 )
 ```
 
-## RSTD
-
-```{r}
+### RSTD
+```{r eval=FALSE}
 list[[2]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
     data = binaryRL::Mason_2024_Exp2,
@@ -38,9 +39,8 @@ list[[2]] <- dplyr::bind_rows(
 )
 ```
 
-## Utility
-
-```{r}
+### Utility
+```{r eval=FALSE}
 list[[3]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
     data = binaryRL::Mason_2024_Exp2,
@@ -54,8 +54,8 @@ list[[3]] <- dplyr::bind_rows(
 ```
 
 ## Plot
-
-```{r}
+### Frame
+```{r eval=FALSE}
 plot <- list()
 
 model_name <- c("TD", "RSTD", "Utility")
@@ -109,7 +109,11 @@ plot <- dplyr::bind_rows(plot) %>%
 
 rm(i, model_name)
 
-p <- ggplot2::ggplot(data = plot, ggplot2::aes(x = factor(Frame), y = mean_Rate, color = Model, group = Model)) +
+p <- ggplot2::ggplot(
+  data = plot, 
+  ggplot2::aes(
+    x = factor(Frame), y = mean_Rate, color = Model, group = Model)
+  ) +
   ggplot2::geom_line(linewidth = 1.5) +
   ggplot2::geom_point(size = 5) +
   ggplot2::scale_color_manual(
@@ -151,11 +155,18 @@ ggplot2::ggsave(
   height = 6
 )
 
+plot
+p
+
 rm(plot, p)
 ```
 
+<p align="center">
+    <img src="../FIGURE/Exp_Effect(Frame).png" alt="RL Models" width="80%" style="display: inline;">
+</p>
 
-```{r}
+### Block
+```{r eval=FALSE}
 plot <- list()
 
 model_name <- c("TD", "RSTD", "Utility")
@@ -207,7 +218,11 @@ plot <- dplyr::bind_rows(plot) %>%
 
 rm(i, model_name)
 
-p <- ggplot2::ggplot(data = plot, ggplot2::aes(x = Block, y = mean_Rate, color = Model, group = Model)) +
+p <- ggplot2::ggplot(
+  data = plot, 
+  ggplot2::aes(
+    x = Block, y = mean_Rate, color = Model, group = Model)
+  ) +
   ggplot2::geom_line(linewidth = 1.5) +
   ggplot2::geom_point(size = 5) +
   ggplot2::scale_color_manual(
@@ -246,5 +261,12 @@ ggplot2::ggsave(
   height = 6
 )
 
+plot
+p
+
 rm(plot, p)
 ```
+
+<p align="center">
+    <img src="../FIGURE/Exp_Effect(Block).png" alt="RL Models" width="80%" style="display: inline;">
+</p>

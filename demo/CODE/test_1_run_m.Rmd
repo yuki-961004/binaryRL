@@ -1,8 +1,10 @@
 ---
-title: "Untitled"
-author: "yuki"
-date: "2025-05-01"
-output: html_document
+title: "Step 1: run_m"
+author: "YuKi"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Step 1: run_m}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 ```{r}
 library(binaryRL)
@@ -12,50 +14,51 @@ library(binaryRL)
 head(binaryRL::Mason_2024_Exp2)
 ```
 
+## TD
+
 ```{r}
-test <-binaryRL::run_m(
+binaryRL.res <- binaryRL::run_m(
   data = binaryRL::Mason_2024_Exp2,                    
   id = 1,                       
-  eta = c(0.3),  
-  tau = c(0.1),
+  eta = c(0.123),  
+  tau = c(0.789),
   n_params = 2,            
   n_trials = 360,            
   mode = "fit"
 )
 
-test <- test[[1]] %>%
-  dplyr::filter(Frame == "Gain")
+summary(binaryRL.res)
 ```
 
-```{r}
-Model <- function(params){
-
-  # build a RL model
-  res <- binaryRL::run_m(
-    data = data,                    # your data
-    id = id,                        # Subject ID
-    eta = c(params[1], params[2]),  # free parameters (RSTD)
-    n_params = n_params,            # the number of free parameters
-    n_trials = n_trials,            # the number of total trials
-    mode = mode
-  )
-
-  # pass the result to the fit_env
-  assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
-  
-  switch(mode, "fit" = -res$ll, "simulate" = res, "review" = res)
-}
-```
+## RSTD
 
 ```{r}
-binaryRL::RSTD(params = c(0.493, 0.484, 0.376))
-
-binaryRL::run_m(
+binaryRL.res <- binaryRL::run_m(
   data = binaryRL::Mason_2024_Exp2,
   id = 1,
   n_params = 3,
   n_trials = 360,
-  eta = c(0.493, 0.484),
-  tau = c(0.376)
+  eta = c(0.123, 0.456),
+  tau = c(0.789),            
+  mode = "fit"
 )
+
+summary(binaryRL.res)
+```
+
+## Utility
+
+```{r}
+binaryRL.res <- binaryRL::run_m(
+  data = binaryRL::Mason_2024_Exp2,
+  id = 1,
+  n_params = 3,
+  n_trials = 360,
+  eta = c(0.123),
+  gamma = c(0.456),
+  tau = c(0.789),            
+  mode = "fit"
+)
+
+summary(binaryRL.res)
 ```

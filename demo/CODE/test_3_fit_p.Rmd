@@ -1,12 +1,47 @@
 ---
-title: "Untitled"
-author: "yuki"
-date: "2025-05-01"
-output: html_document
+title: "Step 3: fit_p"
+author: "YuKi"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Step 3: fit_p}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
-# Model Comparison
-## optimize_para
-```{r}
+```{r include=FALSE}
+library(dplyr)
+library(ggplot2)
+```
+
+```{r eval=FALSE}
+comparison <- binaryRL::fit_p(
+  data = binaryRL::Mason_2024_Exp2,
+  n_trials = 360,
+  #id = c(1:8),
+  id = unique(binaryRL::Mason_2024_Exp2$Subject),
+  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
+  model_name = c("TD", "RSTD", "Utility"),
+  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
+  iteration = 100,
+  seed = 123,
+  nc = 16,
+  #algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)
+  #algorithm = "GenSA"        # Simulated Annealing (GenSA::GenSA)
+  #algorithm = "GA"           # Genetic Algorithm (GA::ga)
+  algorithm = "DEoptim"      # Differential Evolution (DEoptim::DEoptim)
+  #algorithm = "PSO"          # Particle Swarm Optimization (pso::psoptim)
+  #algorithm = "Bayesian"     # Bayesian Optimization (mlrMBO::mbo)
+  #algorithm = "CMA-ES"       # Covariance Matrix Adapting (`cmaes::cma_es`)
+  #algorithm = "NLOPT_GN_MLSL"# Nonlinear Optimization (nloptr::nloptr)
+)
+
+result <- dplyr::bind_rows(comparison)
+
+write.csv(result, "../OUTPUT/result_comparison.csv", row.names = FALSE)
+```
+
+<details>
+<summary>Process</summary>
+```{r eval=FALSE}
 binaryRL.res <- binaryRL::optimize_para(
   data = binaryRL::Mason_2024_Exp2,
   id = 1,
@@ -20,45 +55,19 @@ binaryRL.res <- binaryRL::optimize_para(
   #algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)
   #algorithm = "GenSA"        # Simulated Annealing (GenSA::GenSA)
   #algorithm = "GA"           # Genetic Algorithm (GA::ga)
-  #algorithm = "DEoptim"      # Differential Evolution (DEoptim::DEoptim)
+  algorithm = "DEoptim"      # Differential Evolution (DEoptim::DEoptim)
   #algorithm = "PSO"          # Particle Swarm Optimization (pso::psoptim)
   #algorithm = "Bayesian"     # Bayesian Optimization (mlrMBO::mbo)
   #algorithm = "CMA-ES"       # Covariance Matrix Adapting (`cmaes::cma_es`)
-  algorithm = "NLOPT_GN_MLSL"# Nonlinear Optimization (nloptr::nloptr)
+  #algorithm = "NLOPT_GN_MLSL"# Nonlinear Optimization (nloptr::nloptr)
 )
 summary(binaryRL.res)
 ```
-
-## fit_p
-```{r include=FALSE}
-comparison <- binaryRL::fit_p(
-  data = binaryRL::Mason_2024_Exp2,
-  n_trials = 360,
-  #id = c(1:8),
-  id = unique(binaryRL::Mason_2024_Exp2$Subject),
-  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  model_name = c("TD", "RSTD", "Utility"),
-  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
-  iteration = 100,
-  seed = 123,
-  nc = 16,
-  #algorithm = "L-BFGS-B"  # Gradient-Based (stats::optim)
-  #algorithm = "GenSA"     # Simulated Annealing (GenSA::GenSA)
-  #algorithm = "GA"        # Genetic Algorithm (GA::ga)
-  #algorithm = "DEoptim"   # Differential Evolution (DEoptim::DEoptim)
-  #algorithm = "PSO"       # Particle Swarm Optimization (pso::psoptim)
-  algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO::mbo)
-  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (`cmaes::cma_es`)
-)
-
-result <- dplyr::bind_rows(comparison)
-
-write.csv(result, "../OUTPUT/result_comparison.csv", row.names = FALSE)
-```
+</details>
 
 ## Plot
-```{r}
+### Read Result
+```{r eval=FALSE}
 data <- read.csv("../OUTPUT/result_comparison.csv") %>%
   dplyr::select(-dplyr::starts_with("param_")) %>%
   tidyr::pivot_longer(
@@ -83,7 +92,11 @@ data <- read.csv("../OUTPUT/result_comparison.csv") %>%
   dplyr::arrange(Subject, fit_model)
 ```
 
-```{r}
+### Relative
+```{r eval=FALSE}
+#| label: model_comparison(rel)
+#| fig.alt: "Model Comparison (relative)"
+#| 
 plot <- ggplot2::ggplot(data, aes(x = metric, y = value_norm, fill = fit_model)) +
   ggplot2::geom_bar(stat = "summary", fun = "mean", position = "dodge") +
   ggplot2::geom_errorbar(
@@ -123,9 +136,19 @@ ggplot2::ggsave(
   filename = "../FIGURE/model_comparison(rel).png", 
   width = 8, height = 6
 )
+
+plot
 ```
 
-```{r}
+<p align="center">
+    <img src="../FIGURE/model_comparison(rel).png" alt="RL Models" width="90%" style="display: inline;">
+</p>
+
+### Absolute
+```{r eval=FALSE}
+#| label: model_comparison(abs)
+#| fig.alt: "Model Comparison (absolute)"
+#| 
 plots <- data %>%
   split(.$metric) %>%
   purrr::map(~{
@@ -173,5 +196,10 @@ ggplot2::ggsave(
   filename = "../FIGURE/model_comparison(abs).png",
   width = 8, height = 6
 )
+
+plot
 ```
 
+<p align="center">
+    <img src="../FIGURE/model_comparison(abs).png" alt="RL Models" width="90%" style="display: inline;">
+</p>

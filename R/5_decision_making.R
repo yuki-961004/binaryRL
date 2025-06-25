@@ -199,24 +199,26 @@ decision_making <- function(
       
       # prob_func -> data$L_prob[i] 计算选L概率
       data$L_prob[i] <- prob_func(
+        LR = "L", 
         L_value = data$L_value[i],
         R_value = data$R_value[i],
         try = data$Try[i],
+        i = i,
         var1 = data[[var1]][i],
         var2 = data[[var2]][i],
-        LR = "L", 
         tau = tau,
         alpha = alpha,
         beta = beta
       )
       # prob_func -> data$R_prob[i] 计算选R概率
       data$R_prob[i] <- prob_func(
+        LR = "R", 
         L_value = data$L_value[i],
         R_value = data$R_value[i],
         try = data$Try[i],
+        i = i,
         var1 = data[[var1]][i],
         var2 = data[[var2]][i],
-        LR = "R", 
         tau = tau,
         alpha = alpha,
         beta = beta
@@ -311,6 +313,7 @@ decision_making <- function(
       utility = data$R_utility[i],
       reward = data$Reward[i],
       occurrence = data$Time_Line[i],
+      i = i,
       var1 = data[[var1]][i],
       var2 = data[[var2]][i],
       gamma = gamma,
@@ -326,6 +329,7 @@ decision_making <- function(
       utility = data$R_utility[i],
       reward = data$Reward[i],
       occurrence = data$Time_Line[i],
+      i = i,
       var1 = data[[var1]][i],
       var2 = data[[var2]][i],
       eta = eta,

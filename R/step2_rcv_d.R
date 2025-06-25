@@ -26,17 +26,17 @@
 #'  The function provides several optimization algorithms:
 #'   \itemize{
 #'     \item 1. L-BFGS-B (from \code{stats::optim})
-#'     \item 2. Simulated Annealing (\code{GenSA})
-#'     \item 3. Genetic Algorithm (\code{GA})
-#'     \item 4. Differential Evolution (\code{DEoptim})
-#'     \item 5. Particle Swarm Optimization (\code{pso})
-#'     \item 6. Bayesian Optimization (\code{mlrMBO})
-#'     \item 7. Covariance Matrix Adapting Evolutionary Strategy (\code{cmaes})
-#'     \item 8. Nonlinear Optimization (\code{nloptr})
+#'     \item 2. Simulated Annealing (\code{GenSA::GenSA})
+#'     \item 3. Genetic Algorithm (\code{GA::ga})
+#'     \item 4. Differential Evolution (\code{DEoptim::DEoptim})
+#'     \item 5. Particle Swarm Optimization (\code{pso::psoptim})
+#'     \item 6. Bayesian Optimization (\code{mlrMBO::mbo})
+#'     \item 7. Covariance Matrix Adapting Evolutionary Strategy (\code{cmaes::cma_es})
+#'     \item 8. Nonlinear Optimization (\code{nloptr::nloptr})
 #'   }
 #' 
 #'  For more information, please refer to the GitHub repository:
-#'  \url{https://github.com/yuki-961004/binaryRL}
+#'  \url{https://yuki-961004.github.io/binaryRL/}
 #'  
 #' @note
 #' During the parameter fitting process, some algorithms might get stuck

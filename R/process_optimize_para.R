@@ -9,19 +9,19 @@
 #'
 #'  The function provides several optimization algorithms:
 #'   \itemize{
-#'     \item 1. L-BFGS-B (from `stats::optim`);
-#'     \item 2. Simulated Annealing (`GenSA`);
-#'     \item 3. Genetic Algorithm (`GA`);
-#'     \item 4. Differential Evolution (`DEoptim`);
-#'     \item 5. Particle Swarm Optimization (`pso`);
-#'     \item 6. Bayesian Optimization (`mlrMBO`);
-#'     \item 7. Covariance Matrix Adapting Evolutionary Strategy (`cmaes`);
-#'     \item 8. Nonlinear Optimization (`nloptr`)
+#'     \item 1. L-BFGS-B (from \code{stats::optim})
+#'     \item 2. Simulated Annealing (\code{GenSA::GenSA})
+#'     \item 3. Genetic Algorithm (\code{GA::ga})
+#'     \item 4. Differential Evolution (\code{DEoptim::DEoptim})
+#'     \item 5. Particle Swarm Optimization (\code{pso::psoptim})
+#'     \item 6. Bayesian Optimization (\code{mlrMBO::mbo})
+#'     \item 7. Covariance Matrix Adapting Evolutionary Strategy (\code{cmaes::cma_es})
+#'     \item 8. Nonlinear Optimization (\code{nloptr::nloptr})
 #'   }
-#'
+#'   
 #'  For more information, please refer to the GitHub repository:
-#'  https://github.com/yuki-961004/binaryRL
-#' 
+#'  \url{https://yuki-961004.github.io/binaryRL/}
+#'  
 #' @param data [data.frame] 
 #' This data should include the following mandatory columns: 
 #'  \itemize{
@@ -107,28 +107,26 @@
 #' 
 #' @examples
 #' \dontrun{
-#' list_simulated <- binaryRL::simulate_list(
+#' binaryRL.res <- binaryRL::optimize_para(
 #'   data = binaryRL::Mason_2024_Exp2,
+#'   id = 1,
 #'   obj_func = binaryRL::RSTD,
 #'   n_params = 3,
 #'   n_trials = 360,
-#'   lower = c(0, 0, 1),
+#'   lower = c(0, 0, 0),
 #'   upper = c(1, 1, 1),
-#'   iteration = 100
+#'   iteration = 10,
+#'   seed = 123,
+#'   algorithm = "L-BFGS-B"   # Gradient-Based (stats)
+#'   #algorithm = "GenSA"    # Simulated Annealing (GenSA)
+#'   #algorithm = "GA"       # Genetic Algorithm (GA)
+#'   #algorithm = "DEoptim"  # Differential Evolution (DEoptim)
+#'   #algorithm = "PSO"      # Particle Swarm Optimization (pso)
+#'   #algorithm = "Bayesian" # Bayesian Optimization (mlrMBO)
+#'   #algorithm = "CMA-ES"   # Covariance Matrix Adapting (cmaes)
+#'   #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 #' )
-#'
-#' df_recovery <- binaryRL::recovery_data(
-#'   list = list_simulated,
-#'   fit_model = binaryRL::RSTD,
-#'   model_name = "RSTD",
-#'   n_params = 3,
-#'   n_trials = 360,
-#'   lower = c(0, 0, 1),
-#'   upper = c(1, 1, 5),
-#'   iteration = 100,
-#'   nc = 1,
-#'   algorithm = "L-BFGS-B"
-#' )
+#' summary(binaryRL.res)
 #' }
 #' 
 optimize_para <- function(

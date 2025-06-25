@@ -13,7 +13,7 @@ Utility(params)
 [numeric] algorithm packages accept only one return
 }
 \description{
-\deqn{U = {R}^{\gamma}}
+\deqn{U(R) = {R}^{\gamma}}
  \deqn{V_{new} = V_{old} + \eta \cdot (U(R) - V_{old})}
 }
 \examples{

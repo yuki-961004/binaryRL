@@ -1,51 +1,28 @@
 ---
-title: "Untitled"
-author: "yuki"
-date: "2025-03-19"
-output: html_document
+title: "Step 2: rcv_d"
+author: "YuKi"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Step 2: rcv_d}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
-# Recovery
-```{r}
-list_simulated <- binaryRL::simulate_list(
-  data = binaryRL::Mason_2024_Exp2,
-  id = 1,
-  obj_func = binaryRL::RSTD,
-  n_params = 3, 
-  n_trials = 360,
-  lower = c(0, 0, 1),
-  upper = c(1, 1, 10),
-  seed = 123,
-  iteration = 10
-)
+```{r include=FALSE}
+library(dplyr)
+library(ggplot2)
 ```
 
-```{r include=FALSE}
-df_recovery <- binaryRL::recovery_data(
-  list = list_simulated,
-  id = 1,
-  fit_model = binaryRL::RSTD,
-  model_name = "RSTD",
-  n_params = 3,
-  n_trials = 360,
-  lower = c(0, 0, 1),
-  upper = c(1, 1, 2),
-  iteration = 50,
-  algorithm = "Bayesian"
-)
-```
-
-```{r include=FALSE}
+```{r eval=FALSE}
 recovery <- binaryRL::rcv_d(
   data = binaryRL::Mason_2024_Exp2,
   id = 1,
   n_trials = 360,
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  simulate_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
+  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  fit_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
-  fit_upper = list(c(1, 6), c(1, 1, 6), c(1, 1, 6)),
+  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
   initial_params = NA,
   initial_size = 50,
   seed = 123,
@@ -67,8 +44,43 @@ result <- dplyr::bind_rows(recovery) %>%
 write.csv(result, file = "../OUTPUT/result_recovery.csv", row.names = FALSE)
 ```
 
+<details>
+<summary>Process</summary>
+```{r eval=FALSE}
+list_simulated <- binaryRL::simulate_list(
+  data = binaryRL::Mason_2024_Exp2,
+  id = 1,
+  obj_func = binaryRL::RSTD,
+  n_params = 3, 
+  n_trials = 360,
+  lower = c(0, 0, 1),
+  upper = c(1, 1, 10),
+  seed = 123,
+  iteration = 10
+)
+```
+
+```{r eval=FALSE}
+df_recovery <- binaryRL::recovery_data(
+  list = list_simulated,
+  id = 1,
+  fit_model = binaryRL::RSTD,
+  model_name = "RSTD",
+  n_params = 3,
+  n_trials = 360,
+  lower = c(0, 0, 1),
+  upper = c(1, 1, 2),
+  iteration = 50,
+  algorithm = "DEoptim"
+)
+```
+</details>
+
 ## Parameter Recovery
-```{r function}
+
+<details>
+<summary>Plot Function</summary>
+```{r eval=FALSE}
 plot_param_rcv <- function(
   data = read.csv("../OUTPUT/result_recovery.csv"),
   model,
@@ -195,17 +207,23 @@ plot_param_rcv <- function(
       ),
       plot.margin = margin(t = 1, r = 1, b = 1, l = 1),
     )
-
+  
   ggplot2::ggsave(
     plot = plot,
     filename = filename, 
     width = 4, height = 3
   ) 
+  
+  return(plot)
 }
 ```
+</details>
 
 ### eta
-```{r warning=FALSE}
+```{r eval=FALSE}
+#| label: plot_eta
+#| fig.alt: "plot input eta and output eta"
+#| 
 plot_param_rcv(
   data = read.csv("../OUTPUT/result_recovery.csv"),
   model = "TD",
@@ -239,6 +257,16 @@ plot_param_rcv(
 )
 ```
 
+<p align="center">
+  <img src="../FIGURE/param_rcv/lower_0/1_TD_eta.png" alt="TD_eta" width="30%" style="display: inline;">
+  <img src="../FIGURE/param_rcv/lower_0/3_Utility_eta.png" alt="Utility_eta" width="30%" style="display: inline;">
+</p>
+
+<p align="center">
+  <img src="../FIGURE/param_rcv/lower_0/2_RSTD_eta1.png" alt="RSTD_eta1" width="30%" style="display: inline;">
+  <img src="../FIGURE/param_rcv/lower_0/2_RSTD_eta2.png" alt="RSTD_eta2" width="30%" style="display: inline;">
+</p>
+
 ```{r}
 data <- read.csv("../OUTPUT/result_recovery.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "TD") 
@@ -258,7 +286,10 @@ cor(data$input_param_1, data$output_param_1)
 ```
 
 ### gamma
-```{r}
+```{r eval=FALSE}
+#| label: plot_gamma
+#| fig.alt: "plot input gamma and output gamma"
+#| 
 plot_param_rcv(
   data = read.csv("../OUTPUT/result_recovery.csv"),
   model = "Utility",
@@ -268,6 +299,10 @@ plot_param_rcv(
 )
 ```
 
+<p align="center">
+  <img src="../FIGURE/param_rcv/lower_0/3_Utility_gamma.png" alt="RL Models" width="30%" style="display: inline;">
+</p>
+
 ```{r}
 data <- read.csv("../OUTPUT/result_recovery.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "Utility") 
@@ -275,7 +310,10 @@ cor(data$input_param_2, data$output_param_2)
 ```
 
 ### tau
-```{r warning=FALSE}
+```{r eval=FALSE}
+#| label: plot_tau
+#| fig.alt: "plot input tau and output tau"
+#| 
 plot_param_rcv(
   data = read.csv("../OUTPUT/result_recovery.csv"),
   model = "TD",
@@ -304,6 +342,12 @@ plot_param_rcv(
 )
 ```
 
+<p align="center">
+  <img src="../FIGURE/param_rcv/lower_0/1_TD_tau.png" alt="TD_tau" width="30%" style="display: inline;">
+  <img src="../FIGURE/param_rcv/lower_0/2_RSTD_tau.png" alt="RSTD_tau" width="30%" style="display: inline;">
+  <img src="../FIGURE/param_rcv/lower_0/3_Utility_tau.png" alt="Utility_tau" width="30%" style="display: inline;">
+</p>
+
 ```{r}
 data <- read.csv("../OUTPUT/result_recovery.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "TD") 
@@ -319,7 +363,10 @@ cor(data$input_param_3, data$output_param_3)
 ```
 
 ## Model Recovery
-```{r}
+<details>
+<summary>Plot Function</summary>
+
+```{r eval=FALSE}
 plot_model_rcv <- function(
   data = read.csv("../OUTPUT/result_recovery.csv"),
   matrix_type,
@@ -411,10 +458,17 @@ plot_model_rcv <- function(
     filename = filename, 
     width = 8, height = 6
   )
+  
+  return(plot)
 }
 ```
 
-```{r}
+</details>
+
+```{r eval=FALSE}
+#| label: model_recovery
+#| fig.alt: "confusion matrix and inversion matrix"
+#| 
 plot_model_rcv(
   data = read.csv("../OUTPUT/result_recovery.csv"),
   matrix_type = "confusion",
@@ -427,3 +481,8 @@ plot_model_rcv(
   filename = "../FIGURE/matrix_inversion.png"
 )
 ```
+
+<p align="center">
+    <img src="../FIGURE/model_rcv/lower_0/matrix_confusion.png" alt="confusion_matrix" width="45%" style="display: inline;">
+    <img src="../FIGURE/model_rcv/lower_0/matrix_inversion.png" alt="inversion_matrix" width="45%" style="display: inline;">
+</p>

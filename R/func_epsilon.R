@@ -19,9 +19,12 @@
 #'   }
 #' 
 #' @note 
-#' When customizing these functions, please ensure that you do not modify the 
-#'  arguments. Instead, only modify the `if-else` statements or the internal 
+#' When customizing these functions, please ensure that you do not modify 
+#'  the arguments. Instead, only modify the `if-else` statements or the internal 
 #'  logic to adapt the function to your needs.
+#'  
+#' @param i 
+#' The current row number.
 #' 
 #' @param var1 [character] 
 #' Column name of extra variable 1. If your model uses more than just reward 
@@ -37,13 +40,6 @@
 #'  model.
 #'  
 #'  \code{default: var2 = "Extra_Var2"}
-#'  
-#' @param i 
-#' The current row number. The `threshold` for random selection, which 
-#'  is used to explore the value of different options, will be determined based 
-#'  on this row number. This is because I believe that in the early stages of 
-#'  an experiment, participants will choose options completely at random to 
-#'  explore the reward value associated with each option.
 #' 
 #' @param threshold [integer]
 #' Controls the initial exploration phase in the \strong{epsilon-first} strategy.
@@ -156,7 +152,7 @@
 #' }
 #' 
 func_epsilon <- function(
-  # 这是第几个试次
+  # 试次序号
   i,
   # 额外需要用到的变量1
   var1 = NA,

@@ -16,11 +16,7 @@ func_epsilon(
 )
 }
 \arguments{
-\item{i}{The current row number. The `threshold` for random selection, which 
-is used to explore the value of different options, will be determined based 
-on this row number. This is because I believe that in the early stages of 
-an experiment, participants will choose options completely at random to 
-explore the reward value associated with each option.}
+\item{i}{The current row number.}
 
 \item{var1}{[character] 
 Column name of extra variable 1. If your model uses more than just reward 
@@ -120,8 +116,8 @@ The exploration strategy parameters are
   }
 }
 \note{
-When customizing these functions, please ensure that you do not modify the 
- arguments. Instead, only modify the `if-else` statements or the internal 
+When customizing these functions, please ensure that you do not modify 
+ the arguments. Instead, only modify the `if-else` statements or the internal 
  logic to adapt the function to your needs.
 }
 \examples{

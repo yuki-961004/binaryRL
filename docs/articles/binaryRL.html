@@ -6,7 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Tutorial on binaryRL • binaryRL</title>
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -31,7 +37,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -272,16 +278,14 @@ Soft-Max Function (τ)
 <code>binaryRL::Utility.fit</code>.</p>
 <!---------------------------------------------------------->
 <div class="section level4">
-<h4 id="td-model-eta">1. TD Model
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>)<a class="anchor" aria-label="anchor" href="#td-model-eta"></a>
+<h4 id="td-model-eta">1. TD Model (<span class="math inline">\(\eta\)</span>)<a class="anchor" aria-label="anchor" href="#td-model-eta"></a>
 </h4>
 <blockquote>
 <p>“The TD model is a standard temporal difference learning model
 (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998).”</p>
 </blockquote>
-<p><strong>if only ONE
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
-is set as a free paramters, it represents the TD model.</strong></p>
+<p><strong>if only ONE <span class="math inline">\(\eta\)</span> is set
+as a free paramters, it represents the TD model.</strong></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># TD Model</span></span>
 <span><span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
@@ -293,18 +297,15 @@ is set as a free paramters, it represents the TD model.</strong></p>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="risk-sensitive-td-model-eta_--eta_">2. Risk-Sensitive TD Model
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>η</mi><mo>−</mo></msub><annotation encoding="application/x-tex">\eta_{-}</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>η</mi><mo>+</mo></msub><annotation encoding="application/x-tex">\eta_{+}</annotation></semantics></math>)<a class="anchor" aria-label="anchor" href="#risk-sensitive-td-model-eta_--eta_"></a>
+<h4 id="risk-sensitive-td-model-eta_--eta_">2. Risk-Sensitive TD Model (<span class="math inline">\(\eta_{-}\)</span>, <span class="math inline">\(\eta_{+}\)</span>)<a class="anchor" aria-label="anchor" href="#risk-sensitive-td-model-eta_--eta_"></a>
 </h4>
 <blockquote>
 <p>“In the risk-sensitive TD (RSTD) model, positive and negative
 prediction errors have asymmetric effects on learning (Mihatsch and
 Neuneier, 2002).”</p>
 </blockquote>
-<p><strong>If TWO
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
-are set as free parameters, it represents the RSTD model.</strong></p>
+<p><strong>If TWO <span class="math inline">\(\eta\)</span> are set as
+free parameters, it represents the RSTD model.</strong></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># RSTD Model</span></span>
 <span><span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
@@ -316,20 +317,15 @@ are set as free parameters, it represents the RSTD model.</strong></p>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="utility-model-eta-gamma">3. Utility Model
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>)<a class="anchor" aria-label="anchor" href="#utility-model-eta-gamma"></a>
+<h4 id="utility-model-eta-gamma">3. Utility Model (<span class="math inline">\(\eta\)</span>, <span class="math inline">\(\gamma\)</span>)<a class="anchor" aria-label="anchor" href="#utility-model-eta-gamma"></a>
 </h4>
 <blockquote>
 <p>“The utility model is a TD learning model that incorporates nonlinear
 subjective utilities (Bernoulli, 1954)”</p>
 </blockquote>
-<p><strong>If ONE
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
-and ONE
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>
-are set as free parameters, it represents the utility
-model.</strong></p>
+<p><strong>If ONE <span class="math inline">\(\eta\)</span> and ONE
+<span class="math inline">\(\gamma\)</span> are set as free parameters,
+it represents the utility model.</strong></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Utility Model</span></span>
 <span><span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
@@ -351,10 +347,8 @@ demonstrate how to perform parameter recovery and model recovery
 following the method suggested by Wilson &amp; Collins <a href="https://doi.org/10.7554/eLife.49547" class="external-link">(2019)</a>.</p>
 <ol style="list-style-type: decimal">
 <li>Notably, Wilson &amp; Collins <a href="https://doi.org/10.7554/eLife.49547" class="external-link">(2019)</a> recommend
-increasing the softmax parameter
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-by 1 during model recovery, as this can help reduce the amount of noise
-in behavior.<br>
+increasing the softmax parameter <span class="math inline">\(\tau\)</span> by 1 during model recovery, as this
+can help reduce the amount of noise in behavior.<br>
 </li>
 <li>Additionally, different algorithms and varying number of iterations
 can also influence the results of both parameter recovery and model
@@ -447,28 +441,21 @@ binaryRL::recovery_data()
 </h3>
 <blockquote>
 <p>“Before reading too much into the best-fitting parameter values,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>θ</mi><mi>m</mi><mrow><mi>M</mi><mi>L</mi><mi>E</mi></mrow></msubsup><annotation encoding="application/x-tex">\theta_{m}^{MLE}</annotation></semantics></math>,
-it is important to check whether the fitting procedure gives meaningful
-parameter values in the best case scenario, -that is, when fitting fake
-data where the ‘true’ parameter values are known (Nilsson et al., 2011).
-Such a procedure is known as ‘Parameter Recovery’, and is a crucial part
-of any model-based analysis.”</p>
+<span class="math inline">\(\theta_{m}^{MLE}\)</span>, it is important
+to check whether the fitting procedure gives meaningful parameter values
+in the best case scenario, -that is, when fitting fake data where the
+‘true’ parameter values are known (Nilsson et al., 2011). Such a
+procedure is known as ‘Parameter Recovery’, and is a crucial part of any
+model-based analysis.”</p>
 </blockquote>
 <!---------------------------------------------------------->
 <p align="center">
 <img src="demo/FIGURE/param_rcv/lower_0/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/param_rcv/lower_0/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;"></p>
-<p>The value of the softmax parameter
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-affects the recovery of other parameters in the model. Under the
-assumption that
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>∼</mo><mtext mathvariant="normal">Exp</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\tau \sim \text{Exp}(1)</annotation></semantics></math>,
-adding 1 to all
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-values improves the recovery of the learning rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>,
-but decreases the recovery accuracy of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-itself.</p>
+<p>The value of the softmax parameter <span class="math inline">\(\tau\)</span> affects the recovery of other
+parameters in the model. Under the assumption that <span class="math inline">\(\tau \sim \text{Exp}(1)\)</span>, adding 1 to all
+<span class="math inline">\(\tau\)</span> values improves the recovery
+of the learning rate <span class="math inline">\(\eta\)</span>, but
+decreases the recovery accuracy of <span class="math inline">\(\tau\)</span> itself.</p>
 <p align="center">
 <img src="demo/FIGURE/param_rcv/lower_1/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/param_rcv/lower_1/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;"></p>
 <!---------------------------------------------------------->
@@ -491,13 +478,10 @@ A).”</p>
 <p align="center">
 <img src="demo/FIGURE/model_rcv/lower_0/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/model_rcv/lower_0/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;"></p>
 <blockquote>
-<p>“In panel B, all of the softmax parameters
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>b</mi><mi>c</mi></msub><annotation encoding="application/x-tex">b_{c}</annotation></semantics></math>
-were increased by 1. This has the effect of reducing the amount of noise
-in the behavior, which makes the models more easily identifiable and the
-corresponding confusion matrix more diagonal.”</p>
+<p>“In panel B, all of the softmax parameters <span class="math inline">\(b\)</span> and <span class="math inline">\(b_{c}\)</span> were increased by 1. This has the
+effect of reducing the amount of noise in the behavior, which makes the
+models more easily identifiable and the corresponding confusion matrix
+more diagonal.”</p>
 </blockquote>
 <p align="center">
 <img src="demo/FIGURE/model_rcv/lower_1/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/model_rcv/lower_1/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;"></p>

@@ -73,6 +73,7 @@ Tools for building reinforcement learning (RL) models specifically tailored for 
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://yuki-961004.github.io/binaryRL/}
   \item \url{https://github.com/yuki-961004/binaryRL}
   \item Report bugs at \url{https://github.com/yuki-961004/binaryRL/issues}
 }

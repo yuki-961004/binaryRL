@@ -9,6 +9,7 @@ func_eta(
   utility,
   reward,
   occurrence,
+  i,
   var1 = NA,
   var2 = NA,
   eta,
@@ -17,16 +18,15 @@ func_eta(
 )
 }
 \arguments{
-\item{value}{The expected value of the stimulus in the subject's mind at 
-this point in time.}
+\item{value}{The expected value of the stimulus in the subject's mind at this point in time.}
 
-\item{utility}{The subjective value that the subject assigns to the 
-objective reward.}
+\item{utility}{The subjective value that the subject assigns to the objective reward.}
 
-\item{reward}{The objective reward received by the subject after selecting 
-a stimulus.}
+\item{reward}{The objective reward received by the subject after selecting a stimulus.}
 
 \item{occurrence}{The number of times the same stimulus has appeared.}
+
+\item{i}{The current row number.}
 
 \item{var1}{[character] 
 Column name of extra variable 1. If your model uses more than just reward 
@@ -90,8 +90,8 @@ The structure of \code{eta} depends on the model type:
 }
 \note{
 When customizing these functions, please ensure that you do not modify 
-the arguments. Instead, only modify the `if-else` statements or the internal 
-logic to adapt the function to your needs.
+ the arguments. Instead, only modify the `if-else` statements or the internal 
+ logic to adapt the function to your needs.
 }
 \examples{
 \dontrun{
@@ -104,6 +104,8 @@ func_eta <- function(
   reward,
   # Occurrence count for this stimulus
   occurrence,
+  # Current trial number
+  i,
   # Extra variables
   var1 = NA,
   var2 = NA,

@@ -2,7 +2,7 @@
 #' 
 #' @description
 #'  \deqn{V_{new} = V_{old} + \eta \cdot (R - V_{old})}
-#' 
+#'
 #' @param params [vector] algorithm packages accept only one argument
 #'
 #' @return [numeric] algorithm packages accept only one return

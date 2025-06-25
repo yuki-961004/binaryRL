@@ -6,11 +6,12 @@ vignette: >
   %\VignetteIndexEntry{Step 4: rpl_e}
   %\VignetteEngine{knitr::rmarkdown}
 ---
+## Replay the Experiment
 ```{r eval=FALSE}
 list <- list()
 ```
 
-## TD
+### TD
 ```{r eval=FALSE}
 list[[1]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
@@ -24,7 +25,7 @@ list[[1]] <- dplyr::bind_rows(
 )
 ```
 
-## RSTD
+### RSTD
 ```{r eval=FALSE}
 list[[2]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
@@ -38,7 +39,7 @@ list[[2]] <- dplyr::bind_rows(
 )
 ```
 
-## Utility
+### Utility
 ```{r eval=FALSE}
 list[[3]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
@@ -131,8 +132,8 @@ p <- ggplot2::ggplot(
   ) +
   papaja::theme_apa() +
   ggplot2::theme(
-    legend.position = c(0.8, 0.7),  # 位置 (x, y)，相對於圖表左下角
-    legend.justification = c(0, 0), # 圖例定位點
+    legend.position = c(0.8, 0.7),  
+    legend.justification = c(0, 0), 
     legend.title = element_blank(),
     text = element_text(
       family = "serif", 
@@ -237,8 +238,8 @@ p <- ggplot2::ggplot(
   ggplot2::facet_wrap(~ Frame, ncol = 2) +
   papaja::theme_apa() +
   ggplot2::theme(
-    legend.position = c(0.8, 0.7),  # 位置 (x, y)，相對於圖表左下角
-    legend.justification = c(0, 0), # 圖例定位點
+    legend.position = c(0.8, 0.7),  
+    legend.justification = c(0, 0), 
     legend.title = element_blank(),
     text = element_text(
       family = "serif", 
