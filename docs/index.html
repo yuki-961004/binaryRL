@@ -117,16 +117,16 @@
 <span><span class="co"># Obtain help document</span></span>
 <span><span class="op">?</span><span class="va">binaryRL</span></span></code></pre></div>
 <pre>
-                                      ╔══════════════════════════╗
-                                      ║ ╔----------╗             ║
-                                      ║ | ██████╗  |   ██╗       ║
- |     _)                             ║ | ██╔══██╗ |   ██║       ║
- __ \   |  __ \    _` |   __|  |   |  ║ | ██████╔╝ |   ██║       ║
- |   |  |  |   |  (   |  |     |   |  ║ | ██╔══██╗ |   ██║       ║
-_.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |   ███████╗  ║
-                              ____/   ║ | ╚═╝  ╚═╝ |   ╚══════╝  ║
-                                      ║ ╚----------╝             ║
-                                      ╚══════════════════════════╝
+                                      ╔═════════════════════════╗
+                                      ║ ╔----------╗            ║
+                                      ║ | ██████╗  |  ██╗       ║
+ |     _)                             ║ | ██╔══██╗ |  ██║       ║
+ __ \   |  __ \    _` |   __|  |   |  ║ | ██████╔╝ |  ██║       ║
+ |   |  |  |   |  (   |  |     |   |  ║ | ██╔══██╗ |  ██║       ║
+_.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ███████╗  ║
+                              ____/   ║ | ╚═╝  ╚═╝ |  ╚══════╝  ║
+                                      ║ ╚----------╝            ║
+                                      ╚═════════════════════════╝
 </pre>
 <!---------------------------------------------------------->
 </div>
@@ -139,24 +139,27 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |   ███�
 <img src="./fig/rl_process.png" alt="RL Process" width="34.25%" style="display: inline;"><img src="./fig/rl_models.png" alt="RL Models" width="61%" style="display: inline;"></p>
 <p><strong>Reference</strong><br>
 Wilson, R. C., &amp; Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. <em>Elife, 8</em>, e49547. <a href="https://doi.org/10.7554/eLife.49547" class="external-link uri">https://doi.org/10.7554/eLife.49547</a><br>
-Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. <em>Journal of Neuroscience, 32</em>(2), 551-562. <a href="https://doi.org/10.1523/JNEUROSCI.5498-10.2012" class="external-link uri">https://doi.org/10.1523/JNEUROSCI.5498-10.2012</a> <!----------------------------------------------------------></p>
+Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. <em>Journal of Neuroscience, 32</em>(2), 551-562. <a href="https://doi.org/10.1523/JNEUROSCI.5498-10.2012" class="external-link uri">https://doi.org/10.1523/JNEUROSCI.5498-10.2012</a></p>
+<!---------------------------------------------------------->
 <div class="section level2">
-<h2 id="example-data">Example Data<a class="anchor" aria-label="anchor" href="#example-data"></a>
+<h2 id="example-data">
+<a href="./demo/DATA/binaryRL_data.html">Example Data</a><a class="anchor" aria-label="anchor" href="#example-data"></a>
 </h2>
 <p>Our package includes a minimally processed version of a publicly available dataset from Mason et al. <a href="https://doi.org/10.3758/s13423-023-02415-x" class="external-link">(2024)</a> as example data. This dataset represents a classic Two-Armed Bandit task, a typical example of a Two-Alternative Forced Choice (TAFC) paradigm.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># An open data from Mason et. al. (2024) https://osf.io/hy3q4/</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span><span class="op">)</span></span></code></pre></div>
-<table style="width:100%;" class="table">
+<table class="table">
 <colgroup>
+<col width="11%">
+<col width="8%">
+<col width="8%">
 <col width="12%">
-<col width="9%">
-<col width="9%">
-<col width="13%">
-<col width="13%">
-<col width="13%">
-<col width="13%">
-<col width="16%">
+<col width="12%">
+<col width="12%">
+<col width="12%">
+<col width="15%">
+<col width="3%">
 </colgroup>
 <thead><tr>
 <th>Subject</th>
@@ -167,6 +170,7 @@ Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural predi
 <th>L_reward</th>
 <th>R_reward</th>
 <th>Sub_Choose</th>
+<th>-</th>
 </tr></thead>
 <tbody>
 <tr>
@@ -178,6 +182,7 @@ Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural predi
 <td>36</td>
 <td>40</td>
 <td>A</td>
+<td>…</td>
 </tr>
 <tr>
 <td>1</td>
@@ -188,6 +193,7 @@ Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural predi
 <td>0</td>
 <td>36</td>
 <td>B</td>
+<td>…</td>
 </tr>
 <tr>
 <td>1</td>
@@ -198,6 +204,7 @@ Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural predi
 <td>-36</td>
 <td>-40</td>
 <td>C</td>
+<td>…</td>
 </tr>
 <tr>
 <td>1</td>
@@ -208,8 +215,10 @@ Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural predi
 <td>0</td>
 <td>-36</td>
 <td>D</td>
+<td>…</td>
 </tr>
 <tr>
+<td>…</td>
 <td>…</td>
 <td>…</td>
 <td>…</td>
@@ -221,16 +230,162 @@ Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural predi
 </tr>
 </tbody>
 </table>
-<div class="section level3">
-<h3 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
-</h3>
-<p>Mason, A., Ludvig, E. A., Spetch, M. L., &amp; Madan, C. R. (2024). Rare and extreme outcomes in risky choice. Psychonomic Bulletin &amp; Review, 31(3), 1301-1308. <a href="https://doi.org/10.3758/s13423-023-02415-x" class="external-link uri">https://doi.org/10.3758/s13423-023-02415-x</a></p>
+<p><strong>Reference</strong><br>
+Mason, A., Ludvig, E. A., Spetch, M. L., &amp; Madan, C. R. (2024). Rare and extreme outcomes in risky choice. <em>Psychonomic Bulletin &amp; Review, 31</em>(3), 1301-1308. <a href="https://doi.org/10.3758/s13423-023-02415-x" class="external-link uri">https://doi.org/10.3758/s13423-023-02415-x</a></p>
+<pre>
+                                      .
+                                        .
+                                    . ;.
+                                      .;
+                                      ;;.
+                                    ;.;;
+                                    ;;;;.
+                                    ;;;;;
+                                    ;;;;;
+                                  ..;;;;;...
+                                    ':::::'
+                                      ':`
+</pre>
+</div>
+<div class="section level2">
+<h2 id="example-result">
+<a href="./demo/DATA/binaryRL_result.html">Example Result</a><a class="anchor" aria-label="anchor" href="#example-result"></a>
+</h2>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="reference/run_m.html">run_m</a></span><span class="op">(</span></span>
+<span>  mode <span class="op">=</span> <span class="st">"replay"</span>,</span>
+<span>  data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span>,</span>
+<span>  id <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.321</span>, <span class="fl">0.765</span><span class="op">)</span>,</span>
+<span>  n_params <span class="op">=</span> <span class="fl">2</span>, </span>
+<span>  n_trials <span class="op">=</span> <span class="fl">360</span>,</span>
+<span>  initial_value <span class="op">=</span> <span class="fl">36</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  epsilon <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  lambda <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="11%">
+<col width="11%">
+<col width="4%">
+<col width="17%">
+<col width="4%">
+<col width="11%">
+<col width="4%">
+<col width="7%">
+<col width="4%">
+</colgroup>
+<thead><tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>-</th>
+<th>L_porb</th>
+<th>R_prob</th>
+<th>-</th>
+<th>Rob_Choose</th>
+<th>-</th>
+<th>Reward</th>
+<th>-</th>
+<th>ACC</th>
+<th>-</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>36</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>…</td>
+<td>0.50</td>
+<td>0.50</td>
+<td>…</td>
+<td>A</td>
+<td>…</td>
+<td>36</td>
+<td>…</td>
+<td>1</td>
+<td>…</td>
+</tr>
+<tr>
+<td>36</td>
+<td>40</td>
+<td>0</td>
+<td>0</td>
+<td>…</td>
+<td>0.50</td>
+<td>0.50</td>
+<td>…</td>
+<td>B</td>
+<td>…</td>
+<td>40</td>
+<td>…</td>
+<td>1</td>
+<td>…</td>
+</tr>
+<tr>
+<td>36</td>
+<td>40</td>
+<td>0</td>
+<td>-40</td>
+<td>…</td>
+<td>0.50</td>
+<td>0.50</td>
+<td>…</td>
+<td>D</td>
+<td>…</td>
+<td>-40</td>
+<td>…</td>
+<td>0</td>
+<td>…</td>
+</tr>
+<tr>
+<td>36</td>
+<td>40</td>
+<td>-36</td>
+<td>-40</td>
+<td>…</td>
+<td>0.50</td>
+<td>0.50</td>
+<td>…</td>
+<td>C</td>
+<td>…</td>
+<td>-36</td>
+<td>…</td>
+<td>0</td>
+<td>…</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
 <!---------------------------------------------------------->
 </div>
 </div>
-<div class="section level2">
-<h2 id="parallel-data-fitting">Parallel Data Fitting<a class="anchor" aria-label="anchor" href="#parallel-data-fitting"></a>
-</h2>
+<div class="section level1">
+<h1 id="parallel-data-fitting">Parallel Data Fitting<a class="anchor" aria-label="anchor" href="#parallel-data-fitting"></a>
+</h1>
 <p>While this R package is primarily designed for constructing <strong>Reinforcement Learning (RL)</strong> models (with <code><a href="reference/run_m.html">binaryRL::run_m</a></code> at its core), its flexibility extends further.</p>
 <p>The key functions, <code><a href="reference/rcv_d.html">binaryRL::rcv_d</a></code> and <code><a href="reference/fit_p.html">binaryRL::fit_p</a></code>, provide a unified interface to seamlessly integrate a diverse range of optimization algorithms. Crucially, they offer a parallel solution for tasks like parameter optimization, parameter recovery, and model recovery.</p>
 <p>This means you can leverage this package not only for building and fitting RL models, but also as a versatile algorithm library for fitting other <strong>“black-box functions”</strong> in parallel for each subject. This significantly reduces processing time, provided your function’s parameters can be optimized independently for each subject.</p>
@@ -248,7 +403,6 @@ Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural predi
 
 <p><em>NOTE:</em> If you want to use an algorithm other than <code>L-BFGS-B</code>, you must install the corresponding package.</p>
 <!---------------------------------------------------------->
-</div>
 </div>
 
   </main><aside class="col-md-3"><div class="links">

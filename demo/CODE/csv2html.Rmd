@@ -5,83 +5,100 @@ date: "2025-06-24"
 output: html_document
 ---
 ```{r}
-# 1. 读取 CSV 文件，**关键：在这里指定编码**
-# 尝试使用 UTF-8 编码
-data <- readr::read_csv(
-  "../OUTPUT/result_recovery.csv",
-  locale = readr::locale(encoding = "UTF-8")
-)
+df_to_html <- function(
+    input_data,
+    output_html_path,
+    page_title,
+    encoding = "UTF-8") {
 
-# 如果 UTF-8 仍然乱码，尝试使用 GBK 或 CP936 (中文 Windows 常见编码)
-# data <- readr::read_csv(
-#   "../OUTPUT/result_recovery.csv",
-# # locale = readr::locale(encoding = "GBK")
-# # locale = readr::locale(encoding = "CP936")
-# )
-
-# 2. 将数据框转换为 HTML 表格字符串
-html_table_string <- knitr::kable(data, format = "html")
-
-# 3. 构建完整的 HTML 页面并保存
-html_doc <- htmltools::tagList(
-  htmltools::tags$head(
-    htmltools::tags$meta(charset = "UTF-8"), # 确保 HTML 文件也声明为 UTF-8
-    htmltools::tags$title("Recovery"),
-    htmltools::tags$style(
-      "table { width: 100%; border-collapse: collapse; font-family: sans-serif; }",
-      "th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }",
-      "th { background-color: #f2f2f2; }"
+  # Determine if input_data is a file path or a data frame
+  if (base::is.character(input_data) && base::file.exists(input_data)) {
+    # If it's a file path, read the CSV
+    data_to_convert <- readr::read_csv(
+      input_data,
+      locale = readr::locale(encoding = encoding)
     )
-  ),
-  htmltools::tags$body(
-    htmltools::tags$h1("Recovery"),
-    htmltools::HTML(html_table_string)
+    base::message("Input is a CSV file. Reading data from: ", input_data)
+  } else if (base::is.data.frame(input_data)) {
+    # If it's a data frame, use it directly
+    data_to_convert <- input_data
+    base::message("Input is a data frame. Converting directly.")
+  } else {
+    base::stop(
+      "Invalid 'input_data'. Must be a valid CSV file path or a data frame."
+    )
+  }
+
+  # 2. Convert the data frame to an HTML table string
+  html_table_string <- knitr::kable(data_to_convert, format = "html")
+
+  # 3. Build the complete HTML page and save it
+  html_doc <- htmltools::tagList(
+    htmltools::tags$head(
+      # Ensure HTML file also declares the correct charset
+      htmltools::tags$meta(charset = encoding),
+      htmltools::tags$title(page_title),
+      htmltools::tags$style(
+        "table { width: 100%; border-collapse: collapse; font-family: sans-serif; }",
+        "th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }",
+        "th { background-color: #f2f2f2; }"
+      )
+    ),
+    htmltools::tags$body(
+      htmltools::tags$h1(page_title),
+      htmltools::HTML(html_table_string)
+    )
   )
-)
 
-output_html_path <- "../OUTPUT/result_recovery.html"
-htmltools::save_html(html_doc, file = output_html_path)
+  htmltools::save_html(html_doc, file = output_html_path)
 
-cat(paste0("CSV 数据已成功保存为 HTML 文件：", output_html_path, "\n"))
+  base::cat(base::paste0(
+    "Data successfully saved to HTML file: ",
+    output_html_path,
+    "\n"
+  ))
+}
 ```
 
 ```{r}
-# 1. 读取 CSV 文件，**关键：在这里指定编码**
-# 尝试使用 UTF-8 编码
-data <- readr::read_csv(
-  "../OUTPUT/result_comparison.csv",
-  locale = readr::locale(encoding = "UTF-8")
+# Example 1: For "result_recovery.csv"
+df_to_html(
+  input_data = "../OUTPUT/result_recovery.csv",
+  output_html_path = "../OUTPUT/result_recovery.html",
+  page_title = "Recovery",
+  encoding = "UTF-8" # Or "GBK", "CP936" if UTF-8 causes issues
 )
 
-# 如果 UTF-8 仍然乱码，尝试使用 GBK 或 CP936 (中文 Windows 常见编码)
-# data <- readr::read_csv(
-#   "../OUTPUT/result_recovery.csv",
-# # locale = readr::locale(encoding = "GBK")
-# # locale = readr::locale(encoding = "CP936")
-# )
-
-# 2. 将数据框转换为 HTML 表格字符串
-html_table_string <- knitr::kable(data, format = "html")
-
-# 3. 构建完整的 HTML 页面并保存
-html_doc <- htmltools::tagList(
-  htmltools::tags$head(
-    htmltools::tags$meta(charset = "UTF-8"), # 确保 HTML 文件也声明为 UTF-8
-    htmltools::tags$title("Comparison"),
-    htmltools::tags$style(
-      "table { width: 100%; border-collapse: collapse; font-family: sans-serif; }",
-      "th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }",
-      "th { background-color: #f2f2f2; }"
-    )
-  ),
-  htmltools::tags$body(
-    htmltools::tags$h1("Comparison"),
-    htmltools::HTML(html_table_string)
-  )
+# Example 2: For "result_comparison.csv"
+df_to_html(
+  input_data = "../OUTPUT/result_comparison.csv",
+  output_html_path = "../OUTPUT/result_comparison.html",
+  page_title = "Comparison",
+  encoding = "UTF-8" # Or "GBK", "CP936"
 )
-
-output_html_path <- "../OUTPUT/result_comparison.html"
-htmltools::save_html(html_doc, file = output_html_path)
-
-cat(paste0("CSV 数据已成功保存为 HTML 文件：", output_html_path, "\n"))
 ```
+
+```{r}
+binaryRL.res <- binaryRL::run_m(
+  mode = "replay",
+  data = binaryRL::Mason_2024_Exp2,
+  id = 1,
+  eta = 0.5, tau = 0.5,
+  n_params = 2, n_trials = 360
+)
+
+df_to_html(
+  input_data = binaryRL::Mason_2024_Exp2 %>% dplyr::filter(Subject == 1),
+  output_html_path = "../DATA/binaryRL_data.html",
+  page_title = "Example Data",
+  encoding = "UTF-8" # Or "GBK", "CP936"
+)
+
+df_to_html(
+  input_data = binaryRL.res[[1]],
+  output_html_path = "../DATA/binaryRL_result.html",
+  page_title = "Example Result",
+  encoding = "UTF-8" # Or "GBK", "CP936"
+)
+```
+
