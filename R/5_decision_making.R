@@ -166,10 +166,24 @@ decision_making <- function(
     # 记录此时L和R的名字
     L_name <- data[[L_choice]][i]
     R_name <- data[[R_choice]][i]
+    
+    # 查询此时左选项已经出现过几次了
+    data$L_freq[i] <- 
+      sum(data[[L_choice]][1:(i)] == L_name, na.rm = TRUE) + 
+      sum(data[[R_choice]][1:(i)] == L_name, na.rm = TRUE)
+    # 计算此时右选项已经出现过几次了
+    data$R_freq[i] <- 
+      sum(data[[L_choice]][1:(i)] == R_name, na.rm = TRUE) + 
+      sum(data[[R_choice]][1:(i)] == R_name, na.rm = TRUE)
+    
+    # 计算此时左选项被选了几次
+    data$L_pick[i] <- sum(data$Rob_Choose == L_name, na.rm = TRUE)
+    # 计算此时右选项被选了几次
+    data$R_pick[i] <- sum(data$Rob_Choose == R_name, na.rm = TRUE)
+    
     # 在上一行找此时左右选项对应的心中的价值
     data$L_value[i] <- data[[L_name]][i - 1]
     data$R_value[i] <- data[[R_name]][i - 1]
-    
 ################################ [L & R prob] ##################################  
     
     # 查询此次选择时, 已经选过哪些了
@@ -181,8 +195,15 @@ decision_making <- function(
     # expl_func -> data$Try[i]: 是否进行探索
     data$Try[i] <- expl_func(
       i = i,
+      L_freq = data$L_freq[i],
+      R_freq = data$R_freq[i],
+      L_pick = data$L_pick[i],
+      R_pick = data$R_pick[i],
+      L_value = data$L_value[i],
+      R_value = data$R_value[i],
       var1 = data[[var1]][i],
       var2 = data[[var2]][i],
+      
       threshold = threshold,
       epsilon = epsilon,
       lambda = lambda,
@@ -199,26 +220,38 @@ decision_making <- function(
       
       # prob_func -> data$L_prob[i] 计算选L概率
       data$L_prob[i] <- prob_func(
-        LR = "L", 
+        i = i,
+        L_freq = data$L_freq[i],
+        R_freq = data$R_freq[i],
+        L_pick = data$L_pick[i],
+        R_pick = data$R_pick[i],
         L_value = data$L_value[i],
         R_value = data$R_value[i],
-        try = data$Try[i],
-        i = i,
         var1 = data[[var1]][i],
         var2 = data[[var2]][i],
+        
+        try = data$Try[i],
+        LR = "L",
+        
         tau = tau,
         alpha = alpha,
         beta = beta
       )
       # prob_func -> data$R_prob[i] 计算选R概率
       data$R_prob[i] <- prob_func(
-        LR = "R", 
+        i = i,
+        L_freq = data$L_freq[i],
+        R_freq = data$R_freq[i],
+        L_pick = data$L_pick[i],
+        R_pick = data$R_pick[i],
         L_value = data$L_value[i],
         R_value = data$R_value[i],
-        try = data$Try[i],
-        i = i,
         var1 = data[[var1]][i],
         var2 = data[[var2]][i],
+        
+        try = data$Try[i],
+        LR = "R",
+        
         tau = tau,
         alpha = alpha,
         beta = beta
@@ -284,7 +317,7 @@ decision_making <- function(
 ################################ [occurrence] ##################################   
     
     # 计算这次是第几次选了这个选项
-    data$Time_Line[[i]] <- sum(
+    data$Occurrence[[i]] <- sum(
       data$Rob_Choose == data$Rob_Choose[[i]], 
       na.rm = TRUE
     )
@@ -309,13 +342,19 @@ decision_making <- function(
     
     # 看到reward之后的折扣率, 用util_func选择此时对应的gamma, 计算出R_utility
     gamma_utility <- util_func(
+      i = i,
+      L_freq = data$L_freq[i],
+      R_freq = data$R_freq[i],
+      L_pick = data$L_pick[i],
+      R_pick = data$R_pick[i],
+      L_value = data$L_value[i],
+      R_value = data$R_value[i],
+      
       value = data$V_value[i],
       utility = data$R_utility[i],
       reward = data$Reward[i],
-      occurrence = data$Time_Line[i],
-      i = i,
-      var1 = data[[var1]][i],
-      var2 = data[[var2]][i],
+      occurrence = data$Occurrence[i],
+      
       gamma = gamma,
       alpha = alpha,
       beta = beta
@@ -325,13 +364,19 @@ decision_making <- function(
     
     # 看到reward之后的学习率, 用rate_func选择此时对应的eta
     data$eta[i] <- rate_func(
+      i = i,
+      L_freq = data$L_freq[i],
+      R_freq = data$R_freq[i],
+      L_pick = data$L_pick[i],
+      R_pick = data$R_pick[i],
+      L_value = data$L_value[i],
+      R_value = data$R_value[i],
+      
       value = data$V_value[i],
       utility = data$R_utility[i],
       reward = data$Reward[i],
       occurrence = data$Time_Line[i],
-      i = i,
-      var1 = data[[var1]][i],
-      var2 = data[[var2]][i],
+      
       eta = eta,
       alpha = alpha,
       beta = beta

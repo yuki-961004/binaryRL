@@ -5,29 +5,36 @@
 \title{Function: Soft-Max Function}
 \usage{
 func_tau(
-  LR,
-  try,
+  i,
+  L_freq,
+  R_freq,
+  L_pick,
+  R_pick,
   L_value,
   R_value,
-  i,
   var1 = NA,
   var2 = NA,
+  LR,
+  try,
   tau = 1,
   alpha,
   beta
 )
 }
 \arguments{
-\item{LR}{Are you calculating the probability for the left option or the right option?}
+\item{i}{The current row number.}
 
-\item{try}{If the choice was random, the value is 1; 
-If the choice was based on value, the value is 0.}
+\item{L_freq}{The frequency of left option appearance}
+
+\item{R_freq}{The frequency of right option appearance}
+
+\item{L_pick}{The number of times left option was picked}
+
+\item{R_pick}{The number of times left option was picked}
 
 \item{L_value}{The value of the left option}
 
 \item{R_value}{The value of the right option}
-
-\item{i}{The current row number.}
 
 \item{var1}{[character] 
 Column name of extra variable 1. If your model uses more than just reward 
@@ -43,6 +50,11 @@ Column name of extra variable 2. If one additional variable, var1, does not
  model.
  
  \code{default: var2 = "Extra_Var2"}}
+
+\item{LR}{Are you calculating the probability for the left option or the right option?}
+
+\item{try}{If the choice was random, the value is 1; 
+If the choice was based on value, the value is 0.}
 
 \item{tau}{[vector] 
 Parameters used in the Soft-Max Function. `prob_func` representing the 
@@ -82,19 +94,26 @@ When customizing these functions, please ensure that you do not modify
 \examples{
 \dontrun{
 func_tau <- function(
+  # Trial number
+  i,
+  # Number of times this option has appeared
+  L_freq,
+  R_freq,
+  # Number of times this option has been chosen
+  L_pick,
+  R_pick,
+  # Current value of this option
+  L_value,
+  R_value,
+  # Extra variables
+  var1 = NA,
+  var2 = NA,
+  
   # Whether calculating probability for left or right choice
   LR,
   # Is it a random choosing trial?
   try,
-  # Value of the left option
-  L_value,
-  # Value of the right option
-  R_value,
-  # Current trial number
-  i,
-  # Additional variables
-  var1 = NA,
-  var2 = NA,
+  
   # Free parameter
   tau = 1,
   # Extra parameters

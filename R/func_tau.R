@@ -12,21 +12,26 @@
 #'  the arguments. Instead, only modify the `if-else` statements or the internal 
 #'  logic to adapt the function to your needs.
 #' 
-#' @param LR 
-#' Are you calculating the probability for the left option or the right option?
-#'  
-#' @param try 
-#' If the choice was random, the value is 1; 
-#' If the choice was based on value, the value is 0.
-#'  
+#' @param i 
+#' The current row number.
+#' 
+#' @param L_freq 
+#' The frequency of left option appearance
+#' 
+#' @param R_freq 
+#' The frequency of right option appearance
+#' 
+#' @param L_pick 
+#' The number of times left option was picked
+#' 
+#' @param R_pick 
+#' The number of times left option was picked
+#' 
 #' @param L_value 
 #' The value of the left option
 #' 
 #' @param R_value 
 #' The value of the right option
-#' 
-#' @param i 
-#' The current row number.
 #' 
 #' @param var1 [character] 
 #' Column name of extra variable 1. If your model uses more than just reward 
@@ -42,6 +47,13 @@
 #'  model.
 #'  
 #'  \code{default: var2 = "Extra_Var2"}
+#'  
+#' @param LR 
+#' Are you calculating the probability for the left option or the right option?
+#'  
+#' @param try 
+#' If the choice was random, the value is 1; 
+#' If the choice was based on value, the value is 0.
 #' 
 #' @param tau [vector] 
 #' Parameters used in the Soft-Max Function. `prob_func` representing the 
@@ -67,19 +79,26 @@
 #' @examples
 #' \dontrun{
 #' func_tau <- function(
+#'   # Trial number
+#'   i,
+#'   # Number of times this option has appeared
+#'   L_freq,
+#'   R_freq,
+#'   # Number of times this option has been chosen
+#'   L_pick,
+#'   R_pick,
+#'   # Current value of this option
+#'   L_value,
+#'   R_value,
+#'   # Extra variables
+#'   var1 = NA,
+#'   var2 = NA,
+#'   
 #'   # Whether calculating probability for left or right choice
 #'   LR,
 #'   # Is it a random choosing trial?
 #'   try,
-#'   # Value of the left option
-#'   L_value,
-#'   # Value of the right option
-#'   R_value,
-#'   # Current trial number
-#'   i,
-#'   # Additional variables
-#'   var1 = NA,
-#'   var2 = NA,
+#'   
 #'   # Free parameter
 #'   tau = 1,
 #'   # Extra parameters
@@ -109,19 +128,27 @@
 #' }
 #' 
 func_tau <- function(
+  # 试次序号
+  i,
+  # 该选项出现了几次
+  L_freq,
+  R_freq,
+  # 该选项被选过几次
+  L_pick,
+  R_pick,
+  # 该选项目前的价值
+  L_value,
+  R_value,
+  # 额外需要用到的变量1
+  var1 = NA,
+  # 额外需要用到的变量2
+  var2 = NA,  
+  
   # 此时计算的是选左概率还是选右概率
   LR,
   # 是否随机尝试
   try,
-  # 左边选项的价值
-  L_value,
-  # 右边选项的价值
-  R_value,
-  # 试次序号
-  i,
-  # 额外变量
-  var1 = NA,
-  var2 = NA,
+  
   # 自由参数
   tau = 1,
   # 额外参数

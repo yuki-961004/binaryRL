@@ -5,28 +5,38 @@
 \title{Function: Learning Rate}
 \usage{
 func_eta(
+  i,
+  L_freq,
+  R_freq,
+  L_pick,
+  R_pick,
+  L_value,
+  R_value,
+  var1 = NA,
+  var2 = NA,
   value,
   utility,
   reward,
   occurrence,
-  i,
-  var1 = NA,
-  var2 = NA,
   eta,
   alpha,
   beta
 )
 }
 \arguments{
-\item{value}{The expected value of the stimulus in the subject's mind at this point in time.}
-
-\item{utility}{The subjective value that the subject assigns to the objective reward.}
-
-\item{reward}{The objective reward received by the subject after selecting a stimulus.}
-
-\item{occurrence}{The number of times the same stimulus has appeared.}
-
 \item{i}{The current row number.}
+
+\item{L_freq}{The frequency of left option appearance}
+
+\item{R_freq}{The frequency of right option appearance}
+
+\item{L_pick}{The number of times left option was picked}
+
+\item{R_pick}{The number of times left option was picked}
+
+\item{L_value}{The value of the left option}
+
+\item{R_value}{The value of the right option}
 
 \item{var1}{[character] 
 Column name of extra variable 1. If your model uses more than just reward 
@@ -42,6 +52,14 @@ Column name of extra variable 2. If one additional variable, var1, does not
  model.
  
  \code{default: var2 = "Extra_Var2"}}
+
+\item{value}{The expected value of the stimulus in the subject's mind at this point in time.}
+
+\item{utility}{The subjective value that the subject assigns to the objective reward.}
+
+\item{reward}{The objective reward received by the subject after selecting a stimulus.}
+
+\item{occurrence}{The number of times the same stimulus has been chosen.}
 
 \item{eta}{[numeric]
 Parameters used in the Learning Rate Function, \code{rate_func}, representing
@@ -96,6 +114,21 @@ When customizing these functions, please ensure that you do not modify
 \examples{
 \dontrun{
 func_eta <- function(
+  # Trial number
+  i,
+  # Number of times this option has appeared
+  L_freq,
+  R_freq,
+  # Number of times this option has been chosen
+  L_pick,
+  R_pick,
+  # Current value of this option
+  L_value,
+  R_value,
+  # Extra variables
+  var1 = NA,
+  var2 = NA,
+  
   # Expected value for this stimulus
   value,
   # Subjective utility
@@ -104,11 +137,7 @@ func_eta <- function(
   reward,
   # Occurrence count for this stimulus
   occurrence,
-  # Current trial number
-  i,
-  # Extra variables
-  var1 = NA,
-  var2 = NA,
+  
   # Free Parameter
   eta,
   # Extra parameters

@@ -55,7 +55,7 @@ For negative rewards (losses), utility is calculated
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -111,13 +111,19 @@ from reward. Its application varies depending on the specific model:</p><ul><li>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">func_gamma</span><span class="op">(</span></span>
+<span>  <span class="va">i</span>,</span>
+<span>  <span class="va">L_freq</span>,</span>
+<span>  <span class="va">R_freq</span>,</span>
+<span>  <span class="va">L_pick</span>,</span>
+<span>  <span class="va">R_pick</span>,</span>
+<span>  <span class="va">L_value</span>,</span>
+<span>  <span class="va">R_value</span>,</span>
+<span>  var1 <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  var2 <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  <span class="va">value</span>,</span>
 <span>  <span class="va">utility</span>,</span>
 <span>  <span class="va">reward</span>,</span>
 <span>  <span class="va">occurrence</span>,</span>
-<span>  <span class="va">i</span>,</span>
-<span>  var1 <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  var2 <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  gamma <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">alpha</span>,</span>
 <span>  <span class="va">beta</span></span>
@@ -128,24 +134,32 @@ from reward. Its application varies depending on the specific model:</p><ul><li>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
-<dd><p>The expected value of the stimulus in the subject's mind at this point in time.</p></dd>
-
-
-<dt id="arg-utility">utility<a class="anchor" aria-label="anchor" href="#arg-utility"></a></dt>
-<dd><p>The subjective value that the subject assigns to the objective reward.</p></dd>
-
-
-<dt id="arg-reward">reward<a class="anchor" aria-label="anchor" href="#arg-reward"></a></dt>
-<dd><p>The objective reward received by the subject after selecting a stimulus.</p></dd>
-
-
-<dt id="arg-occurrence">occurrence<a class="anchor" aria-label="anchor" href="#arg-occurrence"></a></dt>
-<dd><p>The number of times the same stimulus has appeared.</p></dd>
-
-
-<dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
+<dl><dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
 <dd><p>The current row number.</p></dd>
+
+
+<dt id="arg-l-freq">L_freq<a class="anchor" aria-label="anchor" href="#arg-l-freq"></a></dt>
+<dd><p>The frequency of left option appearance</p></dd>
+
+
+<dt id="arg-r-freq">R_freq<a class="anchor" aria-label="anchor" href="#arg-r-freq"></a></dt>
+<dd><p>The frequency of right option appearance</p></dd>
+
+
+<dt id="arg-l-pick">L_pick<a class="anchor" aria-label="anchor" href="#arg-l-pick"></a></dt>
+<dd><p>The number of times left option was picked</p></dd>
+
+
+<dt id="arg-r-pick">R_pick<a class="anchor" aria-label="anchor" href="#arg-r-pick"></a></dt>
+<dd><p>The number of times left option was picked</p></dd>
+
+
+<dt id="arg-l-value">L_value<a class="anchor" aria-label="anchor" href="#arg-l-value"></a></dt>
+<dd><p>The value of the left option</p></dd>
+
+
+<dt id="arg-r-value">R_value<a class="anchor" aria-label="anchor" href="#arg-r-value"></a></dt>
+<dd><p>The value of the right option</p></dd>
 
 
 <dt id="arg-var-">var1<a class="anchor" aria-label="anchor" href="#arg-var-"></a></dt>
@@ -163,6 +177,22 @@ Column name of extra variable 2. If one additional variable, var1, does not
  meet your needs, you can add another additional variable, var2, into your
  model.</p>
 <p><code>default: var2 = "Extra_Var2"</code></p></dd>
+
+
+<dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
+<dd><p>The expected value of the stimulus in the subject's mind at this point in time.</p></dd>
+
+
+<dt id="arg-utility">utility<a class="anchor" aria-label="anchor" href="#arg-utility"></a></dt>
+<dd><p>The subjective value that the subject assigns to the objective reward.</p></dd>
+
+
+<dt id="arg-reward">reward<a class="anchor" aria-label="anchor" href="#arg-reward"></a></dt>
+<dd><p>The objective reward received by the subject after selecting a stimulus.</p></dd>
+
+
+<dt id="arg-occurrence">occurrence<a class="anchor" aria-label="anchor" href="#arg-occurrence"></a></dt>
+<dd><p>The number of times the same stimulus has been chosen.</p></dd>
 
 
 <dt id="arg-gamma">gamma<a class="anchor" aria-label="anchor" href="#arg-gamma"></a></dt>
@@ -204,6 +234,21 @@ Extra parameters that may be used in functions.</p></dd>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">func_gamma</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="co"># Trial number</span></span></span>
+<span class="r-in"><span>  <span class="va">i</span>,</span></span>
+<span class="r-in"><span>  <span class="co"># Number of times this option has appeared</span></span></span>
+<span class="r-in"><span>  <span class="va">L_freq</span>,</span></span>
+<span class="r-in"><span>  <span class="va">R_freq</span>,</span></span>
+<span class="r-in"><span>  <span class="co"># Number of times this option has been chosen</span></span></span>
+<span class="r-in"><span>  <span class="va">L_pick</span>,</span></span>
+<span class="r-in"><span>  <span class="va">R_pick</span>,</span></span>
+<span class="r-in"><span>  <span class="co"># Current value of this option</span></span></span>
+<span class="r-in"><span>  <span class="va">L_value</span>,</span></span>
+<span class="r-in"><span>  <span class="va">R_value</span>,</span></span>
+<span class="r-in"><span>  <span class="co"># Extra variables</span></span></span>
+<span class="r-in"><span>  <span class="va">var1</span> <span class="op">=</span> <span class="cn">NA</span>,</span></span>
+<span class="r-in"><span>  <span class="va">var2</span> <span class="op">=</span> <span class="cn">NA</span>,</span></span>
+<span class="r-in"><span>  </span></span>
 <span class="r-in"><span>  <span class="co"># Expected value for this stimulus</span></span></span>
 <span class="r-in"><span>  <span class="va">value</span>,</span></span>
 <span class="r-in"><span>  <span class="co"># Subjective utility</span></span></span>
@@ -212,11 +257,7 @@ Extra parameters that may be used in functions.</p></dd>
 <span class="r-in"><span>  <span class="va">reward</span>,</span></span>
 <span class="r-in"><span>  <span class="co"># Occurrence count for this stimulus</span></span></span>
 <span class="r-in"><span>  <span class="va">occurrence</span>,</span></span>
-<span class="r-in"><span>  <span class="co"># Current trial number</span></span></span>
-<span class="r-in"><span>  <span class="va">i</span>,</span></span>
-<span class="r-in"><span>  <span class="co"># Extra variables</span></span></span>
-<span class="r-in"><span>  <span class="va">var1</span> <span class="op">=</span> <span class="cn">NA</span>,</span></span>
-<span class="r-in"><span>  <span class="va">var2</span> <span class="op">=</span> <span class="cn">NA</span>,</span></span>
+<span class="r-in"><span>  </span></span>
 <span class="r-in"><span>  <span class="co"># Free Parameter</span></span></span>
 <span class="r-in"><span>  <span class="va">gamma</span> <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>  <span class="co"># Extra parameters</span></span></span>

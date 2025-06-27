@@ -6,6 +6,12 @@
 \usage{
 func_epsilon(
   i,
+  L_freq,
+  R_freq,
+  L_pick,
+  R_pick,
+  L_value,
+  R_value,
   var1 = NA,
   var2 = NA,
   threshold = 1,
@@ -17,6 +23,18 @@ func_epsilon(
 }
 \arguments{
 \item{i}{The current row number.}
+
+\item{L_freq}{The frequency of left option appearance}
+
+\item{R_freq}{The frequency of right option appearance}
+
+\item{L_pick}{The number of times left option was picked}
+
+\item{R_pick}{The number of times left option was picked}
+
+\item{L_value}{The value of the left option}
+
+\item{R_value}{The value of the right option}
 
 \item{var1}{[character] 
 Column name of extra variable 1. If your model uses more than just reward 
@@ -123,11 +141,21 @@ When customizing these functions, please ensure that you do not modify
 \examples{
 \dontrun{
 func_epsilon <- function(
-  # Current trial number
+  # Trial number
   i,
+  # Number of times this option has appeared
+  L_freq,
+  R_freq,
+  # Number of times this option has been chosen
+  L_pick,
+  R_pick,
+  # Current value of this option
+  L_value,
+  R_value,
   # Extra variables
   var1 = NA,
   var2 = NA,
+  
   # Free Parameters
   threshold = 1,
   epsilon = NA,

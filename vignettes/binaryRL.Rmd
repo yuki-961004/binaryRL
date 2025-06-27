@@ -88,10 +88,16 @@ print(binaryRL::func_gamma)
 
 ```{r eval=FALSE}
 func_gamma <- function(
-  # variables
-  value, utility, reward, occurrence, var1, var2, 
+  # variables before decision-making
+  i, L_freq, R_freq, L_pick, R_pick, L_value, R_value,
+  # variables after decision-making
+  value, utility, reward, occurrence, 
   # parameters
-  gamma, alpha, beta 
+  gamma, 
+  # extra variables
+  var1, var2, 
+  # extra parameters
+  alpha, beta 
 ){
   if (length(gamma) == 1) {
     gamma <- gamma
@@ -116,10 +122,16 @@ print(binaryRL::func_eta)
 
 ```{r eval=FALSE}
 func_eta <- function (
-  # variables
-  value, utility, reward, occurrence, var1, var2, 
+  # variables before decision-making
+  i, L_freq, R_freq, L_pick, R_pick, L_value, R_value,
+  # variables after decision-making
+  value, utility, reward, occurrence, 
   # parameters
-  eta, alpha, beta 
+  eta, 
+  # extra variables
+  var1, var2, 
+  # extra parameters
+  alpha, beta 
 ){
   # TD
   if (length(eta) == 1) {
@@ -151,10 +163,14 @@ print(binaryRL::func_epsilon)
 
 ```{r eval=FALSE}
 func_epsilon <- function(
-  # variables
-  i, var1, var2, 
+  # variables before decision-making
+  i, L_freq, R_freq, L_pick, R_pick, L_value, R_value, 
   # parameters
-  threshold, epsilon, lambda, alpha, beta 
+  threshold, epsilon, lambda, 
+  # extra variables
+  var1, var2, 
+  # extra parameters
+  alpha, beta 
 ){
   # epsilon-first
   if (i <= threshold) {
@@ -199,10 +215,14 @@ print(binaryRL::func_tau)
 
 ```{r eval=FALSE}
 func_tau <- function (
-  # variables
-  LR, try, L_value, R_value, var1, var2, 
+  # variables before decision-making
+  i, L_freq, R_freq, L_pick, R_pick, L_value, R_value, 
   # parameters
-  tau, alpha, beta 
+  tau, 
+  # extra variables
+  var1, var2, 
+  # extra parameters
+  alpha, beta 
 ){
   if (!(LR %in% c("L", "R"))) {
     stop("LR = 'L' or 'R'")
