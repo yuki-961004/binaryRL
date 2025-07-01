@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -111,35 +111,6 @@ Since parallel execution runs in a separate environment, if you have
 customized any of the four core functions, you must explicitly pass the
 function names to <code>binaryRL</code> via the <code>funcs</code>
 argument.</p>
-</div>
-<div class="section level3">
-<h3 id="initial-value">Initial Value<a class="anchor" aria-label="anchor" href="#initial-value"></a>
-</h3>
-<p>In <code>run_m</code>, there is an argument called
-<code>initial_value</code>. Considering that the initial value has a
-significant impact on the parameter estimation of the <strong>learning
-rates (<span class="math inline">\(\eta\)</span>)</strong> When the
-initial value is not set (<code>initial_value = NA</code>), it is taken
-to be the reward received for that stimulus the first time.</p>
-<blockquote>
-<p>“Comparisons between the two learning rates generally revealed a
-positivity bias (<span class="math inline">\(\alpha_{+} &gt;
-\alpha_{-}\)</span>)”<br>
-“However, that on some occasions, studies failed to find a positivity
-bias or even reported a negativity bias (<span class="math inline">\(\alpha_{+} &lt; \alpha_{-}\)</span>).”<br>
-“Because Q-values initialization markedly affect learning rate and
-learning bias estimates.”</p>
-</blockquote>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
-<span>  <span class="va">...</span>,</span>
-<span>  initial_value <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><strong>Reference</strong><br>
-Palminteri, S., &amp; Lebreton, M. (2022). The computational roots of
-positivity and confirmation biases in reinforcement learning. <em>Trends
-in Cognitive Sciences, 26</em>(7), 607-621. <a href="https://doi.org/10.1016/j.tics.2022.04.005" class="external-link uri">https://doi.org/10.1016/j.tics.2022.04.005</a></p>
 <!---------------------------------------------------------->
 </div>
 <div class="section level3">
@@ -158,7 +129,7 @@ implemented the model below. By replacing <code>util_func</code> with
 the specified form that follows, you can enable the model to run a
 utility function based on <strong>Kahneman’s Prospect
 Theory</strong>.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">func_gamma</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span></span>
 <span>  <span class="va">value</span>, <span class="va">utility</span>, <span class="va">reward</span>, <span class="va">occurrence</span>, <span class="va">var1</span>, <span class="va">var2</span>, <span class="va">gamma</span>, <span class="va">alpha</span>, <span class="va">beta</span></span>
 <span><span class="op">)</span><span class="op">{</span></span>
@@ -191,8 +162,37 @@ decision under risk. In Handbook of the fundamentals of financial
 decision making: Part I (pp. 99-127). <a href="https://doi.org/10.1142/9789814417358_0006" class="external-link uri">https://doi.org/10.1142/9789814417358_0006</a><br>
 Nilsson, H., Rieskamp, J., &amp; Wagenmakers, E. J. (2011). Hierarchical
 Bayesian parameter estimation for cumulative prospect theory.
-<em>Journal of Mathematical Psychology, 55</em>(1), 84-93. <a href="https://doi.org/10.1016/j.jmp.2010.08.006" class="external-link uri">https://doi.org/10.1016/j.jmp.2010.08.006</a>
-<!----------------------------------------------------------></p>
+<em>Journal of Mathematical Psychology, 55</em>(1), 84-93. <a href="https://doi.org/10.1016/j.jmp.2010.08.006" class="external-link uri">https://doi.org/10.1016/j.jmp.2010.08.006</a></p>
+<!---------------------------------------------------------->
+</div>
+<div class="section level3">
+<h3 id="initial-value">Initial Value<a class="anchor" aria-label="anchor" href="#initial-value"></a>
+</h3>
+<p>In <code>run_m</code>, there is an argument called
+<code>initial_value</code>. Considering that the initial value has a
+significant impact on the parameter estimation of the <strong>learning
+rates (<span class="math inline">\(\eta\)</span>)</strong> When the
+initial value is not set (<code>initial_value = NA</code>), it is taken
+to be the reward received for that stimulus the first time.</p>
+<blockquote>
+<p>“Comparisons between the two learning rates generally revealed a
+positivity bias (<span class="math inline">\(\alpha_{+} &gt;
+\alpha_{-}\)</span>)”<br>
+“However, that on some occasions, studies failed to find a positivity
+bias or even reported a negativity bias (<span class="math inline">\(\alpha_{+} &lt; \alpha_{-}\)</span>).”<br>
+“Because Q-values initialization markedly affect learning rate and
+learning bias estimates.”</p>
+</blockquote>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  initial_value <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><strong>Reference</strong><br>
+Palminteri, S., &amp; Lebreton, M. (2022). The computational roots of
+positivity and confirmation biases in reinforcement learning. <em>Trends
+in Cognitive Sciences, 26</em>(7), 607-621. <a href="https://doi.org/10.1016/j.tics.2022.04.005" class="external-link uri">https://doi.org/10.1016/j.tics.2022.04.005</a></p>
 </div>
 <div class="section level3">
 <h3 id="exploration-strategy">Exploration Strategy<a class="anchor" aria-label="anchor" href="#exploration-strategy"></a>
@@ -246,6 +246,32 @@ Bioinspired Information and Communications Technologies (pp. 113-117).
 <a href="https://doi.org/10.4108/icst.bict.2014.258045" class="external-link uri">https://doi.org/10.4108/icst.bict.2014.258045</a><br><!----------------------------------------------------------></p>
 </div>
 <div class="section level3">
+<h3 id="upper-confidence-bound-action-selection">Upper-Confidence-Bound Action Selection<a class="anchor" aria-label="anchor" href="#upper-confidence-bound-action-selection"></a>
+</h3>
+<p>The <span class="math inline">\(\pi\)</span> parameter in
+Upper-Confidence-Bound (UCB) Action Selection, which is c in the book,
+is a parameter used to control the ratio of the bias value given to
+less-selected options. A larger value of this parameter will assign a
+greater bias to options that have been chosen infrequently. This value
+is set to 0.1 by default, ensuring that the model does not completely
+ignore any option. Once an option has been selected once, the adjustment
+to its value bias approaches almost zero. If the rewards in your
+experiment are very small or very large, you should adjust this value
+accordingly.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">run_m</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  ...</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">pi =</span> <span class="fl">0.1</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  ...</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>)</span></code></pre></div>
+<p><strong>Reference</strong><br>
+Sutton, R. S., &amp; Barto, A. G. (2014, 2015). Reinforcement Learning:
+An Introduction (2nd ed). Cambridge: MIT press.<br>
+Sacu, S., Dubois, M., Hezemans, F. H., Aggensteiner, P. M., Monninger,
+M., Brandeis, D., … &amp; Holz, N. E. (2024). Early-life adversities are
+associated with lower expected value signaling in the adult brain.
+Biological Psychiatry, 96(12), 948-958. <a href="https://doi.org/10.1016/j.biopsych.2024.04.005" class="external-link uri">https://doi.org/10.1016/j.biopsych.2024.04.005</a></p>
+</div>
+<div class="section level3">
 <h3 id="soft-max-function">Soft-Max Function<a class="anchor" aria-label="anchor" href="#soft-max-function"></a>
 </h3>
 <p>During the recovery process, the last element of both
@@ -261,12 +287,12 @@ exponential distribution from which <span class="math inline">\(\tau\)</span> is
 if this value is 1, then <span class="math inline">\(\tau\)</span> is
 drawn from an exponential distribution with a rate of 10, i.e., <span class="math inline">\(\tau \sim \text{Exp}(1)\)</span>.</p></li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>binaryRL<span class="sc">::</span><span class="fu">rcv_d</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  ...</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">simulate_lower =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>)),</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">simulate_upper =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)),</span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  ...</span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>binaryRL<span class="sc">::</span><span class="fu">rcv_d</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  ...</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">simulate_lower =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>)),</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">simulate_upper =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)),</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  ...</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>Reference</strong><br>
 Wilson, R. C., &amp; Collins, A. G. (2019). Ten simple rules for the
 computational modeling of behavioral data. <em>Elife</em>, 8, e49547. <a href="https://doi.org/10.7554/eLife.49547" class="external-link uri">https://doi.org/10.7554/eLife.49547</a></p>

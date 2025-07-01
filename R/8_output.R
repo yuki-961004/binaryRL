@@ -48,7 +48,7 @@
 #'  based on the relative values of the left and right options. For example,
 #'  if `epsilon = 0.1`, the subject has a 10% chance of random choice and a
 #'  90% chance of value-based choice. This parameter is only relevant when
-#'  `threshold` is at its default value (1) and `pai` is not set.
+#'  `threshold` is at its default value (1) and `lambda` is not set.
 #'  e.g., `epsilon = 0.1`
 #' 
 #' @param lambda [vector] 
@@ -82,7 +82,7 @@ output <- function(
     data, 
     n_params, n_trials, 
     initial_value, threshold,
-    alpha, beta, gamma, eta, epsilon, lambda, tau
+    alpha, beta, gamma, eta, epsilon, lambda, pi, tau
 ){
   params <- list(
     EV_1 = initial_value,
@@ -94,6 +94,7 @@ output <- function(
     eta = c(eta), 
     epsilon = c(epsilon),
     lambda = c(lambda),
+    pi = c(pi),
     tau = c(tau)
   )
   

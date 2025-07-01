@@ -204,6 +204,49 @@ func_epsilon <- function(
 ```
 </details>
 
+
+<!---------------------------------------------------------->
+
+<details>
+<summary>Upper-Confidence-Bound Action Selection (π)</summary>
+
+```{r eval=FALSE}
+print(binaryRL::func_pi)
+```
+
+```{r eval=FALSE}
+func_gamma <- function(
+  # variables before decision-making
+  i, L_freq, R_freq, L_pick, R_pick, L_value, R_value,
+  # adjusting Left option value or Right option  value
+  LR,
+  # parameters
+  pi, 
+  # extra variables
+  var1, var2, 
+  # extra parameters
+  alpha, beta 
+){
+  if (!(LR %in% c("L", "R"))) {
+    stop("LR = 'L' or 'R'")
+  }
+############################# [ adjust value ] #################################
+  else if (LR == "L") {
+    value <- L_value + pi * sqrt(log(L_pick + exp(1)) / (L_pick + 1e-10))
+  }
+  else if (LR == "R") {
+    value <- R_value + pi * sqrt(log(R_pick + exp(1)) / (R_pick + 1e-10))
+  }
+################################# [ error ] ####################################
+  else {
+    value <- "ERROR"
+  }
+  
+  return(value)
+}
+```
+</details>
+
 <!---------------------------------------------------------->
 
 <details>
@@ -217,6 +260,10 @@ print(binaryRL::func_tau)
 func_tau <- function (
   # variables before decision-making
   i, L_freq, R_freq, L_pick, R_pick, L_value, R_value, 
+  # Exploration–Exploitation Trade-off   
+  try,
+  # calculating Left option or Right option probability
+  LR,
   # parameters
   tau, 
   # extra variables

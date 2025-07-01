@@ -32,6 +32,7 @@ reference:
       - func_gamma
       - func_eta
       - func_epsilon
+      - func_pi
       - func_tau
 
   - title: "Processes"

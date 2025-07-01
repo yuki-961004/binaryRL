@@ -64,7 +64,10 @@
 #'  even a small difference in value will make the subject more likely to 
 #'  choose the higher-value option. 
 #'  
-#'  \deqn{P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}} 
+#'  \deqn{
+#'    P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; 
+#'    P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}
+#'  } 
 #' 
 #'  \code{e.g., tau = c(0.5)}
 #' 

@@ -20,10 +20,12 @@ run_m(
   eta,
   epsilon = NA,
   lambda = NA,
+  pi = 0.1,
   tau = 1,
   util_func = func_gamma,
   rate_func = func_eta,
   expl_func = func_epsilon,
+  ucba_func = func_pi,
   prob_func = func_tau,
   sub = "Subject",
   time_line = c("Block", "Trial"),
@@ -191,6 +193,20 @@ A numeric value that controls the decay rate of exploration probability
  
  \code{epsilon-decreasing threshold = 1, epsilon = NA, lambda = 0.5}}
 
+\item{pi}{[vector]
+Parameter used in the Upper-Confidence-Bound (UCB) action selection
+ formula. `ucba_func` controls the degree of exploration by scaling the 
+ uncertainty bonus given to less-explored options. A larger value of \code{pi} 
+ (denoted as \code{c} in Sutton and Barto(1998)) increases the influence of this 
+ bonus, leading to more exploration of actions with uncertain estimated 
+ values. Conversely, a smaller \code{pi} results in less exploration.
+
+\deqn{
+  A_t = \arg \max_{a} \left[V_t(a) + \pi \sqrt {\frac{\ln(t)}{N_t(a)}} \right]
+}
+
+\code{default: pi = 0.1}}
+
 \item{tau}{[vector] 
 Parameters used in the Soft-Max Function. `prob_func` representing the 
  sensitivity of the subject to the value difference when making decisions. 
@@ -209,6 +225,8 @@ Parameters used in the Soft-Max Function. `prob_func` representing the
 \item{rate_func}{[function] Learning Rate Function see \code{\link[binaryRL]{func_eta}}.}
 
 \item{expl_func}{[function] Exploration Strategy Function see \code{\link[binaryRL]{func_epsilon}}.}
+
+\item{ucba_func}{[function] Upper-Confidence-Bound Action Selection see \code{\link[binaryRL]{func_pi}}.}
 
 \item{prob_func}{[function] Soft-Max Function see \code{\link[binaryRL]{func_tau}}.}
 

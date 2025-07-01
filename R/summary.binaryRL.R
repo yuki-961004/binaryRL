@@ -40,6 +40,7 @@ summary.binaryRL <- function(object, ...) {
   cat("  ", "\u03B7: ", round(object$params$eta, 3), "\n")
   cat("  ", "\u03B5: ", round(object$params$epsilon, 3), "\n")
   cat("  ", "\u03BB: ", round(object$params$lambda, 3), "\n")
+  cat("  ", "\u03C0: ", round(object$params$pi, 3), "\n")
   cat("  ", "\u03C4: ", round(object$params$tau, 3), "\n")
   
   

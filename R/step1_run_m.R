@@ -192,6 +192,20 @@
 #'  
 #'  \code{epsilon-decreasing threshold = 1, epsilon = NA, lambda = 0.5}
 #' 
+#' @param pi [vector]
+#' Parameter used in the Upper-Confidence-Bound (UCB) action selection
+#'  formula. `ucba_func` controls the degree of exploration by scaling the 
+#'  uncertainty bonus given to less-explored options. A larger value of \code{pi} 
+#'  (denoted as \code{c} in Sutton and Barto(1998)) increases the influence of this 
+#'  bonus, leading to more exploration of actions with uncertain estimated 
+#'  values. Conversely, a smaller \code{pi} results in less exploration.
+#'
+#' \deqn{
+#'   A_t = \arg \max_{a} \left[V_t(a) + \pi \sqrt {\frac{\ln(t)}{N_t(a)}} \right]
+#' }
+#' 
+#' \code{default: pi = 0.1}
+#' 
 #' @param tau [vector] 
 #' Parameters used in the Soft-Max Function. `prob_func` representing the 
 #'  sensitivity of the subject to the value difference when making decisions. 
@@ -210,6 +224,8 @@
 #' @param rate_func [function] Learning Rate Function see \code{\link[binaryRL]{func_eta}}.
 #' 
 #' @param expl_func [function] Exploration Strategy Function see \code{\link[binaryRL]{func_epsilon}}.
+#' 
+#' @param ucba_func [function] Upper-Confidence-Bound Action Selection see \code{\link[binaryRL]{func_pi}}.
 #' 
 #' @param prob_func [function] Soft-Max Function see \code{\link[binaryRL]{func_tau}}.
 #' 
@@ -321,11 +337,13 @@ run_m <- function(
   eta,
   epsilon = NA,
   lambda = NA,
+  pi = 0.1,
   tau = 1,
   
   util_func = func_gamma,
   rate_func = func_eta,
   expl_func = func_epsilon,
+  ucba_func = func_pi,
   prob_func = func_tau,
   
   sub = "Subject",
@@ -387,11 +405,13 @@ run_m <- function(
     eta = eta,
     epsilon = epsilon,
     lambda = lambda,
+    pi = pi,
     tau = tau,
     
     util_func = util_func,
     rate_func = rate_func,
     expl_func = expl_func,
+    ucba_func = ucba_func,
     prob_func = prob_func
   )
   
@@ -422,6 +442,7 @@ run_m <- function(
     eta = eta,
     epsilon = epsilon,
     lambda = lambda,
+    pi = pi,
     tau = tau
   )
   

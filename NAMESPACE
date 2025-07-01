@@ -3,6 +3,7 @@ import(doRNG)
 export(func_gamma)
 export(func_eta)
 export(func_epsilon)
+export(func_pi)
 export(func_tau)
 
 export(run_m)

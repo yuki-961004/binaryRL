@@ -86,6 +86,20 @@
 #'  means the probability of random choice will decrease more rapidly
 #'  as the number of trials increases.
 #' 
+#' @param pi [numeric]
+#' Parameter used in the Upper-Confidence-Bound (UCB) action selection
+#' formula. `prob_func` controls the degree of exploration by scaling the 
+#' uncertainty bonus given to less-explored options. A larger value of `pi` 
+#' (denoted as `c` in Sutton and Barto(1998) ) increases the influence of this 
+#' bonus, leading to more exploration of actions with uncertain estimated values. 
+#' Conversely, a smaller `pi` results in less exploration.
+#'
+#' \deqn{
+#'   A_t = \arg \max_{a} \left[V_t(a) + \pi \sqrt {\frac{\ln(t)}{N_t(a)}} \right]
+#' }
+#' 
+#' \code{e.g. pi = 0.1}
+#' 
 #' @param tau [vector] 
 #' Parameters used in the Soft-Max Function. `prob_func` representing the 
 #'  sensitivity of the subject to the value difference when making decisions. 
@@ -96,13 +110,15 @@
 #'  choose the higher-value option. 
 #'  \code{e.g., `tau = c(0.5)`}
 #' 
-#' @param util_func [function] Utility Function.
+#' @param util_func [function] Utility Function see \code{\link[binaryRL]{func_gamma}}.
 #' 
-#' @param rate_func [function] Learning Rate Function.
+#' @param rate_func [function] Learning Rate Function see \code{\link[binaryRL]{func_eta}}.
 #' 
-#' @param expl_func [function] Exploration Function.
+#' @param expl_func [function] Exploration Strategy Function see \code{\link[binaryRL]{func_epsilon}}.
 #' 
-#' @param prob_func [function] Soft-Max Function.
+#' @param ucba_func [function] Upper-Confidence-Bound Action Selection see \code{\link[binaryRL]{func_pi}}.
+#' 
+#' @param prob_func [function] Soft-Max Function see \code{\link[binaryRL]{func_tau}}.
 #' 
 #' @param L_choice [character] 
 #' Column name of left choice. 
@@ -148,9 +164,10 @@ decision_making <- function(
     seed = 123, initial_value,
     softmax = TRUE, threshold = 1,
     
-    alpha, beta, gamma, eta, epsilon, lambda, tau, 
+    alpha, beta, gamma, eta, epsilon, lambda, pi, tau, 
     
     expl_func = func_epsilon,
+    ucba_func = func_pi,
     prob_func = func_tau,
     util_func = func_gamma,
     rate_func = func_eta,
@@ -211,65 +228,81 @@ decision_making <- function(
       beta = beta
     )
     
-    # [ 1+ CHOOSE ]  
-    
-    # 如果选项都不是第一次出现, 则正常计算概率
-    if ((data[[L_choice]][i] %in% chosen) & (data[[R_choice]][i] %in% chosen)) {
-      # 基于prob函数计算选择左边和右边的概率
-      # 如果选项都不是第一次出现, 则正常计算概率
+    data$L_value[i] <- ucba_func(
+      i = i,
+      L_freq = data$L_freq[i],
+      R_freq = data$R_freq[i],
+      L_pick = data$L_pick[i],
+      R_pick = data$R_pick[i],
+      L_value = data$L_value[i],
+      R_value = data$R_value[i],
+      var1 = data[[var1]][i],
+      var2 = data[[var2]][i],
       
-      # prob_func -> data$L_prob[i] 计算选L概率
-      data$L_prob[i] <- prob_func(
-        i = i,
-        L_freq = data$L_freq[i],
-        R_freq = data$R_freq[i],
-        L_pick = data$L_pick[i],
-        R_pick = data$R_pick[i],
-        L_value = data$L_value[i],
-        R_value = data$R_value[i],
-        var1 = data[[var1]][i],
-        var2 = data[[var2]][i],
-        
-        try = data$Try[i],
-        LR = "L",
-        
-        tau = tau,
-        alpha = alpha,
-        beta = beta
-      )
-      # prob_func -> data$R_prob[i] 计算选R概率
-      data$R_prob[i] <- prob_func(
-        i = i,
-        L_freq = data$L_freq[i],
-        R_freq = data$R_freq[i],
-        L_pick = data$L_pick[i],
-        R_pick = data$R_pick[i],
-        L_value = data$L_value[i],
-        R_value = data$R_value[i],
-        var1 = data[[var1]][i],
-        var2 = data[[var2]][i],
-        
-        try = data$Try[i],
-        LR = "R",
-        
-        tau = tau,
-        alpha = alpha,
-        beta = beta
-      )
-      # [ 1st CHOOSE ] #
-    } else if (!(data[[L_choice]][i] %in% chosen) & (data[[R_choice]][i] %in% chosen)) {
-      # 如果左边选项是第一次出现, 则一定选左边  
-      data$L_prob[i] <- 1
-      data$R_prob[i] <- 0
-    } else if ((data[[L_choice]][i] %in% chosen) & !(data[[R_choice]][i] %in% chosen)) {
-      # 如果右边选项是第一次出现, 则一定选右边
-      data$L_prob[i] <- 0
-      data$R_prob[i] <- 1
-    } else if (!(data[[L_choice]][i] %in% chosen) & !(data[[R_choice]][i] %in% chosen)) {
-      # 如果都是第一次出现, 则随便选
-      data$L_prob[i] <- 0.5
-      data$R_prob[i] <- 0.5
-    }
+      LR = "L",
+      
+      pi = pi,
+      alpha = alpha,
+      beta = beta
+    )
+    
+    data$R_value[i] <- ucba_func(
+      i = i,
+      L_freq = data$L_freq[i],
+      R_freq = data$R_freq[i],
+      L_pick = data$L_pick[i],
+      R_pick = data$R_pick[i],
+      L_value = data$L_value[i],
+      R_value = data$R_value[i],
+      var1 = data[[var1]][i],
+      var2 = data[[var2]][i],
+      
+      LR = "R",
+      
+      pi = pi,
+      alpha = alpha,
+      beta = beta
+    )
+    
+    # prob_func -> data$L_prob[i] 计算选R概率
+    data$L_prob[i] <- prob_func(
+      i = i,
+      L_freq = data$L_freq[i],
+      R_freq = data$R_freq[i],
+      L_pick = data$L_pick[i],
+      R_pick = data$R_pick[i],
+      L_value = data$L_value[i],
+      R_value = data$R_value[i],
+      var1 = data[[var1]][i],
+      var2 = data[[var2]][i],
+      
+      try = data$Try[i],
+      LR = "L",
+      
+      tau = tau,
+      alpha = alpha,
+      beta = beta
+    )
+    
+    # prob_func -> data$R_prob[i] 计算选R概率
+    data$R_prob[i] <- prob_func(
+      i = i,
+      L_freq = data$L_freq[i],
+      R_freq = data$R_freq[i],
+      L_pick = data$L_pick[i],
+      R_pick = data$R_pick[i],
+      L_value = data$L_value[i],
+      R_value = data$R_value[i],
+      var1 = data[[var1]][i],
+      var2 = data[[var2]][i],
+      
+      try = data$Try[i],
+      LR = "R",
+      
+      tau = tau,
+      alpha = alpha,
+      beta = beta
+    )
     
 ############################### [ PASS VALUE ] #################################  
     

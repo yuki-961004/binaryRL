@@ -87,7 +87,7 @@ https://github.com/yuki-961004/binaryRL"><!-- Global site tag (gtag.js) - Google
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -174,10 +174,12 @@ learning models.</p>
 <span>  <span class="va">eta</span>,</span>
 <span>  epsilon <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  lambda <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  pi <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span>  tau <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  util_func <span class="op">=</span> <span class="va">func_gamma</span>,</span>
 <span>  rate_func <span class="op">=</span> <span class="va">func_eta</span>,</span>
 <span>  expl_func <span class="op">=</span> <span class="va">func_epsilon</span>,</span>
+<span>  ucba_func <span class="op">=</span> <span class="va">func_pi</span>,</span>
 <span>  prob_func <span class="op">=</span> <span class="va">func_tau</span>,</span>
 <span>  sub <span class="op">=</span> <span class="st">"Subject"</span>,</span>
 <span>  time_line <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Block"</span>, <span class="st">"Trial"</span><span class="op">)</span>,</span>
@@ -350,6 +352,20 @@ A numeric value that controls the decay rate of exploration probability
 <p><code>epsilon-decreasing threshold = 1, epsilon = NA, lambda = 0.5</code></p></dd>
 
 
+<dt id="arg-pi">pi<a class="anchor" aria-label="anchor" href="#arg-pi"></a></dt>
+<dd><p>[vector]
+Parameter used in the Upper-Confidence-Bound (UCB) action selection
+ formula. `ucba_func` controls the degree of exploration by scaling the
+ uncertainty bonus given to less-explored options. A larger value of <code>pi</code>
+ (denoted as <code>c</code> in Sutton and Barto(1998)) increases the influence of this
+ bonus, leading to more exploration of actions with uncertain estimated
+ values. Conversely, a smaller <code>pi</code> results in less exploration.</p>
+<p>$$
+  A_t = \arg \max_{a} \left[V_t(a) + \pi \sqrt {\frac{\ln(t)}{N_t(a)}} \right]
+$$</p>
+<p><code>default: pi = 0.1</code></p></dd>
+
+
 <dt id="arg-tau">tau<a class="anchor" aria-label="anchor" href="#arg-tau"></a></dt>
 <dd><p>[vector]
 Parameters used in the Soft-Max Function. `prob_func` representing the
@@ -373,6 +389,10 @@ Parameters used in the Soft-Max Function. `prob_func` representing the
 
 <dt id="arg-expl-func">expl_func<a class="anchor" aria-label="anchor" href="#arg-expl-func"></a></dt>
 <dd><p>[function] Exploration Strategy Function see <code><a href="func_epsilon.html">func_epsilon</a></code>.</p></dd>
+
+
+<dt id="arg-ucba-func">ucba_func<a class="anchor" aria-label="anchor" href="#arg-ucba-func"></a></dt>
+<dd><p>[function] Upper-Confidence-Bound Action Selection see <code><a href="func_pi.html">func_pi</a></code>.</p></dd>
 
 
 <dt id="arg-prob-func">prob_func<a class="anchor" aria-label="anchor" href="#arg-prob-func"></a></dt>
@@ -496,31 +516,33 @@ The number of decimal places to retain for columns related to select function.</
 <span class="r-out co"><span class="r-pr">#&gt;</span>    η:  0.321 0.765 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    ε:  NA </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    λ:  NA </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    π:  0.1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    τ:  1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model Fit:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Accuracy:  59.72 %</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    LogL:  -1257.61 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC:  2519.22 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC:  2526.99 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Accuracy:  60 %</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    LogL:  -1258.55 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC:  2521.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC:  2528.87 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Parameter Value1 Value2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      EV_1     NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 threshold  1.000     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     alpha     NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      beta     NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     gamma  1.000     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6       eta  0.321  0.765</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7   epsilon     NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8    lambda     NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9       tau  1.000     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Parameter Value1 Value2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       EV_1     NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  threshold  1.000     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      alpha     NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       beta     NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      gamma  1.000     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        eta  0.321  0.765</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7    epsilon     NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8     lambda     NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9         pi  0.100     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       tau  1.000     NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Metric    Value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Accuracy    59.72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     LogL -1257.61</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      AIC  2519.22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      BIC  2526.99</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Accuracy    60.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     LogL -1258.55</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      AIC  2521.10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      BIC  2528.87</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

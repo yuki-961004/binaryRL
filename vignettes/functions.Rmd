@@ -137,8 +137,13 @@ P(x) =
 \end{cases}
 $$
 
-**Reference**
-Namiki, N., Oyo, K., & Takahashi, T. (2014, December). How do humans handle the dilemma of exploration and exploitation in sequential decision making?. In Proceedings of the 8th International Conference on Bioinspired Information and Communications Technologies (pp. 113-117).
+<!---------------------------------------------------------->
+## **Upper-Confidence-Bound Action Selection (π)**
+Parameter used in the Upper-Confidence-Bound (UCB) action selection formula. it controls the degree of exploration by scaling the uncertainty bonus given to less-explored options.
+
+$$
+A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}} \right]
+$$
 
 <!---------------------------------------------------------->
 
