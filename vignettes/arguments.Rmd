@@ -28,7 +28,9 @@ Since parallel execution runs in a separate environment, if you have customized 
 
 <!---------------------------------------------------------->
 
-## Utility Function
+## Value Function
+
+### Utility Function
 The subjective value of objective rewards is a topic that requires discussion, as different scholars may have different perspectives. This can be traced back to the `Stevens's Power Law`. In this model, you can customize your utility function. By default, I use a power function based on Stevens' power law to model the relationship between subjective and objective value.
 
 According to **Kahneman's Prospect Theory**, individuals exhibit distinct utility functions for **gains** and **losses**. Referencing Nilsson et al. (2012), we have implemented the model below. By replacing `util_func` with the specified form that follows, you can enable the model to run a utility function based on **Kahneman's Prospect Theory**.
@@ -69,7 +71,7 @@ Nilsson, H., Rieskamp, J., & Wagenmakers, E. J. (2011). Hierarchical Bayesian pa
 
 <!---------------------------------------------------------->
 
-## Initial Value and Learning Rate
+### Learning Rate
 In `run_m`, there is an argument called `initial_value`. Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
 
 > "Comparisons between the two learning rates generally revealed a positivity bias ($\alpha_{+} > \alpha_{-}$)"  
@@ -88,6 +90,16 @@ binaryRL::run_m(
 Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and confirmation biases in reinforcement learning. *Trends in Cognitive Sciences, 26*(7), 607-621. https://doi.org/10.1016/j.tics.2022.04.005
 
 ## Exploration–Exploitation Trade-off  
+
+> "The ε-greedy methods choose randomly a small fraction of the time, whereas UCB methods choose deterministically but achieve exploration by subtly favoring at each step the actions that have so far received fewer samples. Gradient-bandit algorithms estimate not action values, but action preferences, and favor the more preferred actions in a graded, probabalistic manner using a soft-max distribution. The simple expedient of initializing estimates optimistically causes even greedy methods to explore significantly."  
+
+<p align="center">
+    <img src="./fig/rl_EE_tradeoff.png" alt="RL Process" width="80%" style="display: inline;">
+</p>
+
+**Reference**  
+Sutton, R. S., & Barto, A. G. (2014, 2015). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
+
 ### Initial Value
 > "Initial action values can also be used as a simple way of encouraging exploration. Suppose that instead of setting the initial action values to zero, as we did in the 10-armed testbed, we set them all to +5. Recall that the q(a) in this problem are selected from a normal distribution with mean 0 and variance 1. An initial estimate of +5 is thus wildly optimistic. But this optimism encourages action-value methods to explore."
 

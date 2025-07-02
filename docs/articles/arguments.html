@@ -114,8 +114,11 @@ argument.</p>
 <!---------------------------------------------------------->
 </div>
 <div class="section level3">
-<h3 id="utility-function">Utility Function<a class="anchor" aria-label="anchor" href="#utility-function"></a>
+<h3 id="value-function">Value Function<a class="anchor" aria-label="anchor" href="#value-function"></a>
 </h3>
+<div class="section level4">
+<h4 id="utility-function">Utility Function<a class="anchor" aria-label="anchor" href="#utility-function"></a>
+</h4>
 <p>The subjective value of objective rewards is a topic that requires
 discussion, as different scholars may have different perspectives. This
 can be traced back to the <code>Stevens's Power Law</code>. In this
@@ -165,9 +168,9 @@ Bayesian parameter estimation for cumulative prospect theory.
 <em>Journal of Mathematical Psychology, 55</em>(1), 84-93. <a href="https://doi.org/10.1016/j.jmp.2010.08.006" class="external-link uri">https://doi.org/10.1016/j.jmp.2010.08.006</a></p>
 <!---------------------------------------------------------->
 </div>
-<div class="section level3">
-<h3 id="initial-value-and-learning-rate">Initial Value and Learning Rate<a class="anchor" aria-label="anchor" href="#initial-value-and-learning-rate"></a>
-</h3>
+<div class="section level4">
+<h4 id="learning-rate">Learning Rate<a class="anchor" aria-label="anchor" href="#learning-rate"></a>
+</h4>
 <p>In <code>run_m</code>, there is an argument called
 <code>initial_value</code>. Considering that the initial value has a
 significant impact on the parameter estimation of the <strong>learning
@@ -194,9 +197,25 @@ Palminteri, S., &amp; Lebreton, M. (2022). The computational roots of
 positivity and confirmation biases in reinforcement learning. <em>Trends
 in Cognitive Sciences, 26</em>(7), 607-621. <a href="https://doi.org/10.1016/j.tics.2022.04.005" class="external-link uri">https://doi.org/10.1016/j.tics.2022.04.005</a></p>
 </div>
+</div>
 <div class="section level3">
 <h3 id="explorationexploitation-trade-off">Exploration–Exploitation Trade-off<a class="anchor" aria-label="anchor" href="#explorationexploitation-trade-off"></a>
 </h3>
+<blockquote>
+<p>“The ε-greedy methods choose randomly a small fraction of the time,
+whereas UCB methods choose deterministically but achieve exploration by
+subtly favoring at each step the actions that have so far received fewer
+samples. Gradient-bandit algorithms estimate not action values, but
+action preferences, and favor the more preferred actions in a graded,
+probabalistic manner using a soft-max distribution. The simple expedient
+of initializing estimates optimistically causes even greedy methods to
+explore significantly.”</p>
+</blockquote>
+<p align="center">
+<img src="fig/rl_EE_tradeoff.png" alt="RL Process" width="80%" style="display: inline;"></p>
+<p><strong>Reference</strong><br>
+Sutton, R. S., &amp; Barto, A. G. (2014, 2015). Reinforcement Learning:
+An Introduction (2nd ed). Cambridge: MIT press.</p>
 <div class="section level4">
 <h4 id="initial-value">Initial Value<a class="anchor" aria-label="anchor" href="#initial-value"></a>
 </h4>
