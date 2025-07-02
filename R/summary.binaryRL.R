@@ -8,6 +8,8 @@
 #' 
 summary.binaryRL <- function(object, ...) {
 
+  object$data <- NULL
+  
   if (is.na(object$params$EV_1)) {
     message(
       paste0(
@@ -29,8 +31,6 @@ summary.binaryRL <- function(object, ...) {
   }
   
   cat("Results of the Reinforcement Learning Model:\n")
-  
-  object$data <- NULL
   
   cat("\nFree Parameters:\n")
   

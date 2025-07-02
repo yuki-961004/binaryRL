@@ -29,6 +29,9 @@ digits <- function(data, options, digits_1 = 2, digits_2 = 5){
   data$L_value <- round(data$L_value, digits_1)
   data$R_value <- round(data$R_value, digits_1)
   
+  data$L_bias <- round(data$L_bias, digits_1)
+  data$R_bias <- round(data$R_bias, digits_1)
+  
   data$V_value <- round(data$V_value, digits_1)
   data$V_update <- round(data$V_update, digits_1)
   

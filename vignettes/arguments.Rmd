@@ -69,8 +69,7 @@ Nilsson, H., Rieskamp, J., & Wagenmakers, E. J. (2011). Hierarchical Bayesian pa
 
 <!---------------------------------------------------------->
 
-
-## Initial Value
+## Initial Value and Learning Rate
 In `run_m`, there is an argument called `initial_value`. Considering that the initial value has a significant impact on the parameter estimation of the **learning rates ($\eta$)** When the initial value is not set (`initial_value = NA`), it is taken to be the reward received for that stimulus the first time.
 
 > "Comparisons between the two learning rates generally revealed a positivity bias ($\alpha_{+} > \alpha_{-}$)"  
@@ -88,7 +87,14 @@ binaryRL::run_m(
 **Reference**  
 Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and confirmation biases in reinforcement learning. *Trends in Cognitive Sciences, 26*(7), 607-621. https://doi.org/10.1016/j.tics.2022.04.005
 
-## Exploration Strategy
+## Exploration–Exploitation Trade-off  
+### Initial Value
+> "Initial action values can also be used as a simple way of encouraging exploration. Suppose that instead of setting the initial action values to zero, as we did in the 10-armed testbed, we set them all to +5. Recall that the q(a) in this problem are selected from a normal distribution with mean 0 and variance 1. An initial estimate of +5 is thus wildly optimistic. But this optimism encourages action-value methods to explore."
+
+**Reference**  
+Sutton, R. S., & Barto, A. G. (2014, 2015). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
+
+### Exploration Strategy
 Participants in the experiment may not always choose based on the value of the options, but instead select randomly on some trials. This is known as exploration strategy. You can implement an $\epsilon$-first model by setting the `threshold` parameter in the `run_m`. For instance, if the threshold is set to `threshold = 20` (The default value is set to 1), it means that participants will choose completely randomly until trial number 20, after which their choices will be based on value. 
 
 ```{r eval=FALSE}
@@ -132,8 +138,8 @@ run_m(
 Namiki, N., Oyo, K., & Takahashi, T. (2014, December). How do humans handle the dilemma of exploration and exploitation in sequential decision making?. In Proceedings of the 8th International Conference on Bioinspired Information and Communications Technologies (pp. 113-117). https://doi.org/10.4108/icst.bict.2014.258045  
 <!---------------------------------------------------------->
 
-## Upper-Confidence-Bound Action Selection
-The $\pi$ parameter in Upper-Confidence-Bound (UCB) Action Selection, which is c in the book, is a parameter used to control the ratio of the bias value given to less-selected options. A larger value of this parameter will assign a greater bias to options that have been chosen infrequently. This value is set to 0.1 by default, ensuring that the model does not completely ignore any option. Once an option has been selected once, the adjustment to its value bias approaches almost zero. If the rewards in your experiment are very small or very large, you should adjust this value accordingly.
+### Upper-Confidence-Bound
+The $\pi$ parameter in Upper-Confidence-Bound (UCB) Action Selection, which is c in the book, is a parameter used to control the ratio of the bias value given to less-selected options. A larger value of this parameter will assign a greater bias to options that have been chosen infrequently. This value is set to 0.001 by default, ensuring that the model does not completely ignore any option. Once an option has been selected once, the adjustment to its value bias approaches almost zero. If the rewards in your experiment are very small or very large, you should adjust this value accordingly.
 
 ```{r eval=FALSE}
 run_m(
@@ -147,7 +153,7 @@ run_m(
 Sutton, R. S., & Barto, A. G. (2014, 2015). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
 Sacu, S., Dubois, M., Hezemans, F. H., Aggensteiner, P. M., Monninger, M., Brandeis, D., ... & Holz, N. E. (2024). Early-life adversities are associated with lower expected value signaling in the adult brain. Biological Psychiatry, 96(12), 948-958. https://doi.org/10.1016/j.biopsych.2024.04.005  
 
-## Soft-Max Function
+### Soft-Max Function
 During the recovery process, the last element of both `simulate_lower` and `simulate_upper` corresponds to the $\tau$ parameter used in the softmax function.
 
 - `simulate_lower` represents a fixed positive increment applied to all $\tau$ values.   

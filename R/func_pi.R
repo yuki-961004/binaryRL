@@ -1,12 +1,13 @@
-#' Function: Upper-Confidence-Bound Action Selection
+#' Function: Upper-Confidence-Bound
 #' @description
 #' Unlike epsilon-greedy, which explores indiscriminately, UCB is a more
-#' intelligent exploration strategy. It biases the value of each action based 
-#' on how often it has been selected. For options chosen fewer times, or those 
-#' with high uncertainty, a larger "uncertainty bonus" is added to their 
-#' estimated value. This increases their selection probability, effectively 
-#' encouraging the exploration of potentially optimal, yet underexplored, 
-#' actions.
+#'  intelligent exploration strategy. It biases the value of each action based 
+#'  on how often it has been selected. For options chosen fewer times, or those 
+#'  with high uncertainty, a larger "uncertainty bonus" is added to their 
+#'  estimated value. This increases their selection probability, effectively 
+#'  encouraging the exploration of potentially optimal, yet unexplored actions.
+#'  A higher \code{pi} indicates a greater bias toward giving less-chosen 
+#'  options.
 #' 
 #' @note 
 #' When customizing these functions, please ensure that you do not modify 
@@ -54,17 +55,18 @@
 #' 
 #' @param pi [vector]
 #' Parameter used in the Upper-Confidence-Bound (UCB) action selection
-#'  formula. `ucba_func` controls the degree of exploration by scaling the 
-#'  uncertainty bonus given to less-explored options. A larger value of \code{pi} 
-#'  (denoted as \code{c} in Sutton and Barto(1998) ) increases the influence of this 
-#'  bonus, leading to more exploration of actions with uncertain estimated 
-#'  values. Conversely, a smaller \code{pi} results in less exploration.
+#'  formula. `bias_func` controls the degree of exploration by scaling the 
+#'  uncertainty bonus given to less-explored options. A larger value of 
+#'  \code{pi} (denoted as \code{c} in Sutton and Barto(1998) ) increases the 
+#'  influence of this bonus, leading to more exploration of actions with 
+#'  uncertain estimated values. Conversely, a smaller \code{pi} results in 
+#'  less exploration.
 #'
 #' \deqn{
 #'   A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}} \right]
 #' }
 #' 
-#' \code{default: pi = 0.1}
+#' \code{default: pi = 0.001}
 #' 
 #' @param alpha [vector]
 #' Extra parameters that may be used in functions. 
@@ -104,19 +106,19 @@
 #'   if (!(LR %in% c("L", "R"))) {
 #'  stop("LR = 'L' or 'R'")
 #'  }
-#'  ############################# [ adjust value ] #############################
+#' ############################# [ adjust value ] ##############################
 #'   else if (LR == "L") {
-#'     value <- L_value + pi * sqrt(log(L_pick + exp(1)) / (L_pick + 1e-10))
+#'     bias <- pi * sqrt(log(L_pick + exp(1)) / (L_pick + 1e-10))
 #'   }
 #'   else if (LR == "R") {
-#'     value <- R_value + pi * sqrt(log(R_pick + exp(1)) / (R_pick + 1e-10))
+#'     bias <- pi * sqrt(log(R_pick + exp(1)) / (R_pick + 1e-10))
 #'   }
-#'  ################################# [ error ] ################################
+#' ################################# [ error ] #################################
 #'   else {
-#'     value <- "ERROR"
+#'     bias <- "ERROR"
 #'   }
 #'    
-#'   return(value)
+#'   return(bias)
 #' }
 #' }
 #' 
@@ -142,15 +144,15 @@ func_pi <- function(
   }
 ############################# [ adjust value ] #################################
   else if (LR == "L") {
-    value <- L_value + pi * sqrt(log(L_pick + exp(1)) / (L_pick + 1e-10))
+    bias <- pi * sqrt(log(L_pick + exp(1)) / (L_pick + 1e-10))
   }
   else if (LR == "R") {
-    value <- R_value + pi * sqrt(log(R_pick + exp(1)) / (R_pick + 1e-10))
+    bias <- pi * sqrt(log(R_pick + exp(1)) / (R_pick + 1e-10))
   }
 ################################# [ error ] ####################################
   else {
-    value <- "ERROR"
+    bias <- "ERROR"
   }
   
-  return(value)
+  return(bias)
 }

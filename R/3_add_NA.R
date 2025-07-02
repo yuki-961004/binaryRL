@@ -30,6 +30,9 @@ add_NA <- function(data){
   data$L_value <- NA
   data$R_value <- NA
 
+  data$L_bias <- NA
+  data$R_bias <- NA
+  
   data$L_prob <- NA
   data$R_prob <- NA
   

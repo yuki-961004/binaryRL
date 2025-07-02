@@ -48,6 +48,7 @@ Model <- function(params){
     util_func = your_util_func,
     rate_func = your_rate_func,  
     expl_func = your_expl_func,
+    bias_func = your_bias_func,
     prob_func = your_prob_func,
 # ║ --------- column names ---------- ║ #
     sub = "Subject",
@@ -208,7 +209,7 @@ func_epsilon <- function(
 <!---------------------------------------------------------->
 
 <details>
-<summary>Upper-Confidence-Bound Action Selection (π)</summary>
+<summary>Upper-Confidence-Bound (π)</summary>
 
 ```{r eval=FALSE}
 print(binaryRL::func_pi)
@@ -232,17 +233,17 @@ func_gamma <- function(
   }
 ############################# [ adjust value ] #################################
   else if (LR == "L") {
-    value <- L_value + pi * sqrt(log(L_pick + exp(1)) / (L_pick + 1e-10))
+    bias <- pi * sqrt(log(L_pick + exp(1)) / (L_pick + 1e-10))
   }
   else if (LR == "R") {
-    value <- R_value + pi * sqrt(log(R_pick + exp(1)) / (R_pick + 1e-10))
+    bias <- pi * sqrt(log(R_pick + exp(1)) / (R_pick + 1e-10))
   }
 ################################# [ error ] ####################################
   else {
-    value <- "ERROR"
+    bias <- "ERROR"
   }
   
-  return(value)
+  return(bias)
 }
 ```
 </details>

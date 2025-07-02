@@ -126,6 +126,7 @@ in the human brain. <em>Journal of Neuroscience, 32</em>(2), 551-562. <a href="h
 <span>    util_func <span class="op">=</span> <span class="va">your_util_func</span>,</span>
 <span>    rate_func <span class="op">=</span> <span class="va">your_rate_func</span>,  </span>
 <span>    expl_func <span class="op">=</span> <span class="va">your_expl_func</span>,</span>
+<span>    bias_func <span class="op">=</span> <span class="va">your_bias_func</span>,</span>
 <span>    prob_func <span class="op">=</span> <span class="va">your_prob_func</span>,</span>
 <span><span class="co"># ║ --------- column names ---------- ║ #</span></span>
 <span>    sub <span class="op">=</span> <span class="st">"Subject"</span>,</span>
@@ -257,7 +258,7 @@ Exploration Function (ε)
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">try</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </details><!----------------------------------------------------------><details><summary>
-Upper-Confidence-Bound Action Selection (π)
+Upper-Confidence-Bound (π)
 </summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/func_pi.html">func_pi</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -278,17 +279,17 @@ Upper-Confidence-Bound Action Selection (π)
 <span>  <span class="op">}</span></span>
 <span><span class="co">############################# [ adjust value ] #################################</span></span>
 <span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">LR</span> <span class="op">==</span> <span class="st">"L"</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">value</span> <span class="op">&lt;-</span> <span class="va">L_value</span> <span class="op">+</span> <span class="va">pi</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">L_pick</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">L_pick</span> <span class="op">+</span> <span class="fl">1e-10</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">bias</span> <span class="op">&lt;-</span> <span class="va">pi</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">L_pick</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">L_pick</span> <span class="op">+</span> <span class="fl">1e-10</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">LR</span> <span class="op">==</span> <span class="st">"R"</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">value</span> <span class="op">&lt;-</span> <span class="va">R_value</span> <span class="op">+</span> <span class="va">pi</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">R_pick</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">R_pick</span> <span class="op">+</span> <span class="fl">1e-10</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">bias</span> <span class="op">&lt;-</span> <span class="va">pi</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">R_pick</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">R_pick</span> <span class="op">+</span> <span class="fl">1e-10</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="co">################################# [ error ] ####################################</span></span>
 <span>  <span class="kw">else</span> <span class="op">{</span></span>
-<span>    <span class="va">value</span> <span class="op">&lt;-</span> <span class="st">"ERROR"</span></span>
+<span>    <span class="va">bias</span> <span class="op">&lt;-</span> <span class="st">"ERROR"</span></span>
 <span>  <span class="op">}</span></span>
 <span>  </span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">bias</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </details><!----------------------------------------------------------><details><summary>
 Soft-Max Function (τ)

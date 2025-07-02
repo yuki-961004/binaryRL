@@ -72,20 +72,18 @@ Controls the initial exploration phase in the \strong{epsilon-first} strategy.
  \code{epsilon-first: threshold = 20, epsilon = NA, lambda = NA}}
 
 \item{epsilon}{[numeric]
-A parameter used in the \strong{epsilon-greedy} exploration strategy. It defines
- the probability of making a completely random choice, as opposed to choosing
- based on the relative values of the left and right options. For example,
- if `epsilon = 0.1`, the subject has a 10% chance of random choice and a
- 90% chance of value-based choice. This parameter is only relevant when
- `threshold` is at its default value (1) and `lambda` is not set.
+A parameter used in the \strong{epsilon-greedy} exploration strategy. It 
+ defines the probability of making a completely random choice, as opposed 
+ to choosing based on the relative values of the left and right options. 
+ For example, if `epsilon = 0.1`, the subject has a 10% chance of random 
+ choice and a 90% chance of value-based choice. This parameter is only 
+ relevant when `threshold` is at its default value (1) and `lambda` is not 
+ set.
  
- \deqn{
- P(x) = 
- \begin{cases}
+ \deqn{P(x) = \begin{cases}
    \epsilon, & x=1 \text{ (random choosing)} \\
    1-\epsilon, & x=0 \text{ (value-based choosing)}
- \end{cases}
- }
+ \end{cases}}
 
  \code{epsilon-greedy: threshold = 1, epsilon = 0.1, lambda = NA}}
 

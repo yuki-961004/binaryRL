@@ -88,7 +88,7 @@
 #' 
 #' @param pi [numeric]
 #' Parameter used in the Upper-Confidence-Bound (UCB) action selection
-#' formula. `prob_func` controls the degree of exploration by scaling the 
+#' formula. `bias_func` controls the degree of exploration by scaling the 
 #' uncertainty bonus given to less-explored options. A larger value of `pi` 
 #' (denoted as `c` in Sutton and Barto(1998) ) increases the influence of this 
 #' bonus, leading to more exploration of actions with uncertain estimated values. 
@@ -116,7 +116,7 @@
 #' 
 #' @param expl_func [function] Exploration Strategy Function see \code{\link[binaryRL]{func_epsilon}}.
 #' 
-#' @param ucba_func [function] Upper-Confidence-Bound Action Selection see \code{\link[binaryRL]{func_pi}}.
+#' @param bias_func [function] Upper-Confidence-Bound see \code{\link[binaryRL]{func_pi}}.
 #' 
 #' @param prob_func [function] Soft-Max Function see \code{\link[binaryRL]{func_tau}}.
 #' 
@@ -167,7 +167,7 @@ decision_making <- function(
     alpha, beta, gamma, eta, epsilon, lambda, pi, tau, 
     
     expl_func = func_epsilon,
-    ucba_func = func_pi,
+    bias_func = func_pi,
     prob_func = func_tau,
     util_func = func_gamma,
     rate_func = func_eta,
@@ -228,7 +228,7 @@ decision_making <- function(
       beta = beta
     )
     
-    data$L_value[i] <- ucba_func(
+    data$L_bias[i] <- bias_func(
       i = i,
       L_freq = data$L_freq[i],
       R_freq = data$R_freq[i],
@@ -246,7 +246,7 @@ decision_making <- function(
       beta = beta
     )
     
-    data$R_value[i] <- ucba_func(
+    data$R_bias[i] <- bias_func(
       i = i,
       L_freq = data$L_freq[i],
       R_freq = data$R_freq[i],
@@ -271,8 +271,8 @@ decision_making <- function(
       R_freq = data$R_freq[i],
       L_pick = data$L_pick[i],
       R_pick = data$R_pick[i],
-      L_value = data$L_value[i],
-      R_value = data$R_value[i],
+      L_value = data$L_value[i] + data$L_bias[i],
+      R_value = data$R_value[i] + data$R_bias[i],
       var1 = data[[var1]][i],
       var2 = data[[var2]][i],
       
@@ -291,8 +291,8 @@ decision_making <- function(
       R_freq = data$R_freq[i],
       L_pick = data$L_pick[i],
       R_pick = data$R_pick[i],
-      L_value = data$L_value[i],
-      R_value = data$R_value[i],
+      L_value = data$L_value[i] + data$L_bias[i],
+      R_value = data$R_value[i] + data$R_bias[i],
       var1 = data[[var1]][i],
       var2 = data[[var2]][i],
       

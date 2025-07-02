@@ -190,19 +190,17 @@ Controls the initial exploration phase in the <strong>epsilon-first</strong> str
 
 <dt id="arg-epsilon">epsilon<a class="anchor" aria-label="anchor" href="#arg-epsilon"></a></dt>
 <dd><p>[numeric]
-A parameter used in the <strong>epsilon-greedy</strong> exploration strategy. It defines
- the probability of making a completely random choice, as opposed to choosing
- based on the relative values of the left and right options. For example,
- if `epsilon = 0.1`, the subject has a 10<!-- % chance of random choice and a -->
- 90<!-- % chance of value-based choice. This parameter is only relevant when -->
- `threshold` is at its default value (1) and `lambda` is not set.</p>
-<p>$$
- P(x) =
- \begin{cases}
+A parameter used in the <strong>epsilon-greedy</strong> exploration strategy. It
+ defines the probability of making a completely random choice, as opposed
+ to choosing based on the relative values of the left and right options.
+ For example, if `epsilon = 0.1`, the subject has a 10<!-- % chance of random  -->
+ choice and a 90<!-- % chance of value-based choice. This parameter is only  -->
+ relevant when `threshold` is at its default value (1) and `lambda` is not
+ set.</p>
+<p>$$P(x) = \begin{cases}
    \epsilon, &amp; x=1 \text{ (random choosing)} \\
    1-\epsilon, &amp; x=0 \text{ (value-based choosing)}
- \end{cases}
- $$</p>
+ \end{cases}$$</p>
 <p><code>epsilon-greedy: threshold = 1, epsilon = 0.1, lambda = NA</code></p></dd>
 
 

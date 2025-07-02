@@ -20,12 +20,12 @@ run_m(
   eta,
   epsilon = NA,
   lambda = NA,
-  pi = 0.1,
+  pi = 0.001,
   tau = 1,
   util_func = func_gamma,
   rate_func = func_eta,
   expl_func = func_epsilon,
-  ucba_func = func_pi,
+  bias_func = func_pi,
   prob_func = func_tau,
   sub = "Subject",
   time_line = c("Block", "Trial"),
@@ -166,12 +166,13 @@ Parameters used in the Learning Rate Function, \code{rate_func}, representing
  \code{RSTD: eta = c(0.3, 0.7)}}
 
 \item{epsilon}{[numeric]
-A parameter used in the \strong{epsilon-greedy} exploration strategy. It defines
- the probability of making a completely random choice, as opposed to choosing
- based on the relative values of the left and right options. For example,
- if `epsilon = 0.1`, the subject has a 10% chance of random choice and a
- 90% chance of value-based choice. This parameter is only relevant when
- `threshold` is at its default value (1) and `lambda` is not set.
+A parameter used in the \strong{epsilon-greedy} exploration strategy. It 
+ defines the probability of making a completely random choice, as opposed 
+ to choosing based on the relative values of the left and right options. 
+ For example, if `epsilon = 0.1`, the subject has a 10% chance of random 
+ choice and a 90% chance of value-based choice. This parameter is only 
+ relevant when `threshold` is at its default value (1) and `lambda` is not 
+ set.
  
  \deqn{P(x) = \begin{cases}
    \epsilon, & x=1 \text{ (random choosing)} \\
@@ -195,17 +196,18 @@ A numeric value that controls the decay rate of exploration probability
 
 \item{pi}{[vector]
 Parameter used in the Upper-Confidence-Bound (UCB) action selection
- formula. `ucba_func` controls the degree of exploration by scaling the 
- uncertainty bonus given to less-explored options. A larger value of \code{pi} 
- (denoted as \code{c} in Sutton and Barto(1998)) increases the influence of this 
- bonus, leading to more exploration of actions with uncertain estimated 
- values. Conversely, a smaller \code{pi} results in less exploration.
+ formula. `bias_func` controls the degree of exploration by scaling the 
+ uncertainty bonus given to less-explored options. A larger value of 
+ \code{pi} (denoted as \code{c} in Sutton and Barto(1998) ) increases the 
+ influence of this bonus, leading to more exploration of actions with 
+ uncertain estimated values. Conversely, a smaller \code{pi} results in 
+ less exploration.
 
 \deqn{
-  A_t = \arg \max_{a} \left[V_t(a) + \pi \sqrt {\frac{\ln(t)}{N_t(a)}} \right]
+  A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}} \right]
 }
 
-\code{default: pi = 0.1}}
+\code{default: pi = 0.001}}
 
 \item{tau}{[vector] 
 Parameters used in the Soft-Max Function. `prob_func` representing the 
@@ -226,7 +228,7 @@ Parameters used in the Soft-Max Function. `prob_func` representing the
 
 \item{expl_func}{[function] Exploration Strategy Function see \code{\link[binaryRL]{func_epsilon}}.}
 
-\item{ucba_func}{[function] Upper-Confidence-Bound Action Selection see \code{\link[binaryRL]{func_pi}}.}
+\item{bias_func}{[function] Upper-Confidence-Bound see \code{\link[binaryRL]{func_pi}}.}
 
 \item{prob_func}{[function] Soft-Max Function see \code{\link[binaryRL]{func_tau}}.}
 

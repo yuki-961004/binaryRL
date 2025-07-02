@@ -28,10 +28,10 @@
 #' The number of times left option was picked
 #' 
 #' @param L_value 
-#' The value of the left option
+#' The value of the left option with bias (if pi != 0)
 #' 
 #' @param R_value 
-#' The value of the right option
+#' The value of the right option with bias (if pi != 0)
 #' 
 #' @param var1 [character] 
 #' Column name of extra variable 1. If your model uses more than just reward 
@@ -111,14 +111,14 @@
 #'   if (!(LR %in% c("L", "R"))) {
 #'     stop("LR = 'L' or 'R'")
 #'   }
-#' ############################# [ value-based ] ###############################
+#' ############################### [ value-based ] #############################
 #'   else if (try == 0 & LR == "L") {
 #'     prob <- 1 / (1 + exp(-(L_value - R_value) * tau))
 #'   }
 #'   else if (try == 0 & LR == "R") {
 #'     prob <- 1 / (1 + exp(-(R_value - L_value) * tau))
 #'   }
-#' ############################### [ random ] ##################################
+#' ################################# [ random ] ################################
 #'   else if (try == 1) {
 #'     prob <- 0.5
 #'   }

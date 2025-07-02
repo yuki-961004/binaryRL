@@ -20,4 +20,3 @@ export(RSTD)
 export(Utility)
 
 S3method(summary, binaryRL)
-export(summary.binaryRL)

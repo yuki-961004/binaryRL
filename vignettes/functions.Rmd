@@ -138,7 +138,7 @@ P(x) =
 $$
 
 <!---------------------------------------------------------->
-## **Upper-Confidence-Bound Action Selection (π)**
+## **Upper-Confidence-Bound (π)**
 Parameter used in the Upper-Confidence-Bound (UCB) action selection formula. it controls the degree of exploration by scaling the uncertainty bonus given to less-explored options.
 
 $$
