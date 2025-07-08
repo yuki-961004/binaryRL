@@ -87,7 +87,7 @@ $$
 <!---------------------------------------------------------->
 
 ## **Learning Rates (η)**
-This parameter $\eta$ controls how quickly an agent updates its value estimates based on new information. The closer $\eta$ is to 1, the faster the learning rate.
+This parameter $\eta$ controls how quickly an agent updates its value estimates based on new information. The closer the learning rate is to 1, the more aggressively the value is updated, giving greater credence to the immediate reward rather than previously learned value.
 
 $$
 \eta(p) =

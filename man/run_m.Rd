@@ -315,22 +315,48 @@ Items for model construction:
   \item \strong{Data Input and Specification:} You must provide the raw
     dataset for analysis. Crucially, you need to inform the \code{run_m}
     function about the corresponding column names within your dataset
-    (e.g., subject IDs, choices, and outcomes).
-
+    (e.g., 
+    \code{\link[binaryRL]{Mason_2024_Exp1}}, 
+    \code{\link[binaryRL]{Mason_2024_Exp2}}
+    )
+    This is a game, so it's critical that your dataset includes rewards
+    for both the human-chosen option and the unchosen options.
   \item \strong{Customizable RL Models:} This function allows you
     to define and adjust the number of free parameters to create
     various reinforcement learning models.
     \itemize{
-      \item \emph{Basic Models:} By adjusting \code{eta} and \code{gamma}, 
-        you can construct core types such as TD, RSTD, or Utility models.
-      \item \emph{Exploration Strategies:} By modifying \code{threshold}, 
-        \code{epsilon}, and \code{lambda}, you can implement strategies 
-        including epsilon-first, greedy, or epsilon-decreasing exploration.
-      \item \emph{Initial Value:} You can treat 
-        \code{initial_value} as a free parameter. As discussed in 
-        \emph{Palminteri and Stefano (2022)} 
-        \doi{10.1016/j.tics.2022.04.005}, agents’ prior expectations about 
-        options can affect the learning rates derived by the model.
+      \item \emph{Value Function:} 
+         \itemize{
+           \item \emph{Learning Rate:}
+             By adjusting the number of \code{eta}, you can construct basic
+             reinforcement learning models such as Temporal Difference (TD)
+             and Risk Sensitive Temporal Difference (RSTD). 
+             You can also directly adjust \code{func_eta} to define your 
+             own custom learning rate function.
+           \item \emph{Utility Function:} You can directly adjust the form 
+             of \code{func_gamma} to incorporate the principles of 
+             Kahneman's Prospect Theory. Currently, the built-in 
+             \code{func_gamma} only takes the form of a power function, 
+             consistent with Stevens' Power Law.
+         }
+      \item \emph{Exploration–Exploitation Trade-off:} 
+         \itemize{
+           \item \emph{Initial Values:} This involves setting the 
+             initial expected value for each option when it hasn't been 
+             chosen yet. A higher initial value encourages exploration.
+           \item \emph{Epsilon:} Adjusting the \code{threshold}, 
+             \code{epsilon} and \code{lambda} parameters can lead to 
+             exploration strategies such as epsilon-first, epsilon-greedy, 
+             or epsilon-decreasing.
+           \item \emph{Upper-Confidence-Bound:} By adjusting \code{pi}, 
+             it controls the degree of exploration by scaling the uncertainty 
+             bonus given to less-explored options.
+           \item \emph{Soft-Max:} By adjusting the inverse temperature 
+             parameter \code{tau}, this controls the agent's sensitivity to 
+             value differences. A higher value of tau means greater emphasis 
+             on value differences, leading to more exploitation. A smaller 
+             value of tau indicates a greater tendency towards exploration.
+         }
     }
 
   \item \strong{Objective Function Format for Optimization:} Once your
@@ -344,14 +370,14 @@ Items for model construction:
     \code{\link[binaryRL]{Utility}}.
 }
 
-For more information, please refer to the GitHub repository:  
+For more information, please refer to the homepage of this package:
 \url{https://github.com/yuki-961004/binaryRL}
 }
 \examples{
 data <- binaryRL::Mason_2024_Exp1
 
 binaryRL.res <- binaryRL::run_m(
-  mode = "simulate",
+  mode = "fit",
   data = data,
   id = 18,
   eta = c(0.321, 0.765),

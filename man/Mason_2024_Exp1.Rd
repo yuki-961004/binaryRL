@@ -46,6 +46,6 @@
 }
 \examples{
   # Load the Mason_2024_Exp1 dataset
-  data(Mason_2024_Exp1)
-  head(Mason_2024_Exp1)
+  data(binaryRL::Mason_2024_Exp1)
+  head(binaryRL::Mason_2024_Exp1)
 }

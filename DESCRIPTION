@@ -5,7 +5,7 @@ Description: Tools for building reinforcement learning (RL) models
   specifically tailored for Two-Alternative Forced Choice (TAFC) tasks,
   commonly employed in psychological research. These models build upon
   the foundational principles of model-free reinforcement learning detailed in
-  Sutton and Barto (1998) <ISBN:0262039249>. The package allows
+  Sutton and Barto (2018) <ISBN:9780262039246>. The package allows
   for the intuitive definition of RL models using simple if-else
   statements. Our approach to constructing and evaluating these
   computational models is informed by the guidelines proposed in
@@ -20,7 +20,7 @@ Authors@R:
     comment = c(ORCID = "0009-0000-1378-1318")
   ))
 Maintainer: YuKi <hmz1969a@gmail.com>
-URL: https://yuki-961004.github.io/binaryRL/, https://github.com/yuki-961004/binaryRL
+URL: https://yuki-961004.github.io/binaryRL/
 BugReports: https://github.com/yuki-961004/binaryRL/issues
 License: GPL-3
 Encoding: UTF-8

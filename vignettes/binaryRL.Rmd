@@ -41,9 +41,12 @@ Model <- function(params){
 # ║ -------- free parameters -------- ║ #
     eta = c(params[1], params[2]),
     gamma = c(params[3], params[4]),
-    epsilon = c(params[5], params[6]),
-    tau = c(params[7], params[8]),
-    lambda = c(params[9], params[...]),
+    epsilon = c(params[5]),
+    lambda = c(params[6]),
+    pi = c(params[7]),
+    tau = c(params[8]),
+    alpha = c(param[...], param[...]),
+    beta = c(param[...], param[...]),
 # ║ -------- core functions --------- ║ #
     util_func = your_util_func,
     rate_func = your_rate_func,  
@@ -75,7 +78,7 @@ Model <- function(params){
 
 <!---------------------------------------------------------->
 
-You can also customize all four functions to build your own RL model. 
+You can also customize all five functions to build your own RL model. 
 - The default function is applicable to three basic models (`TD`, `RSTD`, `Utility`). 
 
 <!---------------------------------------------------------->
@@ -369,7 +372,7 @@ recovery <- binaryRL::rcv_d(
   data = binaryRL::Mason_2024_Exp2,
 # ╔═══════════════════════════════════════════════════════════════════════════╗ #
 # ║ --------------------------- black-box function -------------------------- ║ #
-  #funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
+  #funcs = c("your_funcs"),
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
@@ -513,7 +516,7 @@ comparison <- binaryRL::fit_p(
   id = unique(binaryRL::Mason_2024_Exp2$Subject),
 # ╔═══════════════════════════════════════════════════════════════════════════╗ #
 # ║ --------------------------- black-box function -------------------------- ║ #
-  #funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
+  #funcs = c("your_funcs"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),

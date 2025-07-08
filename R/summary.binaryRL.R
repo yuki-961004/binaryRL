@@ -4,7 +4,7 @@
 #' @param ... others
 #'
 #' @return summary
-#' 
+#' @export
 #' 
 summary.binaryRL <- function(object, ...) {
 

@@ -291,11 +291,11 @@ Upper-Confidence-Bound (UCB) Action Selection, which is c in the book,
 is a parameter used to control the ratio of the bias value given to
 less-selected options. A larger value of this parameter will assign a
 greater bias to options that have been chosen infrequently. This value
-is set to 0.001 by default, ensuring that the model does not completely
-ignore any option. Once an option has been selected once, the adjustment
-to its value bias approaches almost zero. If the rewards in your
-experiment are very small or very large, you should adjust this value
-accordingly.</p>
+is set to 0.001 by default(100 bias to the unchosen option), ensuring
+that the model does not completely ignore any option. Once an option has
+been selected once, the adjustment to its value bias approaches almost
+zero. If the rewards in your experiment are very small or very large,
+you should adjust this value accordingly.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">run_m</span>(</span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  ...</span>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">pi =</span> <span class="fl">0.1</span>,</span>
@@ -312,10 +312,17 @@ Biological Psychiatry, 96(12), 948-958. <a href="https://doi.org/10.1016/j.biops
 <div class="section level4">
 <h4 id="soft-max-function">Soft-Max Function<a class="anchor" aria-label="anchor" href="#soft-max-function"></a>
 </h4>
-<p>During the recovery process, the last element of both
-<code>simulate_lower</code> and <code>simulate_upper</code> corresponds
-to the <span class="math inline">\(\tau\)</span> parameter used in the
-softmax function.</p>
+<p>In many reinforcement learning models, softmax is used to represent
+the exploration-exploitation trade-off, rather than the three methods
+mentioned above. However, we still recommend retaining the default value
+of <code>pi = 0.001</code> for parameters related to
+<code>bias_func</code> to ensure that each option is selected at least
+once.</p>
+<p>Additionally, when using the <code><a href="../reference/rcv_d.html">binaryRL::rcv_d()</a></code> function,
+please note the following two points. During the recovery process, the
+<strong>last</strong> element of both <code>simulate_lower</code> and
+<code>simulate_upper</code> corresponds to the <span class="math inline">\(\tau\)</span> parameter used in the softmax
+function.</p>
 <ul>
 <li><p><code>simulate_lower</code> represents a fixed positive increment
 applied to all <span class="math inline">\(\tau\)</span> values.<br>
@@ -340,8 +347,11 @@ computational modeling of behavioral data. <em>Elife</em>, 8, e49547. <a href="h
 <div class="section level3">
 <h3 id="model-fit">Model Fit<a class="anchor" aria-label="anchor" href="#model-fit"></a>
 </h3>
-<p>LL represents the similarity between the model’s choices and human
-choices. The larger this value, the better the model.</p>
+<p>The primary aim of <code>binaryRL</code> is to enable reinforcement
+learning models to exhibit behaviors similar to human subjects. While
+there are other ways to formulate the <em>loss function</em>, we’ve
+fixed it as shown below to express the resemblance between human
+behavior and model predictions.</p>
 <p><span class="math display">\[
 LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
 \]</span></p>

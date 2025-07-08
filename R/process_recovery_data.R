@@ -43,6 +43,7 @@
 #'     \code{util_func = \link[binaryRL]{func_gamma}}, 
 #'     \code{rate_func = \link[binaryRL]{func_eta}}, 
 #'     \code{expl_func = \link[binaryRL]{func_epsilon}}
+#'     \code{bias_func = \link[binaryRL]{func_pi}}
 #'     \code{prob_func = \link[binaryRL]{func_tau}}
 #'  ), 
 #'  you must explicitly provide the names of your custom functions as a 

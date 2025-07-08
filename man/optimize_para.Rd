@@ -123,7 +123,7 @@ This is an internal helper function for `fit_p`. Its primary purpose
     \item 8. Nonlinear Optimization (\code{nloptr::nloptr})
   }
   
- For more information, please refer to the GitHub repository:
+ For more information, please refer to the homepage of this package:
  \url{https://yuki-961004.github.io/binaryRL/}
 }
 \examples{

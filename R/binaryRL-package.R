@@ -39,6 +39,7 @@
 #'   \item \code{\link[binaryRL]{func_gamma}}: Utility Function
 #'   \item \code{\link[binaryRL]{func_eta}}: Learning Rate 
 #'   \item \code{\link[binaryRL]{func_epsilon}}: Exploration Strategy
+#'   \item \code{\link[binaryRL]{func_pi}}: Upper-Confidence-Bound
 #'   \item \code{\link[binaryRL]{func_tau}}: Soft-Max
 #' }
 #' 

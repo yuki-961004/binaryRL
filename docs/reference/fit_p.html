@@ -26,7 +26,7 @@ The function provides several optimization algorithms:
 8. Nonlinear Optimization (nloptr::nloptr)
 
 
-For more information, please refer to the GitHub repository:
+For more information, please refer to the homepage of this package:
  https://yuki-961004.github.io/binaryRL/"><meta property="og:description" content="This function is designed to fit the optimal parameters of black-box
  functions (models) to real-world data. Provided that the black-box
  function adheres to the specified interface
@@ -48,7 +48,7 @@ The function provides several optimization algorithms:
 8. Nonlinear Optimization (nloptr::nloptr)
 
 
-For more information, please refer to the GitHub repository:
+For more information, please refer to the homepage of this package:
  https://yuki-961004.github.io/binaryRL/"><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-BBRBG6HVWB"></script><script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -117,7 +117,7 @@ For more information, please refer to the GitHub repository:
 <li><p>6. Bayesian Optimization (<code><a href="https://rdrr.io/pkg/mlrMBO/man/mbo.html" class="external-link">mlrMBO::mbo</a></code>)</p></li>
 <li><p>7. Covariance Matrix Adapting Evolutionary Strategy (<code><a href="https://rdrr.io/pkg/cmaes/man/cma_es.html" class="external-link">cmaes::cma_es</a></code>)</p></li>
 <li><p>8. Nonlinear Optimization (<code><a href="https://astamm.github.io/nloptr/reference/nloptr.html" class="external-link">nloptr::nloptr</a></code>)</p></li>
-</ul><p>For more information, please refer to the GitHub repository:
+</ul><p>For more information, please refer to the homepage of this package:
  <a href="https://yuki-961004.github.io/binaryRL/">https://yuki-961004.github.io/binaryRL/</a></p>
     </div>
 
@@ -198,6 +198,7 @@ A character vector containing the names of all user-defined functions
     <code>util_func = <a href="func_gamma.html">func_gamma</a></code>,
     <code>rate_func = <a href="func_eta.html">func_eta</a></code>,
     <code>expl_func = <a href="func_epsilon.html">func_epsilon</a></code>
+    <code>bias_func = <a href="func_pi.html">func_pi</a></code>
     <code>prob_func = <a href="func_tau.html">func_tau</a></code>
  ),
  you must explicitly provide the names of your custom functions as a
@@ -307,7 +308,7 @@ Choose an algorithm package from
 <span class="r-in"><span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Mason_2024_Exp2.html">Mason_2024_Exp2</a></span><span class="op">$</span><span class="va">Subject</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span><span class="co"># ╔═══════════════════════════════════════════════════════════════════════════╗ #</span></span></span>
 <span class="r-in"><span><span class="co"># ║ --------------------------- black-box function -------------------------- ║ #</span></span></span>
-<span class="r-in"><span>  <span class="co">#funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),</span></span></span>
+<span class="r-in"><span>  <span class="co">#funcs = c("your_funcs"),</span></span></span>
 <span class="r-in"><span>  fit_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Utility.html">Utility</a></span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  model_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TD"</span>, <span class="st">"RSTD"</span>, <span class="st">"Utility"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span></span>
@@ -315,9 +316,9 @@ Choose an algorithm package from
 <span class="r-in"><span><span class="co"># ║ --------------------------- interation number --------------------------- ║ #</span></span></span>
 <span class="r-in"><span>  iteration <span class="op">=</span> <span class="fl">10</span>,</span></span>
 <span class="r-in"><span><span class="co"># ║ ------------------------------- algorithms ------------------------------ ║ #</span></span></span>
-<span class="r-in"><span>  nc <span class="op">=</span> <span class="fl">1</span>,                  <span class="co"># &lt;nc &gt; 1&gt;: parallel computation across subjects</span></span></span>
+<span class="r-in"><span>  nc <span class="op">=</span> <span class="fl">1</span>,                 <span class="co"># &lt;nc &gt; 1&gt;: parallel computation across subjects</span></span></span>
 <span class="r-in"><span>  <span class="co"># Base R Optimization</span></span></span>
-<span class="r-in"><span>  algorithm <span class="op">=</span> <span class="st">"L-BFGS-B"</span>   <span class="co"># Gradient-Based (stats)</span></span></span>
+<span class="r-in"><span>  algorithm <span class="op">=</span> <span class="st">"L-BFGS-B"</span>  <span class="co"># Gradient-Based (stats)</span></span></span>
 <span class="r-in"><span><span class="co"># ║ ------------------------------------------------------------------------- ║ #</span></span></span>
 <span class="r-in"><span>  <span class="co"># Specialized External Optimization</span></span></span>
 <span class="r-in"><span>  <span class="co">#algorithm = "GenSA"    # Simulated Annealing (GenSA)</span></span></span>

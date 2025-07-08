@@ -151,7 +151,7 @@ Namiki, N., Oyo, K., & Takahashi, T. (2014, December). How do humans handle the 
 <!---------------------------------------------------------->
 
 ### Upper-Confidence-Bound
-The $\pi$ parameter in Upper-Confidence-Bound (UCB) Action Selection, which is c in the book, is a parameter used to control the ratio of the bias value given to less-selected options. A larger value of this parameter will assign a greater bias to options that have been chosen infrequently. This value is set to 0.001 by default, ensuring that the model does not completely ignore any option. Once an option has been selected once, the adjustment to its value bias approaches almost zero. If the rewards in your experiment are very small or very large, you should adjust this value accordingly.
+The $\pi$ parameter in Upper-Confidence-Bound (UCB) Action Selection, which is c in the book, is a parameter used to control the ratio of the bias value given to less-selected options. A larger value of this parameter will assign a greater bias to options that have been chosen infrequently. This value is set to 0.001 by default(100 bias to the unchosen option), ensuring that the model does not completely ignore any option. Once an option has been selected once, the adjustment to its value bias approaches almost zero. If the rewards in your experiment are very small or very large, you should adjust this value accordingly.
 
 ```{r eval=FALSE}
 run_m(
@@ -166,7 +166,9 @@ Sutton, R. S., & Barto, A. G. (2014, 2015). Reinforcement Learning: An Introduct
 Sacu, S., Dubois, M., Hezemans, F. H., Aggensteiner, P. M., Monninger, M., Brandeis, D., ... & Holz, N. E. (2024). Early-life adversities are associated with lower expected value signaling in the adult brain. Biological Psychiatry, 96(12), 948-958. https://doi.org/10.1016/j.biopsych.2024.04.005  
 
 ### Soft-Max Function
-During the recovery process, the last element of both `simulate_lower` and `simulate_upper` corresponds to the $\tau$ parameter used in the softmax function.
+In many reinforcement learning models, softmax is used to represent the exploration-exploitation trade-off, rather than the three methods mentioned above. However, we still recommend retaining the default value of `pi = 0.001` for parameters related to `bias_func` to ensure that each option is selected at least once.  
+
+Additionally, when using the `binaryRL::rcv_d()` function, please note the following two points. During the recovery process, the **last** element of both `simulate_lower` and `simulate_upper` corresponds to the $\tau$ parameter used in the softmax function.
 
 - `simulate_lower` represents a fixed positive increment applied to all $\tau$ values.   
 if this value is set to 1, it means that 1 is added to every $\tau$ during simulation.
@@ -190,8 +192,7 @@ Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational m
 <!---------------------------------------------------------->
 
 ## Model Fit
-
-LL represents the similarity between the model's choices and human choices. The larger this value, the better the model.
+The primary aim of `binaryRL` is to enable reinforcement learning models to exhibit behaviors similar to human subjects. While there are other ways to formulate the *loss function*, we've fixed it as shown below to express the resemblance between human behavior and model predictions.  
 
 $$
 LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}

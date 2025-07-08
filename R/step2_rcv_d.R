@@ -35,7 +35,7 @@
 #'     \item 8. Nonlinear Optimization (\code{nloptr::nloptr})
 #'   }
 #' 
-#'  For more information, please refer to the GitHub repository:
+#'  For more information, please refer to the homepage of this package:
 #'  \url{https://yuki-961004.github.io/binaryRL/}
 #'  
 #' @note
@@ -126,6 +126,7 @@
 #'     \code{util_func = \link[binaryRL]{func_gamma}}, 
 #'     \code{rate_func = \link[binaryRL]{func_eta}}, 
 #'     \code{expl_func = \link[binaryRL]{func_epsilon}}
+#'     \code{bias_func = \link[binaryRL]{func_pi}}
 #'     \code{prob_func = \link[binaryRL]{func_tau}}
 #'  ), 
 #'  you must explicitly provide the names of your custom functions as a 
@@ -202,7 +203,7 @@
 #'   data = binaryRL::Mason_2024_Exp2,
 #' # ╔═══════════════════════════════════════════════════════════════════════════╗ #
 #' # ║ --------------------------- black-box function -------------------------- ║ #
-#'   #funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
+#'   #funcs = c("your_funcs"),
 #'   model_names = c("TD", "RSTD", "Utility"),
 #'   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
 #'   simulate_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
@@ -216,7 +217,7 @@
 #' # ║ ------------------------------- algorithms ------------------------------ ║ #
 #'   nc = 1,                 # <nc > 1>: parallel computation across subjects
 #'   # Base R Optimization
-#'   algorithm = "L-BFGS-B"   # Gradient-Based (stats)
+#'   algorithm = "L-BFGS-B"  # Gradient-Based (stats)
 #' # ║ ------------------------------------------------------------------------- ║ #
 #'   # Specialized External Optimization
 #'   #algorithm = "GenSA"    # Simulated Annealing (GenSA)

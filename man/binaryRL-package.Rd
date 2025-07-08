@@ -6,7 +6,7 @@
 \alias{binaryRL}
 \title{binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks}
 \description{
-Tools for building reinforcement learning (RL) models specifically tailored for Two-Alternative Forced Choice (TAFC) tasks, commonly employed in psychological research. These models build upon the foundational principles of model-free reinforcement learning detailed in Sutton and Barto (1998) <ISBN:0262039249>. The package allows for the intuitive definition of RL models using simple if-else statements. Our approach to constructing and evaluating these computational models is informed by the guidelines proposed in Wilson & Collins (2019) \doi{10.7554/eLife.49547}. Example datasets included with the package are sourced from the work of Mason et al. (2024) \doi{10.3758/s13423-023-02415-x}.
+Tools for building reinforcement learning (RL) models specifically tailored for Two-Alternative Forced Choice (TAFC) tasks, commonly employed in psychological research. These models build upon the foundational principles of model-free reinforcement learning detailed in Sutton and Barto (2018) <ISBN:9780262039246>. The package allows for the intuitive definition of RL models using simple if-else statements. Our approach to constructing and evaluating these computational models is informed by the guidelines proposed in Wilson & Collins (2019) \doi{10.7554/eLife.49547}. Example datasets included with the package are sourced from the work of Mason et al. (2024) \doi{10.3758/s13423-023-02415-x}.
 }
 \section{Example Data}{
 
@@ -50,6 +50,7 @@ Tools for building reinforcement learning (RL) models specifically tailored for 
   \item \code{\link[binaryRL]{func_gamma}}: Utility Function
   \item \code{\link[binaryRL]{func_eta}}: Learning Rate 
   \item \code{\link[binaryRL]{func_epsilon}}: Exploration Strategy
+  \item \code{\link[binaryRL]{func_pi}}: Upper-Confidence-Bound
   \item \code{\link[binaryRL]{func_tau}}: Soft-Max
 }
 }
@@ -74,7 +75,6 @@ Tools for building reinforcement learning (RL) models specifically tailored for 
 Useful links:
 \itemize{
   \item \url{https://yuki-961004.github.io/binaryRL/}
-  \item \url{https://github.com/yuki-961004/binaryRL}
   \item Report bugs at \url{https://github.com/yuki-961004/binaryRL/issues}
 }
 
