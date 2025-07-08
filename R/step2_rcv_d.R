@@ -201,8 +201,8 @@
 #' \dontrun{
 #' recovery <- binaryRL::rcv_d(
 #'   data = binaryRL::Mason_2024_Exp2,
-#' # ╔═══════════════════════════════════════════════════════════════════════════╗ #
-#' # ║ --------------------------- black-box function -------------------------- ║ #
+#' ##-----------------------------------------------------------------------------##
+#' ##----------------------------- black-box function ----------------------------##
 #'   #funcs = c("your_funcs"),
 #'   model_names = c("TD", "RSTD", "Utility"),
 #'   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
@@ -211,14 +211,14 @@
 #'   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
 #'   fit_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
 #'   fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
-#' # ║ --------------------------- interation number --------------------------- ║ #
+#' ##----------------------------- interation number -----------------------------##
 #'   iteration_s = 100,
 #'   iteration_f = 100,
-#' # ║ ------------------------------- algorithms ------------------------------ ║ #
+#' ##-------------------------------- algorithms ---------------------------------##
 #'   nc = 1,                 # <nc > 1>: parallel computation across subjects
 #'   # Base R Optimization
 #'   algorithm = "L-BFGS-B"  # Gradient-Based (stats)
-#' # ║ ------------------------------------------------------------------------- ║ #
+#' ##-----------------------------------------------------------------------------##
 #'   # Specialized External Optimization
 #'   #algorithm = "GenSA"    # Simulated Annealing (GenSA)
 #'   #algorithm = "GA"       # Genetic Algorithm (GA)
@@ -226,11 +226,11 @@
 #'   #algorithm = "PSO"      # Particle Swarm Optimization (pso)
 #'   #algorithm = "Bayesian" # Bayesian Optimization (mlrMBO)
 #'   #algorithm = "CMA-ES"   # Covariance Matrix Adapting (cmaes)
-#' # ║ ------------------------------------------------------------------------- ║ #
+#' ##-----------------------------------------------------------------------------##
 #'   # Optimization Library (nloptr)
 #'   #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
-#' # ║ ------------------------------- algorithms ------------------------------ ║ #
-#' # ╚═══════════════════════════════════════════════════════════════════════════╝ #
+#' ##-------------------------------- algorithms ---------------------------------##
+#' #################################################################################
 #' )
 #'
 #' result <- dplyr::bind_rows(recovery) %>%
