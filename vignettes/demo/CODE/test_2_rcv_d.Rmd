@@ -71,8 +71,8 @@ df_recovery <- binaryRL::recovery_data(
   n_trials = 360,
   lower = c(0, 0, 1),
   upper = c(1, 1, 2),
-  iteration = 50,
-  algorithm = "DEoptim"
+  iteration = 10,
+  algorithm = "GenSA"
 )
 ```
 </details>

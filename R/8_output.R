@@ -113,9 +113,9 @@ output <- function(
   BIC <- round(n_params * log(n_trials) - 2 * sum_LL, digits = 2)
   
   res <- list(
-    name = name,
     data = data,
     params = params,
+    name = name,
     acc = mean_ACC,
     ll = sum_LL,
     aic = AIC,

@@ -196,7 +196,7 @@ recovery_data <- function(
         
         p()
         
-        data <- list[[i]][[1]]
+        data <- list[[i]][["data"]]
         
         binaryRL.res <- binaryRL::optimize_para(
           data = data,
@@ -255,7 +255,7 @@ recovery_data <- function(
         .export = funcs
       ) %dorng% {
         
-        data_i <- list[[i]][[1]]
+        data_i <- list[[i]][["data"]]
         
         binaryRL.res <- binaryRL::optimize_para(
           data = data_i,
