@@ -65,8 +65,11 @@
 #'     \code{\link[binaryRL]{Utility}}.
 #' }
 #'
-#' For more information, please refer to the homepage of this package:
-#' \url{https://github.com/yuki-961004/binaryRL}
+#'  For more information, please refer to the homepage of this package:
+#'  \url{https://yuki-961004.github.io/binaryRL/}
+#' 
+#' @param name [character] 
+#' The name of your RL model
 #' 
 #' @param mode [character]
 #' This parameter controls the function's operational mode. It has three
@@ -102,19 +105,6 @@
 #' 
 #' @param n_trials [integer] 
 #' The total number of trials in your experiment.
-#' 
-#' @param softmax [logical]
-#'  Whether to use the softmax function.
-#'    \itemize{
-#'      \item \strong{\code{TRUE}}: The value of each option directly influences
-#'       the probability of selecting that option. Higher values lead to a
-#'       higher probability of selection.
-#'      \item \strong{\code{FALSE}}: The subject will always choose the option
-#'       with the higher value. There is no possibility of selecting the
-#'       lower-value option.
-#'  }
-#'  
-#'  \code{default: softmax = TRUE}
 #' 
 #' @param seed [integer] 
 #' Random seed. This ensures that the results are 
@@ -346,14 +336,14 @@
 #' summary(binaryRL.res)
 #' 
 run_m <- function(
+  name = NA,
   mode = c("simulate", "fit", "replay"),
-  
+
   data,
   id,
   n_params,
   n_trials,
   
-  softmax = TRUE,
   seed = 123,
 
   initial_value = NA,
@@ -389,6 +379,21 @@ run_m <- function(
   digits_1 = 2,
   digits_2 = 5
 ){
+  # model name
+  if (is.na(name) & length(eta) == 1 & gamma == 1) {
+    name <- "TD"
+  }
+  else if (is.na(name) & length(eta) == 2 & gamma == 1) {
+    name <- "RSTD"
+  }
+  else if (is.na(name) & length(eta) == 1 & gamma != 1) {
+    name <- "Utility"
+  }
+  else {
+    name <- "Customed"
+  }
+  
+  
   if (is.null(raw_cols)) {
     raw_cols = colnames(data)
   }
@@ -422,7 +427,6 @@ run_m <- function(
     options = step1[["options"]],
     L_choice = L_choice, R_choice = R_choice,
     L_reward = L_reward, R_reward = R_reward,
-    softmax = softmax,
     
     threshold = threshold,
     initial_value = initial_value,
@@ -458,6 +462,7 @@ run_m <- function(
   )
   
   step8 <- output(
+    name = name,
     data = step7,
     n_params = n_params,
     n_trials = n_trials,

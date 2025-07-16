@@ -4,6 +4,11 @@
 #' 
 #' @param options [vector] all alternative options from 'step1' `unique_choice`
 #' 
+#' @param seed [integer] 
+#' Random seed. This ensures that the results are 
+#'  reproducible and remain the same each time the function is run. 
+#'  \code{Default: `seed = 123`}
+#'  
 #' @param initial_value [numeric] 
 #' Subject's initial expected value for each stimulus's reward. If this value 
 #'  is not set (`initial_value = NA`), the subject will use the reward received 
@@ -19,23 +24,6 @@
 #'  For \strong{epsilon-greedy} or \strong{epsilon-decreasing} strategies,
 #'  `threshold` should be kept at its default value.
 #'  \code{Default: `threshold = 1`}
-#'  
-#' @param softmax [logical]
-#'  Whether to use the softmax function.
-#'    \itemize{
-#'      \item \strong{\code{TRUE}}: The value of each option directly influences
-#'       the probability of selecting that option. Higher values lead to a
-#'       higher probability of selection.
-#'      \item \strong{\code{FALSE}}: The subject will always choose the option
-#'       with the higher value. There is no possibility of selecting the
-#'       lower-value option.
-#'  }
-#'  \code{Default: `softmax = TRUE`}
-#' 
-#' @param seed [integer] 
-#' Random seed. This ensures that the results are 
-#'  reproducible and remain the same each time the function is run. 
-#'  \code{Default: `seed = 123`}
 #' 
 #' @param alpha [vector]
 #' Extra parameters that may be used in functions. 
@@ -160,9 +148,10 @@
 decision_making <- function(
     data, 
     options,
+    seed = 123, 
     
-    seed = 123, initial_value,
-    softmax = TRUE, threshold = 1,
+    initial_value,
+    threshold = 1,
     
     alpha, beta, gamma, eta, epsilon, lambda, pi, tau, 
     
@@ -311,41 +300,13 @@ decision_making <- function(
       data[[name]][i] <- data[[name]][i - 1]
     }
     
-################################ [ Soft-Max ] ##################################    
+############################# [ action select ] ################################    
     
-    # 检查是否设定了softmax
-    if (!(softmax %in% c(TRUE, FALSE))) {
-      stop("softmax TRUE or FALSE?")
-      # 如果是softmax = TRUE就基于概率随机选
-    } else if (softmax == TRUE) {
-      if (!is.numeric(data$L_value[i]) | !is.numeric(data$R_value[i])) {
-        stop("An error occurs when softmax == FALSE")
-      }
-
-      # 基于刚刚的概率, 随机选一个. 而不是谁大选谁
-      data$Rob_Choose[i] <- sample(
-        c(data[[L_choice]][i], data[[R_choice]][i]), 
-        prob = c(data$L_prob[i], data$R_prob[i]),
-        size = 1
-      ) 
-      # 如果softmax = FALSE, 则按照谁大选谁
-    } else if (softmax == FALSE) {
-      if (!is.numeric(data$L_value[i]) | !is.numeric(data$R_value[i])) {
-        stop("An error occurs when softmax == FALSE")
-      } else if (data$L_value[i] > data$R_value[i]) {
-        # 如果左边大选左边
-        data$Rob_Choose[i] <- data[[L_choice]][i]
-      } else if (data$L_value[i] < data$R_value[i]) {
-        # 如果左边小于右边
-        data$Rob_Choose[i] <- data[[R_choice]][i]
-      } else if (data$L_value[i] == data$R_value[i]) {
-        # 一样大随机选一个(是Single情况), 或者极端情况[Value_L == Value_R]
-        data$Rob_Choose[i] <- sample(
-          c(data[[L_choice]][i], data[[R_choice]][i]), 
-          size = 1
-        )
-      } 
-    }
+    data$Rob_Choose[i] <- sample(
+      c(data[[L_choice]][i], data[[R_choice]][i]), 
+      prob = c(data$L_prob[i], data$R_prob[i]),
+      size = 1
+    ) 
     
 ################################ [occurrence] ##################################   
     

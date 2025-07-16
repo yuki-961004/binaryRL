@@ -1,10 +1,16 @@
 #' Summary the Results
-#'
-#' @param data [data.frame] A data frame resulting from the 'step7' process of the `digits` function. 
 #' 
-#' @param n_params [integer] The number of free parameters in your model. 
+#' @param name [character] 
+#' The name of your RL model
 #' 
-#' @param n_trials [integer] The total number of trials in your experiment.
+#' @param data [data.frame] 
+#' A data frame resulting from the 'step7' process of the `digits` function. 
+#' 
+#' @param n_params [integer] 
+#' The number of free parameters in your model. 
+#' 
+#' @param n_trials [integer] 
+#' The total number of trials in your experiment.
 #' 
 #' @param initial_value [numeric] 
 #' Subject's initial expected value for each stimulus's reward. If this value 
@@ -79,13 +85,14 @@
 #' @noRd
 #' 
 output <- function(
+    name = NA,
     data, 
     n_params, n_trials, 
     initial_value, threshold,
     alpha, beta, gamma, eta, epsilon, lambda, pi, tau
 ){
   params <- list(
-    EV_1 = initial_value,
+    Q1 = initial_value,
     threshold = threshold,
     
     alpha = c(alpha),
@@ -106,6 +113,7 @@ output <- function(
   BIC <- round(n_params * log(n_trials) - 2 * sum_LL, digits = 2)
   
   res <- list(
+    name = name,
     data = data,
     params = params,
     acc = mean_ACC,

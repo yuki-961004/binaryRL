@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,7 +87,7 @@
 <span>  var2 <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  <span class="va">LR</span>,</span>
 <span>  <span class="va">try</span>,</span>
-<span>  tau <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">tau</span>,</span>
 <span>  <span class="va">alpha</span>,</span>
 <span>  <span class="va">beta</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -206,34 +206,55 @@ Extra parameters that may be used in functions.</p></dd>
 <span class="r-in"><span>  <span class="co"># Extra variables</span></span></span>
 <span class="r-in"><span>  <span class="va">var1</span> <span class="op">=</span> <span class="cn">NA</span>,</span></span>
 <span class="r-in"><span>  <span class="va">var2</span> <span class="op">=</span> <span class="cn">NA</span>,</span></span>
-<span class="r-in"><span>  </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># Whether calculating probability for left or right choice</span></span></span>
 <span class="r-in"><span>  <span class="va">LR</span>,</span></span>
 <span class="r-in"><span>  <span class="co"># Is it a random choosing trial?</span></span></span>
 <span class="r-in"><span>  <span class="va">try</span>,</span></span>
-<span class="r-in"><span>  </span></span>
-<span class="r-in"><span>  <span class="co"># Free parameter</span></span></span>
-<span class="r-in"><span>  <span class="va">tau</span> <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># Free parameters</span></span></span>
+<span class="r-in"><span>  <span class="va">tau</span>,</span></span>
 <span class="r-in"><span>  <span class="co"># Extra parameters</span></span></span>
 <span class="r-in"><span>  <span class="va">alpha</span>,</span></span>
 <span class="r-in"><span>  <span class="va">beta</span></span></span>
 <span class="r-in"><span><span class="op">)</span><span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="va">LR</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"L"</span>, <span class="st">"R"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"LR = 'L' or 'R'"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">}</span></span></span>
-<span class="r-in"><span><span class="co">############################### [ value-based ] #############################</span></span></span>
-<span class="r-in"><span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">try</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">LR</span> <span class="op">==</span> <span class="st">"L"</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>    <span class="va">prob</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="va">L_value</span> <span class="op">-</span> <span class="va">R_value</span><span class="op">)</span> <span class="op">*</span> <span class="va">tau</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">}</span></span></span>
-<span class="r-in"><span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">try</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">LR</span> <span class="op">==</span> <span class="st">"R"</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>    <span class="va">prob</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="va">R_value</span> <span class="op">-</span> <span class="va">L_value</span><span class="op">)</span> <span class="op">*</span> <span class="va">tau</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">}</span></span></span>
-<span class="r-in"><span><span class="co">################################# [ random ] ################################</span></span></span>
-<span class="r-in"><span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">try</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">############################### [ random ] ##################################</span></span></span>
+<span class="r-in"><span>  <span class="kw">if</span> <span class="op">(</span><span class="va">try</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>    <span class="va">prob</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span></span>
 <span class="r-in"><span>  <span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co">############################# [ greedy-max ] ################################</span></span></span>
+<span class="r-in"><span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">try</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">LR</span> <span class="op">==</span> <span class="st">"L"</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">tau</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="kw">if</span> <span class="op">(</span><span class="va">L_value</span> <span class="op">==</span> <span class="va">R_value</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="va">prob</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span></span>
+<span class="r-in"><span>    <span class="op">}</span></span></span>
+<span class="r-in"><span>    <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">L_value</span> <span class="op">&gt;</span> <span class="va">R_value</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="va">prob</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span>    <span class="op">}</span></span></span>
+<span class="r-in"><span>    <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">L_value</span> <span class="op">&lt;</span> <span class="va">R_value</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="va">prob</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
+<span class="r-in"><span>    <span class="op">}</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span></span></span>
+<span class="r-in"><span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">try</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">LR</span> <span class="op">==</span> <span class="st">"R"</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">tau</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="kw">if</span> <span class="op">(</span><span class="va">L_value</span> <span class="op">==</span> <span class="va">R_value</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="va">prob</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span></span>
+<span class="r-in"><span>    <span class="op">}</span></span></span>
+<span class="r-in"><span>    <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">R_value</span> <span class="op">&gt;</span> <span class="va">L_value</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="va">prob</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span>    <span class="op">}</span></span></span>
+<span class="r-in"><span>    <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">R_value</span> <span class="op">&lt;</span> <span class="va">L_value</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="va">prob</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
+<span class="r-in"><span>    <span class="op">}</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co">############################### [ soft-max ] ################################</span></span></span>
+<span class="r-in"><span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">try</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">LR</span> <span class="op">==</span> <span class="st">"L"</span> <span class="op">&amp;</span> <span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">tau</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">prob</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="va">L_value</span> <span class="op">-</span> <span class="va">R_value</span><span class="op">)</span> <span class="op">*</span> <span class="va">tau</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span></span></span>
+<span class="r-in"><span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">try</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">LR</span> <span class="op">==</span> <span class="st">"R"</span> <span class="op">&amp;</span> <span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">tau</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">prob</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="va">R_value</span> <span class="op">-</span> <span class="va">L_value</span><span class="op">)</span> <span class="op">*</span> <span class="va">tau</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co">################################ [ error ] ##################################</span></span></span>
 <span class="r-in"><span>  <span class="kw">else</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>    <span class="va">prob</span> <span class="op">&lt;-</span> <span class="st">"ERROR"</span> <span class="co"># Error check</span></span></span>
+<span class="r-in"><span>    <span class="va">prob</span> <span class="op">&lt;-</span> <span class="st">"ERROR"</span></span></span>
 <span class="r-in"><span>  <span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">prob</span><span class="op">)</span></span></span>

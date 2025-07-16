@@ -91,20 +91,20 @@ Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and
 
 ## Exploration–Exploitation Trade-off  
 
-> "The ε-greedy methods choose randomly a small fraction of the time, whereas UCB methods choose deterministically but achieve exploration by subtly favoring at each step the actions that have so far received fewer samples. Gradient-bandit algorithms estimate not action values, but action preferences, and favor the more preferred actions in a graded, probabalistic manner using a soft-max distribution. The simple expedient of initializing estimates optimistically causes even greedy methods to explore significantly."  
+> "The ε-greedy methods choose randomly a small fraction of the time, whereas UCB methods choose deterministically but achieve exploration by subtly favoring at each step the actions that have so far received fewer samples. Gradient bandit algorithms estimate not action values, but action preferences, and favor the more preferred actions in a graded, probabilistic manner using a soft-max distribution. The simple expedient of initializing estimates optimistically causes even greedy methods to explore significantly."  
 
 <p align="center">
     <img src="./fig/rl_EE_tradeoff.png" alt="RL Process" width="80%" style="display: inline;">
 </p>
 
 **Reference**  
-Sutton, R. S., & Barto, A. G. (2014, 2015). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
+Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
 
 ### Initial Value
-> "Initial action values can also be used as a simple way of encouraging exploration. Suppose that instead of setting the initial action values to zero, as we did in the 10-armed testbed, we set them all to +5. Recall that the q(a) in this problem are selected from a normal distribution with mean 0 and variance 1. An initial estimate of +5 is thus wildly optimistic. But this optimism encourages action-value methods to explore."
+> "Initial action values can also be used as a simple way to encourage exploration. Suppose that instead of setting the initial action values to zero, as we did in the 10-armed testbed, we set them all to +5. Recall that the q*(a) in this problem are selected from a normal distribution with mean 0 and variance 1. An initial estimate of +5 is thus wildly optimistic. But this optimism encourages action-value methods to explore."
 
 **Reference**  
-Sutton, R. S., & Barto, A. G. (2014, 2015). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
+Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
 
 ### Exploration Strategy
 Participants in the experiment may not always choose based on the value of the options, but instead select randomly on some trials. This is known as exploration strategy. You can implement an $\epsilon$-first model by setting the `threshold` parameter in the `run_m`. For instance, if the threshold is set to `threshold = 20` (The default value is set to 1), it means that participants will choose completely randomly until trial number 20, after which their choices will be based on value. 
@@ -162,8 +162,7 @@ run_m(
 ```
 
 **Reference**  
-Sutton, R. S., & Barto, A. G. (2014, 2015). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
-Sacu, S., Dubois, M., Hezemans, F. H., Aggensteiner, P. M., Monninger, M., Brandeis, D., ... & Holz, N. E. (2024). Early-life adversities are associated with lower expected value signaling in the adult brain. Biological Psychiatry, 96(12), 948-958. https://doi.org/10.1016/j.biopsych.2024.04.005  
+Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
 
 ### Soft-Max Function
 In many reinforcement learning models, softmax is used to represent the exploration-exploitation trade-off, rather than the three methods mentioned above. However, we still recommend retaining the default value of `pi = 0.001` for parameters related to `bias_func` to ensure that each option is selected at least once.  

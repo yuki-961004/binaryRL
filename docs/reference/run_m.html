@@ -63,7 +63,7 @@ Objective Function Format for Optimization: Once your
 
 
 For more information, please refer to the homepage of this package:
-https://github.com/yuki-961004/binaryRL"><meta property="og:description" content="This function is designed to construct and customize reinforcement
+ https://yuki-961004.github.io/binaryRL/"><meta property="og:description" content="This function is designed to construct and customize reinforcement
 learning models.
 Items for model construction:
 Data Input and Specification: You must provide the raw
@@ -121,7 +121,7 @@ Objective Function Format for Optimization: Once your
 
 
 For more information, please refer to the homepage of this package:
-https://github.com/yuki-961004/binaryRL"><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-BBRBG6HVWB"></script><script>
+ https://yuki-961004.github.io/binaryRL/"><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-BBRBG6HVWB"></script><script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
@@ -135,7 +135,7 @@ https://github.com/yuki-961004/binaryRL"><!-- Global site tag (gtag.js) - Google
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -223,18 +223,18 @@ learning models.</p>
     <code><a href="RSTD.html">RSTD</a></code>,
     <code><a href="Utility.html">Utility</a></code>.</p></li>
 </ul><p>For more information, please refer to the homepage of this package:
-<a href="https://github.com/yuki-961004/binaryRL" class="external-link">https://github.com/yuki-961004/binaryRL</a></p>
+ <a href="https://yuki-961004.github.io/binaryRL/">https://yuki-961004.github.io/binaryRL/</a></p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_m</span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"simulate"</span>, <span class="st">"fit"</span>, <span class="st">"replay"</span><span class="op">)</span>,</span>
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">id</span>,</span>
 <span>  <span class="va">n_params</span>,</span>
 <span>  <span class="va">n_trials</span>,</span>
-<span>  softmax <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">123</span>,</span>
 <span>  initial_value <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  threshold <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -271,7 +271,12 @@ learning models.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
+<dl><dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
+<dd><p>[character]
+The name of your RL model</p></dd>
+
+
+<dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
 <dd><p>[character]
 This parameter controls the function's operational mode. It has three
  possible values, each typically associated with a specific function:</p><ul><li><p><code>"simulate"</code>: Should be used when working with <code>rcv_d</code>.</p></li>
@@ -308,17 +313,6 @@ The number of free parameters in your model.</p></dd>
 <dt id="arg-n-trials">n_trials<a class="anchor" aria-label="anchor" href="#arg-n-trials"></a></dt>
 <dd><p>[integer]
 The total number of trials in your experiment.</p></dd>
-
-
-<dt id="arg-softmax">softmax<a class="anchor" aria-label="anchor" href="#arg-softmax"></a></dt>
-<dd><p>[logical]
-Whether to use the softmax function.</p><ul><li><p><strong><code>TRUE</code></strong>: The value of each option directly influences
-     the probability of selecting that option. Higher values lead to a
-     higher probability of selection.</p></li>
-<li><p><strong><code>FALSE</code></strong>: The subject will always choose the option
-     with the higher value. There is no possibility of selecting the
-     lower-value option.</p></li>
-</ul><p><code>default: softmax = TRUE</code></p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
@@ -575,30 +569,30 @@ The number of decimal places to retain for columns related to select function.</
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">binaryRL.res</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Preconditions for this fitting:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>  - Initial value of options: Initial reward received</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>  - Random choice threshold: 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Results of RSTD Model: </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Exploration and Exploitation Trade-off:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Initial Values: Initial reward received</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Exploration Strategy: off</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Upper-Confidence-Bound: on</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Soft-Max: on</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Results of the Reinforcement Learning Model:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Free Parameters:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    α:  NA </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    β:  NA </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    γ:  1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    η:  0.321 0.765 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    ε:  NA </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    λ:  NA </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    π:  0.001 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    τ:  1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model Fit:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Accuracy:  60 %</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    LogL:  -1262.35 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC:  2528.7 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC:  2536.47 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Model Fit:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Accuracy: 60%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   LogL: -1262.35</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   AIC: 2528.7</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   BIC: 2536.47</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Free Parameters:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   α: NA</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   β: NA</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   γ: 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   η: 0.321, 0.765</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   ε: NA</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   λ: NA</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   π: 0.001</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   τ: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Parameter Value1 Value2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       EV_1     NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         Q1     NA     NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  threshold  1.000     NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3      alpha     NA     NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4       beta     NA     NA</span>

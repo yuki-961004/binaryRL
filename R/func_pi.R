@@ -103,9 +103,9 @@
 #'   alpha,
 #'   beta
 #'  ){
-#'   if (!(LR %in% c("L", "R"))) {
-#'  stop("LR = 'L' or 'R'")
-#'  }
+#'   if (is.na(pi)) {
+#'     bias <- 0
+#'   }
 #' ############################# [ adjust value ] ##############################
 #'   else if (LR == "L") {
 #'     bias <- pi * sqrt(log(L_pick + exp(1)) / (L_pick + 1e-10))
@@ -139,8 +139,8 @@ func_pi <- function(
   alpha,
   beta
 ){
-  if (!(LR %in% c("L", "R"))) {
-    stop("LR = 'L' or 'R'")
+  if (is.na(pi)) {
+    bias <- 0
   }
 ############################# [ adjust value ] #################################
   else if (LR == "L") {

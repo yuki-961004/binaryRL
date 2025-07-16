@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -205,32 +205,32 @@ in Cognitive Sciences, 26</em>(7), 607-621. <a href="https://doi.org/10.1016/j.t
 <p>“The ε-greedy methods choose randomly a small fraction of the time,
 whereas UCB methods choose deterministically but achieve exploration by
 subtly favoring at each step the actions that have so far received fewer
-samples. Gradient-bandit algorithms estimate not action values, but
+samples. Gradient bandit algorithms estimate not action values, but
 action preferences, and favor the more preferred actions in a graded,
-probabalistic manner using a soft-max distribution. The simple expedient
+probabilistic manner using a soft-max distribution. The simple expedient
 of initializing estimates optimistically causes even greedy methods to
 explore significantly.”</p>
 </blockquote>
 <p align="center">
 <img src="fig/rl_EE_tradeoff.png" alt="RL Process" width="80%" style="display: inline;"></p>
 <p><strong>Reference</strong><br>
-Sutton, R. S., &amp; Barto, A. G. (2014, 2015). Reinforcement Learning:
-An Introduction (2nd ed). Cambridge: MIT press.</p>
+Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement Learning: An
+Introduction (2nd ed). Cambridge: MIT press.</p>
 <div class="section level4">
 <h4 id="initial-value">Initial Value<a class="anchor" aria-label="anchor" href="#initial-value"></a>
 </h4>
 <blockquote>
-<p>“Initial action values can also be used as a simple way of
-encouraging exploration. Suppose that instead of setting the initial
-action values to zero, as we did in the 10-armed testbed, we set them
-all to +5. Recall that the q(a) in this problem are selected from a
-normal distribution with mean 0 and variance 1. An initial estimate of
-+5 is thus wildly optimistic. But this optimism encourages action-value
+<p>“Initial action values can also be used as a simple way to encourage
+exploration. Suppose that instead of setting the initial action values
+to zero, as we did in the 10-armed testbed, we set them all to +5.
+Recall that the q*(a) in this problem are selected from a normal
+distribution with mean 0 and variance 1. An initial estimate of +5 is
+thus wildly optimistic. But this optimism encourages action-value
 methods to explore.”</p>
 </blockquote>
 <p><strong>Reference</strong><br>
-Sutton, R. S., &amp; Barto, A. G. (2014, 2015). Reinforcement Learning:
-An Introduction (2nd ed). Cambridge: MIT press.</p>
+Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement Learning: An
+Introduction (2nd ed). Cambridge: MIT press.</p>
 </div>
 <div class="section level4">
 <h4 id="exploration-strategy">Exploration Strategy<a class="anchor" aria-label="anchor" href="#exploration-strategy"></a>
@@ -302,12 +302,8 @@ you should adjust this value accordingly.</p>
 <span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  ...</span>
 <span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>Reference</strong><br>
-Sutton, R. S., &amp; Barto, A. G. (2014, 2015). Reinforcement Learning:
-An Introduction (2nd ed). Cambridge: MIT press.<br>
-Sacu, S., Dubois, M., Hezemans, F. H., Aggensteiner, P. M., Monninger,
-M., Brandeis, D., … &amp; Holz, N. E. (2024). Early-life adversities are
-associated with lower expected value signaling in the adult brain.
-Biological Psychiatry, 96(12), 948-958. <a href="https://doi.org/10.1016/j.biopsych.2024.04.005" class="external-link uri">https://doi.org/10.1016/j.biopsych.2024.04.005</a></p>
+Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement Learning: An
+Introduction (2nd ed). Cambridge: MIT press.</p>
 </div>
 <div class="section level4">
 <h4 id="soft-max-function">Soft-Max Function<a class="anchor" aria-label="anchor" href="#soft-max-function"></a>

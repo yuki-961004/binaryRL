@@ -10,46 +10,99 @@ summary.binaryRL <- function(object, ...) {
 
   object$data <- NULL
   
-  if (is.na(object$params$EV_1)) {
-    message(
-      paste0(
-        "Preconditions for this fitting:", "\n",
-        " - Initial value of options: ", "Initial reward received", "\n",
-        " - Random choice threshold: ", object$params$threshold, "\n",
-        "\n"
-      )
-    )
-  } else {
-    message(
-      paste0(
-        "Preconditions for this fitting:", "\n",
-        " - Initial value of options: ", object$params$EV_1, "\n",
-        " - Random choice threshold: ", object$params$threshold, "\n",
-        "\n"
-      )
-    )
+  # EE trade-off
+  # positive(negative) Q1
+  Q1 <- object$params$Q1
+  # epsilon
+  threshold <- object$params$threshold
+  epsilon <- round(object$params$epsilon, 3)
+  lambda <- round(object$params$lambda, 3)
+  # UCB
+  pi <- round(object$params$pi, 3)
+  # softmax
+  tau <- round(object$params$tau, 3)
+  # value function
+  gamma <- round(object$params$gamma, 3)
+  eta <- round(object$params$eta, 3)
+  # extra
+  alpha <- round(object$params$alpha, 3)
+  beta <- round(object$params$beta, 3)
+  
+  # 是否设定了初始值
+  if (is.na(Q1)) {
+    Q1 <- "Initial reward received"
   }
   
-  cat("Results of the Reinforcement Learning Model:\n")
+  # 是哪种epsilon
+  if (threshold == 1 & is.na(epsilon) & is.na(lambda)) {
+    EE_tradeof <- "off"
+  }
+  else if (threshold > 1 & is.na(epsilon) & is.na(lambda)) {
+    EE_tradeof <- "\u03B5-first"
+  }
+  else if (threshold == 1 & !(is.na(epsilon)) & is.na(lambda)) {
+    EE_tradeof <- "\u03B5-greedy"
+  }
+  else if (threshold == 1 & is.na(epsilon) & !(is.na(lambda))) {
+    EE_tradeof <- "\u03B5-decreasing"
+  }
+  else {
+    EE_tradeof <- "unknown"
+  }
   
-  cat("\nFree Parameters:\n")
+  # UCB
+  if (is.na(pi)) {
+    UCB <- "off"
+  }
+  else {
+    UCB <- "on"
+  }
   
-  cat("  ", "\u03B1: ", round(object$params$alpha, 3), "\n")
-  cat("  ", "\u03B2: ", round(object$params$beta, 3), "\n")  
-  cat("  ", "\u03B3: ", round(object$params$gamma, 3), "\n")
-  cat("  ", "\u03B7: ", round(object$params$eta, 3), "\n")
-  cat("  ", "\u03B5: ", round(object$params$epsilon, 3), "\n")
-  cat("  ", "\u03BB: ", round(object$params$lambda, 3), "\n")
-  cat("  ", "\u03C0: ", round(object$params$pi, 3), "\n")
-  cat("  ", "\u03C4: ", round(object$params$tau, 3), "\n")
+  # soft-max
+  if (is.na(tau)) {
+    softmax <- "off"
+  } 
+  else {
+    softmax <- "on"
+  }
   
+  message(
+    "Results of ", object$name, " Model: ", 
+    "\n"
+  )
   
-  cat("\nModel Fit:\n")
+  message(
+    "Exploration and Exploitation Trade-off:\n",
+    "  ", "Initial Values: ", Q1, "\n",
+    "  ", "Exploration Strategy: ", EE_tradeof, "\n",
+    "  ", "Upper-Confidence-Bound: ", UCB, "\n",
+    "  ", "Soft-Max: ", softmax, "\n",
+    
+    "\n"
+  )
   
-  cat("  ", "Accuracy: ", object$acc, "%\n")
-  cat("  ", "LogL: ", object$ll, "\n")
-  cat("  ", "AIC: ", object$aic, "\n")
-  cat("  ", "BIC: ", object$bic, "\n")
+  message(
+    "Model Fit:\n",
+    # Indent model fit metrics
+    "  ", "Accuracy: ", object$acc, "%\n",
+    "  ", "LogL: ", object$ll, "\n",
+    "  ", "AIC: ", object$aic, "\n",
+    "  ", "BIC: ", object$bic,"\n"
+  )
+  
+  message(
+    "Free Parameters:\n",
+    
+    # Indent parameters for better readability
+    "  ", "\u03B1: ", paste0(round(object$params$alpha, 3), collapse = ", "), "\n",
+    "  ", "\u03B2: ", paste0(round(object$params$beta, 3), collapse = ", "), "\n",
+    "  ", "\u03B3: ", paste0(round(object$params$gamma, 3), collapse = ", "), "\n",
+    "  ", "\u03B7: ", paste0(round(object$params$eta, 3), collapse = ", "), "\n",
+    "  ", "\u03B5: ", paste0(round(object$params$epsilon, 3), collapse = ", "), "\n",
+    "  ", "\u03BB: ", paste0(round(object$params$lambda, 3), collapse = ", "), "\n",
+    "  ", "\u03C0: ", paste0(round(object$params$pi, 3), collapse = ", "), "\n",
+    "  ", "\u03C4: ", paste0(round(object$params$tau, 3), collapse = ", "), "\n"
+  )
   
   # 获取所有参数的名称
   param_names <- names(object$params)

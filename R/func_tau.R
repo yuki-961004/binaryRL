@@ -96,34 +96,55 @@
 #'   # Extra variables
 #'   var1 = NA,
 #'   var2 = NA,
-#'   
+#'
 #'   # Whether calculating probability for left or right choice
 #'   LR,
 #'   # Is it a random choosing trial?
 #'   try,
-#'   
-#'   # Free parameter
-#'   tau = 1,
+#'
+#'   # Free parameters
+#'   tau,
 #'   # Extra parameters
 #'   alpha,
 #'   beta
 #' ){
-#'   if (!(LR %in% c("L", "R"))) {
-#'     stop("LR = 'L' or 'R'")
-#'   }
-#' ############################### [ value-based ] #############################
-#'   else if (try == 0 & LR == "L") {
-#'     prob <- 1 / (1 + exp(-(L_value - R_value) * tau))
-#'   }
-#'   else if (try == 0 & LR == "R") {
-#'     prob <- 1 / (1 + exp(-(R_value - L_value) * tau))
-#'   }
-#' ################################# [ random ] ################################
-#'   else if (try == 1) {
+#' ############################### [ random ] ##################################
+#'   if (try == 1) {
 #'     prob <- 0.5
 #'   }
+#' ############################# [ greedy-max ] ################################
+#'   else if (try == 0 & LR == "L" & is.na(tau)) {
+#'     if (L_value == R_value) {
+#'       prob <- 0.5
+#'     }
+#'     else if (L_value > R_value) {
+#'       prob <- 1
+#'     }
+#'     else if (L_value < R_value) {
+#'       prob <- 0
+#'     }
+#'   }
+#'   else if (try == 0 & LR == "R" & is.na(tau)) {
+#'     if (L_value == R_value) {
+#'       prob <- 0.5
+#'     }
+#'     else if (R_value > L_value) {
+#'       prob <- 1
+#'     }
+#'     else if (R_value < L_value) {
+#'       prob <- 0
+#'     }
+#'   }
+#' ############################### [ soft-max ] ################################
+#'   else if (try == 0 & LR == "L" & !(is.na(tau))) {
+#'     prob <- 1 / (1 + exp(-(L_value - R_value) * tau))
+#'   }
+#'   else if (try == 0 & LR == "R" & !(is.na(tau))) {
+#'     prob <- 1 / (1 + exp(-(R_value - L_value) * tau))
+#'   }
+#' ################################ [ error ] ##################################
 #'   else {
-#'     prob <- "ERROR" # Error check
+#'     prob <- "ERROR"
 #'   }
 #'
 #'   return(prob)
@@ -153,25 +174,46 @@ func_tau <- function(
   try,
   
   # 自由参数
-  tau = 1,
+  tau,
   # 额外参数
   alpha,
   beta
 ){
-  if (!(LR %in% c("L", "R"))) {
-    stop("LR = 'L' or 'R'")
-  }
-############################### [ value-based ] ################################
-  else if (try == 0 & LR == "L") {
-    prob <- 1 / (1 + exp(-(L_value - R_value) * tau))
-  }
-  else if (try == 0 & LR == "R") {
-    prob <- 1 / (1 + exp(-(R_value - L_value) * tau))
-  }
-################################# [ random ] ###################################
-  else if (try == 1) {
+################################# [ random ] ###################################  
+  if (try == 1) {
     prob <- 0.5
   } 
+############################### [ greedy-max ] #################################
+  else if (try == 0 & LR == "L" & is.na(tau)) {
+    if (L_value == R_value) {
+      prob <- 0.5
+    } 
+    else if (L_value > R_value) {
+      prob <- 1
+    }
+    else if (L_value < R_value) {
+      prob <- 0
+    }
+  }
+  else if (try == 0 & LR == "R" & is.na(tau)) {
+    if (L_value == R_value) {
+      prob <- 0.5
+    } 
+    else if (R_value > L_value) {
+      prob <- 1
+    }
+    else if (R_value < L_value) {
+      prob <- 0
+    }
+  }
+################################ [ soft-max ] ##################################
+  else if (try == 0 & LR == "L" & !(is.na(tau))) {
+    prob <- 1 / (1 + exp(-(L_value - R_value) * tau))
+  }
+  else if (try == 0 & LR == "R" & !(is.na(tau))) {
+    prob <- 1 / (1 + exp(-(R_value - L_value) * tau))
+  }
+################################# [ error ] ####################################
   else {
     prob <- "ERROR"
   }

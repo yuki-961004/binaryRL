@@ -5,12 +5,12 @@
 \title{Step 1: Building reinforcement learning model}
 \usage{
 run_m(
+  name = NA,
   mode = c("simulate", "fit", "replay"),
   data,
   id,
   n_params,
   n_trials,
-  softmax = TRUE,
   seed = 123,
   initial_value = NA,
   threshold = 1,
@@ -43,6 +43,9 @@ run_m(
 )
 }
 \arguments{
+\item{name}{[character] 
+The name of your RL model}
+
 \item{mode}{[character]
 This parameter controls the function's operational mode. It has three
  possible values, each typically associated with a specific function:
@@ -77,19 +80,6 @@ The number of free parameters in your model.}
 
 \item{n_trials}{[integer] 
 The total number of trials in your experiment.}
-
-\item{softmax}{[logical]
-Whether to use the softmax function.
-  \itemize{
-    \item \strong{\code{TRUE}}: The value of each option directly influences
-     the probability of selecting that option. Higher values lead to a
-     higher probability of selection.
-    \item \strong{\code{FALSE}}: The subject will always choose the option
-     with the higher value. There is no possibility of selecting the
-     lower-value option.
-}
-
-\code{default: softmax = TRUE}}
 
 \item{seed}{[integer] 
 Random seed. This ensures that the results are 
@@ -370,8 +360,8 @@ Items for model construction:
     \code{\link[binaryRL]{Utility}}.
 }
 
-For more information, please refer to the homepage of this package:
-\url{https://github.com/yuki-961004/binaryRL}
+ For more information, please refer to the homepage of this package:
+ \url{https://yuki-961004.github.io/binaryRL/}
 }
 \examples{
 data <- binaryRL::Mason_2024_Exp1
