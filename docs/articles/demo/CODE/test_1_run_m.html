@@ -269,6 +269,94 @@
 <span><span class="co">## 3      AIC  634.32</span></span>
 <span><span class="co">## 4      BIC  645.98</span></span></code></pre>
 </div>
+<div class="section level2">
+<h2 id="prospect">Prospect<a class="anchor" aria-label="anchor" href="#prospect"></a>
+</h2>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">func_prospect</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span></span>
+<span>  <span class="va">i</span>, <span class="va">L_freq</span>, <span class="va">R_freq</span>, <span class="va">L_pick</span>, <span class="va">R_pick</span>, <span class="va">L_value</span>, <span class="va">R_value</span>, <span class="va">var1</span> <span class="op">=</span> <span class="cn">NA</span>, <span class="va">var2</span> <span class="op">=</span> <span class="cn">NA</span>,  </span>
+<span>  <span class="va">value</span>, <span class="va">utility</span>, <span class="va">reward</span>, <span class="va">occurrence</span>,</span>
+<span>  <span class="va">gamma</span>, <span class="va">alpha</span>, <span class="va">beta</span></span>
+<span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co"># Stevens's Power Law</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">gamma</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">gamma</span><span class="op">)</span></span>
+<span>    <span class="va">utility</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">reward</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">reward</span><span class="op">)</span> <span class="op">^</span> <span class="va">gamma</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="co"># Prospect Theory</span></span>
+<span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">gamma</span><span class="op">)</span> <span class="op">==</span> <span class="fl">2</span> <span class="op">&amp;</span> <span class="va">reward</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">gamma</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span></span>
+<span>    </span>
+<span>    <span class="va">utility</span> <span class="op">&lt;-</span> <span class="va">beta</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">reward</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">reward</span><span class="op">)</span> <span class="op">^</span> <span class="va">gamma</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">gamma</span><span class="op">)</span> <span class="op">==</span> <span class="fl">2</span> <span class="op">&amp;</span> <span class="va">reward</span> <span class="op">&gt;=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">gamma</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="va">beta</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span>    </span>
+<span>    <span class="va">utility</span> <span class="op">&lt;-</span> <span class="va">beta</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">reward</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">reward</span><span class="op">)</span> <span class="op">^</span> <span class="va">gamma</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="va">utility</span> <span class="op">&lt;-</span> <span class="st">"ERROR"</span> </span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">gamma</span>, <span class="va">utility</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">binaryRL.res</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../../../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="st">"Prospect"</span>,</span>
+<span>  data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span>,</span>
+<span>  id <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  n_params <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  n_trials <span class="op">=</span> <span class="fl">360</span>,</span>
+<span>  eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>  gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.12</span>, <span class="fl">0.89</span><span class="op">)</span>,</span>
+<span>  tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.34</span><span class="op">)</span>,</span>
+<span>  beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.56</span><span class="op">)</span>,</span>
+<span>  util_func <span class="op">=</span> <span class="va">func_prospect</span>,</span>
+<span>  mode <span class="op">=</span> <span class="st">"fit"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">binaryRL.res</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Results of Prospect Model:</span></span></code></pre>
+<pre><code><span><span class="co">## Exploration and Exploitation Trade-off:</span></span>
+<span><span class="co">##   Initial Values: Initial reward received</span></span>
+<span><span class="co">##   Exploration Strategy: off</span></span>
+<span><span class="co">##   Upper-Confidence-Bound: on</span></span>
+<span><span class="co">##   Soft-Max: on</span></span></code></pre>
+<pre><code><span><span class="co">## Model Fit:</span></span>
+<span><span class="co">##   Accuracy: 55%</span></span>
+<span><span class="co">##   LogL: -425.44</span></span>
+<span><span class="co">##   AIC: 860.88</span></span>
+<span><span class="co">##   BIC: 880.31</span></span></code></pre>
+<pre><code><span><span class="co">## Free Parameters:</span></span>
+<span><span class="co">##   α: NA</span></span>
+<span><span class="co">##   β: 1.56</span></span>
+<span><span class="co">##   γ: 0.12, 0.89</span></span>
+<span><span class="co">##   η: 0.5</span></span>
+<span><span class="co">##   ε: NA</span></span>
+<span><span class="co">##   λ: NA</span></span>
+<span><span class="co">##   π: 0.001</span></span>
+<span><span class="co">##   τ: 0.34</span></span></code></pre>
+<pre><code><span><span class="co">## [[1]]</span></span>
+<span><span class="co">##    Parameter Value1 Value2</span></span>
+<span><span class="co">## 1         Q1     NA     NA</span></span>
+<span><span class="co">## 2  threshold  1.000     NA</span></span>
+<span><span class="co">## 3      alpha     NA     NA</span></span>
+<span><span class="co">## 4       beta  1.560     NA</span></span>
+<span><span class="co">## 5      gamma  0.120   0.89</span></span>
+<span><span class="co">## 6        eta  0.500     NA</span></span>
+<span><span class="co">## 7    epsilon     NA     NA</span></span>
+<span><span class="co">## 8     lambda     NA     NA</span></span>
+<span><span class="co">## 9         pi  0.001     NA</span></span>
+<span><span class="co">## 10       tau  0.340     NA</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[2]]</span></span>
+<span><span class="co">##     Metric   Value</span></span>
+<span><span class="co">## 1 Accuracy   55.00</span></span>
+<span><span class="co">## 2     LogL -425.44</span></span>
+<span><span class="co">## 3      AIC  860.88</span></span>
+<span><span class="co">## 4      BIC  880.31</span></span></code></pre>
+</div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>

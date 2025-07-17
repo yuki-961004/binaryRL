@@ -146,7 +146,7 @@
 #' }
 #' 
 func_gamma <- function(
-    # 试次序号
+  # 试次序号
   i,
   # 该选项出现了几次
   L_freq,

@@ -380,7 +380,10 @@ run_m <- function(
   digits_2 = 5
 ){
   # model name
-  if (is.na(name) & length(eta) == 1 & gamma == 1) {
+  if (!(is.na(name))) {
+    name <- name
+  }
+  else if (is.na(name) & length(eta) == 1 & gamma == 1) {
     name <- "TD"
   }
   else if (is.na(name) & length(eta) == 2 & gamma == 1) {

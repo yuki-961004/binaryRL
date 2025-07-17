@@ -31,14 +31,15 @@ Since parallel execution runs in a separate environment, if you have customized 
 ## Value Function
 
 ### Utility Function
-The subjective value of objective rewards is a topic that requires discussion, as different scholars may have different perspectives. This can be traced back to the `Stevens's Power Law`. In this model, you can customize your utility function. By default, I use a power function based on Stevens' power law to model the relationship between subjective and objective value.
+The subjective value of objective rewards is a topic that requires discussion, as different scholars may have different perspectives. This can be traced back to the **Stevens's Power Law**. In this model, you can customize your utility function. By default, I use a power function based on Stevens' power law to model the relationship between subjective and objective value.
 
-According to **Kahneman's Prospect Theory**, individuals exhibit distinct utility functions for **gains** and **losses**. Referencing Nilsson et al. (2012), we have implemented the model below. By replacing `util_func` with the specified form that follows, you can enable the model to run a utility function based on **Kahneman's Prospect Theory**.
-
+According to **Kahneman's Prospect Theory**, individuals exhibit distinct utility functions for **gains** and **losses**. Referencing Nilsson et al. (2012), we have implemented the model below.
 
 ```{r eval=FALSE}
 func_gamma <- function(
-  value, utility, reward, occurrence, var1, var2, gamma, alpha, beta
+  i, L_freq, R_freq, L_pick, R_pick, L_value, R_value, var1 = NA, var2 = NA,  
+  value, utility, reward, occurrence,
+  gamma, alpha, beta
 ){
   # Stevens's Power Law
   if (length(gamma) == 1) {
@@ -101,7 +102,7 @@ Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and
 Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
 
 ### Initial Value
-> "Initial action values can also be used as a simple way to encourage exploration. Suppose that instead of setting the initial action values to zero, as we did in the 10-armed testbed, we set them all to +5. Recall that the q*(a) in this problem are selected from a normal distribution with mean 0 and variance 1. An initial estimate of +5 is thus wildly optimistic. But this optimism encourages action-value methods to explore."
+> "Initial action values can also be used as a simple way to encourage exploration. Suppose that instead of setting the initial action values to zero, as we did in the 10-armed testbed, we set them all to +5. Recall that the $q_{*}(a)$ in this problem are selected from a normal distribution with mean 0 and variance 1. An initial estimate of +5 is thus wildly optimistic. But this optimism encourages action-value methods to explore."
 
 **Reference**  
 Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
@@ -165,6 +166,8 @@ run_m(
 Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
 
 ### Soft-Max Function
+> "In this section we consider learning a numerical preference for each action *a*, which we denote $H_t(a) \in \mathbb{R}$. The larger the preference, the more often that action is taken, but the preference has no interpretation in terms of reward." 
+
 In many reinforcement learning models, softmax is used to represent the exploration-exploitation trade-off, rather than the three methods mentioned above. However, we still recommend retaining the default value of `pi = 0.001` for parameters related to `bias_func` to ensure that each option is selected at least once.  
 
 Additionally, when using the `binaryRL::rcv_d()` function, please note the following two points. During the recovery process, the **last** element of both `simulate_lower` and `simulate_upper` corresponds to the $\tau$ parameter used in the softmax function.
@@ -186,6 +189,7 @@ binaryRL::rcv_d(
 ```
 
 **Reference**  
+Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
 Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547
 
 <!---------------------------------------------------------->
