@@ -241,141 +241,95 @@ fit_p <- function(
   model_comparison <- list()
   model_result <- list()
   
-  # Check for internally parallel algorithms
+  # 单线程还是多线程
   if (nc == 1) {
-    
-    for (i in 1:length(fit_model)){
-      
-      message(paste0(
-        "\n", 
-        "Fitting Model: ", model_name[i], 
-        "\n"
-      ))
-      
-      n_subjects <- length(id)
-      
-      # 进度条
-      progressr::handlers(progressr::handler_txtprogressbar)
-      
-      progressr::with_progress({
-        
-        p <- progressr::progressor(steps = n_subjects)
-        
-        for (j in 1:n_subjects) {
-          
-          p()
-          
-          n_params <- length(lower[[i]])
-          
-          binaryRL_res <- binaryRL::optimize_para(
-            data = data,
-            id = id[j],
-            n_params = n_params,
-            n_trials = n_trials,
-            obj_func = fit_model[[i]],
-            lower = lower[[i]],
-            upper = upper[[i]],
-            iteration = iteration,
-            seed = seed,
-            initial_params = initial_params,
-            initial_size = initial_size,
-            algorithm = algorithm 
-          )
-          
-          model_result[[j]] <- data.frame(
-            fit_model = model_name[i],
-            Subject = id[j],
-            ACC = binaryRL_res$acc,
-            LogL = -binaryRL_res$ll,
-            AIC = binaryRL_res$aic,
-            BIC = binaryRL_res$bic
-          )
-          
-          for (k in 1:n_params) {
-            model_result[[j]][1, k + 6] <- binaryRL_res$output[k]
-            names(model_result[[j]])[k + 6] <- paste0("param_", k)
-          }
-        }
-      })
-      model_comparison[[i]] <- model_result
-    }
+    future::plan(future::sequential)
+  }
+  # 是多线程, 且是Windows系统
+  else if (nc >= 1 & base::.Platform$OS.type == "windows") {
+    future::plan(future::multisession, workers = nc)
+  } 
+  # 是多线程, 且不是Windows系统, macOS和Linux
+  else if (nc >= 1 & base::.Platform$OS.type != "windows") { 
+    future::plan(future::multicore, workers = nc)
   }
   else {
-    
-    for (i in 1:length(fit_model)){
-      
-      message(paste0(
-        "\n", 
-        "Fitting Model: ", model_name[i], 
-        "\n"
-      ))
-      
-      if (base::.Platform$OS.type == "windows") {
-        future::plan(future::multisession, workers = nc)
-      } else { # 包括 macOS, Linux, Unix
-        future::plan(future::multicore, workers = nc)
-      }
-      
-      doFuture::registerDoFuture()
-      
-      n_subjects <- length(id)
-      
-      # 进度条
-      progressr::handlers(progressr::handler_txtprogressbar)
-      
-      progressr::with_progress({
-        
-        p <- progressr::progressor(steps = n_subjects)
-        
-        doRNG::registerDoRNG(seed = seed)
-        
-        model_result <- foreach::foreach(
-          j = 1:n_subjects, .combine = rbind,
-          .packages = c("binaryRL"),
-          .export = funcs
-        ) %dorng% {
-          n_params <- length(lower[[i]])
-          
-          binaryRL_res <- binaryRL::optimize_para(
-            data = data,
-            id = id[j],
-            n_params = n_params,
-            n_trials = n_trials,
-            obj_func = fit_model[[i]],
-            lower = lower[[i]],
-            upper = upper[[i]],
-            iteration = iteration,
-            seed = seed,
-            initial_params = initial_params,
-            initial_size = initial_size,
-            algorithm = algorithm
-          )
-          
-          result_j <- data.frame(
-            fit_model = model_name[i],
-            Subject = id[j],
-            ACC = binaryRL_res$acc,
-            LogL = -binaryRL_res$ll,
-            AIC = binaryRL_res$aic,
-            BIC = binaryRL_res$bic
-          )
-          
-          for (k in 1:n_params) {
-            result_j[1, k + 6] <- binaryRL_res$output[k]
-            names(result_j)[k + 6] <- paste0("param_", k)
-          }
-          
-          # 在foreach循环内更新进度条
-          p() 
-          return(result_j)
-        }
-      })
-      
-      # 將結果包在一個 list 裡面，保持結構一致性
-      model_comparison[[i]] <- list(model_result) 
-    }
+    stop("Something went wrong with parallel computation setup.")
   }
-
+  
+  doFuture::registerDoFuture()
+  
+  for (i in 1:length(fit_model)){
+    
+    message(paste0(
+      "\n", 
+      "Fitting Model: ", model_name[i], 
+      "\n"
+    ))
+    
+    n_subjects <- length(id)
+    
+    # 进度条
+    progressr::handlers(progressr::handler_txtprogressbar)
+    
+    progressr::with_progress({
+      
+      p <- progressr::progressor(steps = n_subjects)
+      
+      doRNG::registerDoRNG(seed = seed)
+      
+      # 初始化(定义)foreach中的i
+      j <- NA
+      
+      model_result <- foreach::foreach(
+        j = 1:n_subjects, .combine = rbind,
+        .packages = c("binaryRL"),
+        .export = funcs
+      ) %dorng% {
+        n_params <- length(lower[[i]])
+        
+        binaryRL_res <- binaryRL::optimize_para(
+          data = data,
+          id = id[j],
+          n_params = n_params,
+          n_trials = n_trials,
+          obj_func = fit_model[[i]],
+          lower = lower[[i]],
+          upper = upper[[i]],
+          iteration = iteration,
+          seed = seed,
+          initial_params = initial_params,
+          initial_size = initial_size,
+          algorithm = algorithm
+        )
+        
+        result_j <- data.frame(
+          fit_model = model_name[i],
+          Subject = id[j],
+          ACC = binaryRL_res$acc,
+          LogL = -binaryRL_res$ll,
+          AIC = binaryRL_res$aic,
+          BIC = binaryRL_res$bic
+        )
+        
+        for (k in 1:n_params) {
+          result_j[1, k + 6] <- binaryRL_res$output[k]
+          names(result_j)[k + 6] <- paste0("param_", k)
+        }
+        
+        # 在foreach循环内更新进度条
+        p() 
+        return(result_j)
+      }
+    })
+    
+    # 將結果包在一個 list 裡面，保持結構一致性
+    model_comparison[[i]] <- list(model_result) 
+  }
+  
+  # 取消注册的线程
+  future::plan(future::sequential)
+  
   result <- model_comparison
   
   return(result)

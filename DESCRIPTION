@@ -26,8 +26,8 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 7.3.2
-Depends: R (>= 4.0.0), future, doFuture, foreach, doRNG, rngtools
-Imports: progressr
+Depends: R (>= 4.0.0)
+Imports: future, doFuture, foreach, doRNG, progressr
 Suggests: 
   stats,
   GenSA, 
