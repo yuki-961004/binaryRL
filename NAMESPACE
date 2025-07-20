@@ -1,4 +1,9 @@
+import(future)
+import(doFuture)
+
+import(foreach)
 import(doRNG)
+import(rngtools)
 
 export(func_gamma)
 export(func_eta)

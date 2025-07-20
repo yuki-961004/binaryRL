@@ -121,7 +121,7 @@ func_tau <- function(
   if (is.na(pi)) {
     bias <- 0
   }
-############################# [ adjust value ] ##############################
+############################## [ bias value ] ###############################
   else if (LR == "L") {
     bias <- pi * sqrt(log(L_pick + exp(1)) / (L_pick + 1e-10))
   }

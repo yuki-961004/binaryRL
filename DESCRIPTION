@@ -1,5 +1,5 @@
 Package: binaryRL
-Version: 0.9.1
+Version: 0.9.2
 Title: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks
 Description: Tools for building reinforcement learning (RL) models
   specifically tailored for Two-Alternative Forced Choice (TAFC) tasks,
@@ -26,8 +26,8 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 7.3.2
-Depends: R (>= 4.0.0)
-Imports: future, doFuture, foreach, doRNG, progressr
+Depends: R (>= 4.0.0), future, doFuture, foreach, doRNG, rngtools
+Imports: progressr
 Suggests: 
   stats,
   GenSA, 
