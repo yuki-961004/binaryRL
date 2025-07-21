@@ -211,48 +211,51 @@ recovery_data <- function(
     # 初始化(定义)foreach中的i
     i <- NA
     
-    temp_recovery <- foreach::foreach(
-      i = 1:n_iterations, .combine = rbind,
-      .packages = "binaryRL", 
-      .export = funcs
-    ) %dorng% {
-      
-      data_i <- list[[i]][["data"]]
-      
-      binaryRL.res <- binaryRL::optimize_para(
-        data = data_i,
-        id = id[i],
-        obj_func = fit_model,
-        n_params = n_params,
-        n_trials = n_trials,
-        lower = lower,
-        upper = upper,
-        initial_params = initial_params,
-        initial_size = initial_size,
-        iteration = iteration,
-        seed = seed,
-        algorithm = algorithm
-      )
-      
-      row_i <- data.frame(matrix(NA, nrow = 1, ncol = 5 + n_input_params + n_output_params))
-      row_i[1, 1] <- model_name
-      row_i[1, 2] <- binaryRL.res$acc
-      row_i[1, 3] <- binaryRL.res$ll
-      row_i[1, 4] <- binaryRL.res$aic
-      row_i[1, 5] <- binaryRL.res$bic
-      
-      for (j in 1:n_input_params) {
-        row_i[1, 5 + j] <- list[[i]]$input[j]
+    # 抑制每个线程加载包时的信息
+    suppressMessages({
+      temp_recovery <- foreach::foreach(
+        i = 1:n_iterations, .combine = rbind,
+        .packages = "binaryRL", 
+        .export = funcs
+      ) %dorng% {
+        
+        data_i <- list[[i]][["data"]]
+        
+        binaryRL.res <- binaryRL::optimize_para(
+          data = data_i,
+          id = id[i],
+          obj_func = fit_model,
+          n_params = n_params,
+          n_trials = n_trials,
+          lower = lower,
+          upper = upper,
+          initial_params = initial_params,
+          initial_size = initial_size,
+          iteration = iteration,
+          seed = seed,
+          algorithm = algorithm
+        )
+        
+        row_i <- data.frame(matrix(NA, nrow = 1, ncol = 5 + n_input_params + n_output_params))
+        row_i[1, 1] <- model_name
+        row_i[1, 2] <- binaryRL.res$acc
+        row_i[1, 3] <- binaryRL.res$ll
+        row_i[1, 4] <- binaryRL.res$aic
+        row_i[1, 5] <- binaryRL.res$bic
+        
+        for (j in 1:n_input_params) {
+          row_i[1, 5 + j] <- list[[i]]$input[j]
+        }
+        for (j in 1:n_output_params) {
+          row_i[1, 5 + n_input_params + j] <- binaryRL.res$output[j]
+        }
+        
+        # 更新進度條
+        p() 
+        
+        return(row_i)
       }
-      for (j in 1:n_output_params) {
-        row_i[1, 5 + n_input_params + j] <- binaryRL.res$output[j]
-      }
-      
-      # 更新進度條
-      p() 
-      
-      return(row_i)
-    }
+    })
   })
   
   # 继承recovery的列名
