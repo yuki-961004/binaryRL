@@ -133,7 +133,7 @@ This parameter represents the exponent in utility functions, specifically:
    \end{cases}}
  }}
 
-\item{eta}{[numeric]
+\item{eta}{[vector]
 Parameters used in the Learning Rate Function, \code{rate_func}, representing
  the rate at which the subject updates the difference (prediction error)
  between the reward and the expected value in the subject's mind.
@@ -155,7 +155,7 @@ Parameters used in the Learning Rate Function, \code{rate_func}, representing
  
  \code{RSTD: eta = c(0.3, 0.7)}}
 
-\item{epsilon}{[numeric]
+\item{epsilon}{[vector]
 A parameter used in the \strong{epsilon-greedy} exploration strategy. It 
  defines the probability of making a completely random choice, as opposed 
  to choosing based on the relative values of the left and right options. 

@@ -63,7 +63,7 @@ For more information, please refer to the homepage of this package:
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -127,7 +127,7 @@ For more information, please refer to the homepage of this package:
 <span>  <span class="va">data</span>,</span>
 <span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_trials <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  fit_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">TD</span>, <span class="va">RSTD</span>, <span class="va">Utility</span><span class="op">)</span>,</span>
+<span>  fit_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Utility.html">Utility</a></span><span class="op">)</span>,</span>
 <span>  funcs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  model_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TD"</span>, <span class="st">"RSTD"</span>, <span class="st">"Utility"</span><span class="op">)</span>,</span>
 <span>  lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -272,9 +272,10 @@ parallel computation can significantly speed up the fitting process:</p><ul><li>
 <dt id="arg-algorithm">algorithm<a class="anchor" aria-label="anchor" href="#arg-algorithm"></a></dt>
 <dd><p>[character]
 Choose an algorithm package from
- `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `PSO`, `Bayesian`, `CMA-ES`.</p>
-<p>In addition, any algorithm from the `nloptr` package is also
- supported. If your chosen `nloptr` algorithm requires a local search,
+ <code>L-BFGS-B</code>, <code>GenSA</code>,<code>GA</code>,<code>DEoptim</code>,<code>PSO</code>,
+ <code>Bayesian</code>, <code>CMA-ES</code>.</p>
+<p>In addition, any algorithm from the <code>nloptr</code> package is also
+ supported. If your chosen <code>nloptr</code> algorithm requires a local search,
  you need to input a character vector. The first element represents
  the algorithm used for global search, and the second element represents
  the algorithm used for local search.</p></dd>
@@ -306,20 +307,20 @@ Choose an algorithm package from
 <span class="r-in"><span><span class="va">comparison</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu">fit_p</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Mason_2024_Exp2.html">Mason_2024_Exp2</a></span>,</span></span>
 <span class="r-in"><span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Mason_2024_Exp2.html">Mason_2024_Exp2</a></span><span class="op">$</span><span class="va">Subject</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span><span class="co">##-----------------------------------------------------------------------------##</span></span></span>
-<span class="r-in"><span><span class="co">##----------------------------- black-box function ----------------------------##</span></span></span>
+<span class="r-in"><span><span class="co">#+-----------------------------------------------------------------------------+#</span></span></span>
+<span class="r-in"><span><span class="co">#|----------------------------- black-box function ----------------------------|#</span></span></span>
 <span class="r-in"><span>  <span class="co">#funcs = c("your_funcs"),</span></span></span>
 <span class="r-in"><span>  fit_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Utility.html">Utility</a></span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  model_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TD"</span>, <span class="st">"RSTD"</span>, <span class="st">"Utility"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span><span class="co">##----------------------------- interation number -----------------------------##</span></span></span>
+<span class="r-in"><span><span class="co">#|----------------------------- interation number -----------------------------|#</span></span></span>
 <span class="r-in"><span>  iteration <span class="op">=</span> <span class="fl">10</span>,</span></span>
-<span class="r-in"><span><span class="co">##-------------------------------- algorithms ---------------------------------##</span></span></span>
+<span class="r-in"><span><span class="co">#|-------------------------------- algorithms ---------------------------------|#</span></span></span>
 <span class="r-in"><span>  nc <span class="op">=</span> <span class="fl">1</span>,                 <span class="co"># &lt;nc &gt; 1&gt;: parallel computation across subjects</span></span></span>
 <span class="r-in"><span>  <span class="co"># Base R Optimization</span></span></span>
 <span class="r-in"><span>  algorithm <span class="op">=</span> <span class="st">"L-BFGS-B"</span>  <span class="co"># Gradient-Based (stats)</span></span></span>
-<span class="r-in"><span><span class="co">##-----------------------------------------------------------------------------##</span></span></span>
+<span class="r-in"><span><span class="co">#|-----------------------------------------------------------------------------|#</span></span></span>
 <span class="r-in"><span>  <span class="co"># Specialized External Optimization</span></span></span>
 <span class="r-in"><span>  <span class="co">#algorithm = "GenSA"    # Simulated Annealing (GenSA)</span></span></span>
 <span class="r-in"><span>  <span class="co">#algorithm = "GA"       # Genetic Algorithm (GA)</span></span></span>
@@ -327,10 +328,10 @@ Choose an algorithm package from
 <span class="r-in"><span>  <span class="co">#algorithm = "PSO"      # Particle Swarm Optimization (pso)</span></span></span>
 <span class="r-in"><span>  <span class="co">#algorithm = "Bayesian" # Bayesian Optimization (mlrMBO)</span></span></span>
 <span class="r-in"><span>  <span class="co">#algorithm = "CMA-ES"   # Covariance Matrix Adapting (cmaes)</span></span></span>
-<span class="r-in"><span><span class="co">##-----------------------------------------------------------------------------##</span></span></span>
+<span class="r-in"><span><span class="co">#|-----------------------------------------------------------------------------|#</span></span></span>
 <span class="r-in"><span>  <span class="co"># Optimization Library (nloptr)</span></span></span>
 <span class="r-in"><span>  <span class="co">#algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")</span></span></span>
-<span class="r-in"><span><span class="co">##-------------------------------- algorithms ---------------------------------##</span></span></span>
+<span class="r-in"><span><span class="co">#|-------------------------------- algorithms ---------------------------------|#</span></span></span>
 <span class="r-in"><span><span class="co">#################################################################################</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

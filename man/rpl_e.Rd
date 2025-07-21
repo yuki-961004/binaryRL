@@ -10,7 +10,7 @@ rpl_e(
   result,
   model,
   model_name,
-  param_prefix,
+  param_prefix = "param_",
   n_trials = NULL
 )
 }

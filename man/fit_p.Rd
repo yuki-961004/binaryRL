@@ -8,7 +8,7 @@ fit_p(
   data,
   id = NULL,
   n_trials = NULL,
-  fit_model = list(TD, RSTD, Utility),
+  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   funcs = NULL,
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
@@ -134,10 +134,11 @@ parallel computation can significantly speed up the fitting process:
 
 \item{algorithm}{[character] 
 Choose an algorithm package from
- `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `PSO`, `Bayesian`, `CMA-ES`.
+ \code{L-BFGS-B}, \code{GenSA},\code{GA},\code{DEoptim},\code{PSO},
+ \code{Bayesian}, \code{CMA-ES}.
  
-In addition, any algorithm from the `nloptr` package is also
- supported. If your chosen `nloptr` algorithm requires a local search,
+In addition, any algorithm from the \code{nloptr} package is also
+ supported. If your chosen \code{nloptr} algorithm requires a local search,
  you need to input a character vector. The first element represents
  the algorithm used for global search, and the second element represents
  the algorithm used for local search.}
@@ -193,20 +194,20 @@ Similarly, if a competing model lacks the ability of parameter or model
 comparison <- binaryRL::fit_p(
   data = binaryRL::Mason_2024_Exp2,
   id = unique(binaryRL::Mason_2024_Exp2$Subject),
-##-----------------------------------------------------------------------------##
-##----------------------------- black-box function ----------------------------##
+#+-----------------------------------------------------------------------------+#
+#|----------------------------- black-box function ----------------------------|#
   #funcs = c("your_funcs"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
-##----------------------------- interation number -----------------------------##
+#|----------------------------- interation number -----------------------------|#
   iteration = 10,
-##-------------------------------- algorithms ---------------------------------##
+#|-------------------------------- algorithms ---------------------------------|#
   nc = 1,                 # <nc > 1>: parallel computation across subjects
   # Base R Optimization
   algorithm = "L-BFGS-B"  # Gradient-Based (stats)
-##-----------------------------------------------------------------------------##
+#|-----------------------------------------------------------------------------|#
   # Specialized External Optimization
   #algorithm = "GenSA"    # Simulated Annealing (GenSA)
   #algorithm = "GA"       # Genetic Algorithm (GA)
@@ -214,10 +215,10 @@ comparison <- binaryRL::fit_p(
   #algorithm = "PSO"      # Particle Swarm Optimization (pso)
   #algorithm = "Bayesian" # Bayesian Optimization (mlrMBO)
   #algorithm = "CMA-ES"   # Covariance Matrix Adapting (cmaes)
-##-----------------------------------------------------------------------------##
+#|-----------------------------------------------------------------------------|#
   # Optimization Library (nloptr)
   #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
-##-------------------------------- algorithms ---------------------------------##
+#|-------------------------------- algorithms ---------------------------------|#
 #################################################################################
 )
 

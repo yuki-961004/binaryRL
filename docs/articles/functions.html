@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,24 +84,37 @@
 
     
     
-<div class="section level2">
-<h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a>
-</h2>
-<!---------------------------------------------------------->
 <p><span class="math display">\[
 \textbf{Markov Decision Process (MDP)}
 \]</span></p>
+<p align="center">
+<img src="fig/rl_MDP.png" alt="RL Models" width="90%" style="display: inline;"></p>
+<p><span class="math display">\[
+\Downarrow
+\]</span></p>
+<p><span class="math display">\[
+\textbf{Temporal-Difference TD(λ)}
+\]</span></p>
 <p><span class="math display">\[
 V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[
-r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \dots + \gamma^{T - t - 1}
-r_T - V_{\text{old}}(S_t)
+G_t^{\lambda} - V_{\text{old}}(S_t)
 \right]
+\]</span> <span class="math display">\[
+G_t^{\lambda} = (1-\lambda)\sum_{n=1}^{T-t-1}\lambda^{n-1}G_{t:t+n} +
+\lambda^{T-t-1}G_t
 \]</span></p>
 <p><span class="math display">\[
 \Downarrow
 \]</span></p>
 <p><span class="math display">\[
-\quad \text{(bootstrapping future rewards with value estimates)}
+G_t^{0} = (1-0)\sum_{n=1}^{T-t-1}0^{n-1}G_{t:t+n} + 0^{T-t-1}G_t
+\]</span></p>
+<p><span class="math display">\[
+G_t^{\lambda} \xrightarrow{\lambda = 0, n = 1} G_{t:t+1}
+\quad
+\Rightarrow
+\quad
+r_{t+1} + \gamma V_{\text{old}}(S_{t+1})
 \]</span></p>
 <p><span class="math display">\[
 \Downarrow
@@ -111,14 +124,17 @@ r_T - V_{\text{old}}(S_t)
 \]</span></p>
 <p><span class="math display">\[
 V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[
-  r_{t+1} + \gamma V_{\text{old}}(S_{t+1}) - V_{\text{old}}(S_t)
+r_{t+1} + \gamma V_{\text{old}}(S_{t+1}) - V_{\text{old}}(S_t)
 \right]
-\]</span></p>
-<p><span class="math display">\[
+\]</span> <span class="math display">\[
 \Downarrow
 \]</span></p>
 <p><span class="math display">\[
-\quad \text{(no future value estimation)}
+G_{t:t+1}
+\quad
+\xrightarrow{\gamma = 0}
+\quad
+r_{t+1}
 \]</span></p>
 <p><span class="math display">\[
 \Downarrow
@@ -131,10 +147,10 @@ V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot
 \left[r_{t+1} - V_{\text{old}}(S_t) \right]
 \]</span></p>
 <!---------------------------------------------------------->
-<div class="section level3">
-<h3 id="utility-function-γ">
+<div class="section level2">
+<h2 id="utility-function-γ">
 <strong>Utility Function (γ)</strong><a class="anchor" aria-label="anchor" href="#utility-function-%CE%B3"></a>
-</h3>
+</h2>
 <p>People’s subjective perception of objective rewards is more accurate.
 This is because the relationship between physical quantities and
 psychological quantities is not necessarily always a linear discount
@@ -165,10 +181,10 @@ future rewards. In contrast, within this package, <span class="math inline">\(\g
 utility function.</p>
 <!---------------------------------------------------------->
 </div>
-<div class="section level3">
-<h3 id="learning-rates-η">
+<div class="section level2">
+<h2 id="learning-rates-η">
 <strong>Learning Rates (η)</strong><a class="anchor" aria-label="anchor" href="#learning-rates-%CE%B7"></a>
-</h3>
+</h2>
 <p>This parameter <span class="math inline">\(\eta\)</span> controls how
 quickly an agent updates its value estimates based on new information.
 The closer the learning rate is to 1, the more aggressively the value is
@@ -187,18 +203,18 @@ model. If there are two <span class="math inline">\(\eta\)</span>
 parameters, it refers to the RSTD model.</p>
 <!---------------------------------------------------------->
 </div>
-<div class="section level3">
-<h3 id="exploration-strategy-ε">
+<div class="section level2">
+<h2 id="exploration-strategy-ε">
 <strong>Exploration Strategy (ε)</strong><a class="anchor" aria-label="anchor" href="#exploration-strategy-%CE%B5"></a>
-</h3>
+</h2>
 <p>The parameter <span class="math inline">\(\epsilon\)</span>
 represents the probability of participants engaging in exploration
 (random choosing). In addition A threshold ensures participants always
 explore during the initial trials, after which the likelihood of
 exploration is determined by <span class="math inline">\(\epsilon\)</span>..</p>
-<div class="section level4">
-<h4 id="ε-first">ε-first<a class="anchor" aria-label="anchor" href="#%CE%B5-first"></a>
-</h4>
+<div class="section level3">
+<h3 id="ε-first">ε-first<a class="anchor" aria-label="anchor" href="#%CE%B5-first"></a>
+</h3>
 <p><span class="math display">\[
 P(x) =
 \begin{cases}
@@ -208,9 +224,9 @@ P(x) =
 \end{cases}
 \]</span></p>
 </div>
-<div class="section level4">
-<h4 id="ε-greedy">ε-greedy<a class="anchor" aria-label="anchor" href="#%CE%B5-greedy"></a>
-</h4>
+<div class="section level3">
+<h3 id="ε-greedy">ε-greedy<a class="anchor" aria-label="anchor" href="#%CE%B5-greedy"></a>
+</h3>
 <p><span class="math display">\[
 P(x) =
 \begin{cases}
@@ -220,9 +236,9 @@ P(x) =
 \end{cases}
 \]</span></p>
 </div>
-<div class="section level4">
-<h4 id="ε-decreasing">ε-decreasing<a class="anchor" aria-label="anchor" href="#%CE%B5-decreasing"></a>
-</h4>
+<div class="section level3">
+<h3 id="ε-decreasing">ε-decreasing<a class="anchor" aria-label="anchor" href="#%CE%B5-decreasing"></a>
+</h3>
 <p><span class="math display">\[
 P(x) =
 \begin{cases}
@@ -235,10 +251,10 @@ choosing)}
 <!---------------------------------------------------------->
 </div>
 </div>
-<div class="section level3">
-<h3 id="upper-confidence-bound-π">
+<div class="section level2">
+<h2 id="upper-confidence-bound-π">
 <strong>Upper-Confidence-Bound (π)</strong><a class="anchor" aria-label="anchor" href="#upper-confidence-bound-%CF%80"></a>
-</h3>
+</h2>
 <p>Parameter used in the Upper-Confidence-Bound (UCB) action selection
 formula. it controls the degree of exploration by scaling the
 uncertainty bonus given to less-explored options.</p>
@@ -248,10 +264,10 @@ A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}}
 \]</span></p>
 <!---------------------------------------------------------->
 </div>
-<div class="section level3">
-<h3 id="soft-max-function-τ">
-<strong>Soft-Max Function (τ)</strong><a class="anchor" aria-label="anchor" href="#soft-max-function-%CF%84"></a>
-</h3>
+<div class="section level2">
+<h2 id="soft-max-τ">
+<strong>Soft-Max (τ)</strong><a class="anchor" aria-label="anchor" href="#soft-max-%CF%84"></a>
+</h2>
 <p>The parameter <span class="math inline">\(\tau\)</span> represents
 people’s sensitivity to value differences. The larger <span class="math inline">\(\tau\)</span>, the more sensitive they are to the
 differences in value between the two options.</p>
@@ -261,7 +277,6 @@ P_{L} = \frac{1}{1 + e^{-(V_{L} - V_{R}) \cdot \tau}}
 P_{R} = \frac{1}{1 + e^{-(V_{R} - V_{L}) \cdot \tau}}
 \]</span></p>
 <!---------------------------------------------------------->
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

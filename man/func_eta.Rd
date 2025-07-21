@@ -61,7 +61,7 @@ Column name of extra variable 2. If one additional variable, var1, does not
 
 \item{occurrence}{The number of times the same stimulus has been chosen.}
 
-\item{eta}{[numeric]
+\item{eta}{[vector]
 Parameters used in the Learning Rate Function, \code{rate_func}, representing
  the rate at which the subject updates the difference (prediction error)
  between the reward and the expected value in the subject's mind.

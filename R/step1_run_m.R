@@ -158,7 +158,7 @@
 #'    \end{cases}}
 #'  }
 #'  
-#' @param eta [numeric]
+#' @param eta [vector]
 #' Parameters used in the Learning Rate Function, \code{rate_func}, representing
 #'  the rate at which the subject updates the difference (prediction error)
 #'  between the reward and the expected value in the subject's mind.
@@ -180,7 +180,7 @@
 #'  
 #'  \code{RSTD: eta = c(0.3, 0.7)}
 #'
-#' @param epsilon [numeric]
+#' @param epsilon [vector]
 #' A parameter used in the \strong{epsilon-greedy} exploration strategy. It 
 #'  defines the probability of making a completely random choice, as opposed 
 #'  to choosing based on the relative values of the left and right options. 

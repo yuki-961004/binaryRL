@@ -6,56 +6,80 @@ vignette: >
   %\VignetteIndexEntry{Functions}
   %\VignetteEngine{knitr::rmarkdown}
 ---
-# Functions
-
-<!---------------------------------------------------------->
 
 $$
 \textbf{Markov Decision Process (MDP)} 
 $$
 
+<p align="center">
+    <img src="./fig/rl_MDP.png" alt="RL Models" width="90%" style="display: inline;">
+</p>
+
+
+$$
+\Downarrow 
+$$
+
+$$
+\textbf{Temporal-Difference TD(λ)} 
+$$
+
 $$
 V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[ 
-r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \dots + \gamma^{T - t - 1} r_T - V_{\text{old}}(S_t) 
+G_t^{\lambda} - V_{\text{old}}(S_t) 
 \right] 
 $$
+$$
+G_t^{\lambda} = (1-\lambda)\sum_{n=1}^{T-t-1}\lambda^{n-1}G_{t:t+n} + \lambda^{T-t-1}G_t
+$$
+
+$$
+\Downarrow 
+$$
+
+$$
+G_t^{0} = (1-0)\sum_{n=1}^{T-t-1}0^{n-1}G_{t:t+n} + 0^{T-t-1}G_t
+$$
+
+$$
+G_t^{\lambda} \xrightarrow{\lambda = 0, n = 1} G_{t:t+1}
+\quad
+\Rightarrow
+\quad
+r_{t+1} + \gamma V_{\text{old}}(S_{t+1})
+$$
+
+$$
+\Downarrow 
+$$
+
+$$
+\textbf{Temporal-Difference TD(0)}
+$$
+
+$$
+V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[ 
+r_{t+1} + \gamma V_{\text{old}}(S_{t+1}) - V_{\text{old}}(S_t) 
+\right] 
+$$
+$$
+\Downarrow
+$$
+
+$$
+G_{t:t+1}
+\quad
+\xrightarrow{\gamma = 0}
+\quad
+r_{t+1}
+$$
 
 $$
 \Downarrow
 $$
 
 $$
-\quad \text{(bootstrapping future rewards with value estimates)}
-$$
-
-$$
-\Downarrow
-$$
-
-$$
-\textbf{Temporal-Difference TD(0)} 
-$$
-
-$$
-V_{\text{new}}(S_t) \leftarrow V_{\text{old}}(S_t) + \eta \cdot \left[
-  r_{t+1} + \gamma V_{\text{old}}(S_{t+1}) - V_{\text{old}}(S_t)
-\right]
-$$
-
-$$
-\Downarrow
-$$
-
-$$
-\quad \text{(no future value estimation)} 
-$$
-
-$$
-\Downarrow
-$$
-
-$$
-\textbf{Rescorla-Wagner Model} 
+\textbf{Rescorla-Wagner Model}
 $$
 
 $$
@@ -147,7 +171,7 @@ $$
 
 <!---------------------------------------------------------->
 
-## **Soft-Max Function (τ)**
+## **Soft-Max (τ)**
 The parameter $\tau$ represents people's sensitivity to value differences. The larger $\tau$, the more sensitive they are to the differences in value between the two options.
 
 $$

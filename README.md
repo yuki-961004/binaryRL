@@ -145,9 +145,8 @@ This means you can leverage this package not only for building and fitting RL mo
   - Covariance Matrix Adapting Evolutionary Strategy (`cmaes::cma_es`)  
 
 **Optimization Library**  
-  - Nonlinear Optimization (`nloptr::nloptr`)
-  </p>
-
+  - Nonlinear Optimization (`nloptr::nloptr`)  
+<br>
 *NOTE:* If you want to use an algorithm other than `L-BFGS-B`, you must install the corresponding package. 
 
 <!---------------------------------------------------------->

@@ -129,7 +129,7 @@ func_gamma <- function(
 <!---------------------------------------------------------->
 
 <details>
-<summary>Learning Rate Function (η)</summary>
+<summary>Learning Rate (η)</summary>
 
 ```{r eval=FALSE}
 print(binaryRL::func_eta)
@@ -171,7 +171,7 @@ func_eta <- function (
 <!---------------------------------------------------------->
 
 <details>
-<summary>Exploration Function (ε)</summary>
+<summary>Exploration Strategy (ε)</summary>
 
 ```{r eval=FALSE}
 print(binaryRL::func_epsilon)
@@ -232,7 +232,7 @@ print(binaryRL::func_pi)
 ```
 
 ```{r eval=FALSE}
-func_gamma <- function(
+func_pi <- function(
   # variables before decision-making
   i, L_freq, R_freq, L_pick, R_pick, L_value, R_value,
   # adjusting Left option value or Right option  value
@@ -267,7 +267,7 @@ func_gamma <- function(
 <!---------------------------------------------------------->
 
 <details>
-<summary>Soft-Max Function (τ)</summary>
+<summary>Soft-Max (τ)</summary>
 
 ```{r eval=FALSE}
 print(binaryRL::func_tau)
@@ -446,8 +446,7 @@ write.csv(result, file = "../OUTPUT/result_recovery.csv", row.names = FALSE)
 
 <pre>
 Simulating Model: TD | Fitting Model: TD
-
-  |================                                                   |  10%
+  |====                                                                       | 10%
 </pre>
   
 Check the Example Result: [result_recovery.csv](./demo/OUTPUT/result_recovery.html)
@@ -586,7 +585,7 @@ write.csv(result, "../OUTPUT/result_comparison.csv", row.names = FALSE)
 <pre>
 Fitting Model: TD
 
-  |===                                                                |   5%
+  |================                                                           | 25%
 </pre>
 
 Check the Example Result: [result_comparison.csv](./demo/OUTPUT/result_comparison.html)

@@ -8,10 +8,10 @@ rcv_d(
   data,
   id = NULL,
   n_trials = NULL,
-  simulate_models = list(TD, RSTD, Utility),
+  simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  fit_models = list(TD, RSTD, Utility),
+  fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   model_names = c("TD", "RSTD", "Utility"),
@@ -154,10 +154,11 @@ parallel computation can significantly speed up the fitting process:
 
 \item{algorithm}{[character] 
 Choose an algorithm package from
- `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `PSO`, `Bayesian`, `CMA-ES`.
+ \code{L-BFGS-B}, \code{GenSA},\code{GA},\code{DEoptim},\code{PSO},
+ \code{Bayesian}, \code{CMA-ES}.
  
-In addition, any algorithm from the `nloptr` package is also
- supported. If your chosen `nloptr` algorithm requires a local search,
+In addition, any algorithm from the \code{nloptr} package is also
+ supported. If your chosen \code{nloptr} algorithm requires a local search,
  you need to input a character vector. The first element represents
  the algorithm used for global search, and the second element represents
  the algorithm used for local search.}
@@ -226,8 +227,8 @@ However, we highly recommend using evolutionary algorithms like
 \dontrun{
 recovery <- binaryRL::rcv_d(
   data = binaryRL::Mason_2024_Exp2,
-##-----------------------------------------------------------------------------##
-##----------------------------- black-box function ----------------------------##
+#+-----------------------------------------------------------------------------+#
+#|----------------------------- black-box function ----------------------------|#
   #funcs = c("your_funcs"),
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
@@ -236,14 +237,14 @@ recovery <- binaryRL::rcv_d(
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   fit_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
   fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
-##----------------------------- interation number -----------------------------##
+#|----------------------------- interation number -----------------------------|#
   iteration_s = 100,
   iteration_f = 100,
-##-------------------------------- algorithms ---------------------------------##
+#|-------------------------------- algorithms ---------------------------------|#
   nc = 1,                 # <nc > 1>: parallel computation across subjects
   # Base R Optimization
   algorithm = "L-BFGS-B"  # Gradient-Based (stats)
-##-----------------------------------------------------------------------------##
+#|-----------------------------------------------------------------------------|#
   # Specialized External Optimization
   #algorithm = "GenSA"    # Simulated Annealing (GenSA)
   #algorithm = "GA"       # Genetic Algorithm (GA)
@@ -251,11 +252,11 @@ recovery <- binaryRL::rcv_d(
   #algorithm = "PSO"      # Particle Swarm Optimization (pso)
   #algorithm = "Bayesian" # Bayesian Optimization (mlrMBO)
   #algorithm = "CMA-ES"   # Covariance Matrix Adapting (cmaes)
-##-----------------------------------------------------------------------------##
+#|-----------------------------------------------------------------------------|#
   # Optimization Library (nloptr)
   #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
-##-------------------------------- algorithms ---------------------------------##
-#################################################################################
+#|-------------------------------- algorithms ---------------------------------|#
+#+#############################################################################+#
 )
 
 result <- dplyr::bind_rows(recovery) \%>\%

@@ -95,10 +95,11 @@
 #'  
 #' @param algorithm [character] 
 #' Choose an algorithm package from
-#'  `L-BFGS-B`, `GenSA`, `GA`, `DEoptim`, `PSO`, `Bayesian`, `CMA-ES`.
+#'  \code{L-BFGS-B}, \code{GenSA},\code{GA},\code{DEoptim},\code{PSO},
+#'  \code{Bayesian}, \code{CMA-ES}.
 #'  
-#' In addition, any algorithm from the `nloptr` package is also
-#'  supported. If your chosen `nloptr` algorithm requires a local search,
+#' In addition, any algorithm from the \code{nloptr} package is also
+#'  supported. If your chosen \code{nloptr} algorithm requires a local search,
 #'  you need to input a character vector. The first element represents
 #'  the algorithm used for global search, and the second element represents
 #'  the algorithm used for local search.
