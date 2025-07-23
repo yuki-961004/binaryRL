@@ -247,6 +247,8 @@
 #' 
 #' @param prob_func [function] Soft-Max Function see \code{\link[binaryRL]{func_tau}}.
 #' 
+#' @param loss_func [function] Loss Function see \code{\link[binaryRL]{func_logl}}.
+#' 
 #' @param sub [character] column name of subject ID
 #' 
 #'  \code{e.g., sub = "Subject"}
@@ -363,6 +365,7 @@ run_m <- function(
   expl_func = func_epsilon,
   bias_func = func_pi,
   prob_func = func_tau,
+  loss_func = func_logl,
   
   sub = "Subject",
   time_line = c("Block", "Trial"),
@@ -452,6 +455,11 @@ run_m <- function(
   
   step6 <- model_fit(
     data = step5, 
+    loss_func = loss_func,
+    alpha = alpha,
+    beta = beta,
+    var1 = var1,
+    var2 = var2,
     L_choice = L_choice, 
     R_choice = R_choice, 
     sub_choose = sub_choose

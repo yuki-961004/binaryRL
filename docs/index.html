@@ -17,8 +17,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks">
-<meta name="description" content="Tools for building reinforcement learning (RL) models specifically tailored for Two-Alternative Forced Choice (TAFC) tasks, commonly employed in psychological research. These models build upon the foundational principles of model-free reinforcement learning detailed in Sutton and Barto (2018) &lt;ISBN:9780262039246&gt;. The package allows for the intuitive definition of RL models using simple if-else statements. Our approach to constructing and evaluating these computational models is informed by the guidelines proposed in Wilson &amp; Collins (2019) &lt;doi:10.7554/eLife.49547&gt;. Example datasets included with the package are sourced from the work of Mason et al. (2024) &lt;doi:10.3758/s13423-023-02415-x&gt;.">
-<meta property="og:description" content="Tools for building reinforcement learning (RL) models specifically tailored for Two-Alternative Forced Choice (TAFC) tasks, commonly employed in psychological research. These models build upon the foundational principles of model-free reinforcement learning detailed in Sutton and Barto (2018) &lt;ISBN:9780262039246&gt;. The package allows for the intuitive definition of RL models using simple if-else statements. Our approach to constructing and evaluating these computational models is informed by the guidelines proposed in Wilson &amp; Collins (2019) &lt;doi:10.7554/eLife.49547&gt;. Example datasets included with the package are sourced from the work of Mason et al. (2024) &lt;doi:10.3758/s13423-023-02415-x&gt;.">
+<meta name="description" content="Tools for building reinforcement learning (RL) models specifically tailored for Two-Alternative Forced Choice (TAFC) tasks, commonly employed in psychological research. These models build upon the foundational principles of model-free reinforcement learning detailed in Sutton and Barto (2018) &lt;ISBN:9780262039246&gt;. The package allows for the intuitive definition of RL models using simple if-else statements and three basic models built into this R package are referenced from Niv et al. (2012)&lt;doi:10.1523/JNEUROSCI.5498-10.2012&gt;. Our approach to constructing and evaluating these computational models is informed by the guidelines proposed in Wilson &amp; Collins (2019) &lt;doi:10.7554/eLife.49547&gt;. Example datasets included with the package are sourced from the work of Mason et al. (2024) &lt;doi:10.3758/s13423-023-02415-x&gt;.">
+<meta property="og:description" content="Tools for building reinforcement learning (RL) models specifically tailored for Two-Alternative Forced Choice (TAFC) tasks, commonly employed in psychological research. These models build upon the foundational principles of model-free reinforcement learning detailed in Sutton and Barto (2018) &lt;ISBN:9780262039246&gt;. The package allows for the intuitive definition of RL models using simple if-else statements and three basic models built into this R package are referenced from Niv et al. (2012)&lt;doi:10.1523/JNEUROSCI.5498-10.2012&gt;. Our approach to constructing and evaluating these computational models is informed by the guidelines proposed in Wilson &amp; Collins (2019) &lt;doi:10.7554/eLife.49547&gt;. Example datasets included with the package are sourced from the work of Mason et al. (2024) &lt;doi:10.3758/s13423-023-02415-x&gt;.">
 <!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-BBRBG6HVWB"></script><script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>This package is designed to help users build the Rescorla-Wagner Model for Two-Alternative Forced Choice (TAFC) tasks, which is the simplest reinforcement learning model(the multi-armed bandit), where the reward for each action is received immediately, and each choice can be considered an independent and identically distributed (i.i.d.) probabilistic event. Beginners can define models using simple <code>if-else</code> logic, making model construction more accessible.</p>
+<p>This package is designed to help users build the <strong>Rescorla-Wagner Model</strong> for <strong>Two-Alternative Forced Choice</strong> (TAFC) tasks, which is the simplest reinforcement learning model (e.g. multi-armed bandit), where the reward for each action is received immediately, and each choice can be considered an independent and identically distributed (i.i.d.) probabilistic event. Beginners can define models using simple <strong><code>if-else</code></strong> logic, making model construction more accessible.</p>
 <ul>
 <li>
 <a href="./articles/binaryRL.html#id_1-run-model">Step 1</a>: Build Reinforcement Learning Models <code>run_m</code>
@@ -100,7 +100,7 @@
 <div class="section level2">
 <h2 id="how-to-cite">How to cite<a class="anchor" aria-label="anchor" href="#how-to-cite"></a>
 </h2>
-<p>YuKi. (2025). binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks. R package version 0.8.10. <a href="https://CRAN.R-project.org/package=binaryRL" class="external-link uri">https://CRAN.R-project.org/package=binaryRL</a></p>
+<p>YuKi. (2025). binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks. R package version 0.9.0. <a href="https://CRAN.R-project.org/package=binaryRL" class="external-link uri">https://CRAN.R-project.org/package=binaryRL</a></p>
 <p>Hu, M., &amp; Liu, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. <em>Journal(7)</em>, 100-123. <a href="https://doi.org/" class="external-link uri">https://doi.org/</a></p>
 </div>
 <div class="section level2">
@@ -134,21 +134,31 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <div class="section level1">
 <h1 id="tutorial">Tutorial<a class="anchor" aria-label="anchor" href="#tutorial"></a>
 </h1>
-<p><em>-</em> The development and usage workflow of this R package adheres to the <strong>four</strong> stages (ten rules) recommended by Wilson &amp; Collins <a href="https://doi.org/10.7554/eLife.49547" class="external-link">(2019)</a>.<br><em>-</em> The <strong>three</strong> basic models built into this R package are referenced from Niv et al. <a href="https://doi.org/10.1523/JNEUROSCI.5498-10.2012" class="external-link">(2012)</a>.</p>
+<p><em>In tasks with small, finite state sets (e.g. TAFC tasks in psychology), all states, actions, and their corresponding rewards could be recorded in tables.</em></p>
+<ul>
+<li>Sutton &amp; Barto <a href="https://mitpress.mit.edu/9780262039246/reinforcement-learning/" class="external-link">(2018)</a> call this kind of scenario as the <strong>tabular case</strong> and the corresponding methods as <strong>tabular methods</strong>.<br>
+</li>
+<li>The development and usage workflow of this R package adheres to the <strong>four</strong> stages (ten rules) recommended by Wilson &amp; Collins <a href="https://doi.org/10.7554/eLife.49547" class="external-link">(2019)</a>.<br>
+</li>
+<li>The <strong>three</strong> basic models built into this R package are referenced from Niv et al. <a href="https://doi.org/10.1523/JNEUROSCI.5498-10.2012" class="external-link">(2012)</a>.<br>
+</li>
+<li>The <strong>example data</strong> used in this R package is an open data from Mason et. al. <a href="https://osf.io/hy3q4/" class="external-link">(2024)</a>
+</li>
+</ul>
 <p align="center">
 <img src="./fig/rl_process.png" alt="RL Process" width="34.25%" style="display: inline;"><img src="./fig/rl_models.png" alt="RL Models" width="61%" style="display: inline;"></p>
-<p><strong>Reference</strong><br>
-Wilson, R. C., &amp; Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. <em>Elife, 8</em>, e49547. <a href="https://doi.org/10.7554/eLife.49547" class="external-link uri">https://doi.org/10.7554/eLife.49547</a><br>
-Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. <em>Journal of Neuroscience, 32</em>(2), 551-562. <a href="https://doi.org/10.1523/JNEUROSCI.5498-10.2012" class="external-link uri">https://doi.org/10.1523/JNEUROSCI.5498-10.2012</a></p>
+<p><strong>Reference</strong></p>
+<p>Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.</p>
+<p>Wilson, R. C., &amp; Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. <em>Elife, 8</em>, e49547. <a href="https://doi.org/10.7554/eLife.49547" class="external-link uri">https://doi.org/10.7554/eLife.49547</a></p>
+<p>Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. <em>Journal of Neuroscience, 32</em>(2), 551-562. <a href="https://doi.org/10.1523/JNEUROSCI.5498-10.2012" class="external-link uri">https://doi.org/10.1523/JNEUROSCI.5498-10.2012</a></p>
+<p>Mason, A., Ludvig, E. A., Spetch, M. L., &amp; Madan, C. R. (2024). Rare and extreme outcomes in risky choice. <em>Psychonomic Bulletin &amp; Review, 31</em>(3), 1301-1308. <a href="https://doi.org/10.3758/s13423-023-02415-x" class="external-link uri">https://doi.org/10.3758/s13423-023-02415-x</a></p>
 <!---------------------------------------------------------->
 <div class="section level2">
 <h2 id="example-data">
 <a href="./demo/DATA/binaryRL_data.html">Example Data</a><a class="anchor" aria-label="anchor" href="#example-data"></a>
 </h2>
-<p>Our package includes a minimally processed version of a publicly available dataset from Mason et al. <a href="https://doi.org/10.3758/s13423-023-02415-x" class="external-link">(2024)</a> as example data. This dataset represents a classic Two-Armed Bandit task, a typical example of a Two-Alternative Forced Choice (TAFC) paradigm.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># An open data from Mason et. al. (2024) https://osf.io/hy3q4/</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="11%">
@@ -230,8 +240,6 @@ Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural predi
 </tr>
 </tbody>
 </table>
-<p><strong>Reference</strong><br>
-Mason, A., Ludvig, E. A., Spetch, M. L., &amp; Madan, C. R. (2024). Rare and extreme outcomes in risky choice. <em>Psychonomic Bulletin &amp; Review, 31</em>(3), 1301-1308. <a href="https://doi.org/10.3758/s13423-023-02415-x" class="external-link uri">https://doi.org/10.3758/s13423-023-02415-x</a></p>
 <pre>
                                       .
                                         .
@@ -388,13 +396,13 @@ Mason, A., Ludvig, E. A., Spetch, M. L., &amp; Madan, C. R. (2024). Rare and ext
 - L-BFGS-B (from <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">stats::optim</a></code>)</p>
 <p><strong>Specialized External Optimization</strong><br>
 - Simulated Annealing (<code><a href="https://rdrr.io/pkg/GenSA/man/GenSA.html" class="external-link">GenSA::GenSA</a></code>)<br>
-- Genetic Algorithm (<code><a href="https://github.com/luca-scr/GA/reference/ga.html" class="external-link">GA::ga</a></code>)<br>
+- Genetic Algorithm (<code><a href="https://rdrr.io/pkg/GA/man/ga.html" class="external-link">GA::ga</a></code>)<br>
 - Differential Evolution (<code><a href="https://rdrr.io/pkg/DEoptim/man/DEoptim.html" class="external-link">DEoptim::DEoptim</a></code>).<br>
 - Particle Swarm Optimization (<code><a href="https://rdrr.io/pkg/pso/man/psoptim.html" class="external-link">pso::psoptim</a></code>)<br>
 - Bayesian Optimization (<code><a href="https://rdrr.io/pkg/mlrMBO/man/mbo.html" class="external-link">mlrMBO::mbo</a></code>)<br>
 - Covariance Matrix Adapting Evolutionary Strategy (<code><a href="https://rdrr.io/pkg/cmaes/man/cma_es.html" class="external-link">cmaes::cma_es</a></code>)</p>
 <p><strong>Optimization Library</strong><br>
-- Nonlinear Optimization (<code><a href="https://astamm.github.io/nloptr/reference/nloptr.html" class="external-link">nloptr::nloptr</a></code>)<br><br><em>NOTE:</em> If you want to use an algorithm other than <code>L-BFGS-B</code>, you must install the corresponding package.</p>
+- Nonlinear Optimization (<code><a href="https://rdrr.io/pkg/nloptr/man/nloptr.html" class="external-link">nloptr::nloptr</a></code>)<br><br><em>NOTE:</em> If you want to use an algorithm other than <code>L-BFGS-B</code>, you must install the corresponding package.</p>
 <!---------------------------------------------------------->
 </div>
 

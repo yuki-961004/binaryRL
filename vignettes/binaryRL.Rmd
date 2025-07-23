@@ -9,18 +9,28 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-*-* The development and usage workflow of this R package adheres to the **four** stages (ten rules) recommended by Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547).  
-*-* The **three** basic models built into this R package are referenced from Niv et al. [(2012)](https://doi.org/10.1523/JNEUROSCI.5498-10.2012).
+*In tasks with small, finite state sets (e.g. TAFC tasks in psychology), all states, actions, and their corresponding rewards could be recorded in tables.*  
+
+- Sutton & Barto [(2018)](https://mitpress.mit.edu/9780262039246/reinforcement-learning/) call this kind of scenario as the **tabular case** and the corresponding methods as **tabular methods**.  
+- The development and usage workflow of this R package adheres to the **four** stages (ten rules) recommended by Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547).  
+- The **three** basic models built into this R package are referenced from Niv et al. [(2012)](https://doi.org/10.1523/JNEUROSCI.5498-10.2012).  
+- The **example data** used in this R package is an open data from Mason et. al. [(2024)](https://osf.io/hy3q4/)
 
 <p align="center">
     <img src="./fig/rl_process.png" alt="RL Process" width="34.25%" style="display: inline;">
     <img src="./fig/rl_models.png" alt="RL Models" width="61%" style="display: inline;">
 </p>
 
-
 **Reference**  
+
+Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
+
 Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife, 8*, e49547. https://doi.org/10.7554/eLife.49547  
-Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
+
+Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012  
+
+Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). Rare and extreme outcomes in risky choice. *Psychonomic Bulletin & Review, 31*(3), 1301-1308. https://doi.org/10.3758/s13423-023-02415-x
+
 <!---------------------------------------------------------->
 
 ## 1. Run Model {#1-run-model}
@@ -61,6 +71,7 @@ Model <- function(params){
     expl_func = your_expl_func,
     bias_func = your_bias_func,
     prob_func = your_prob_func,
+    loss_func = your_loss_func,
 # ║ --------- column names ---------- ║ #
     sub = "Subject",
     time_line = c("Block", "Trial"),
@@ -332,6 +343,43 @@ func_tau <- function (
 
 </details>
 
+<details>
+<summary>Loss Function (LL)</summary>
+```{r eval=FALSE}
+print(binaryRL::func_logl)
+```
+
+```{r eval=FALSE}
+func_logl <- function(
+  # variables before decision-making
+  i, L_freq, R_freq, L_pick, R_pick, L_value, R_value, 
+  # variables after decision-making
+  value, utility, reward, occurrence,
+  # Whether the participant chose the left or right option.
+  L_dir, R_dir, 
+  # The probability that the model assigns to choosing the left or right option
+  L_prob, R_prob, 
+   
+  # Exploration–Exploitation Trade-off   
+  try,
+  # calculating Left option logl or Right option logl
+  LR,
+  
+  # extra variables
+  var1, var2, 
+  # extra parameters
+  alpha, beta 
+){
+  logl <- switch(
+    EXPR = LR,
+    "L" = L_dir * log(L_prob + 1e-10),
+    "R" = R_dir * log(R_prob + 1e-10)
+  )
+  
+  return(logl)  
+}
+```
+</details>
 <!---------------------------------------------------------->
 
 

@@ -67,7 +67,9 @@ func_gamma <- function(
 ```
 
 **Reference**  
+
 Kahneman, D., & Tversky, A. (2013). Prospect theory: An analysis of decision under risk. In Handbook of the fundamentals of financial decision making: Part I (pp. 99-127).  https://doi.org/10.1142/9789814417358_0006  
+
 Nilsson, H., Rieskamp, J., & Wagenmakers, E. J. (2011). Hierarchical Bayesian parameter estimation for cumulative prospect theory. *Journal of Mathematical Psychology, 55*(1), 84-93. https://doi.org/10.1016/j.jmp.2010.08.006
 
 <!---------------------------------------------------------->
@@ -88,6 +90,7 @@ binaryRL::run_m(
 ```
 
 **Reference**  
+
 Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and confirmation biases in reinforcement learning. *Trends in Cognitive Sciences, 26*(7), 607-621. https://doi.org/10.1016/j.tics.2022.04.005
 
 ## Exploration–Exploitation Trade-off  
@@ -99,12 +102,14 @@ Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and
 </p>
 
 **Reference**  
+
 Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
 
 ### Initial Value
 > "Initial action values can also be used as a simple way to encourage exploration. Suppose that instead of setting the initial action values to zero, as we did in the 10-armed testbed, we set them all to +5. Recall that the $q_{*}(a)$ in this problem are selected from a normal distribution with mean 0 and variance 1. An initial estimate of +5 is thus wildly optimistic. But this optimism encourages action-value methods to explore."
 
 **Reference**  
+
 Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
 
 ### Exploration Strategy
@@ -148,6 +153,7 @@ run_m(
 ```
 
 **Reference**  
+
 Namiki, N., Oyo, K., & Takahashi, T. (2014, December). How do humans handle the dilemma of exploration and exploitation in sequential decision making?. In Proceedings of the 8th International Conference on Bioinspired Information and Communications Technologies (pp. 113-117). https://doi.org/10.4108/icst.bict.2014.258045  
 <!---------------------------------------------------------->
 
@@ -163,6 +169,7 @@ run_m(
 ```
 
 **Reference**  
+
 Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
 
 ### Soft-Max Function
@@ -189,17 +196,33 @@ binaryRL::rcv_d(
 ```
 
 **Reference**  
+
 Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
+
 Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547
 
 <!---------------------------------------------------------->
 
 ## Model Fit
-The primary aim of `binaryRL` is to enable reinforcement learning models to exhibit behaviors similar to human subjects. While there are other ways to formulate the *loss function*, we've fixed it as shown below to express the resemblance between human behavior and model predictions.  
+
+### Loss Function
+
+The primary aim of `binaryRL` is to enable reinforcement learning models to exhibit behaviors similar to human subjects. While there are various ways to formulate **loss functions**, the built-in loss function expresses the resemblance between human behavior and model predictions.  
 
 $$
 LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
-$$   
+$$ 
+
+*NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model. ${k}$ the number of free parameters in the model; ${n}$ represents the total number of trials in the paradigm.  
+
+**Reference**  
+
+Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventromedial prefrontal cortex in abstract state-based inference during decision making in humans. *Journal of Neuroscience, 26*(32), 8360-8367. https://doi.org/10.1523/JNEUROSCI.1010-06.2006
+
+### AIC & BIC
+Additionally, the program also calculates AIC and BIC based on the Log-Likelihood, number of parameters, and number of trials to penalize overly complex models.
+
+  
 
 $$
 AIC =  - 2 LL + 2 k
@@ -209,8 +232,9 @@ $$
 BIC =  - 2 LL + k \times \log n
 $$ 
 
-*NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model. ${k}$ the number of free parameters in the model; ${n}$ represents the total number of trials in the paradigm.
-
 **Reference**  
-Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventromedial prefrontal cortex in abstract state-based inference during decision making in humans. *Journal of Neuroscience, 26*(32), 8360-8367. https://doi.org/10.1523/JNEUROSCI.1010-06.2006
+
+Akaike, H. (1974) A New Look at the Statistical Model Identification. *IEEE Transactions on Automatic Control, AC- 19*, 716-723. http://dx.doi.org/10.1109/TAC.1974.1100705  
+
+Schwarz, G. (1978) Estimating the Dimension of a Model. *Annals of Statistics, 6*, 461-464. http://dx.doi.org/10.1214/aos/1176344136
 

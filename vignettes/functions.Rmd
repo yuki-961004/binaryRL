@@ -38,15 +38,16 @@ $$
 $$
 
 $$
+G_t^{\lambda} \xrightarrow{\lambda = 0} 
 G_t^{0} = (1-0)\sum_{n=1}^{T-t-1}0^{n-1}G_{t:t+n} + 0^{T-t-1}G_t
 $$
 
 $$
-G_t^{\lambda} \xrightarrow{\lambda = 0, n = 1} G_{t:t+1}
-\quad
-\Rightarrow
-\quad
-r_{t+1} + \gamma V_{\text{old}}(S_{t+1})
+\Downarrow 
+$$
+
+$$
+G_t^{0} = G_{t:t+1}= r_{t+1} + \gamma V_{\text{old}}(S_{t+1})
 $$
 
 $$
@@ -67,7 +68,7 @@ $$
 $$
 
 $$
-G_{t:t+1}
+r_{t+1} + \gamma V_{\text{old}}(S_{t+1})
 \quad
 \xrightarrow{\gamma = 0}
 \quad
@@ -88,7 +89,8 @@ $$
 
 <!---------------------------------------------------------->
 
-## **Utility Function (γ)**
+## **Utility Function (γ)**  
+
 People's subjective perception of objective rewards is more accurate. This is because the relationship between physical quantities and psychological quantities is not necessarily always a linear discount function; it could also be another type of power function relationship (Stevens' Power Law).  
 
 $$  
@@ -110,7 +112,8 @@ $$
 
 <!---------------------------------------------------------->
 
-## **Learning Rates (η)**
+## **Learning Rates (η)**  
+
 This parameter $\eta$ controls how quickly an agent updates its value estimates based on new information. The closer the learning rate is to 1, the more aggressively the value is updated, giving greater credence to the immediate reward rather than previously learned value.
 
 $$
@@ -126,7 +129,8 @@ $$
 
 <!---------------------------------------------------------->
 
-## **Exploration Strategy (ε)**
+## **Exploration Strategy (ε)**  
+
 The parameter $\epsilon$ represents the probability of participants engaging in exploration (random choosing). In addition A threshold ensures participants always explore during the initial trials, after which the likelihood of exploration is determined by $\epsilon$..   
 
 ### ε-first
@@ -162,7 +166,8 @@ P(x) =
 $$
 
 <!---------------------------------------------------------->
-## **Upper-Confidence-Bound (π)**
+## **Upper-Confidence-Bound (π)**  
+
 Parameter used in the Upper-Confidence-Bound (UCB) action selection formula. it controls the degree of exploration by scaling the uncertainty bonus given to less-explored options.
 
 $$
@@ -171,7 +176,8 @@ $$
 
 <!---------------------------------------------------------->
 
-## **Soft-Max (τ)**
+## **Soft-Max (τ)**  
+
 The parameter $\tau$ represents people's sensitivity to value differences. The larger $\tau$, the more sensitive they are to the differences in value between the two options.
 
 $$
@@ -179,5 +185,13 @@ P_{L} = \frac{1}{1 + e^{-(V_{L} - V_{R}) \cdot \tau}}
 \quad \quad
 P_{R} = \frac{1}{1 + e^{-(V_{R} - V_{L}) \cdot \tau}}
 $$
-
 <!---------------------------------------------------------->
+
+## **Loss Function (LL)**  
+
+Loss Function express the resemblance between human behavior and model predictions. 
+
+$$
+LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
+$$
+

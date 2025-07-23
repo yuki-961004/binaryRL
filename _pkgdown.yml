@@ -34,6 +34,7 @@ reference:
       - func_epsilon
       - func_pi
       - func_tau
+      - func_logl
 
   - title: "Processes"
     contents:

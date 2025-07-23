@@ -41,6 +41,7 @@
 #'   \item \code{\link[binaryRL]{func_epsilon}}: Exploration Strategy
 #'   \item \code{\link[binaryRL]{func_pi}}: Upper-Confidence-Bound
 #'   \item \code{\link[binaryRL]{func_tau}}: Soft-Max
+#'   \item \code{\link[binaryRL]{func_logl}}: Loss Function
 #' }
 #' 
 #' @section Processes: 

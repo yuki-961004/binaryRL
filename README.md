@@ -10,7 +10,7 @@
 <!-- badges: end -->
 
 ## Overview
-This package is designed to help users build the Rescorla-Wagner Model for Two-Alternative Forced Choice (TAFC) tasks, which is the simplest reinforcement learning model(the multi-armed bandit), where the reward for each action is received immediately, and each choice can be considered an independent and identically distributed (i.i.d.) probabilistic event. Beginners can define models using simple `if-else` logic, making model construction more accessible.
+This package is designed to help users build the **Rescorla-Wagner Model** for **Two-Alternative Forced Choice** (TAFC) tasks, which is the simplest reinforcement learning model (e.g. multi-armed bandit), where the reward for each action is received immediately, and each choice can be considered an independent and identically distributed (i.i.d.) probabilistic event. Beginners can define models using simple **`if-else`** logic, making model construction more accessible.
 
 * [Step 1](./articles/binaryRL.html#id_1-run-model): Build Reinforcement Learning Models `run_m`
 * [Step 2](./articles/binaryRL.html#id_2-recovery): Parameter and Model Recovery `rcv_d`
@@ -20,7 +20,7 @@ This package is designed to help users build the Rescorla-Wagner Model for Two-A
 <!---------------------------------------------------------->
 
 ## How to cite 
-YuKi. (2025). binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks. R package version 0.8.10. https://CRAN.R-project.org/package=binaryRL
+YuKi. (2025). binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks. R package version 0.9.0. https://CRAN.R-project.org/package=binaryRL
 
 Hu, M., & Liu, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal(7)*, 100-123. https://doi.org/
 
@@ -53,8 +53,12 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <!---------------------------------------------------------->
 
 # Tutorial
-*-* The development and usage workflow of this R package adheres to the **four** stages (ten rules) recommended by Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547).  
-*-* The **three** basic models built into this R package are referenced from Niv et al. [(2012)](https://doi.org/10.1523/JNEUROSCI.5498-10.2012).
+*In tasks with small, finite state sets (e.g. TAFC tasks in psychology), all states, actions, and their corresponding rewards could be recorded in tables.*  
+
+- Sutton & Barto [(2018)](https://mitpress.mit.edu/9780262039246/reinforcement-learning/) call this kind of scenario as the **tabular case** and the corresponding methods as **tabular methods**.  
+- The development and usage workflow of this R package adheres to the **four** stages (ten rules) recommended by Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547).  
+- The **three** basic models built into this R package are referenced from Niv et al. [(2012)](https://doi.org/10.1523/JNEUROSCI.5498-10.2012).  
+- The **example data** used in this R package is an open data from Mason et. al. [(2024)](https://osf.io/hy3q4/)
 
 <p align="center">
     <img src="./fig/rl_process.png" alt="RL Process" width="34.25%" style="display: inline;">
@@ -62,17 +66,20 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 </p>
 
 **Reference**  
+
+Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
+
 Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife, 8*, e49547. https://doi.org/10.7554/eLife.49547  
-Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012
+
+Niv, Y., Edlund, J. A., Dayan, P., & O'Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. *Journal of Neuroscience, 32*(2), 551-562. https://doi.org/10.1523/JNEUROSCI.5498-10.2012  
+
+Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). Rare and extreme outcomes in risky choice. *Psychonomic Bulletin & Review, 31*(3), 1301-1308. https://doi.org/10.3758/s13423-023-02415-x
 
 <!---------------------------------------------------------->
 
 ## [Example Data](./demo/DATA/binaryRL_data.html)
 
-Our package includes a minimally processed version of a publicly available dataset from Mason et al. [(2024)](https://doi.org/10.3758/s13423-023-02415-x) as example data. This dataset represents a classic Two-Armed Bandit task, a typical example of a Two-Alternative Forced Choice (TAFC) paradigm.
-
 ```r
-# An open data from Mason et. al. (2024) https://osf.io/hy3q4/
 head(binaryRL::Mason_2024_Exp2)
 ```
 
@@ -83,10 +90,6 @@ head(binaryRL::Mason_2024_Exp2)
 | 1       | 1     | 3     | C        | D        | -36      |-40       | C          |...|
 | 1       | 1     | 4     | D        | C        | 0        |-36       | D          |...|
 | ...     | ...   | ...   | ...      | ...      | ...      | ...      | ...        |...|
-
-**Reference**  
-Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). Rare and extreme outcomes in risky choice. *Psychonomic Bulletin & Review, 31*(3), 1301-1308. https://doi.org/10.3758/s13423-023-02415-x
-
 
 <pre>
                                       .

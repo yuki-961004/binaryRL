@@ -5,6 +5,7 @@ export(func_eta)
 export(func_epsilon)
 export(func_pi)
 export(func_tau)
+export(func_logl)
 
 export(run_m)
 export(rcv_d)

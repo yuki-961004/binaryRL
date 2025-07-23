@@ -27,6 +27,7 @@ run_m(
   expl_func = func_epsilon,
   bias_func = func_pi,
   prob_func = func_tau,
+  loss_func = func_logl,
   sub = "Subject",
   time_line = c("Block", "Trial"),
   L_choice = "L_choice",
@@ -221,6 +222,8 @@ Parameters used in the Soft-Max Function. `prob_func` representing the
 \item{bias_func}{[function] Upper-Confidence-Bound see \code{\link[binaryRL]{func_pi}}.}
 
 \item{prob_func}{[function] Soft-Max Function see \code{\link[binaryRL]{func_tau}}.}
+
+\item{loss_func}{[function] Loss Function see \code{\link[binaryRL]{func_logl}}.}
 
 \item{sub}{[character] column name of subject ID
 
