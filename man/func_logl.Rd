@@ -92,9 +92,9 @@ log-likelihood
 This loss function reflects the similarity between human choices
  and RL model predictions. If a human selects the left option and the
  RL model predicts a high probability for the left option, then 
- \dequn{logP_{L}} approaches 0, causing the first term to approach 0.
+ \eqn{logP_{L}} approaches 0, causing the first term to approach 0.
 
-Since the human chose the left option, \dequn{B_{R}} becomes 0, making the 
+Since the human chose the left option, \eqn{B_{R}} becomes 0, making the 
  second term naturally zero. Therefore, the more consistent the RL model's 
  prediction is with human choice, the closer this LL value is to 0. 
  Conversely, it approaches negative infinity.
