@@ -23,7 +23,7 @@ vignette: >
 
 **Reference**  
 
-Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
+Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* (2nd ed). MIT press.  
 
 Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife, 8*, e49547. https://doi.org/10.7554/eLife.49547  
 
@@ -182,7 +182,7 @@ func_eta <- function (
 <!---------------------------------------------------------->
 
 <details>
-<summary>Exploration Strategy (ε)</summary>
+<summary>Epsilon Related (ε)</summary>
 
 ```{r eval=FALSE}
 print(binaryRL::func_epsilon)
@@ -255,14 +255,26 @@ func_pi <- function(
   # extra parameters
   alpha, beta 
 ){
-  if (is.na(pi)) {
-    bias <- 0
+  # at least 1
+  if (is.na(x = pi)) {
+    if (L_pick == 0 & R_pick == 0) {
+      bias <- 100
+    }
+    else if (LR == "L" & L_pick == 0 & R_pick > 0) {
+      bias <- 100
+    }
+    else if (LR == "R" & R_pick == 0 & L_pick > 0) {
+      bias <- 100
+    }
+    else {
+      bias <- 0
+    }
   }
-  # bias
-  else if (LR == "L") {
+  # bias value
+  else if (!(is.na(x = pi)) & LR == "L") {
     bias <- pi * sqrt(log(L_pick + exp(1)) / (L_pick + 1e-10))
   }
-  else if (LR == "R") {
+  else if (!(is.na(x = pi)) & LR == "R") {
     bias <- pi * sqrt(log(R_pick + exp(1)) / (R_pick + 1e-10))
   }
   # error

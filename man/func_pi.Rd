@@ -15,7 +15,7 @@ func_pi(
   var1,
   var2,
   LR,
-  pi = 0.1,
+  pi,
   alpha,
   beta
 )
@@ -54,7 +54,7 @@ Column name of extra variable 2. If one additional variable, var1, does not
 
 \item{pi}{[vector]
 Parameter used in the Upper-Confidence-Bound (UCB) action selection
- formula. `bias_func` controls the degree of exploration by scaling the 
+ formula. \code{bias_func} controls the degree of exploration by scaling the 
  uncertainty bonus given to less-explored options. A larger value of 
  \code{pi} (denoted as \code{c} in Sutton and Barto(1998) ) increases the 
  influence of this bonus, leading to more exploration of actions with 
@@ -65,7 +65,7 @@ Parameter used in the Upper-Confidence-Bound (UCB) action selection
   A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}} \right]
 }
 
-\code{default: pi = 0.001}}
+\code{default: pi = NA}}
 
 \item{alpha}{[vector]
 Extra parameters that may be used in functions.}
@@ -88,8 +88,8 @@ Unlike epsilon-greedy, which explores indiscriminately, UCB is a more
 }
 \note{
 When customizing these functions, please ensure that you do not modify 
- the arguments. Instead, only modify the `if-else` statements or the internal 
- logic to adapt the function to your needs.
+ the arguments. Instead, only modify the \code{if-else} statements or 
+ the internal logic to adapt the function to your needs.
 }
 \examples{
 \dontrun{
@@ -117,22 +117,34 @@ func_tau <- function(
   # Extra parameters
   alpha,
   beta
- ){
-  if (is.na(pi)) {
-    bias <- 0
+){
+############################ [ at least 1 ] #################################
+  if (is.na(x = pi)) {
+    if (L_pick == 0 & R_pick == 0) {
+      bias <- 100
+    }
+    else if (LR == "L" & L_pick == 0 & R_pick > 0) {
+      bias <- 100
+    }
+    else if (LR == "R" & R_pick == 0 & L_pick > 0) {
+      bias <- 100
+    }
+    else {
+      bias <- 0
+    }
   }
-############################## [ bias value ] ###############################
-  else if (LR == "L") {
+############################ [ bias value ] #################################
+  else if (!(is.na(x = pi)) & LR == "L") {
     bias <- pi * sqrt(log(L_pick + exp(1)) / (L_pick + 1e-10))
   }
-  else if (LR == "R") {
+  else if (!(is.na(x = pi)) & LR == "R") {
     bias <- pi * sqrt(log(R_pick + exp(1)) / (R_pick + 1e-10))
   }
-################################# [ error ] #################################
+############################## [ error ] ####################################
   else {
     bias <- "ERROR"
   }
-   
+ 
   return(bias)
 }
 }

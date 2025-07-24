@@ -10,12 +10,12 @@
 <!-- badges: end -->
 
 ## Overview
-This package is designed to help users build the **Rescorla-Wagner Model** for **Two-Alternative Forced Choice** (TAFC) tasks, which is the simplest reinforcement learning model (e.g. multi-armed bandit), where the reward for each action is received immediately, and each choice can be considered an independent and identically distributed (i.i.d.) probabilistic event. Beginners can define models using simple **`if-else`** logic, making model construction more accessible.
+This package is designed to help users build the **Rescorla-Wagner Model** for **Two-Alternative Forced Choice** tasks (e.g. multi-armed bandit). Beginners can define models using simple **`if-else`** logic, making model construction more accessible.  
 
-* [Step 1](./articles/binaryRL.html#id_1-run-model): Build Reinforcement Learning Models `run_m`
-* [Step 2](./articles/binaryRL.html#id_2-recovery): Parameter and Model Recovery `rcv_d`
-* [Step 3](./articles/binaryRL.html#id_3-fit-real-data): Fit Real Data `fit_p`
-* [Step 4](./articles/binaryRL.html#id_4-replay-the-experiment): Replay the Experiment `rpl_e` 
+* [Step 1](./articles/binaryRL.html#id_1-run-model): Build Reinforcement Learning Models `run_m()`
+* [Step 2](./articles/binaryRL.html#id_2-recovery): Parameter and Model Recovery `rcv_d()`
+* [Step 3](./articles/binaryRL.html#id_3-fit-real-data): Fit Real Data `fit_p()`
+* [Step 4](./articles/binaryRL.html#id_4-replay-the-experiment): Replay the Experiment `rpl_e()` 
 
 <!---------------------------------------------------------->
 
@@ -67,7 +67,7 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 
 **Reference**  
 
-Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
+Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* (2nd ed). MIT press.  
 
 Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife, 8*, e49547. https://doi.org/10.7554/eLife.49547  
 
@@ -130,9 +130,9 @@ binaryRL::run_m(
 
 # Parallel Data Fitting
 
-While this R package is primarily designed for constructing **Reinforcement Learning (RL)** models (with `binaryRL::run_m` at its core), its flexibility extends further. 
+While this R package is primarily designed for constructing **Reinforcement Learning (RL)** models (with `run_m()` at its core), its flexibility extends further. 
 
-The key functions, `binaryRL::rcv_d` and `binaryRL::fit_p`, provide a unified interface to seamlessly integrate a diverse range of optimization algorithms. Crucially, they offer a parallel solution for tasks like parameter optimization, parameter recovery, and model recovery.
+The key functions, `rcv_d()` and `fit_p()`, provide a unified interface to seamlessly integrate a diverse range of optimization algorithms. Crucially, they offer a parallel solution for tasks like parameter optimization, parameter recovery, and model recovery.
 
 This means you can leverage this package not only for building and fitting RL models, but also as a versatile algorithm library for fitting other **"black-box functions"** in parallel for each subject. This significantly reduces processing time, provided your function's parameters can be optimized independently for each subject.
 
@@ -149,11 +149,8 @@ This means you can leverage this package not only for building and fitting RL mo
 
 **Optimization Library**  
   - Nonlinear Optimization (`nloptr::nloptr`)  
-<br>
-*NOTE:* If you want to use an algorithm other than `L-BFGS-B`, you must install the corresponding package. 
 
-<!---------------------------------------------------------->
-
-
-
-
+*NOTE:*  
+1. If you want to use an algorithm other than `L-BFGS-B`, you'll need to install its corresponding R package.  
+2. This package supports **parallel computation**. When you set the `nc` argument in `rcv_d()` or `fit_p()` to a value greater than 1, calculations will run in parallel, meaning each participant's parameter optimization happens simultaneously.  
+3. If you've defined a custom model, you must provide the names of your custom functions as a character vector to the `funcs` argument within `rcv_d()` or `fit_p()`.  

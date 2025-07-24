@@ -104,8 +104,8 @@ Since the human chose the left option, \eqn{B_{R}} becomes 0, making the
 }
 \note{
 When customizing these functions, please ensure that you do not modify 
- the arguments. Instead, only modify the `if-else` statements or the internal 
- logic to adapt the function to your needs.
+ the arguments. Instead, only modify the \code{if-else} statements or 
+ the internal logic to adapt the function to your needs.
 }
 \examples{
 \dontrun{

@@ -107,7 +107,7 @@ output <- function(
   
   # 因为第一行用来填写初始值了, 所以需要重新把第二行初始化成第一行
   rownames(data) <- NULL 
-  mean_ACC <- round(mean(data$ACC), 4) * 100
+  mean_ACC <- round(mean(data$ACC), digits = 4) * 100
   sum_LL <- round(sum(data$L_logl) + sum(data$R_logl), digits = 2)
   AIC <- round(2 * n_params - 2 * sum_LL, digits = 2)
   BIC <- round(n_params * log(n_trials) - 2 * sum_LL, digits = 2)

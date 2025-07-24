@@ -17,8 +17,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks">
-<meta name="description" content="Tools for building reinforcement learning (RL) models specifically tailored for Two-Alternative Forced Choice (TAFC) tasks, commonly employed in psychological research. These models build upon the foundational principles of model-free reinforcement learning detailed in Sutton and Barto (2018) &lt;ISBN:9780262039246&gt;. The package allows for the intuitive definition of RL models using simple if-else statements and three basic models built into this R package are referenced from Niv et al. (2012)&lt;doi:10.1523/JNEUROSCI.5498-10.2012&gt;. Our approach to constructing and evaluating these computational models is informed by the guidelines proposed in Wilson &amp; Collins (2019) &lt;doi:10.7554/eLife.49547&gt;. Example datasets included with the package are sourced from the work of Mason et al. (2024) &lt;doi:10.3758/s13423-023-02415-x&gt;.">
-<meta property="og:description" content="Tools for building reinforcement learning (RL) models specifically tailored for Two-Alternative Forced Choice (TAFC) tasks, commonly employed in psychological research. These models build upon the foundational principles of model-free reinforcement learning detailed in Sutton and Barto (2018) &lt;ISBN:9780262039246&gt;. The package allows for the intuitive definition of RL models using simple if-else statements and three basic models built into this R package are referenced from Niv et al. (2012)&lt;doi:10.1523/JNEUROSCI.5498-10.2012&gt;. Our approach to constructing and evaluating these computational models is informed by the guidelines proposed in Wilson &amp; Collins (2019) &lt;doi:10.7554/eLife.49547&gt;. Example datasets included with the package are sourced from the work of Mason et al. (2024) &lt;doi:10.3758/s13423-023-02415-x&gt;.">
+<meta name="description" content="Tools for building Rescorla-Wagner Models for Two-Alternative Forced Choice tasks, commonly employed in psychological research. Most concepts and ideas within this R package are referenced from Sutton and Barto (2018) &lt;ISBN:9780262039246&gt;. The package allows for the intuitive definition of RL models using simple if-else statements and three basic models built into this R package are referenced from Niv et al. (2012)&lt;doi:10.1523/JNEUROSCI.5498-10.2012&gt;. Our approach to constructing and evaluating these computational models is informed by the guidelines proposed in Wilson &amp; Collins (2019) &lt;doi:10.7554/eLife.49547&gt;. Example datasets included with the package are sourced from the work of Mason et al. (2024) &lt;doi:10.3758/s13423-023-02415-x&gt;.">
+<meta property="og:description" content="Tools for building Rescorla-Wagner Models for Two-Alternative Forced Choice tasks, commonly employed in psychological research. Most concepts and ideas within this R package are referenced from Sutton and Barto (2018) &lt;ISBN:9780262039246&gt;. The package allows for the intuitive definition of RL models using simple if-else statements and three basic models built into this R package are referenced from Niv et al. (2012)&lt;doi:10.1523/JNEUROSCI.5498-10.2012&gt;. Our approach to constructing and evaluating these computational models is informed by the guidelines proposed in Wilson &amp; Collins (2019) &lt;doi:10.7554/eLife.49547&gt;. Example datasets included with the package are sourced from the work of Mason et al. (2024) &lt;doi:10.3758/s13423-023-02415-x&gt;.">
 <!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-BBRBG6HVWB"></script><script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -80,19 +80,19 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>This package is designed to help users build the <strong>Rescorla-Wagner Model</strong> for <strong>Two-Alternative Forced Choice</strong> (TAFC) tasks, which is the simplest reinforcement learning model (e.g. multi-armed bandit), where the reward for each action is received immediately, and each choice can be considered an independent and identically distributed (i.i.d.) probabilistic event. Beginners can define models using simple <strong><code>if-else</code></strong> logic, making model construction more accessible.</p>
+<p>This package is designed to help users build the <strong>Rescorla-Wagner Model</strong> for <strong>Two-Alternative Forced Choice</strong> tasks (e.g. multi-armed bandit). Beginners can define models using simple <strong><code>if-else</code></strong> logic, making model construction more accessible.</p>
 <ul>
 <li>
-<a href="./articles/binaryRL.html#id_1-run-model">Step 1</a>: Build Reinforcement Learning Models <code>run_m</code>
+<a href="./articles/binaryRL.html#id_1-run-model">Step 1</a>: Build Reinforcement Learning Models <code><a href="reference/run_m.html">run_m()</a></code>
 </li>
 <li>
-<a href="./articles/binaryRL.html#id_2-recovery">Step 2</a>: Parameter and Model Recovery <code>rcv_d</code>
+<a href="./articles/binaryRL.html#id_2-recovery">Step 2</a>: Parameter and Model Recovery <code><a href="reference/rcv_d.html">rcv_d()</a></code>
 </li>
 <li>
-<a href="./articles/binaryRL.html#id_3-fit-real-data">Step 3</a>: Fit Real Data <code>fit_p</code>
+<a href="./articles/binaryRL.html#id_3-fit-real-data">Step 3</a>: Fit Real Data <code><a href="reference/fit_p.html">fit_p()</a></code>
 </li>
 <li>
-<a href="./articles/binaryRL.html#id_4-replay-the-experiment">Step 4</a>: Replay the Experiment <code>rpl_e</code>
+<a href="./articles/binaryRL.html#id_4-replay-the-experiment">Step 4</a>: Replay the Experiment <code><a href="reference/rpl_e.html">rpl_e()</a></code>
 </li>
 </ul>
 <!---------------------------------------------------------->
@@ -148,7 +148,7 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <p align="center">
 <img src="./fig/rl_process.png" alt="RL Process" width="34.25%" style="display: inline;"><img src="./fig/rl_models.png" alt="RL Models" width="61%" style="display: inline;"></p>
 <p><strong>Reference</strong></p>
-<p>Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.</p>
+<p>Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement Learning: An Introduction</em> (2nd ed). MIT press.</p>
 <p>Wilson, R. C., &amp; Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. <em>Elife, 8</em>, e49547. <a href="https://doi.org/10.7554/eLife.49547" class="external-link uri">https://doi.org/10.7554/eLife.49547</a></p>
 <p>Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012). Neural prediction errors reveal a risk-sensitive reinforcement-learning process in the human brain. <em>Journal of Neuroscience, 32</em>(2), 551-562. <a href="https://doi.org/10.1523/JNEUROSCI.5498-10.2012" class="external-link uri">https://doi.org/10.1523/JNEUROSCI.5498-10.2012</a></p>
 <p>Mason, A., Ludvig, E. A., Spetch, M. L., &amp; Madan, C. R. (2024). Rare and extreme outcomes in risky choice. <em>Psychonomic Bulletin &amp; Review, 31</em>(3), 1301-1308. <a href="https://doi.org/10.3758/s13423-023-02415-x" class="external-link uri">https://doi.org/10.3758/s13423-023-02415-x</a></p>
@@ -389,21 +389,24 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <div class="section level1">
 <h1 id="parallel-data-fitting">Parallel Data Fitting<a class="anchor" aria-label="anchor" href="#parallel-data-fitting"></a>
 </h1>
-<p>While this R package is primarily designed for constructing <strong>Reinforcement Learning (RL)</strong> models (with <code><a href="reference/run_m.html">binaryRL::run_m</a></code> at its core), its flexibility extends further.</p>
-<p>The key functions, <code><a href="reference/rcv_d.html">binaryRL::rcv_d</a></code> and <code><a href="reference/fit_p.html">binaryRL::fit_p</a></code>, provide a unified interface to seamlessly integrate a diverse range of optimization algorithms. Crucially, they offer a parallel solution for tasks like parameter optimization, parameter recovery, and model recovery.</p>
+<p>While this R package is primarily designed for constructing <strong>Reinforcement Learning (RL)</strong> models (with <code><a href="reference/run_m.html">run_m()</a></code> at its core), its flexibility extends further.</p>
+<p>The key functions, <code><a href="reference/rcv_d.html">rcv_d()</a></code> and <code><a href="reference/fit_p.html">fit_p()</a></code>, provide a unified interface to seamlessly integrate a diverse range of optimization algorithms. Crucially, they offer a parallel solution for tasks like parameter optimization, parameter recovery, and model recovery.</p>
 <p>This means you can leverage this package not only for building and fitting RL models, but also as a versatile algorithm library for fitting other <strong>“black-box functions”</strong> in parallel for each subject. This significantly reduces processing time, provided your function’s parameters can be optimized independently for each subject.</p>
 <p><strong>Base R Optimization</strong><br>
 - L-BFGS-B (from <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">stats::optim</a></code>)</p>
 <p><strong>Specialized External Optimization</strong><br>
 - Simulated Annealing (<code><a href="https://rdrr.io/pkg/GenSA/man/GenSA.html" class="external-link">GenSA::GenSA</a></code>)<br>
-- Genetic Algorithm (<code><a href="https://rdrr.io/pkg/GA/man/ga.html" class="external-link">GA::ga</a></code>)<br>
+- Genetic Algorithm (<code><a href="https://github.com/luca-scr/GA/reference/ga.html" class="external-link">GA::ga</a></code>)<br>
 - Differential Evolution (<code><a href="https://rdrr.io/pkg/DEoptim/man/DEoptim.html" class="external-link">DEoptim::DEoptim</a></code>).<br>
 - Particle Swarm Optimization (<code><a href="https://rdrr.io/pkg/pso/man/psoptim.html" class="external-link">pso::psoptim</a></code>)<br>
 - Bayesian Optimization (<code><a href="https://rdrr.io/pkg/mlrMBO/man/mbo.html" class="external-link">mlrMBO::mbo</a></code>)<br>
 - Covariance Matrix Adapting Evolutionary Strategy (<code><a href="https://rdrr.io/pkg/cmaes/man/cma_es.html" class="external-link">cmaes::cma_es</a></code>)</p>
 <p><strong>Optimization Library</strong><br>
-- Nonlinear Optimization (<code><a href="https://rdrr.io/pkg/nloptr/man/nloptr.html" class="external-link">nloptr::nloptr</a></code>)<br><br><em>NOTE:</em> If you want to use an algorithm other than <code>L-BFGS-B</code>, you must install the corresponding package.</p>
-<!---------------------------------------------------------->
+- Nonlinear Optimization (<code><a href="https://astamm.github.io/nloptr/reference/nloptr.html" class="external-link">nloptr::nloptr</a></code>)</p>
+<p><em>NOTE:</em><br>
+1. If you want to use an algorithm other than <code>L-BFGS-B</code>, you’ll need to install its corresponding R package.<br>
+2. This package supports <strong>parallel computation</strong>. When you set the <code>nc</code> argument in <code><a href="reference/rcv_d.html">rcv_d()</a></code> or <code><a href="reference/fit_p.html">fit_p()</a></code> to a value greater than 1, calculations will run in parallel, meaning each participant’s parameter optimization happens simultaneously.<br>
+3. If you’ve defined a custom model, you must provide the names of your custom functions as a character vector to the <code>funcs</code> argument within <code><a href="reference/rcv_d.html">rcv_d()</a></code> or <code><a href="reference/fit_p.html">fit_p()</a></code>.</p>
 </div>
 
   </main><aside class="col-md-3"><div class="links">

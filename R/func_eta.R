@@ -16,8 +16,8 @@
 #' 
 #' @note 
 #' When customizing these functions, please ensure that you do not modify 
-#'  the arguments. Instead, only modify the `if-else` statements or the internal 
-#'  logic to adapt the function to your needs.
+#'  the arguments. Instead, only modify the \code{if-else} statements or 
+#'  the internal logic to adapt the function to your needs.
 #' 
 #' @param i 
 #' The current row number.

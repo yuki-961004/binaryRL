@@ -65,7 +65,7 @@ testthat::test_that("run_m() works with valid input", {
     
     initial_value = NA,
     threshold = 1,
-    epsilon = 0.1,
+    epsilon = 0.5,
     lambda = NA,
     pi = NA,
     tau = NA
@@ -119,7 +119,7 @@ testthat::test_that("run_m() works with valid input", {
     threshold = 1,
     epsilon = NA,
     lambda = NA,
-    pi = 0.001,
+    pi = 0.1,
     tau = NA
   )
   

@@ -109,8 +109,8 @@ data from Mason et. al. <a href="https://osf.io/hy3q4/" class="external-link">(
 <p align="center">
 <img src="fig/rl_process.png" alt="RL Process" width="34.25%" style="display: inline;"><img src="fig/rl_models.png" alt="RL Models" width="61%" style="display: inline;"></p>
 <p><strong>Reference</strong></p>
-<p>Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement Learning: An
-Introduction (2nd ed). Cambridge: MIT press.</p>
+<p>Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement Learning:
+An Introduction</em> (2nd ed). MIT press.</p>
 <p>Wilson, R. C., &amp; Collins, A. G. (2019). Ten simple rules for the
 computational modeling of behavioral data. <em>Elife, 8</em>, e49547. <a href="https://doi.org/10.7554/eLife.49547" class="external-link uri">https://doi.org/10.7554/eLife.49547</a></p>
 <p>Niv, Y., Edlund, J. A., Dayan, P., &amp; O’Doherty, J. P. (2012).
@@ -252,7 +252,7 @@ Learning Rate (η)
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">eta</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </details><!----------------------------------------------------------><details><summary>
-Exploration Strategy (ε)
+Epsilon Related (ε)
 </summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/func_epsilon.html">func_epsilon</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -313,14 +313,26 @@ Upper-Confidence-Bound (π)
 <span>  <span class="co"># extra parameters</span></span>
 <span>  <span class="va">alpha</span>, <span class="va">beta</span> </span>
 <span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">pi</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">bias</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>  <span class="co"># at least 1</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pi</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="kw">if</span> <span class="op">(</span><span class="va">L_pick</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">R_pick</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="va">bias</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">LR</span> <span class="op">==</span> <span class="st">"L"</span> <span class="op">&amp;</span> <span class="va">L_pick</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">R_pick</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="va">bias</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">LR</span> <span class="op">==</span> <span class="st">"R"</span> <span class="op">&amp;</span> <span class="va">R_pick</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">L_pick</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="va">bias</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="kw">else</span> <span class="op">{</span></span>
+<span>      <span class="va">bias</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>    <span class="op">}</span></span>
 <span>  <span class="op">}</span></span>
-<span>  <span class="co"># bias</span></span>
-<span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">LR</span> <span class="op">==</span> <span class="st">"L"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># bias value</span></span>
+<span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pi</span><span class="op">)</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">LR</span> <span class="op">==</span> <span class="st">"L"</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">bias</span> <span class="op">&lt;-</span> <span class="va">pi</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">L_pick</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">L_pick</span> <span class="op">+</span> <span class="fl">1e-10</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
-<span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">LR</span> <span class="op">==</span> <span class="st">"R"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pi</span><span class="op">)</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">LR</span> <span class="op">==</span> <span class="st">"R"</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">bias</span> <span class="op">&lt;-</span> <span class="va">pi</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">R_pick</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">R_pick</span> <span class="op">+</span> <span class="fl">1e-10</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span>  <span class="co"># error</span></span>

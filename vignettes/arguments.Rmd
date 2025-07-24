@@ -6,34 +6,13 @@ vignette: >
   %\VignetteIndexEntry{Arguments}
   %\VignetteEngine{knitr::rmarkdown}
 ---
-# Arguments
-## Paralell
-```{r eval=FALSE}
-binaryRL::rcv_d(
-  ...,
-  funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
-  nc = 4,
-  ...
-)
-
-binaryRL::fit_p(
-  ...,
-  funcs = c("my_util_func", "my_rate_func", "my_expl_func", "my_prob_func"),
-  nc = 4,
-  ...
-)
-```
-Both `rcv_d` and `fit_p` support parallel computation, meaning they can fit multiple participants' datasets simultaneously as long as `nc > 1`.  
-Since parallel execution runs in a separate environment, if you have customized any of the four core functions, you must explicitly pass the function names to `binaryRL` via the `funcs` argument.
-
-<!---------------------------------------------------------->
-
 ## Value Function
 
-### Utility Function
+### Utility Function  
+
 The subjective value of objective rewards is a topic that requires discussion, as different scholars may have different perspectives. This can be traced back to the **Stevens's Power Law**. In this model, you can customize your utility function. By default, I use a power function based on Stevens' power law to model the relationship between subjective and objective value.
 
-According to **Kahneman's Prospect Theory**, individuals exhibit distinct utility functions for **gains** and **losses**. Referencing Nilsson et al. (2012), we have implemented the model below.
+According to **Kahneman's Prospect Theory**, individuals exhibit distinct utility functions for **gains** and **losses**. Referencing Nilsson et al. (2012), we have implemented the model below.  
 
 ```{r eval=FALSE}
 func_gamma <- function(
@@ -103,17 +82,19 @@ Palminteri, S., & Lebreton, M. (2022). The computational roots of positivity and
 
 **Reference**  
 
-Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
+Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* (2nd ed). MIT press.  
 
 ### Initial Value
-> "Initial action values can also be used as a simple way to encourage exploration. Suppose that instead of setting the initial action values to zero, as we did in the 10-armed testbed, we set them all to +5. Recall that the $q_{*}(a)$ in this problem are selected from a normal distribution with mean 0 and variance 1. An initial estimate of +5 is thus wildly optimistic. But this optimism encourages action-value methods to explore."
+
+> "Initial action values can also be used as a simple way to encourage exploration. Suppose that instead of setting the initial action values to zero, as we did in the 10-armed testbed, we set them all to +5. Recall that the $q_{*}(a)$ in this problem are selected from a normal distribution with mean 0 and variance 1. An initial estimate of +5 is thus wildly optimistic. But this optimism encourages action-value methods to explore."  
 
 **Reference**  
 
-Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
+Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* (2nd ed). MIT press.  
 
-### Exploration Strategy
-Participants in the experiment may not always choose based on the value of the options, but instead select randomly on some trials. This is known as exploration strategy. You can implement an $\epsilon$-first model by setting the `threshold` parameter in the `run_m`. For instance, if the threshold is set to `threshold = 20` (The default value is set to 1), it means that participants will choose completely randomly until trial number 20, after which their choices will be based on value. 
+### Epsilon Related
+
+Participants in the experiment may not always choose based on the value of the options, but instead select randomly on some trials. This is known as exploration strategy. You can implement an $\epsilon$-first model by setting the `threshold` parameter in the `run_m`. For instance, if the threshold is set to `threshold = 20` (The default value is set to 1), it means that participants will choose completely randomly until trial number 20, after which their choices will be based on value.  
 
 ```{r eval=FALSE}
 # epsilon-first
@@ -126,7 +107,7 @@ run_m(
 )
 ```
 
-The $\epsilon$-greedy strategy is commonly employed in reinforcement learning models. With this approach (`epsilon = 0.1`), the participant has a 10% probability of randomly selecting an option and a 90% probability of choosing based on the currently learned value of the options.
+The $\epsilon$-greedy strategy is commonly employed in reinforcement learning models. With this approach (`epsilon = 0.1`), the participant has a 10% probability of randomly selecting an option and a 90% probability of choosing based on the currently learned value of the options.  
 
 ```{r eval=FALSE}
 # epsilon-greedy
@@ -139,7 +120,7 @@ run_m(
 )
 ```
 
-You can also create an $\epsilon$-decreasing exploration strategy by setting `lambda` instead of `epsilon`. In this model, the probability of participants choosing randomly will decrease as the trial number increases.
+You can also create an $\epsilon$-decreasing exploration strategy by setting `lambda` instead of `epsilon`. In this model, the probability of participants choosing randomly will decrease as the trial number increases.  
 
 ```{r eval=FALSE}
 # epsilon-decreasing
@@ -158,7 +139,8 @@ Namiki, N., Oyo, K., & Takahashi, T. (2014, December). How do humans handle the 
 <!---------------------------------------------------------->
 
 ### Upper-Confidence-Bound
-The $\pi$ parameter in Upper-Confidence-Bound (UCB) Action Selection, which is c in the book, is a parameter used to control the ratio of the bias value given to less-selected options. A larger value of this parameter will assign a greater bias to options that have been chosen infrequently. This value is set to 0.001 by default(100 bias to the unchosen option), ensuring that the model does not completely ignore any option. Once an option has been selected once, the adjustment to its value bias approaches almost zero. If the rewards in your experiment are very small or very large, you should adjust this value accordingly.
+
+The $\pi$ parameter in Upper-Confidence-Bound (UCB) Action Selection, which is `c` in the book, is a parameter used to control the ratio of the bias value given to less-selected options. A larger value of this parameter will assign a greater bias to options that have been chosen infrequently. This value defaults to `NA`, ensuring each option is selected at least once. Once an option has been chosen, its bias will be set to zero. If $\pi$ is very small, for example 0.001, the effect is almost the same.  
 
 ```{r eval=FALSE}
 run_m(
@@ -170,14 +152,17 @@ run_m(
 
 **Reference**  
 
-Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
+Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* (2nd ed). MIT press.  
 
 ### Soft-Max Function
-> "In this section we consider learning a numerical preference for each action *a*, which we denote $H_t(a) \in \mathbb{R}$. The larger the preference, the more often that action is taken, but the preference has no interpretation in terms of reward." 
 
-In many reinforcement learning models, softmax is used to represent the exploration-exploitation trade-off, rather than the three methods mentioned above. However, we still recommend retaining the default value of `pi = 0.001` for parameters related to `bias_func` to ensure that each option is selected at least once.  
+> "With continuous policy parameterization the action probabilities change smoothly as a function of the learned parameter, whereas in $\epsilon$-greedy selection the action probabilities may change dramatically for an arbitrarily small change in the estimated action values, if that change results in a different action having the maximal value."  
 
-Additionally, when using the `binaryRL::rcv_d()` function, please note the following two points. During the recovery process, the **last** element of both `simulate_lower` and `simulate_upper` corresponds to the $\tau$ parameter used in the softmax function.
+In many reinforcement learning models, softmax is used to represent the exploration-exploitation trade-off, rather than the three methods mentioned above.  
+
+> "In this section we consider learning a numerical preference for each action *a*, which we denote $H_t(a) \in \mathbb{R}$. The larger the preference, the more often that action is taken, but the preference has no interpretation in terms of reward."  
+
+Additionally, when using the `rcv_d()` function, please note the following two points. During the recovery process, the **last** element of both `simulate_lower` and `simulate_upper` corresponds to the $\tau$ parameter used in the softmax function.
 
 - `simulate_lower` represents a fixed positive increment applied to all $\tau$ values.   
 if this value is set to 1, it means that 1 is added to every $\tau$ during simulation.
@@ -197,7 +182,7 @@ binaryRL::rcv_d(
 
 **Reference**  
 
-Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2nd ed). Cambridge: MIT press.  
+Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* (2nd ed). MIT press.  
 
 Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547
 

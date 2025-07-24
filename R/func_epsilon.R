@@ -1,17 +1,17 @@
-#' Function: Exploration Strategy
+#' Function: Epsilon Related
 #'
 #' @description
 #' The exploration strategy parameters are 
 #'  \code{threshold}, \code{epsilon}, and \code{lambda}.
 #' 
 #'   \itemize{
-#'     \item \strong{Epsilon-first strategy:} Used when only \code{threshold} is set. 
+#'     \item \strong{Epsilon-first:} Used when only \code{threshold} is set. 
 #'       Subjects choose randomly for trials less than \code{threshold} and by value 
 #'       for trials greater than `\code{threshold}.
-#'     \item \strong{Epsilon-greedy strategy:} Used if \code{threshold} is default 
+#'     \item \strong{Epsilon-greedy:} Used if \code{threshold} is default 
 #'       (1) and \code{epsilon} is set. Subjects explore with probability 
 #'       \code{epsilon} throughout the experiment.
-#'     \item \strong{Epsilon-decreasing strategy:} Used if \code{threshold} is 
+#'     \item \strong{Epsilon-decreasing:} Used if \code{threshold} is 
 #'       default (1), and \code{lambda} is set. In this strategy, the probability of 
 #'       random choice (exploration) decreases as trials increase. The 
 #'       parameter \code{lambda} controls the rate at which this probability 
@@ -20,8 +20,8 @@
 #' 
 #' @note 
 #' When customizing these functions, please ensure that you do not modify 
-#'  the arguments. Instead, only modify the `if-else` statements or the internal 
-#'  logic to adapt the function to your needs.
+#'  the arguments. Instead, only modify the \code{if-else} statements or 
+#'  the internal logic to adapt the function to your needs.
 #'  
 #' @param i 
 #' The current row number.
@@ -65,7 +65,7 @@
 #'  choices, as they haven't yet learned the options' values. For example,
 #'  \code{threshold = 20} means random choices for the first 20 trials.
 #'  For \strong{epsilon-greedy} or \strong{epsilon-decreasing} strategies,
-#'  `threshold` should be kept at its default value.
+#'  \code{threshold} should be kept at its default value.
 #'  
 #'  \deqn{
 #'  P(x) = 
@@ -83,10 +83,10 @@
 #' A parameter used in the \strong{epsilon-greedy} exploration strategy. It 
 #'  defines the probability of making a completely random choice, as opposed 
 #'  to choosing based on the relative values of the left and right options. 
-#'  For example, if `epsilon = 0.1`, the subject has a 10% chance of random 
+#'  For example, if \code{epsilon = 0.1}, the subject has a 10% chance of random 
 #'  choice and a 90% chance of value-based choice. This parameter is only 
-#'  relevant when `threshold` is at its default value (1) and `lambda` is not 
-#'  set.
+#'  relevant when \code{threshold} is at its default value (1) and 
+#'  \code{lambda} is not set.
 #'  
 #'  \deqn{P(x) = \begin{cases}
 #'    \epsilon, & x=1 \text{ (random choosing)} \\
@@ -97,7 +97,7 @@
 #' 
 #' @param lambda [vector] 
 #' A numeric value that controls the decay rate of exploration probability
-#'  in the \strong{epsilon-decreasing} strategy. A higher `lambda` value
+#'  in the \strong{epsilon-decreasing} strategy. A higher \code{lambda} value
 #'  means the probability of random choice will decrease more rapidly
 #'  as the number of trials increases.
 #'  

@@ -85,40 +85,11 @@
     
     
 <div class="section level2">
-<h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a>
+<h2 id="value-function">Value Function<a class="anchor" aria-label="anchor" href="#value-function"></a>
 </h2>
 <div class="section level3">
-<h3 id="paralell">Paralell<a class="anchor" aria-label="anchor" href="#paralell"></a>
+<h3 id="utility-function">Utility Function<a class="anchor" aria-label="anchor" href="#utility-function"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../reference/rcv_d.html">rcv_d</a></span><span class="op">(</span></span>
-<span>  <span class="va">...</span>,</span>
-<span>  funcs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"my_util_func"</span>, <span class="st">"my_rate_func"</span>, <span class="st">"my_expl_func"</span>, <span class="st">"my_prob_func"</span><span class="op">)</span>,</span>
-<span>  nc <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../reference/fit_p.html">fit_p</a></span><span class="op">(</span></span>
-<span>  <span class="va">...</span>,</span>
-<span>  funcs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"my_util_func"</span>, <span class="st">"my_rate_func"</span>, <span class="st">"my_expl_func"</span>, <span class="st">"my_prob_func"</span><span class="op">)</span>,</span>
-<span>  nc <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>Both <code>rcv_d</code> and <code>fit_p</code> support parallel
-computation, meaning they can fit multiple participants’ datasets
-simultaneously as long as <code>nc &gt; 1</code>.<br>
-Since parallel execution runs in a separate environment, if you have
-customized any of the four core functions, you must explicitly pass the
-function names to <code>binaryRL</code> via the <code>funcs</code>
-argument.</p>
-<!---------------------------------------------------------->
-</div>
-<div class="section level3">
-<h3 id="value-function">Value Function<a class="anchor" aria-label="anchor" href="#value-function"></a>
-</h3>
-<div class="section level4">
-<h4 id="utility-function">Utility Function<a class="anchor" aria-label="anchor" href="#utility-function"></a>
-</h4>
 <p>The subjective value of objective rewards is a topic that requires
 discussion, as different scholars may have different perspectives. This
 can be traced back to the <strong>Stevens’s Power Law</strong>. In this
@@ -129,7 +100,7 @@ between subjective and objective value.</p>
 exhibit distinct utility functions for <strong>gains</strong> and
 <strong>losses</strong>. Referencing Nilsson et al. (2012), we have
 implemented the model below.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">func_gamma</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span></span>
 <span>  <span class="va">i</span>, <span class="va">L_freq</span>, <span class="va">R_freq</span>, <span class="va">L_pick</span>, <span class="va">R_pick</span>, <span class="va">L_value</span>, <span class="va">R_value</span>, <span class="va">var1</span> <span class="op">=</span> <span class="cn">NA</span>, <span class="va">var2</span> <span class="op">=</span> <span class="cn">NA</span>,  </span>
 <span>  <span class="va">value</span>, <span class="va">utility</span>, <span class="va">reward</span>, <span class="va">occurrence</span>,</span>
@@ -167,9 +138,9 @@ Hierarchical Bayesian parameter estimation for cumulative prospect
 theory. <em>Journal of Mathematical Psychology, 55</em>(1), 84-93. <a href="https://doi.org/10.1016/j.jmp.2010.08.006" class="external-link uri">https://doi.org/10.1016/j.jmp.2010.08.006</a></p>
 <!---------------------------------------------------------->
 </div>
-<div class="section level4">
-<h4 id="learning-rate">Learning Rate<a class="anchor" aria-label="anchor" href="#learning-rate"></a>
-</h4>
+<div class="section level3">
+<h3 id="learning-rate">Learning Rate<a class="anchor" aria-label="anchor" href="#learning-rate"></a>
+</h3>
 <p>In <code>run_m</code>, there is an argument called
 <code>initial_value</code>. Considering that the initial value has a
 significant impact on the parameter estimation of the <strong>learning
@@ -185,7 +156,7 @@ bias or even reported a negativity bias (<span class="math inline">\(\alpha_{+} 
 “Because Q-values initialization markedly affect learning rate and
 learning bias estimates.”</p>
 </blockquote>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
 <span>  <span class="va">...</span>,</span>
 <span>  initial_value <span class="op">=</span> <span class="cn">NA</span>,</span>
@@ -197,9 +168,9 @@ positivity and confirmation biases in reinforcement learning. <em>Trends
 in Cognitive Sciences, 26</em>(7), 607-621. <a href="https://doi.org/10.1016/j.tics.2022.04.005" class="external-link uri">https://doi.org/10.1016/j.tics.2022.04.005</a></p>
 </div>
 </div>
-<div class="section level3">
-<h3 id="explorationexploitation-trade-off">Exploration–Exploitation Trade-off<a class="anchor" aria-label="anchor" href="#explorationexploitation-trade-off"></a>
-</h3>
+<div class="section level2">
+<h2 id="explorationexploitation-trade-off">Exploration–Exploitation Trade-off<a class="anchor" aria-label="anchor" href="#explorationexploitation-trade-off"></a>
+</h2>
 <blockquote>
 <p>“The ε-greedy methods choose randomly a small fraction of the time,
 whereas UCB methods choose deterministically but achieve exploration by
@@ -213,11 +184,11 @@ explore significantly.”</p>
 <p align="center">
 <img src="fig/rl_EE_tradeoff.png" alt="RL Process" width="80%" style="display: inline;"></p>
 <p><strong>Reference</strong></p>
-<p>Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement Learning: An
-Introduction (2nd ed). Cambridge: MIT press.</p>
-<div class="section level4">
-<h4 id="initial-value">Initial Value<a class="anchor" aria-label="anchor" href="#initial-value"></a>
-</h4>
+<p>Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement Learning:
+An Introduction</em> (2nd ed). MIT press.</p>
+<div class="section level3">
+<h3 id="initial-value">Initial Value<a class="anchor" aria-label="anchor" href="#initial-value"></a>
+</h3>
 <blockquote>
 <p>“Initial action values can also be used as a simple way to encourage
 exploration. Suppose that instead of setting the initial action values
@@ -228,12 +199,12 @@ problem are selected from a normal distribution with mean 0 and variance
 optimism encourages action-value methods to explore.”</p>
 </blockquote>
 <p><strong>Reference</strong></p>
-<p>Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement Learning: An
-Introduction (2nd ed). Cambridge: MIT press.</p>
+<p>Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement Learning:
+An Introduction</em> (2nd ed). MIT press.</p>
 </div>
-<div class="section level4">
-<h4 id="exploration-strategy">Exploration Strategy<a class="anchor" aria-label="anchor" href="#exploration-strategy"></a>
-</h4>
+<div class="section level3">
+<h3 id="epsilon-related">Epsilon Related<a class="anchor" aria-label="anchor" href="#epsilon-related"></a>
+</h3>
 <p>Participants in the experiment may not always choose based on the
 value of the options, but instead select randomly on some trials. This
 is known as exploration strategy. You can implement an <span class="math inline">\(\epsilon\)</span>-first model by setting the
@@ -242,39 +213,39 @@ instance, if the threshold is set to <code>threshold = 20</code> (The
 default value is set to 1), it means that participants will choose
 completely randomly until trial number 20, after which their choices
 will be based on value.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># epsilon-first</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  ...</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="dv">20</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="cn">NA</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="cn">NA</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  ...</span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># epsilon-first</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  ...</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="dv">20</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="cn">NA</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="cn">NA</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  ...</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>)</span></code></pre></div>
 <p>The <span class="math inline">\(\epsilon\)</span>-greedy strategy is
 commonly employed in reinforcement learning models. With this approach
 (<code>epsilon = 0.1</code>), the participant has a 10% probability of
 randomly selecting an option and a 90% probability of choosing based on
 the currently learned value of the options.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># epsilon-greedy</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  ...</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="dv">1</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="fl">0.1</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="cn">NA</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  ...</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># epsilon-greedy</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  ...</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="dv">1</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="fl">0.1</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="cn">NA</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  ...</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>)</span></code></pre></div>
 <p>You can also create an <span class="math inline">\(\epsilon\)</span>-decreasing exploration strategy
 by setting <code>lambda</code> instead of <code>epsilon</code>. In this
 model, the probability of participants choosing randomly will decrease
 as the trial number increases.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># epsilon-decreasing</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  ...</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="dv">1</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="cn">NA</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="fl">0.1</span></span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  ...</span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># epsilon-decreasing</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  ...</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="dv">1</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="cn">NA</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="fl">0.1</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  ...</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>Reference</strong></p>
 <p>Namiki, N., Oyo, K., &amp; Takahashi, T. (2014, December). How do
 humans handle the dilemma of exploration and exploitation in sequential
@@ -282,31 +253,40 @@ decision making?. In Proceedings of the 8th International Conference on
 Bioinspired Information and Communications Technologies (pp. 113-117).
 <a href="https://doi.org/10.4108/icst.bict.2014.258045" class="external-link uri">https://doi.org/10.4108/icst.bict.2014.258045</a><br><!----------------------------------------------------------></p>
 </div>
-<div class="section level4">
-<h4 id="upper-confidence-bound">Upper-Confidence-Bound<a class="anchor" aria-label="anchor" href="#upper-confidence-bound"></a>
-</h4>
+<div class="section level3">
+<h3 id="upper-confidence-bound">Upper-Confidence-Bound<a class="anchor" aria-label="anchor" href="#upper-confidence-bound"></a>
+</h3>
 <p>The <span class="math inline">\(\pi\)</span> parameter in
-Upper-Confidence-Bound (UCB) Action Selection, which is c in the book,
-is a parameter used to control the ratio of the bias value given to
-less-selected options. A larger value of this parameter will assign a
-greater bias to options that have been chosen infrequently. This value
-is set to 0.001 by default(100 bias to the unchosen option), ensuring
-that the model does not completely ignore any option. Once an option has
-been selected once, the adjustment to its value bias approaches almost
-zero. If the rewards in your experiment are very small or very large,
-you should adjust this value accordingly.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">run_m</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  ...</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">pi =</span> <span class="fl">0.1</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  ...</span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>)</span></code></pre></div>
+Upper-Confidence-Bound (UCB) Action Selection, which is <code>c</code>
+in the book, is a parameter used to control the ratio of the bias value
+given to less-selected options. A larger value of this parameter will
+assign a greater bias to options that have been chosen infrequently.
+This value defaults to <code>NA</code>, ensuring each option is selected
+at least once. Once an option has been chosen, its bias will be set to
+zero. If <span class="math inline">\(\pi\)</span> is very small, for
+example 0.001, the effect is almost the same.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">run_m</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  ...</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">pi =</span> <span class="fl">0.1</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  ...</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>Reference</strong></p>
-<p>Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement Learning: An
-Introduction (2nd ed). Cambridge: MIT press.</p>
+<p>Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement Learning:
+An Introduction</em> (2nd ed). MIT press.</p>
 </div>
-<div class="section level4">
-<h4 id="soft-max-function">Soft-Max Function<a class="anchor" aria-label="anchor" href="#soft-max-function"></a>
-</h4>
+<div class="section level3">
+<h3 id="soft-max-function">Soft-Max Function<a class="anchor" aria-label="anchor" href="#soft-max-function"></a>
+</h3>
+<blockquote>
+<p>“With continuous policy parameterization the action probabilities
+change smoothly as a function of the learned parameter, whereas in <span class="math inline">\(\epsilon\)</span>-greedy selection the action
+probabilities may change dramatically for an arbitrarily small change in
+the estimated action values, if that change results in a different
+action having the maximal value.”</p>
+</blockquote>
+<p>In many reinforcement learning models, softmax is used to represent
+the exploration-exploitation trade-off, rather than the three methods
+mentioned above.</p>
 <blockquote>
 <p>“In this section we consider learning a numerical preference for each
 action <em>a</em>, which we denote <span class="math inline">\(H_t(a)
@@ -314,14 +294,8 @@ action <em>a</em>, which we denote <span class="math inline">\(H_t(a)
 action is taken, but the preference has no interpretation in terms of
 reward.”</p>
 </blockquote>
-<p>In many reinforcement learning models, softmax is used to represent
-the exploration-exploitation trade-off, rather than the three methods
-mentioned above. However, we still recommend retaining the default value
-of <code>pi = 0.001</code> for parameters related to
-<code>bias_func</code> to ensure that each option is selected at least
-once.</p>
-<p>Additionally, when using the <code><a href="../reference/rcv_d.html">binaryRL::rcv_d()</a></code> function,
-please note the following two points. During the recovery process, the
+<p>Additionally, when using the <code><a href="../reference/rcv_d.html">rcv_d()</a></code> function, please
+note the following two points. During the recovery process, the
 <strong>last</strong> element of both <code>simulate_lower</code> and
 <code>simulate_upper</code> corresponds to the <span class="math inline">\(\tau\)</span> parameter used in the softmax
 function.</p>
@@ -334,26 +308,26 @@ exponential distribution from which <span class="math inline">\(\tau\)</span> is
 if this value is 1, then <span class="math inline">\(\tau\)</span> is
 drawn from an exponential distribution with a rate of 10, i.e., <span class="math inline">\(\tau \sim \text{Exp}(1)\)</span>.</p></li>
 </ul>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>binaryRL<span class="sc">::</span><span class="fu">rcv_d</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  ...</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">simulate_lower =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>)),</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">simulate_upper =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)),</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  ...</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>binaryRL<span class="sc">::</span><span class="fu">rcv_d</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  ...</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">simulate_lower =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>)),</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">simulate_upper =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)),</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  ...</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>Reference</strong></p>
-<p>Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement Learning: An
-Introduction (2nd ed). Cambridge: MIT press.</p>
+<p>Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement Learning:
+An Introduction</em> (2nd ed). MIT press.</p>
 <p>Wilson, R. C., &amp; Collins, A. G. (2019). Ten simple rules for the
 computational modeling of behavioral data. <em>Elife</em>, 8, e49547. <a href="https://doi.org/10.7554/eLife.49547" class="external-link uri">https://doi.org/10.7554/eLife.49547</a></p>
 <!---------------------------------------------------------->
 </div>
 </div>
+<div class="section level2">
+<h2 id="model-fit">Model Fit<a class="anchor" aria-label="anchor" href="#model-fit"></a>
+</h2>
 <div class="section level3">
-<h3 id="model-fit">Model Fit<a class="anchor" aria-label="anchor" href="#model-fit"></a>
+<h3 id="loss-function">Loss Function<a class="anchor" aria-label="anchor" href="#loss-function"></a>
 </h3>
-<div class="section level4">
-<h4 id="loss-function">Loss Function<a class="anchor" aria-label="anchor" href="#loss-function"></a>
-</h4>
 <p>The primary aim of <code>binaryRL</code> is to enable reinforcement
 learning models to exhibit behaviors similar to human subjects. While
 there are various ways to formulate <strong>loss functions</strong>, the
@@ -376,9 +350,9 @@ role of the ventromedial prefrontal cortex in abstract state-based
 inference during decision making in humans. <em>Journal of Neuroscience,
 26</em>(32), 8360-8367. <a href="https://doi.org/10.1523/JNEUROSCI.1010-06.2006" class="external-link uri">https://doi.org/10.1523/JNEUROSCI.1010-06.2006</a></p>
 </div>
-<div class="section level4">
-<h4 id="aic-bic">AIC &amp; BIC<a class="anchor" aria-label="anchor" href="#aic-bic"></a>
-</h4>
+<div class="section level3">
+<h3 id="aic-bic">AIC &amp; BIC<a class="anchor" aria-label="anchor" href="#aic-bic"></a>
+</h3>
 <p>Additionally, the program also calculates AIC and BIC based on the
 Log-Likelihood, number of parameters, and number of trials to penalize
 overly complex models.</p>
@@ -393,7 +367,6 @@ BIC =  - 2 LL + k \times \log n
 <em>IEEE Transactions on Automatic Control, AC- 19</em>, 716-723. <a href="http://dx.doi.org/10.1109/TAC.1974.1100705" class="external-link uri">http://dx.doi.org/10.1109/TAC.1974.1100705</a></p>
 <p>Schwarz, G. (1978) Estimating the Dimension of a Model. <em>Annals of
 Statistics, 6</em>, 461-464. <a href="http://dx.doi.org/10.1214/aos/1176344136" class="external-link uri">http://dx.doi.org/10.1214/aos/1176344136</a></p>
-</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -57,7 +57,7 @@ Column name of extra variable 2. If one additional variable, var1, does not
 If the choice was based on value, the value is 0.}
 
 \item{tau}{[vector] 
-Parameters used in the Soft-Max Function. `prob_func` representing the 
+Parameters used in the Soft-Max Function. \code{prob_func} representing the 
  sensitivity of the subject to the value difference when making decisions. 
  It determines the probability of selecting the left option versus the right 
  option based on their values. A larger value of tau indicates greater 
@@ -91,8 +91,8 @@ The softmax function describes a probabilistic choice rule. It implies
 }
 \note{
 When customizing these functions, please ensure that you do not modify 
- the arguments. Instead, only modify the `if-else` statements or the internal 
- logic to adapt the function to your needs.
+ the arguments. Instead, only modify the \code{if-else} statements or 
+ the internal logic to adapt the function to your needs.
 }
 \examples{
 \dontrun{

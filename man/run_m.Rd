@@ -20,7 +20,7 @@ run_m(
   eta,
   epsilon = NA,
   lambda = NA,
-  pi = 0.001,
+  pi = NA,
   tau = 1,
   util_func = func_gamma,
   rate_func = func_eta,
@@ -102,7 +102,7 @@ Controls the initial exploration phase in the \strong{epsilon-first} strategy.
  choices, as they haven't yet learned the options' values. For example,
  \code{threshold = 20} means random choices for the first 20 trials.
  For \strong{epsilon-greedy} or \strong{epsilon-decreasing} strategies,
- `threshold` should be kept at its default value.
+ \code{threshold} should be kept at its default value.
  
  \deqn{P(x) = \begin{cases}
    \text{trial} \le \text{threshold}, & x=1 \text{ (random choosing)} \\
@@ -120,7 +120,8 @@ Extra parameters that may be used in functions.}
 Extra parameters that may be used in functions.}
 
 \item{gamma}{[vector]
-This parameter represents the exponent in utility functions, specifically:
+This parameter represents the exponent in utility functions, \code{util_func}, 
+ specifically:
  \itemize{
    \item \strong{Stevens' Power Law}:
    Utility is modeled as:
@@ -156,14 +157,14 @@ Parameters used in the Learning Rate Function, \code{rate_func}, representing
  
  \code{RSTD: eta = c(0.3, 0.7)}}
 
-\item{epsilon}{[vector]
+\item{epsilon}{[numeric]
 A parameter used in the \strong{epsilon-greedy} exploration strategy. It 
  defines the probability of making a completely random choice, as opposed 
  to choosing based on the relative values of the left and right options. 
- For example, if `epsilon = 0.1`, the subject has a 10% chance of random 
+ For example, if \code{epsilon = 0.1}, the subject has a 10% chance of random 
  choice and a 90% chance of value-based choice. This parameter is only 
- relevant when `threshold` is at its default value (1) and `lambda` is not 
- set.
+ relevant when \code{threshold} is at its default value (1) and 
+ \code{lambda} is not set.
  
  \deqn{P(x) = \begin{cases}
    \epsilon, & x=1 \text{ (random choosing)} \\
@@ -174,7 +175,7 @@ A parameter used in the \strong{epsilon-greedy} exploration strategy. It
 
 \item{lambda}{[vector] 
 A numeric value that controls the decay rate of exploration probability
- in the \strong{epsilon-decreasing} strategy. A higher `lambda` value
+ in the \strong{epsilon-decreasing} strategy. A higher \code{lambda} value
  means the probability of random choice will decrease more rapidly
  as the number of trials increases.
  
@@ -187,7 +188,7 @@ A numeric value that controls the decay rate of exploration probability
 
 \item{pi}{[vector]
 Parameter used in the Upper-Confidence-Bound (UCB) action selection
- formula. `bias_func` controls the degree of exploration by scaling the 
+ formula. \code{bias_func} controls the degree of exploration by scaling the 
  uncertainty bonus given to less-explored options. A larger value of 
  \code{pi} (denoted as \code{c} in Sutton and Barto(1998) ) increases the 
  influence of this bonus, leading to more exploration of actions with 
@@ -198,10 +199,10 @@ Parameter used in the Upper-Confidence-Bound (UCB) action selection
   A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}} \right]
 }
 
-\code{default: pi = 0.001}}
+\code{default: pi = NA}}
 
 \item{tau}{[vector] 
-Parameters used in the Soft-Max Function. `prob_func` representing the 
+Parameters used in the Soft-Max Function. \code{prob_func} representing the 
  sensitivity of the subject to the value difference when making decisions. 
  It determines the probability of selecting the left option versus the right 
  option based on their values. A larger value of tau indicates greater 
@@ -213,17 +214,23 @@ Parameters used in the Soft-Max Function. `prob_func` representing the
 
  \code{e.g., tau = c(0.5)}}
 
-\item{util_func}{[function] Utility Function see \code{\link[binaryRL]{func_gamma}}.}
+\item{util_func}{[function] 
+Utility Function see \code{\link[binaryRL]{func_gamma}}.}
 
-\item{rate_func}{[function] Learning Rate Function see \code{\link[binaryRL]{func_eta}}.}
+\item{rate_func}{[function] 
+Learning Rate Function see \code{\link[binaryRL]{func_eta}}.}
 
-\item{expl_func}{[function] Exploration Strategy Function see \code{\link[binaryRL]{func_epsilon}}.}
+\item{expl_func}{[function] 
+Exploration Strategy Function see \code{\link[binaryRL]{func_epsilon}}.}
 
-\item{bias_func}{[function] Upper-Confidence-Bound see \code{\link[binaryRL]{func_pi}}.}
+\item{bias_func}{[function] 
+Upper-Confidence-Bound see \code{\link[binaryRL]{func_pi}}.}
 
-\item{prob_func}{[function] Soft-Max Function see \code{\link[binaryRL]{func_tau}}.}
+\item{prob_func}{[function] 
+Soft-Max Function see \code{\link[binaryRL]{func_tau}}.}
 
-\item{loss_func}{[function] Loss Function see \code{\link[binaryRL]{func_logl}}.}
+\item{loss_func}{[function] 
+Loss Function see \code{\link[binaryRL]{func_logl}}.}
 
 \item{sub}{[character] column name of subject ID
 
@@ -268,8 +275,8 @@ Column name of choices made by the model, which you could ignore.
  \code{default: rob_choose = "Rob_Choose"}}
 
 \item{raw_cols}{[vector] 
-Defaults to `NULL`. If left as `NULL`, it will directly capture all column 
- names from the raw data.}
+Defaults to \code{NULL}. If left as \code{NULL}, it will directly capture 
+ all column names from the raw data.}
 
 \item{var1}{[character] 
 Column name of extra variable 1. If your model uses more than just reward 
