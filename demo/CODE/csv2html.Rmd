@@ -4,6 +4,7 @@ author: "yuki"
 date: "2025-06-24"
 output: html_document
 ---
+
 ```{r setup}
 df_to_html <- function(
     input_data,
