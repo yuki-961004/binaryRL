@@ -121,13 +121,13 @@ func_tau <- function(
 ############################ [ at least 1 ] #################################
   if (is.na(x = pi)) {
     if (L_pick == 0 & R_pick == 0) {
-      bias <- 100
+      bias <- 0
     }
     else if (LR == "L" & L_pick == 0 & R_pick > 0) {
-      bias <- 100
+      bias <- Inf
     }
     else if (LR == "R" & R_pick == 0 & L_pick > 0) {
-      bias <- 100
+      bias <- Inf
     }
     else {
       bias <- 0

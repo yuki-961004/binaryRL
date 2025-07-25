@@ -20,19 +20,24 @@ add_NA <- function(data){
   # 在第一行插入一个空行
   data <- rbind(empty_row, data)
   
-  data$Try <- NA
-  
   data$Rob_Choose <- NA
   
   data$ACC <- NA
   
-  data$L_logl <- NA
-  data$R_logl <- NA
+  data$L_value <- NA
+  data$R_value <- NA
+
+  data$L_bias <- NA
+  data$R_bias <- NA
+  
+  data$L_prob <- NA
+  data$R_prob <- NA
   
   data$L_dir <- NA
   data$R_dir <- NA
-  data$L_prob <- NA
-  data$R_prob <- NA
+  
+  data$L_logl <- NA
+  data$R_logl <- NA
   
   # 添加空列 action_c 相关
   data$L_freq <- NA
@@ -41,11 +46,7 @@ add_NA <- function(data){
   data$L_pick <- NA
   data$R_pick <- NA
   
-  data$L_value <- NA
-  data$R_value <- NA
-
-  data$L_bias <- NA
-  data$R_bias <- NA
+  data$Try <- NA
   
   # 添加空列 update_v 相关
   data$Occurrence <- NA

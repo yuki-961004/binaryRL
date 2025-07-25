@@ -51,7 +51,7 @@ summary.binaryRL <- function(object, ...) {
   }
   
   # UCB
-  if (is.na(pi)) {
+  if (is.na(pi) | pi == 0) {
     UCB <- "off"
   }
   else {
