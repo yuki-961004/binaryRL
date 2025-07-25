@@ -157,10 +157,10 @@ func_pi <- function(
       bias <- 0
     }
     else if (LR == "L" & L_pick == 0 & R_pick > 0) {
-      bias <- Inf
+      bias <- 1e+10
     }
     else if (LR == "R" & R_pick == 0 & L_pick > 0) {
-      bias <- Inf
+      bias <- 1e+10
     }
     else {
       bias <- 0
