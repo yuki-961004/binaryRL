@@ -77,8 +77,8 @@
 #' The number of times the same stimulus has been chosen.
 #' 
 #' @param gamma [vector]
-#' This parameter represents the exponent in utility functions, \code{util_func}, 
-#'  specifically:
+#' This parameter represents the exponent in utility functions, 
+#'  \code{fcun_gamma}, specifically:
 #'  \itemize{
 #'    \item \strong{Stevens' Power Law}:
 #'    Utility is modeled as:

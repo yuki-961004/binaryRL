@@ -47,21 +47,30 @@ Tools for building Rescorla-Wagner Models for Two-Alternative Forced Choice task
 \section{Functions}{
 
 \itemize{
-  \item \code{\link[binaryRL]{func_gamma}}: Utility Function
-  \item \code{\link[binaryRL]{func_eta}}: Learning Rate 
-  \item \code{\link[binaryRL]{func_epsilon}}: Epsilon Related
-  \item \code{\link[binaryRL]{func_pi}}: Upper-Confidence-Bound
-  \item \code{\link[binaryRL]{func_tau}}: Soft-Max
-  \item \code{\link[binaryRL]{func_logl}}: Loss Function
+  \item \code{\link[binaryRL]{func_gamma}}: 
+   Utility Function
+  \item \code{\link[binaryRL]{func_eta}}: 
+   Learning Rate
+  \item \code{\link[binaryRL]{func_epsilon}}: 
+   Epsilon Related
+  \item \code{\link[binaryRL]{func_pi}}: 
+   Upper-Confidence-Bound
+  \item \code{\link[binaryRL]{func_tau}}: 
+   Soft-Max
+  \item \code{\link[binaryRL]{func_logl}}: 
+   Loss Function
 }
 }
 
 \section{Processes}{
  
  \itemize{
-   \item \code{\link[binaryRL]{optimize_para}}: optimizing free parameters
-   \item \code{\link[binaryRL]{simulate_list}}: simulating fake datasets
-   \item \code{\link[binaryRL]{recovery_data}}: parameter and model recovery
+   \item \code{\link[binaryRL]{optimize_para}}: 
+     optimizing free parameters
+   \item \code{\link[binaryRL]{simulate_list}}: 
+     simulating fake datasets
+   \item \code{\link[binaryRL]{recovery_data}}: 
+     parameter and model recovery
 }
 }
 

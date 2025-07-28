@@ -147,13 +147,13 @@ For more information, please refer to the homepage of this package:
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>[data.frame]
-This data should include the following mandatory columns:</p><ul><li><p>"sub"</p></li>
-<li><p>"time_line" (e.g., "Block", "Trial")</p></li>
-<li><p>"L_choice"</p></li>
-<li><p>"R_choice"</p></li>
-<li><p>"L_reward"</p></li>
-<li><p>"R_reward"</p></li>
-<li><p>"sub_choose"</p></li>
+This data should include the following mandatory columns:</p><ul><li><p><code>sub</code> "Subject"</p></li>
+<li><p><code>time_line</code> "Block" "Trial"</p></li>
+<li><p><code>L_choice</code> "L_choice"</p></li>
+<li><p><code>R_choice</code> "R_choice"</p></li>
+<li><p><code>L_reward</code> "L_reward"</p></li>
+<li><p><code>R_reward</code> "R_reward"</p></li>
+<li><p><code>sub_choose</code> "Sub_Choose"</p></li>
 </ul></dd>
 
 
@@ -193,13 +193,14 @@ A character vector containing the names of all user-defined functions
  (i.e., `nc &gt; 1`), user-defined models and their custom functions might
  not be automatically accessible within the parallel environment.</p>
 <p>Therefore, if you have created your own reinforcement learning model
- that modifies the package's default four default functions
+ that modifies the package's default six default functions
  (default functions:
     <code>util_func = <a href="func_gamma.html">func_gamma</a></code>,
     <code>rate_func = <a href="func_eta.html">func_eta</a></code>,
-    <code>expl_func = <a href="func_epsilon.html">func_epsilon</a></code>
-    <code>bias_func = <a href="func_pi.html">func_pi</a></code>
-    <code>prob_func = <a href="func_tau.html">func_tau</a></code>
+    <code>expl_func = <a href="func_epsilon.html">func_epsilon</a></code>,
+    <code>bias_func = <a href="func_pi.html">func_pi</a></code>,
+    <code>prob_func = <a href="func_tau.html">func_tau</a></code>,
+    <code>loss_func = <a href="func_logl.html">func_logl</a></code>
  ),
  you must explicitly provide the names of your custom functions as a
  vector here.</p></dd>
@@ -235,7 +236,7 @@ This parameter corresponds to the <strong>population size</strong> in genetic
  algorithms (<code>GA</code>). It specifies the number of initial candidate
  solutions that the algorithm starts with for its evolutionary search.
  This parameter is only required for optimization algorithms that operate on
- a population, such as `GA` or `DEoptim`.</p>
+ a population, such as <code>GA</code> or <code>DEoptim</code>.</p>
 <p><code>default: initial_size = 50</code>.</p></dd>
 
 
@@ -258,11 +259,11 @@ Random seed. This ensures that the results are
 <dd><p>[integer]
 Number of cores to use for parallel processing. Since fitting
 optimal parameters for each subject is an independent task,
-parallel computation can significantly speed up the fitting process:</p><ul><li><p><strong>`nc = 1`</strong>: The fitting proceeds sequentially.
+parallel computation can significantly speed up the fitting process:</p><ul><li><p><strong>nc = 1</strong>: The fitting proceeds sequentially.
   Parameters for one subject are fitted completely before moving
   to the next subject.</p></li>
-<li><p><strong>`nc &gt; 1`</strong>: The fitting is performed in parallel
-  across subjects. For example, if `nc = 4`, the algorithm will
+<li><p><strong>nc &gt; 1</strong>: The fitting is performed in parallel
+  across subjects. For example, if <code>nc = 4</code>, the algorithm will
   simultaneously fit data for four subjects. Once these are complete,
   it will proceed to fit the next batch of subjects (e.g., subjects
   5-8), and so on, until all subjects are processed.</p></li>

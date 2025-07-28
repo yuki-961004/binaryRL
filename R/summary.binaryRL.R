@@ -67,7 +67,7 @@ summary.binaryRL <- function(object, ...) {
   }
   
   message(
-    "Results of ", object$name, " Model: ", 
+    "Results of ", object$name, " Model: ", "\n",
     "\n"
   )
   

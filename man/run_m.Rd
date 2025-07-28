@@ -51,9 +51,12 @@ The name of your RL model}
 This parameter controls the function's operational mode. It has three
  possible values, each typically associated with a specific function:
  \itemize{
-   \item \code{"simulate"}: Should be used when working with \code{rcv_d}.
-   \item \code{"fit"}: Should be used when working with \code{fit_p}.
-   \item \code{"replay"}: Should be used when working with \code{rpl_e}.
+   \item \code{"simulate"}: Should be used when working with 
+     \code{\link[binaryRL]{rcv_d}}.
+   \item \code{"fit"}: Should be used when working with 
+     \code{\link[binaryRL]{fit_p}}.
+   \item \code{"replay"}: Should be used when working with 
+     \code{\link[binaryRL]{rpl_e}}.
  }
  In most cases, you won't need to modify this parameter directly, as suitable
  default values are set for different contexts.}
@@ -61,13 +64,13 @@ This parameter controls the function's operational mode. It has three
 \item{data}{[data.frame] 
 This data should include the following mandatory columns: 
  \itemize{
-   \item "sub"
-   \item "time_line" (e.g., "Block", "Trial")
-   \item "L_choice"
-   \item "R_choice"
-   \item "L_reward"
-   \item "R_reward"
-   \item "sub_choose"
+   \item \code{sub} "Subject"
+   \item \code{time_line} "Block" "Trial"
+   \item \code{L_choice} "L_choice"
+   \item \code{R_choice} "R_choice"
+   \item \code{L_reward} "L_reward"
+   \item \code{R_reward} "R_reward"
+   \item \code{sub_choose} "Sub_Choose"
  }}
 
 \item{id}{[integer] 
@@ -120,25 +123,27 @@ Extra parameters that may be used in functions.}
 Extra parameters that may be used in functions.}
 
 \item{gamma}{[vector]
-This parameter represents the exponent in utility functions, \code{util_func}, 
- specifically:
+This parameter represents the exponent in utility functions, 
+ \code{util_func}, specifically:
  \itemize{
    \item \strong{Stevens' Power Law}:
    Utility is modeled as:
-   \deqn{U = {R}^{\gamma}}
+   \deqn{U(R) = {R}^{\gamma}}
 
    \item \strong{Kahneman's Prospect Theory}:
    This exponent is applied differently based on the sign of the reward:
-   \deqn{U = \begin{cases}
+   \deqn{U(R) = \begin{cases}
      R^{\gamma_{1}}, & R > 0 \\
      \beta \cdot R^{\gamma_{2}}, & R < 0
    \end{cases}}
  }}
 
 \item{eta}{[vector]
-Parameters used in the Learning Rate Function, \code{rate_func}, representing
- the rate at which the subject updates the difference (prediction error)
- between the reward and the expected value in the subject's mind.
+Parameters used in the Learning Rate Function, 
+ \code{rate_func}, 
+ representing the rate at which the subject updates the difference 
+ (prediction error) between the reward and the expected value in the 
+ subject's mind.
 
  The structure of \code{eta} depends on the model type:
  \itemize{
@@ -188,12 +193,12 @@ A numeric value that controls the decay rate of exploration probability
 
 \item{pi}{[vector]
 Parameter used in the Upper-Confidence-Bound (UCB) action selection
- formula. \code{bias_func} controls the degree of exploration by scaling the 
- uncertainty bonus given to less-explored options. A larger value of 
- \code{pi} (denoted as \code{c} in Sutton and Barto(1998) ) increases the 
- influence of this bonus, leading to more exploration of actions with 
- uncertain estimated values. Conversely, a smaller \code{pi} results in 
- less exploration.
+ formula. \code{bias_func} controls the degree of 
+ exploration by scaling the uncertainty bonus given to less-explored options. 
+ A larger value of \code{pi} (denoted as \code{c} in Sutton and Barto(1998) ) 
+ increases the influence of this bonus, leading to more exploration of 
+ actions with uncertain estimated values. Conversely, a smaller \code{pi} 
+ results in less exploration.
 
 \deqn{
   A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}} \right]
@@ -202,13 +207,13 @@ Parameter used in the Upper-Confidence-Bound (UCB) action selection
 \code{default: pi = NA}}
 
 \item{tau}{[vector] 
-Parameters used in the Soft-Max Function. \code{prob_func} representing the 
- sensitivity of the subject to the value difference when making decisions. 
- It determines the probability of selecting the left option versus the right 
- option based on their values. A larger value of tau indicates greater 
- sensitivity to the value difference between the options. In other words, 
- even a small difference in value will make the subject more likely to 
- choose the higher-value option. 
+Parameters used in the Soft-Max Function. \code{prob_func} 
+ representing the sensitivity of the subject to the value difference when 
+ making decisions. It determines the probability of selecting the left option 
+ versus the right option based on their values. A larger value of tau 
+ indicates greater sensitivity to the value difference between the options. 
+ In other words, even a small difference in value will make the subject more 
+ likely to choose the higher-value option. 
  
  \deqn{P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}} 
 
@@ -313,8 +318,9 @@ learning models.
 Items for model construction:
 \itemize{
   \item \strong{Data Input and Specification:} You must provide the raw
-    dataset for analysis. Crucially, you need to inform the \code{run_m}
-    function about the corresponding column names within your dataset
+    dataset for analysis. Crucially, you need to inform the 
+    \code{\link[binaryRL]{run_m}} function about the corresponding column 
+    names within your dataset
     (e.g., 
     \code{\link[binaryRL]{Mason_2024_Exp1}}, 
     \code{\link[binaryRL]{Mason_2024_Exp2}}
@@ -331,13 +337,13 @@ Items for model construction:
              By adjusting the number of \code{eta}, you can construct basic
              reinforcement learning models such as Temporal Difference (TD)
              and Risk Sensitive Temporal Difference (RSTD). 
-             You can also directly adjust \code{func_eta} to define your 
-             own custom learning rate function.
+             You can also directly adjust \code{\link[binaryRL]{func_eta}} to 
+             define your own custom learning rate function.
            \item \emph{Utility Function:} You can directly adjust the form 
-             of \code{func_gamma} to incorporate the principles of 
-             Kahneman's Prospect Theory. Currently, the built-in 
-             \code{func_gamma} only takes the form of a power function, 
-             consistent with Stevens' Power Law.
+             of \code{\link[binaryRL]{func_gamma}} to incorporate the 
+             principles of Kahneman's Prospect Theory. Currently, 
+             the built-in \code{\link[binaryRL]{func_gamma}} only takes the 
+             form of a power function, consistent with Stevens' Power Law.
          }
       \item \emph{Exploration–Exploitation Trade-off:} 
          \itemize{
@@ -360,11 +366,11 @@ Items for model construction:
     }
 
   \item \strong{Objective Function Format for Optimization:} Once your
-    model is defined in \code{run_m}, it must be structured as an objective
-    function that accepts \code{params} as input and returns a loss value 
-    (typically \code{logL}). This format ensures compatibility with the 
-    \pkg{algorithm} package, which uses it to estimate optimal parameters. 
-    For an example of a standard objective function format, see 
+    model is defined in \code{\link[binaryRL]{run_m}}, it must be structured 
+    as an objective function that accepts \code{params} as input and returns 
+    a loss value (typically \code{logL}). This format ensures compatibility 
+    with the \pkg{algorithm} package, which uses it to estimate optimal 
+    parameters. For an example of a standard objective function format, see 
     \code{\link[binaryRL]{TD}}, 
     \code{\link[binaryRL]{RSTD}}, 
     \code{\link[binaryRL]{Utility}}.

@@ -403,7 +403,7 @@ These basic models are built into the package. You can use them using `TD()`, `R
 
 #### 1. TD Model ($\eta$)
 
-> "The TD model is a standard temporal difference learning model (Barto, 1995; Sutton, 1988; Sutton and Barto, 1998)."  
+> "The TD model is a standard temporal difference learning model (Barto, [1995](https://doi.org/10.7551/mitpress/4708.003.0018); Sutton, [1988](https://doi.org/10.1007/bf00115009); Sutton and Barto, [1998](https://doi.org/10.1017/S0263574799271172))."  
 
 **if only ONE $\eta$ is set as a free paramters, it represents the TD model.**
 
@@ -420,7 +420,7 @@ binaryRL::run_m(
 
 #### 2. Risk-Sensitive TD Model ($\eta_{-}$, $\eta_{+}$)
 
-> "In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, 2002)."  
+> "In the risk-sensitive TD (RSTD) model, positive and negative prediction errors have asymmetric effects on learning (Mihatsch and Neuneier, [2002](https://doi.org/10.1023/A:1017940631555))."  
 
 **If TWO $\eta$ are set as free parameters, it represents the RSTD model.**
 
@@ -437,7 +437,7 @@ binaryRL::run_m(
 
 #### 3. Utility Model ($\eta$, $\gamma$)
 
-> "The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, 1954)"
+> "The utility model is a TD learning model that incorporates nonlinear subjective utilities (Bernoulli, [1954](https://doi.org/10.1142/9789814293501_0002))"
 
 **If ONE $\eta$ and ONE $\gamma$ are set as free parameters, it represents the utility model.**
 

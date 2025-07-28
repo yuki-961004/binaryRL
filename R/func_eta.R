@@ -68,9 +68,11 @@
 #' The number of times the same stimulus has been chosen.
 #' 
 #' @param eta [vector]
-#' Parameters used in the Learning Rate Function, \code{rate_func}, representing
-#'  the rate at which the subject updates the difference (prediction error)
-#'  between the reward and the expected value in the subject's mind.
+#' Parameters used in the Learning Rate Function, 
+#' \code{rate_func} representing the rate at which the subject 
+#'  updates the difference 
+#'  (prediction error) between the reward and the expected value in the 
+#'  subject's mind.
 #'
 #'  The structure of \code{eta} depends on the model type:
 #'  \itemize{

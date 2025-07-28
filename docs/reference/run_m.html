@@ -9,8 +9,9 @@
 learning models.
 Items for model construction:
 Data Input and Specification: You must provide the raw
-    dataset for analysis. Crucially, you need to inform the run_m
-    function about the corresponding column names within your dataset
+    dataset for analysis. Crucially, you need to inform the
+    run_m function about the corresponding column
+    names within your dataset
     (e.g.,
     Mason_2024_Exp1,
     Mason_2024_Exp2
@@ -25,13 +26,13 @@ Learning Rate:
              By adjusting the number of eta, you can construct basic
              reinforcement learning models such as Temporal Difference (TD)
              and Risk Sensitive Temporal Difference (RSTD).
-             You can also directly adjust func_eta to define your
-             own custom learning rate function.
+             You can also directly adjust func_eta to
+             define your own custom learning rate function.
 Utility Function: You can directly adjust the form
-             of func_gamma to incorporate the principles of
-             Kahneman's Prospect Theory. Currently, the built-in
-             func_gamma only takes the form of a power function,
-             consistent with Stevens' Power Law.
+             of func_gamma to incorporate the
+             principles of Kahneman's Prospect Theory. Currently,
+             the built-in func_gamma only takes the
+             form of a power function, consistent with Stevens' Power Law.
 
 Exploration–Exploitation Trade-off:
 Initial Values: This involves setting the
@@ -52,11 +53,11 @@ Soft-Max: By adjusting the inverse temperature
 
 
 Objective Function Format for Optimization: Once your
-    model is defined in run_m, it must be structured as an objective
-    function that accepts params as input and returns a loss value
-    (typically logL). This format ensures compatibility with the
-    algorithm package, which uses it to estimate optimal parameters.
-    For an example of a standard objective function format, see
+    model is defined in run_m, it must be structured
+    as an objective function that accepts params as input and returns
+    a loss value (typically logL). This format ensures compatibility
+    with the algorithm package, which uses it to estimate optimal
+    parameters. For an example of a standard objective function format, see
     TD,
     RSTD,
     Utility.
@@ -67,8 +68,9 @@ For more information, please refer to the homepage of this package:
 learning models.
 Items for model construction:
 Data Input and Specification: You must provide the raw
-    dataset for analysis. Crucially, you need to inform the run_m
-    function about the corresponding column names within your dataset
+    dataset for analysis. Crucially, you need to inform the
+    run_m function about the corresponding column
+    names within your dataset
     (e.g.,
     Mason_2024_Exp1,
     Mason_2024_Exp2
@@ -83,13 +85,13 @@ Learning Rate:
              By adjusting the number of eta, you can construct basic
              reinforcement learning models such as Temporal Difference (TD)
              and Risk Sensitive Temporal Difference (RSTD).
-             You can also directly adjust func_eta to define your
-             own custom learning rate function.
+             You can also directly adjust func_eta to
+             define your own custom learning rate function.
 Utility Function: You can directly adjust the form
-             of func_gamma to incorporate the principles of
-             Kahneman's Prospect Theory. Currently, the built-in
-             func_gamma only takes the form of a power function,
-             consistent with Stevens' Power Law.
+             of func_gamma to incorporate the
+             principles of Kahneman's Prospect Theory. Currently,
+             the built-in func_gamma only takes the
+             form of a power function, consistent with Stevens' Power Law.
 
 Exploration–Exploitation Trade-off:
 Initial Values: This involves setting the
@@ -110,11 +112,11 @@ Soft-Max: By adjusting the inverse temperature
 
 
 Objective Function Format for Optimization: Once your
-    model is defined in run_m, it must be structured as an objective
-    function that accepts params as input and returns a loss value
-    (typically logL). This format ensures compatibility with the
-    algorithm package, which uses it to estimate optimal parameters.
-    For an example of a standard objective function format, see
+    model is defined in run_m, it must be structured
+    as an objective function that accepts params as input and returns
+    a loss value (typically logL). This format ensures compatibility
+    with the algorithm package, which uses it to estimate optimal
+    parameters. For an example of a standard objective function format, see
     TD,
     RSTD,
     Utility.
@@ -174,8 +176,9 @@ For more information, please refer to the homepage of this package:
     <p>This function is designed to construct and customize reinforcement
 learning models.</p>
 <p>Items for model construction:</p><ul><li><p><strong>Data Input and Specification:</strong> You must provide the raw
-    dataset for analysis. Crucially, you need to inform the <code>run_m</code>
-    function about the corresponding column names within your dataset
+    dataset for analysis. Crucially, you need to inform the
+    <code>run_m</code> function about the corresponding column
+    names within your dataset
     (e.g.,
     <code><a href="Mason_2024_Exp1.html">Mason_2024_Exp1</a></code>,
     <code><a href="Mason_2024_Exp2.html">Mason_2024_Exp2</a></code>
@@ -188,13 +191,13 @@ learning models.</p>
              By adjusting the number of <code>eta</code>, you can construct basic
              reinforcement learning models such as Temporal Difference (TD)
              and Risk Sensitive Temporal Difference (RSTD).
-             You can also directly adjust <code>func_eta</code> to define your
-             own custom learning rate function.</p></li>
+             You can also directly adjust <code><a href="func_eta.html">func_eta</a></code> to
+             define your own custom learning rate function.</p></li>
 <li><p><em>Utility Function:</em> You can directly adjust the form
-             of <code>func_gamma</code> to incorporate the principles of
-             Kahneman's Prospect Theory. Currently, the built-in
-             <code>func_gamma</code> only takes the form of a power function,
-             consistent with Stevens' Power Law.</p></li>
+             of <code><a href="func_gamma.html">func_gamma</a></code> to incorporate the
+             principles of Kahneman's Prospect Theory. Currently,
+             the built-in <code><a href="func_gamma.html">func_gamma</a></code> only takes the
+             form of a power function, consistent with Stevens' Power Law.</p></li>
 </ul></li>
 <li><p><em>Exploration–Exploitation Trade-off:</em></p><ul><li><p><em>Initial Values:</em> This involves setting the
              initial expected value for each option when it hasn't been
@@ -214,11 +217,11 @@ learning models.</p>
 </ul></li>
 </ul></li>
 <li><p><strong>Objective Function Format for Optimization:</strong> Once your
-    model is defined in <code>run_m</code>, it must be structured as an objective
-    function that accepts <code>params</code> as input and returns a loss value
-    (typically <code>logL</code>). This format ensures compatibility with the
-    <span class="pkg">algorithm</span> package, which uses it to estimate optimal parameters.
-    For an example of a standard objective function format, see
+    model is defined in <code>run_m</code>, it must be structured
+    as an objective function that accepts <code>params</code> as input and returns
+    a loss value (typically <code>logL</code>). This format ensures compatibility
+    with the <span class="pkg">algorithm</span> package, which uses it to estimate optimal
+    parameters. For an example of a standard objective function format, see
     <code><a href="TD.html">TD</a></code>,
     <code><a href="RSTD.html">RSTD</a></code>,
     <code><a href="Utility.html">Utility</a></code>.</p></li>
@@ -280,22 +283,25 @@ The name of your RL model</p></dd>
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
 <dd><p>[character]
 This parameter controls the function's operational mode. It has three
- possible values, each typically associated with a specific function:</p><ul><li><p><code>"simulate"</code>: Should be used when working with <code>rcv_d</code>.</p></li>
-<li><p><code>"fit"</code>: Should be used when working with <code>fit_p</code>.</p></li>
-<li><p><code>"replay"</code>: Should be used when working with <code>rpl_e</code>.</p></li>
+ possible values, each typically associated with a specific function:</p><ul><li><p><code>"simulate"</code>: Should be used when working with
+     <code><a href="rcv_d.html">rcv_d</a></code>.</p></li>
+<li><p><code>"fit"</code>: Should be used when working with
+     <code><a href="fit_p.html">fit_p</a></code>.</p></li>
+<li><p><code>"replay"</code>: Should be used when working with
+     <code><a href="rpl_e.html">rpl_e</a></code>.</p></li>
 </ul><p>In most cases, you won't need to modify this parameter directly, as suitable
  default values are set for different contexts.</p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>[data.frame]
-This data should include the following mandatory columns:</p><ul><li><p>"sub"</p></li>
-<li><p>"time_line" (e.g., "Block", "Trial")</p></li>
-<li><p>"L_choice"</p></li>
-<li><p>"R_choice"</p></li>
-<li><p>"L_reward"</p></li>
-<li><p>"R_reward"</p></li>
-<li><p>"sub_choose"</p></li>
+This data should include the following mandatory columns:</p><ul><li><p><code>sub</code> "Subject"</p></li>
+<li><p><code>time_line</code> "Block" "Trial"</p></li>
+<li><p><code>L_choice</code> "L_choice"</p></li>
+<li><p><code>R_choice</code> "R_choice"</p></li>
+<li><p><code>L_reward</code> "L_reward"</p></li>
+<li><p><code>R_reward</code> "R_reward"</p></li>
+<li><p><code>sub_choose</code> "Sub_Choose"</p></li>
 </ul></dd>
 
 
@@ -360,13 +366,13 @@ Extra parameters that may be used in functions.</p></dd>
 
 <dt id="arg-gamma">gamma<a class="anchor" aria-label="anchor" href="#arg-gamma"></a></dt>
 <dd><p>[vector]
-This parameter represents the exponent in utility functions, <code>util_func</code>,
- specifically:</p><ul><li><p><strong>Stevens' Power Law</strong>:
+This parameter represents the exponent in utility functions,
+ <code>util_func</code>, specifically:</p><ul><li><p><strong>Stevens' Power Law</strong>:
    Utility is modeled as:
-   $$U = {R}^{\gamma}$$</p></li>
+   $$U(R) = {R}^{\gamma}$$</p></li>
 <li><p><strong>Kahneman's Prospect Theory</strong>:
    This exponent is applied differently based on the sign of the reward:
-   $$U = \begin{cases}
+   $$U(R) = \begin{cases}
      R^{\gamma_{1}}, &amp; R &gt; 0 \\
      \beta \cdot R^{\gamma_{2}}, &amp; R &lt; 0
    \end{cases}$$</p></li>
@@ -375,9 +381,11 @@ This parameter represents the exponent in utility functions, <code>util_func</co
 
 <dt id="arg-eta">eta<a class="anchor" aria-label="anchor" href="#arg-eta"></a></dt>
 <dd><p>[vector]
-Parameters used in the Learning Rate Function, <code>rate_func</code>, representing
- the rate at which the subject updates the difference (prediction error)
- between the reward and the expected value in the subject's mind.</p>
+Parameters used in the Learning Rate Function,
+ <code>rate_func</code>,
+ representing the rate at which the subject updates the difference
+ (prediction error) between the reward and the expected value in the
+ subject's mind.</p>
 <p>The structure of <code>eta</code> depends on the model type:</p><ul><li><p>For the <strong>Temporal Difference (TD) model</strong>,
    where a single learning rate is used throughout the experiment
    $$V_{new} = V_{old} + \eta \cdot (R - V_{old})$$</p></li>
@@ -422,12 +430,12 @@ A numeric value that controls the decay rate of exploration probability
 <dt id="arg-pi">pi<a class="anchor" aria-label="anchor" href="#arg-pi"></a></dt>
 <dd><p>[vector]
 Parameter used in the Upper-Confidence-Bound (UCB) action selection
- formula. <code>bias_func</code> controls the degree of exploration by scaling the
- uncertainty bonus given to less-explored options. A larger value of
- <code>pi</code> (denoted as <code>c</code> in Sutton and Barto(1998) ) increases the
- influence of this bonus, leading to more exploration of actions with
- uncertain estimated values. Conversely, a smaller <code>pi</code> results in
- less exploration.</p>
+ formula. <code>bias_func</code> controls the degree of
+ exploration by scaling the uncertainty bonus given to less-explored options.
+ A larger value of <code>pi</code> (denoted as <code>c</code> in Sutton and Barto(1998) )
+ increases the influence of this bonus, leading to more exploration of
+ actions with uncertain estimated values. Conversely, a smaller <code>pi</code>
+ results in less exploration.</p>
 <p>$$
   A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}} \right]
 $$</p>
@@ -436,13 +444,13 @@ $$</p>
 
 <dt id="arg-tau">tau<a class="anchor" aria-label="anchor" href="#arg-tau"></a></dt>
 <dd><p>[vector]
-Parameters used in the Soft-Max Function. <code>prob_func</code> representing the
- sensitivity of the subject to the value difference when making decisions.
- It determines the probability of selecting the left option versus the right
- option based on their values. A larger value of tau indicates greater
- sensitivity to the value difference between the options. In other words,
- even a small difference in value will make the subject more likely to
- choose the higher-value option.</p>
+Parameters used in the Soft-Max Function. <code>prob_func</code>
+ representing the sensitivity of the subject to the value difference when
+ making decisions. It determines the probability of selecting the left option
+ versus the right option based on their values. A larger value of tau
+ indicates greater sensitivity to the value difference between the options.
+ In other words, even a small difference in value will make the subject more
+ likely to choose the higher-value option.</p>
 <p>$$P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}$$</p>
 <p><code>e.g., tau = c(0.5)</code></p></dd>
 
@@ -582,6 +590,7 @@ The number of decimal places to retain for columns related to select function.</
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">binaryRL.res</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Results of RSTD Model: </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Exploration and Exploitation Trade-off:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Initial Values: Initial reward received</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Exploration Strategy: off</span>

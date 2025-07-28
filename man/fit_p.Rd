@@ -25,13 +25,13 @@ fit_p(
 \item{data}{[data.frame] 
 This data should include the following mandatory columns: 
  \itemize{
-   \item "sub"
-   \item "time_line" (e.g., "Block", "Trial")
-   \item "L_choice"
-   \item "R_choice"
-   \item "L_reward"
-   \item "R_reward"
-   \item "sub_choose"
+   \item \code{sub} "Subject"
+   \item \code{time_line} "Block" "Trial"
+   \item \code{L_choice} "L_choice"
+   \item \code{R_choice} "R_choice"
+   \item \code{L_reward} "L_reward"
+   \item \code{R_reward} "R_reward"
+   \item \code{sub_choose} "Sub_Choose"
  }}
 
 \item{id}{[vector]
@@ -66,13 +66,14 @@ A character vector containing the names of all user-defined functions
  not be automatically accessible within the parallel environment.
 
 Therefore, if you have created your own reinforcement learning model
- that modifies the package's default four default functions 
+ that modifies the package's default six default functions 
  (default functions: 
     \code{util_func = \link[binaryRL]{func_gamma}}, 
     \code{rate_func = \link[binaryRL]{func_eta}}, 
-    \code{expl_func = \link[binaryRL]{func_epsilon}}
-    \code{bias_func = \link[binaryRL]{func_pi}}
-    \code{prob_func = \link[binaryRL]{func_tau}}
+    \code{expl_func = \link[binaryRL]{func_epsilon}},
+    \code{bias_func = \link[binaryRL]{func_pi}},
+    \code{prob_func = \link[binaryRL]{func_tau}},
+    \code{loss_func = \link[binaryRL]{func_logl}}
  ), 
  you must explicitly provide the names of your custom functions as a 
  vector here.}
@@ -99,7 +100,7 @@ This parameter corresponds to the \strong{population size} in genetic
  algorithms (\code{GA}). It specifies the number of initial candidate
  solutions that the algorithm starts with for its evolutionary search.
  This parameter is only required for optimization algorithms that operate on
- a population, such as `GA` or `DEoptim`. 
+ a population, such as \code{GA} or \code{DEoptim}. 
  
  \code{default: initial_size = 50}.}
 
@@ -120,11 +121,11 @@ Number of cores to use for parallel processing. Since fitting
 optimal parameters for each subject is an independent task,
 parallel computation can significantly speed up the fitting process:
 \itemize{
-  \item \strong{`nc = 1`}: The fitting proceeds sequentially.
+  \item \strong{nc = 1}: The fitting proceeds sequentially.
   Parameters for one subject are fitted completely before moving
   to the next subject.
-  \item \strong{`nc > 1`}: The fitting is performed in parallel
-  across subjects. For example, if `nc = 4`, the algorithm will
+  \item \strong{nc > 1}: The fitting is performed in parallel
+  across subjects. For example, if \code{nc = 4}, the algorithm will
   simultaneously fit data for four subjects. Once these are complete,
   it will proceed to fit the next batch of subjects (e.g., subjects
   5-8), and so on, until all subjects are processed.

@@ -12,7 +12,7 @@ vignette: >
 
 The subjective value of objective rewards is a topic that requires discussion, as different scholars may have different perspectives. This can be traced back to the **Stevens's Power Law**. In this model, you can customize your utility function. By default, I use a power function based on Stevens' power law to model the relationship between subjective and objective value.
 
-According to **Kahneman's Prospect Theory**, individuals exhibit distinct utility functions for **gains** and **losses**. Referencing Nilsson et al. (2012), we have implemented the model below.  
+According to **Kahneman's Prospect Theory**, individuals exhibit distinct utility functions for **gains** and **losses**. Referencing Nilsson et al. [(2012)](https://doi.org/10.1016/j.jmp.2010.08.006), we have implemented the model below.  
 
 ```{r eval=FALSE}
 func_gamma <- function(

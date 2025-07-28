@@ -5,7 +5,7 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Step 4: Replaying the experiment with optimal parameters — rpl_e"><meta name="description" content="After completing Step 3 using `fit_p` to obtain the optimal parameters
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Step 4: Replaying the experiment with optimal parameters — rpl_e"><meta name="description" content="After completing Step 3 using fit_p() to obtain the optimal parameters
  for each subject and saving the resulting CSV locally, this function
  allows you to load that result dataset. It then applies these optimal
  parameters back into the reinforcement learning model, effectively
@@ -14,7 +14,7 @@ Based on this generated dataset, you can then analyze the robot's data
  in the same manner as you would analyze human behavioral data. If a
  particular model's fitted data can successfully reproduce the
  experimental effects observed in human subjects, it strongly suggests
- that this model is a good and valid representation of the process."><meta property="og:description" content="After completing Step 3 using `fit_p` to obtain the optimal parameters
+ that this model is a good and valid representation of the process."><meta property="og:description" content="After completing Step 3 using fit_p() to obtain the optimal parameters
  for each subject and saving the resulting CSV locally, this function
  allows you to load that result dataset. It then applies these optimal
  parameters back into the reinforcement learning model, effectively
@@ -73,7 +73,7 @@ Based on this generated dataset, you can then analyze the robot's data
     </div>
 
     <div class="ref-description section level2">
-    <p>After completing Step 3 using `fit_p` to obtain the optimal parameters
+    <p>After completing Step 3 using <code><a href="fit_p.html">fit_p()</a></code> to obtain the optimal parameters
  for each subject and saving the resulting CSV locally, this function
  allows you to load that result dataset. It then applies these optimal
  parameters back into the reinforcement learning model, effectively
@@ -104,13 +104,13 @@ Based on this generated dataset, you can then analyze the robot's data
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>[data.frame]
-This data should include the following mandatory columns:</p><ul><li><p>"sub"</p></li>
-<li><p>"time_line" (e.g., "Block", "Trial")</p></li>
-<li><p>"L_choice"</p></li>
-<li><p>"R_choice"</p></li>
-<li><p>"L_reward"</p></li>
-<li><p>"R_reward"</p></li>
-<li><p>"sub_choose"</p></li>
+This data should include the following mandatory columns:</p><ul><li><p><code>sub: "Subject"</code></p></li>
+<li><p><code>time_line: "Block" "Trial"</code></p></li>
+<li><p><code>L_choice: "L_choice"</code></p></li>
+<li><p><code>R_choice: "R_choice"</code></p></li>
+<li><p><code>L_reward: "L_reward"</code></p></li>
+<li><p><code>R_reward: "R_reward"</code></p></li>
+<li><p><code>sub_choose: "Sub_Choose"</code></p></li>
 </ul></dd>
 
 
@@ -120,15 +120,15 @@ Specifies the subject ID(s) for whom optimal parameters are to be fitted.
  If you intend to fit all subjects within your dataset, it is strongly
  recommended to use <code>id = unique(data$Subject)</code>. This approach accounts
  for cases where subject IDs in the dataset may not be simple numeric
- sequences (e.g., "1", "2", "3", "4") or may contain string
- entries (e.g., "1", "2", "3", "004"). Using <code>id = 1:4</code> could lead to
- errors if IDs are not sequentially numbered integers.</p>
+ sequences (e.g., <code>id = c("1", "2", "3", "4")</code>) or may contain string
+ entries (e.g., <code>id = c("1", "2", "3", "004")</code>). Using <code>id = 1:4</code>
+ could lead to errors if IDs are not sequentially numbered integers.</p>
 <p><code>default: id = NULL</code></p></dd>
 
 
 <dt id="arg-result">result<a class="anchor" aria-label="anchor" href="#arg-result"></a></dt>
 <dd><p>[data.frame]
-Output data generated by the `fit_p()` function. Each row represents
+Output data generated by the <code><a href="fit_p.html">fit_p()</a></code> function. Each row represents
  model fit results for a subject.</p></dd>
 
 
@@ -145,7 +145,7 @@ A character string specifying the name of the model to extract from
 
 <dt id="arg-param-prefix">param_prefix<a class="anchor" aria-label="anchor" href="#arg-param-prefix"></a></dt>
 <dd><p>[character]
-A prefix string used to identify parameter columns in the  `result` data</p>
+A prefix string used to identify parameter columns in the result data</p>
 <p><code>default: param_prefix = "param_"</code></p></dd>
 
 
@@ -153,7 +153,7 @@ A prefix string used to identify parameter columns in the  `result` data</p>
 <dd><p>[integer]
 Represents the total number of trials a single subject experienced
  in the experiment. If this parameter is kept at its default value
- of `NULL`, the program will automatically detect how many trials
+ of <code>NULL</code>, the program will automatically detect how many trials
  a subject experienced from the provided data. This information
  is primarily used for calculating model fit statistics such as
  AIC (Akaike Information Criterion) and BIC (Bayesian Information

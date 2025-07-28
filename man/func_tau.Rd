@@ -57,18 +57,15 @@ Column name of extra variable 2. If one additional variable, var1, does not
 If the choice was based on value, the value is 0.}
 
 \item{tau}{[vector] 
-Parameters used in the Soft-Max Function. \code{prob_func} representing the 
- sensitivity of the subject to the value difference when making decisions. 
- It determines the probability of selecting the left option versus the right 
- option based on their values. A larger value of tau indicates greater 
- sensitivity to the value difference between the options. In other words, 
- even a small difference in value will make the subject more likely to 
- choose the higher-value option. 
+Parameters used in the Soft-Max Function. \code{prob_func} 
+ representing the sensitivity of the subject to the value difference when 
+ making decisions. It determines the probability of selecting the left option 
+ versus the right option based on their values. A larger value of tau 
+ indicates greater sensitivity to the value difference between the options. 
+ In other words, even a small difference in value will make the subject more 
+ likely to choose the higher-value option. 
  
- \deqn{
-   P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; 
-   P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}
- } 
+ \deqn{P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}} 
 
  \code{e.g., tau = c(0.5)}}
 

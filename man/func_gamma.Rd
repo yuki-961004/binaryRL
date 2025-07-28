@@ -62,8 +62,8 @@ Column name of extra variable 2. If one additional variable, var1, does not
 \item{occurrence}{The number of times the same stimulus has been chosen.}
 
 \item{gamma}{[vector]
-This parameter represents the exponent in utility functions, \code{util_func}, 
- specifically:
+This parameter represents the exponent in utility functions, 
+ \code{fcun_gamma}, specifically:
  \itemize{
    \item \strong{Stevens' Power Law}:
    Utility is modeled as:

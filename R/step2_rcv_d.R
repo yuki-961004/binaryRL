@@ -59,13 +59,13 @@
 #' @param data [data.frame] 
 #' This data should include the following mandatory columns: 
 #'  \itemize{
-#'    \item "sub"
-#'    \item "time_line" (e.g., "Block", "Trial")
-#'    \item "L_choice"
-#'    \item "R_choice"
-#'    \item "L_reward"
-#'    \item "R_reward"
-#'    \item "sub_choose"
+#'    \item \code{sub} "Subject"
+#'    \item \code{time_line} "Block" "Trial"
+#'    \item \code{L_choice} "L_choice"
+#'    \item \code{R_choice} "R_choice"
+#'    \item \code{L_reward} "L_reward"
+#'    \item \code{R_reward} "R_reward"
+#'    \item \code{sub_choose} "Sub_Choose"
 #'  }
 #'  
 #' @param id [vector]
@@ -74,7 +74,7 @@
 #'  experimental trial order might have some randomness for each subject,
 #'  the sequence of reward feedback is typically pseudo-random.
 #'
-#' The default value for this argument is `NULL`. When `id` is `NULL`,
+#' The default value for this argument is \code{NULL}. When \code{id = NULL},
 #'  the program automatically detects existing subject IDs within the
 #'  dataset. It then randomly selects one subject as a sample, and the
 #'  parameter and model recovery procedures are performed based on this
@@ -85,7 +85,7 @@
 #' @param n_trials [integer]
 #' Represents the total number of trials a single subject experienced
 #'  in the experiment. If this parameter is kept at its default value
-#'  of `NULL`, the program will automatically detect how many trials
+#'  of \code{NULL}, the program will automatically detect how many trials
 #'  a subject experienced from the provided data. This information
 #'  is primarily used for calculating model fit statistics such as
 #'  AIC (Akaike Information Criterion) and BIC (Bayesian Information
@@ -117,17 +117,18 @@
 #' @param funcs [character]
 #' A character vector containing the names of all user-defined functions
 #'  required for the computation. When parallel computation is enabled
-#'  (i.e., `nc > 1`), user-defined models and their custom functions might
-#'  not be automatically accessible within the parallel environment.
+#'  (i.e., \code{nc > 1}), user-defined models and their custom functions 
+#'  might not be automatically accessible within the parallel environment.
 #'
 #' Therefore, if you have created your own reinforcement learning model
-#'  that modifies the package's default four default functions 
+#'  that modifies the package's default six default functions 
 #'  (default functions: 
 #'     \code{util_func = \link[binaryRL]{func_gamma}}, 
 #'     \code{rate_func = \link[binaryRL]{func_eta}}, 
-#'     \code{expl_func = \link[binaryRL]{func_epsilon}}
-#'     \code{bias_func = \link[binaryRL]{func_pi}}
-#'     \code{prob_func = \link[binaryRL]{func_tau}}
+#'     \code{expl_func = \link[binaryRL]{func_epsilon}},
+#'     \code{bias_func = \link[binaryRL]{func_pi}},
+#'     \code{prob_func = \link[binaryRL]{func_tau}},
+#'     \code{loss_func = \link[binaryRL]{func_logl}}
 #'  ), 
 #'  you must explicitly provide the names of your custom functions as a 
 #'  vector here.
@@ -145,7 +146,7 @@
 #'  algorithms (\code{GA}). It specifies the number of initial candidate
 #'  solutions that the algorithm starts with for its evolutionary search.
 #'  This parameter is only required for optimization algorithms that operate on
-#'  a population, such as `GA` or `DEoptim`. 
+#'  a population, such as \code{GA} or \code{DEoptim}. 
 #'  
 #'  \code{default: initial_size = 50}.
 #'  
@@ -170,11 +171,11 @@
 #' optimal parameters for each subject is an independent task,
 #' parallel computation can significantly speed up the fitting process:
 #' \itemize{
-#'   \item \strong{`nc = 1`}: The fitting proceeds sequentially.
+#'   \item \strong{nc = 1}: The fitting proceeds sequentially.
 #'   Parameters for one subject are fitted completely before moving
 #'   to the next subject.
-#'   \item \strong{`nc > 1`}: The fitting is performed in parallel
-#'   across subjects. For example, if `nc = 4`, the algorithm will
+#'   \item \strong{nc > 1}: The fitting is performed in parallel
+#'   across subjects. For example, if \code{nc = 4}, the algorithm will
 #'   simultaneously fit data for four subjects. Once these are complete,
 #'   it will proceed to fit the next batch of subjects (e.g., subjects
 #'   5-8), and so on, until all subjects are processed.

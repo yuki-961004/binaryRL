@@ -153,17 +153,14 @@ If the choice was based on value, the value is 0.</p></dd>
 
 <dt id="arg-tau">tau<a class="anchor" aria-label="anchor" href="#arg-tau"></a></dt>
 <dd><p>[vector]
-Parameters used in the Soft-Max Function. <code>prob_func</code> representing the
- sensitivity of the subject to the value difference when making decisions.
- It determines the probability of selecting the left option versus the right
- option based on their values. A larger value of tau indicates greater
- sensitivity to the value difference between the options. In other words,
- even a small difference in value will make the subject more likely to
- choose the higher-value option.</p>
-<p>$$
-   P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}};
-   P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}
- $$</p>
+Parameters used in the Soft-Max Function. <code>prob_func</code>
+ representing the sensitivity of the subject to the value difference when
+ making decisions. It determines the probability of selecting the left option
+ versus the right option based on their values. A larger value of tau
+ indicates greater sensitivity to the value difference between the options.
+ In other words, even a small difference in value will make the subject more
+ likely to choose the higher-value option.</p>
+<p>$$P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}$$</p>
 <p><code>e.g., tau = c(0.5)</code></p></dd>
 
 

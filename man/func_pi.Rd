@@ -54,12 +54,12 @@ Column name of extra variable 2. If one additional variable, var1, does not
 
 \item{pi}{[vector]
 Parameter used in the Upper-Confidence-Bound (UCB) action selection
- formula. \code{bias_func} controls the degree of exploration by scaling the 
- uncertainty bonus given to less-explored options. A larger value of 
- \code{pi} (denoted as \code{c} in Sutton and Barto(1998) ) increases the 
- influence of this bonus, leading to more exploration of actions with 
- uncertain estimated values. Conversely, a smaller \code{pi} results in 
- less exploration.
+ formula. \code{func_pi} controls the degree of 
+ exploration by scaling the uncertainty bonus given to less-explored options. 
+ A larger value of \code{pi} (denoted as \code{c} in Sutton and Barto(1998) ) 
+ increases the influence of this bonus, leading to more exploration of 
+ actions with uncertain estimated values. Conversely, a smaller \code{pi} 
+ results in less exploration.
 
 \deqn{
   A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}} \right]

@@ -174,9 +174,11 @@ Column name of extra variable 2. If one additional variable, var1, does not
 
 <dt id="arg-eta">eta<a class="anchor" aria-label="anchor" href="#arg-eta"></a></dt>
 <dd><p>[vector]
-Parameters used in the Learning Rate Function, <code>rate_func</code>, representing
- the rate at which the subject updates the difference (prediction error)
- between the reward and the expected value in the subject's mind.</p>
+Parameters used in the Learning Rate Function,
+<code>rate_func</code> representing the rate at which the subject
+ updates the difference
+ (prediction error) between the reward and the expected value in the
+ subject's mind.</p>
 <p>The structure of <code>eta</code> depends on the model type:</p><ul><li><p>For the <strong>Temporal Difference (TD) model</strong>,
    where a single learning rate is used throughout the experiment
    $$V_{new} = V_{old} + \eta \cdot (R - V_{old})$$</p></li>
