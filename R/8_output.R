@@ -14,19 +14,28 @@
 #' 
 #' @param initial_value [numeric] 
 #' Subject's initial expected value for each stimulus's reward. If this value 
-#'  is not set (`initial_value = NA`), the subject will use the reward received 
+#'  is not set \code{initial_value = NA}, the subject will use the reward received 
 #'  after the first trial as the initial value for that stimulus. In other 
 #'  words, the learning rate for the first trial is 100%. 
-#'  default: `initial_value = NA` e.g., `initial_value = 0`
+#'  
+#'  \code{default: initial_value = NA}
 #'  
 #' @param threshold [integer]
 #' Controls the initial exploration phase in the \strong{epsilon-first} strategy.
 #'  This is the number of early trials where the subject makes purely random
 #'  choices, as they haven't yet learned the options' values. For example,
-#'  `threshold = 20` means random choices for the first 20 trials.
+#'  \code{threshold = 20} means random choices for the first 20 trials.
 #'  For \strong{epsilon-greedy} or \strong{epsilon-decreasing} strategies,
-#'  `threshold` should be kept at its default value.
-#'  Default: `threshold = 1`
+#'  \code{threshold} should be kept at its default value.
+#'  
+#'  \deqn{P(x) = \begin{cases}
+#'    \text{trial} \le \text{threshold}, & x=1 \text{ (random choosing)} \\
+#'    \text{trial} > \text{threshold}, & x=0 \text{ (value-based choosing)}
+#'  \end{cases}}
+#'  
+#'  \code{default: threshold = 1}
+#'  
+#'  \code{epsilon-first: threshold = 20, epsilon = NA, lambda = NA}
 #'  
 #' @param alpha [vector]
 #' Extra parameters that may be used in functions. 
@@ -34,44 +43,119 @@
 #' @param beta [vector]
 #' Extra parameters that may be used in functions. 
 #' 
-#' @param gamma [vector] Parameters used in the `util_func` (Utility Function), 
-#'  often referred to as the discount rate. For example, 
-#'  `utility = gamma * reward`, if gamma < 1, it indicates that people 
-#'  tend to discount the objective reward. Provide the value as a vector 
-#'  e.g., `gamma = c(0.7)`
-#' 
-#' @param eta [vector] Parameters used in the `rate_func` (Learning Rate Function), 
-#'  representing the rate at which the subject updates the 
-#'  difference (prediction error) between the reward and the expected value 
-#'  in the subject's mind. In the TD model, there is a single learning rate 
-#'  throughout the experiment. In the RSTD model, two different learning rates 
-#'  are used when the reward is higher or lower than the expected value.
-#'  e.g., `eta = c(0.3, 0.7)`
-#' 
+#' @param gamma [vector]
+#' This parameter represents the exponent in utility functions, 
+#'  \code{util_func}, specifically:
+#'  \itemize{
+#'    \item \strong{Stevens' Power Law}:
+#'    Utility is modeled as:
+#'    \deqn{U(R) = {R}^{\gamma}}
+#'
+#'    \item \strong{Kahneman's Prospect Theory}:
+#'    This exponent is applied differently based on the sign of the reward:
+#'    \deqn{U(R) = \begin{cases}
+#'      R^{\gamma_{1}}, & R > 0 \\
+#'      \beta \cdot R^{\gamma_{2}}, & R < 0
+#'    \end{cases}}
+#'  }
+#'  
+#' @param eta [vector]
+#' Parameters used in the Learning Rate Function, 
+#'  \code{rate_func}, 
+#'  representing the rate at which the subject updates the difference 
+#'  (prediction error) between the reward and the expected value in the 
+#'  subject's mind.
+#'
+#'  The structure of \code{eta} depends on the model type:
+#'  \itemize{
+#'    \item For the \strong{Temporal Difference (TD) model}, 
+#'    where a single learning rate is used throughout the experiment 
+#'    \deqn{V_{new} = V_{old} + \eta \cdot (R - V_{old})}
+#'    
+#'    \item For the \strong{Risk-Sensitive Temporal Difference (RDTD) model},
+#'    where two different learning rates are used depending on whether the 
+#'    reward is lower or higher than the expected value:
+#'    \deqn{V_{new} = V_{old} + \eta_{+} \cdot (R - V_{old}), R > V_{old}}
+#'    \deqn{V_{new} = V_{old} + \eta_{-} \cdot (R - V_{old}), R < V_{old}}
+#'  }
+#'  
+#'  \code{TD: eta = 0.3}
+#'  
+#'  \code{RSTD: eta = c(0.3, 0.7)}
+#'
 #' @param epsilon [numeric]
-#' A parameter used in the \strong{epsilon-greedy} exploration strategy. It defines
-#'  the probability of making a completely random choice, as opposed to choosing
-#'  based on the relative values of the left and right options. For example,
-#'  if `epsilon = 0.1`, the subject has a 10% chance of random choice and a
-#'  90% chance of value-based choice. This parameter is only relevant when
-#'  `threshold` is at its default value (1) and `lambda` is not set.
-#'  e.g., `epsilon = 0.1`
+#' A parameter used in the \strong{epsilon-greedy} exploration strategy. It 
+#'  defines the probability of making a completely random choice, as opposed 
+#'  to choosing based on the relative values of the left and right options. 
+#'  For example, if \code{epsilon = 0.1}, the subject has a 10% chance of random 
+#'  choice and a 90% chance of value-based choice. This parameter is only 
+#'  relevant when \code{threshold} is at its default value (1) and 
+#'  \code{lambda} is not set.
+#'  
+#'  \deqn{P(x) = \begin{cases}
+#'    \epsilon, & x=1 \text{ (random choosing)} \\
+#'    1-\epsilon, & x=0 \text{ (value-based choosing)}
+#'  \end{cases}}
+#' 
+#'  \code{epsilon-greedy: threshold = 1, epsilon = 0.1, lambda = NA}
 #' 
 #' @param lambda [vector] 
 #' A numeric value that controls the decay rate of exploration probability
-#'  in the \strong{epsilon-decreasing} strategy. A higher `lambda` value
+#'  in the \strong{epsilon-decreasing} strategy. A higher \code{lambda} value
 #'  means the probability of random choice will decrease more rapidly
 #'  as the number of trials increases.
+#'  
+#'  \deqn{P(x) = \begin{cases}
+#'    \frac{1}{1+\lambda \cdot trial}, & x=1 \text{ (random choosing)} \\
+#'    \frac{\lambda \cdot trial}{1+\lambda \cdot trial}, & x=0 \text{ (value-based choosing)}
+#'  \end{cases}}
+#'  
+#'  \code{epsilon-decreasing threshold = 1, epsilon = NA, lambda = 0.5}
 #' 
-#' @param tau [vector] Parameters used in the `prob_func` (Soft-Max Function), 
+#' @param pi [vector]
+#' Parameter used in the Upper-Confidence-Bound (UCB) action selection
+#'  formula. \code{bias_func} controls the degree of 
+#'  exploration by scaling the uncertainty bonus given to less-explored options. 
+#'  A larger value of \code{pi} (denoted as \code{c} in Sutton and Barto(1998) ) 
+#'  increases the influence of this bonus, leading to more exploration of 
+#'  actions with uncertain estimated values. Conversely, a smaller \code{pi} 
+#'  results in less exploration.
+#'
+#' \deqn{
+#'   A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}} \right]
+#' }
+#' 
+#' \code{default: pi = NA}
+#' 
+#' @param tau [vector] 
+#' Parameters used in the Soft-Max Function. \code{prob_func} 
 #'  representing the sensitivity of the subject to the value difference when 
 #'  making decisions. It determines the probability of selecting the left option 
 #'  versus the right option based on their values. A larger value of tau 
 #'  indicates greater sensitivity to the value difference between the options. 
 #'  In other words, even a small difference in value will make the subject more 
 #'  likely to choose the higher-value option. 
-#'  e.g., `tau = c(0.5)`
+#'  
+#'  \deqn{P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}} 
+#' 
+#'  \code{e.g., tau = c(0.5)}
+#'  
+#' @param priors [list] A \code{list} object for specifying the Bayesian prior
+#'   distributions for each model parameter. Each element in the list
+#'   should be named after a parameter and contain a function that returns the 
+#'   log probability density.
+#'   
+#'   By default, a set of priors is used. For most parameters, this is a
+#'   \strong{Uniform(0, 1)} distribution, which acts as an uninformative prior.
+#'   This means that for these parameters, the Maximum A Posteriori (MAP)
+#'   estimate will be identical to the Maximum Likelihood Estimate (MLE).
 #'
+#'   The exception is for the inverse temperature parameter associated with the
+#'   softmax function (\code{tau}). This parameter uses an 
+#'   \strong{Exponential(1)} distribution as its prior. This is a weakly
+#'   informative prior that regularizes the model by favoring smaller,
+#'   positive values, thus preventing extremely large parameter estimates.
+#'   
 #' @returns binaryRL[list]:
 #'   \itemize{
 #'     \item{\code{data}: output data frame with all information}
@@ -89,7 +173,8 @@ output <- function(
     data, 
     n_params, n_trials, 
     initial_value, threshold,
-    alpha, beta, gamma, eta, epsilon, lambda, pi, tau
+    alpha, beta, gamma, eta, epsilon, lambda, pi, tau,
+    priors
 ){
   params <- list(
     Q1 = initial_value,
@@ -108,16 +193,41 @@ output <- function(
   # 因为第一行用来填写初始值了, 所以需要重新把第二行初始化成第一行
   rownames(data) <- NULL 
   mean_ACC <- round(mean(data$ACC), digits = 4) * 100
-  sum_LL <- round(sum(data$L_logl) + sum(data$R_logl), digits = 2)
-  AIC <- round(2 * n_params - 2 * sum_LL, digits = 2)
-  BIC <- round(n_params * log(n_trials) - 2 * sum_LL, digits = 2)
+  
+  # Log-Likelihood
+  sum_logLi <- round(sum(data$L_logl) + sum(data$R_logl), digits = 2)
+  
+  # Log-Prior Probability
+  sum_logPr <- 0
+  
+  # 遍历所有params
+  for (param_name in names(params)) {
+    
+    # 只对有先验概率的进行计算
+    if (param_name %in% names(priors)) {
+      
+      # 计算每个参数下每个值的logPr
+      logPr <- sapply(X = params[[param_name]], FUN = priors[[param_name]])
+      
+      # 不断叠加这个logPr
+      sum_logPr <- sum_logPr + sum(logPr, na.rm = TRUE)
+    } 
+  }
+  
+  # Log-Posterior Probability
+  sum_logPo <- sum_logLi + sum_logPr
+  
+  AIC <- round(2 * n_params - 2 * sum_logLi, digits = 2)
+  BIC <- round(n_params * log(n_trials) - 2 * sum_logLi, digits = 2)
   
   res <- list(
     data = data,
     params = params,
     name = name,
     acc = mean_ACC,
-    ll = sum_LL,
+    ll = sum_logLi,
+    lpr = sum_logPr,
+    lpo = sum_logPo,
     aic = AIC,
     bic = BIC
   )

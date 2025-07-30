@@ -244,6 +244,22 @@
 #' 
 #'  \code{e.g., tau = c(0.5)}
 #' 
+#' @param priors [list] A \code{list} object for specifying the Bayesian prior
+#'   distributions for each model parameter. Each element in the list
+#'   should be named after a parameter and contain a function that returns the 
+#'   log probability density.
+#'   
+#'   By default, a set of priors is used. For most parameters, this is a
+#'   \strong{Uniform(0, 1)} distribution, which acts as an uninformative prior.
+#'   This means that for these parameters, the Maximum A Posteriori (MAP)
+#'   estimate will be identical to the Maximum Likelihood Estimate (MLE).
+#'
+#'   The exception is for the inverse temperature parameter associated with the
+#'   softmax function (\code{tau}). This parameter uses an 
+#'   \strong{Exponential(1)} distribution as its prior. This is a weakly
+#'   informative prior that regularizes the model by favoring smaller,
+#'   positive values, thus preventing extremely large parameter estimates.
+#' 
 #' @param util_func [function] 
 #'  Utility Function see \code{\link[binaryRL]{func_gamma}}.
 #' 
@@ -373,6 +389,17 @@ run_m <- function(
   pi = NA,
   tau = 1,
   
+  priors = list(
+    alpha = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
+    beta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
+    gamma = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
+    eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
+    epsilon = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
+    lambda = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
+    pi = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
+    tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+  ),
+  
   util_func = func_gamma,
   rate_func = func_eta,
   expl_func = func_epsilon,
@@ -500,7 +527,9 @@ run_m <- function(
     epsilon = epsilon,
     lambda = lambda,
     pi = pi,
-    tau = tau
+    tau = tau,
+    
+    priors = priors
   )
   
   step9 <- mode(
