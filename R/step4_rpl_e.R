@@ -144,6 +144,7 @@ rpl_e <- function(
     binaryRL.env$n_params <- length(params)
     binaryRL.env$n_trials <- n_trials
     binaryRL.env$mode <- "replay"
+    binaryRL.env$priors <- NULL
     
     
     obj_func <- model
