@@ -361,12 +361,7 @@
 #'   id = 18,
 #'   eta = c(0.321, 0.765),
 #'   tau = 0.5,
-#'   priors = list(
-#'     eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-#'     eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-#'     tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
-#'   ),
-#'   n_params = 2, 
+#'   n_params = 3, 
 #'   n_trials = 360
 #' )
 #' 
@@ -395,7 +390,7 @@ run_m <- function(
   pi = NA,
   tau = 1,
   
-  priors,
+  priors = NULL,
   
   util_func = func_gamma,
   rate_func = func_eta,
