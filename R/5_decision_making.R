@@ -146,8 +146,10 @@
 #' 
 
 decision_making <- function(
+    mode,
     data, 
     options,
+    sub_choose, rob_choose,
     seed = 123, 
     
     initial_value,
@@ -302,12 +304,19 @@ decision_making <- function(
     
 ############################# [ action select ] ################################    
     
-    data$Rob_Choose[i] <- sample(
-      c(data[[L_choice]][i], data[[R_choice]][i]), 
-      prob = c(data$L_prob[i], data$R_prob[i]),
-      size = 1
-    ) 
-    
+    # 如果是fit, 则直接抄答案
+    if (mode == "fit") {
+      data[[rob_choose]][i] <- data[[sub_choose]][i] 
+    }
+    # 如果是simulate或者replay则是自己做题
+    else {
+      data[[rob_choose]][i] <- sample(
+        c(data[[L_choice]][i], data[[R_choice]][i]), 
+        prob = c(data$L_prob[i], data$R_prob[i]),
+        size = 1
+      )
+    }
+
 ################################ [occurrence] ##################################   
     
     # 计算这次是第几次选了这个选项

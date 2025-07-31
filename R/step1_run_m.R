@@ -461,8 +461,10 @@ run_m <- function(
   )
   
   step5 <- decision_making(
+    mode,
     data = step4,
     options = step1[["options"]],
+    sub_choose = sub_choose, rob_choose = rob_choose,
     L_choice = L_choice, R_choice = R_choice,
     L_reward = L_reward, R_reward = R_reward,
     
