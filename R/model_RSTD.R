@@ -35,6 +35,7 @@ RSTD <- function(params){
     id = id,                        
     eta = c(params[1], params[2]), 
     tau = c(params[3]),
+    priors = priors,
     n_params = n_params,                   
     n_trials = n_trials,
     mode = mode

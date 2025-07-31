@@ -197,22 +197,28 @@ output <- function(
   # Log-Likelihood
   sum_logLi <- round(sum(data$L_logl) + sum(data$R_logl), digits = 2)
   
-  # Log-Prior Probability
-  sum_logPr <- 0
+  # 找到priors定义了几个先验概率
+  priors_name <- unique(names(priors))
   
-  # 遍历所有params
-  for (param_name in names(params)) {
-    
-    # 只对有先验概率的进行计算
-    if (param_name %in% names(priors)) {
-      
-      # 计算每个参数下每个值的logPr
-      logPr <- sapply(X = params[[param_name]], FUN = priors[[param_name]])
-      
-      # 不断叠加这个logPr
-      sum_logPr <- sum_logPr + sum(logPr, na.rm = TRUE)
-    } 
+  # 存储自由参数的数值
+  params_value <- c()
+  
+  # 定义了先验概率的才是自由参数
+  for (param_name in priors_name) {
+    # 把带入run_m的自由参数存在params_value中
+    params_value <- c(params_value, params[[param_name]])
   }
+  
+  # 初始化Log Prior Probability
+  logPr <- c()
+  
+  for (i in 1:length(priors)) {
+    # 使用先验分布概率, 求解该参数对应概率密度
+    logPr[i] <- priors[[i]](params_value[i])
+  }
+  
+  # 求和每个参数对应的log先验概率密度
+  sum_logPr <- sum(logPr)
   
   # Log-Posterior Probability
   sum_logPo <- sum_logLi + sum_logPr

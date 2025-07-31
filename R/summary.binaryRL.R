@@ -135,8 +135,8 @@ summary.binaryRL <- function(object, ...) {
   rownames(params_df) <- NULL
   
   model_fit_df <- data.frame(
-    Metric = c("Accuracy", "LogL", "AIC", "BIC"),
-    Value = c(object$acc, object$ll, object$aic, object$bic)
+    Metric = c("Accuracy", "LogL", "LogPr", "LogPo", "AIC", "BIC"),
+    Value = c(object$acc, object$ll, object$lpr, object$lpo, object$aic, object$bic)
   )
   
   output_df <- list(params_df, model_fit_df)

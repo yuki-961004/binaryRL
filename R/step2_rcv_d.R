@@ -111,6 +111,38 @@
 #' @param fit_upper [list] 
 #' The upper bounds for model fit models
 #' 
+#' @param priors [list] A \code{list} object for specifying the Bayesian prior
+#'   distributions for each model parameter. Each element in the list
+#'   should be named after a parameter and contain a function that returns the 
+#'   log probability density.
+#'   
+#'   By default, a set of priors is used. For most parameters, this is a
+#'   \strong{Uniform(0, 1)} distribution, which acts as an uninformative prior.
+#'   This means that for these parameters, the Maximum A Posteriori (MAP)
+#'   estimate will be identical to the Maximum Likelihood Estimate (MLE).
+#'
+#'   The exception is for the inverse temperature parameter associated with the
+#'   softmax function (\code{tau}). This parameter uses an 
+#'   \strong{Exponential(1)} distribution as its prior. This is a weakly
+#'   informative prior that regularizes the model by favoring smaller,
+#'   positive values, thus preventing extremely large parameter estimates.
+#' 
+#' @param estimate [character] 
+#'  Estimation method. Default is \code{"MLE"}, 
+#'  meaning the algorithm will iterate to find the parameter values that 
+#'  maximize the likelihood, without considering any prior information. If 
+#'  \code{estimate = "MAP"}, prior distributions must be specified via the 
+#'  \code{priors} argument. After an initial optimization using likelihood, 
+#'  the algorithm estimates the distribution of each parameter across all 
+#'  subjects, fits a normal or exponential prior, and re-optimizes to maximize 
+#'  the posterior. This procedure iterates until convergence and follows the EM 
+#'  (Expectation-Maximization) framework.
+#' 
+#' @param tolerance [numeric] 
+#' Convergence threshold for MAP estimation. If the change in
+#'  log posterior probability between iterations is smaller than this value, the
+#'  algorithm is considered to have converged and the program will stop.
+#' 
 #' @param model_names [list] 
 #' The names of fit modals
 #' 
@@ -250,14 +282,32 @@ rcv_d <- function(
   data,
   id = NULL,
   n_trials = NULL,
+  funcs = NULL,
+  model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  model_names = c("TD", "RSTD", "Utility"),
-  funcs = NULL,
+  priors = list(
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    ), 
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    ), 
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      gamma = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    )
+  ),
+  estimate = "MLE",
+  tolerance = 0.001,
   initial_params = NA,
   initial_size = 50,
   iteration_s = 10,
@@ -328,6 +378,9 @@ rcv_d <- function(
         n_trials = nt,
         lower = fit_lower[[j]],
         upper = fit_upper[[j]],
+        priors = priors[[j]],
+        estimate = estimate,
+        tolerance = tolerance,
         initial_params = initial_params,
         initial_size = initial_size,
         iteration = iteration_f,

@@ -106,6 +106,38 @@
 #' @param upper [list] 
 #' The upper bounds for model fit models
 #' 
+#' @param priors [list] A \code{list} object for specifying the Bayesian prior
+#'   distributions for each model parameter. Each element in the list
+#'   should be named after a parameter and contain a function that returns the 
+#'   log probability density.
+#'   
+#'   By default, a set of priors is used. For most parameters, this is a
+#'   \strong{Uniform(0, 1)} distribution, which acts as an uninformative prior.
+#'   This means that for these parameters, the Maximum A Posteriori (MAP)
+#'   estimate will be identical to the Maximum Likelihood Estimate (MLE).
+#'
+#'   The exception is for the inverse temperature parameter associated with the
+#'   softmax function (\code{tau}). This parameter uses an 
+#'   \strong{Exponential(1)} distribution as its prior. This is a weakly
+#'   informative prior that regularizes the model by favoring smaller,
+#'   positive values, thus preventing extremely large parameter estimates.
+#' 
+#' @param estimate [character] 
+#'  Estimation method. Default is \code{"MLE"}, 
+#'  meaning the algorithm will iterate to find the parameter values that 
+#'  maximize the likelihood, without considering any prior information. If 
+#'  \code{estimate = "MAP"}, prior distributions must be specified via the 
+#'  \code{priors} argument. After an initial optimization using likelihood, 
+#'  the algorithm estimates the distribution of each parameter across all 
+#'  subjects, fits a normal or exponential prior, and re-optimizes to maximize 
+#'  the posterior. This procedure iterates until convergence and follows the EM 
+#'  (Expectation-Maximization) framework.
+#' 
+#' @param tolerance [numeric] 
+#' Convergence threshold for MAP estimation. If the change in
+#'  log posterior probability between iterations is smaller than this value, the
+#'  algorithm is considered to have converged and the program will stop.
+#' 
 #' @param initial_params [vector]
 #' Initial values for the free parameters that the optimization algorithm will
 #'  search from. These are primarily relevant when using algorithms that require
@@ -221,6 +253,24 @@ fit_p <- function(
   model_name = c("TD", "RSTD", "Utility"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  priors = list(
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    ), 
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    ), 
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      gamma = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    )
+  ),
+  estimate = "MLE",
+  tolerance = 0.001,
   initial_params = NA,
   initial_size = 50,
   iteration = 10,
@@ -261,6 +311,9 @@ fit_p <- function(
   
   doFuture::registerDoFuture()
   
+  # 每个model都使用初始的priors
+  update_priors <- list()
+  
   for (i in 1:length(fit_model)){
     
     message(paste0(
@@ -300,6 +353,7 @@ fit_p <- function(
             obj_func = fit_model[[i]],
             lower = lower[[i]],
             upper = upper[[i]],
+            priors = priors[[i]],
             iteration = iteration,
             seed = seed,
             initial_params = initial_params,
@@ -312,13 +366,15 @@ fit_p <- function(
             Subject = id[j],
             ACC = binaryRL_res$acc,
             LogL = -binaryRL_res$ll,
+            LogPr = -binaryRL_res$lpr,
+            LogPo = -binaryRL_res$lpo,
             AIC = binaryRL_res$aic,
             BIC = binaryRL_res$bic
           )
           
           for (k in 1:n_params) {
-            result_j[1, k + 6] <- binaryRL_res$output[k]
-            names(result_j)[k + 6] <- paste0("param_", k)
+            result_j[1, k + 8] <- binaryRL_res$output[k]
+            names(result_j)[k + 8] <- paste0("param_", k)
           }
           
           # 在foreach循环内更新进度条
@@ -328,8 +384,110 @@ fit_p <- function(
       })
     })
     
+    # Expectation-Maximization Algorithm
+    if (estimate == "MAP") {
+      
+      message("Starting Expectation-Maximization Algorithm")
+      
+      # 初始化LogPo
+      LogPo <- 0
+      
+      # 基于上面第一次的结果更新先验概率
+      update_priors[[i]] <- bayesian_update_priors(
+        model_result = model_result,
+        priors = priors[[i]], 
+        n_params = n_params,
+        param_prefix = "param_"
+      )
+      
+      delta_LogPo <- tolerance + 1
+      
+      post_iteration <- 0
+      
+      while (delta_LogPo > tolerance) {
+        
+        # 初始化(定义)foreach中的j
+        j <- NA
+        
+        # 抑制每个线程加载包时的信息
+        suppressMessages({
+          model_result <- foreach::foreach(
+            j = 1:n_subjects, .combine = rbind,
+            .packages = c("binaryRL"),
+            .export = funcs
+          ) %dorng% {
+            n_params <- length(lower[[i]])
+            
+            binaryRL_res <- binaryRL::optimize_para(
+              data = data,
+              id = id[j],
+              n_params = n_params,
+              n_trials = n_trials,
+              obj_func = fit_model[[i]],
+              lower = lower[[i]],
+              upper = upper[[i]],
+              priors = update_priors[[i]],
+              iteration = iteration,
+              seed = seed,
+              initial_params = initial_params,
+              initial_size = initial_size,
+              algorithm = algorithm
+            )
+            
+            result_j <- data.frame(
+              fit_model = model_name[i],
+              Subject = id[j],
+              ACC = binaryRL_res$acc,
+              LogL = -binaryRL_res$ll,
+              LogPr = -binaryRL_res$lpr,
+              LogPo = -binaryRL_res$lpo,
+              AIC = binaryRL_res$aic,
+              BIC = binaryRL_res$bic
+            )
+            
+            for (k in 1:n_params) {
+              result_j[1, k + 8] <- binaryRL_res$output[k]
+              names(result_j)[k + 8] <- paste0("param_", k)
+            }
+            
+            # 在foreach循环内更新进度条
+            p() 
+            return(result_j)
+          }
+        })
+        
+        # 计算此时的LogPo变化量
+        delta_LogPo <- abs(LogPo - sum(model_result$LogPo))
+        
+        # 存放新的LogPo
+        LogPo <- sum(model_result$LogPo)
+        
+        message(
+          paste0(
+            "Log-Posterior Probability: ", round(LogPo, 2),
+            ", ",
+            "\u0394: ", round(delta_LogPo, 2)
+          )
+        )
+        
+        # 修改先验分布
+        update_priors[[i]] <- bayesian_update_priors(
+          model_result = model_result,
+          priors = update_priors[[i]], 
+          n_params = n_params,
+          param_prefix = "param_"
+        )
+        
+        # EM也不会无限制跑下去
+        post_iteration <- post_iteration + 1
+        if (post_iteration > iteration) {
+          break 
+        }
+      }
+    }
+    
     # 將結果包在一個 list 裡面，保持結構一致性
-    model_comparison[[i]] <- list(model_result) 
+    model_comparison[[i]] <- model_result
   }
   
   # 取消注册的线程

@@ -12,6 +12,7 @@ optimize_para(
   n_trials,
   lower,
   upper,
+  priors,
   initial_params = NA,
   initial_size = 50,
   iteration = 10,
@@ -61,6 +62,22 @@ Lower bounds of free parameters}
 
 \item{upper}{[vector] 
 Upper bounds of free parameters}
+
+\item{priors}{[list] A \code{list} object for specifying the Bayesian prior
+  distributions for each model parameter. Each element in the list
+  should be named after a parameter and contain a function that returns the 
+  log probability density.
+  
+  By default, a set of priors is used. For most parameters, this is a
+  \strong{Uniform(0, 1)} distribution, which acts as an uninformative prior.
+  This means that for these parameters, the Maximum A Posteriori (MAP)
+  estimate will be identical to the Maximum Likelihood Estimate (MLE).
+
+  The exception is for the inverse temperature parameter associated with the
+  softmax function (\code{tau}). This parameter uses an 
+  \strong{Exponential(1)} distribution as its prior. This is a weakly
+  informative prior that regularizes the model by favoring smaller,
+  positive values, thus preventing extremely large parameter estimates.}
 
 \item{initial_params}{[vector]
 Initial values for the free parameters that the optimization algorithm will

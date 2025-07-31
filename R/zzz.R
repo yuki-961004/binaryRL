@@ -1,6 +1,6 @@
 utils::globalVariables(c(
   "binaryRL.env",
-  "mode", "data", "id", "n_params", "n_trials"
+  "mode", "data", "id", "n_params", "n_trials", "priors"
 ))
 
 binaryRLStartupMessage <- function()

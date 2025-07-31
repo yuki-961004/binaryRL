@@ -81,6 +81,38 @@
 #' @param upper [vector] 
 #' Upper bounds of free parameters
 #' 
+#' @param priors [list] A \code{list} object for specifying the Bayesian prior
+#'   distributions for each model parameter. Each element in the list
+#'   should be named after a parameter and contain a function that returns the 
+#'   log probability density.
+#'   
+#'   By default, a set of priors is used. For most parameters, this is a
+#'   \strong{Uniform(0, 1)} distribution, which acts as an uninformative prior.
+#'   This means that for these parameters, the Maximum A Posteriori (MAP)
+#'   estimate will be identical to the Maximum Likelihood Estimate (MLE).
+#'
+#'   The exception is for the inverse temperature parameter associated with the
+#'   softmax function (\code{tau}). This parameter uses an 
+#'   \strong{Exponential(1)} distribution as its prior. This is a weakly
+#'   informative prior that regularizes the model by favoring smaller,
+#'   positive values, thus preventing extremely large parameter estimates.
+#' 
+#' @param estimate [character] 
+#'  Estimation method. Default is \code{"MLE"}, 
+#'  meaning the algorithm will iterate to find the parameter values that 
+#'  maximize the likelihood, without considering any prior information. If 
+#'  \code{estimate = "MAP"}, prior distributions must be specified via the 
+#'  \code{priors} argument. After an initial optimization using likelihood, 
+#'  the algorithm estimates the distribution of each parameter across all 
+#'  subjects, fits a normal or exponential prior, and re-optimizes to maximize 
+#'  the posterior. This procedure iterates until convergence and follows the EM 
+#'  (Expectation-Maximization) framework.
+#' 
+#' @param tolerance [numeric] 
+#' Convergence threshold for MAP estimation. If the change in
+#'  log posterior probability between iterations is smaller than this value, the
+#'  algorithm is considered to have converged and the program will stop.
+#' 
 #' @param seed [integer] 
 #' Random seed. This ensures that the results are 
 #'  reproducible and remain the same each time the function is run. 
@@ -148,6 +180,9 @@ recovery_data <- function(
     n_trials,
     lower,
     upper,
+    priors,
+    estimate = "MLE",
+    tolerance = 0.001,
     initial_params = NA,
     initial_size = 50,
     iteration = 10,
@@ -159,7 +194,9 @@ recovery_data <- function(
   recovery <- data.frame(
     fit_model = rep(model_name, length(list)),
     ACC = NA,
-    LL = NA,
+    LogL = NA,
+    LogPr = NA,
+    LogPo = NA,
     AIC = NA,
     BIC = NA
   )
@@ -172,15 +209,15 @@ recovery_data <- function(
   n_input_params <- length(list[[1]]$input)
   
   for (i in 1:n_input_params) {
-    recovery[, i + 5] <- NA
-    names(recovery)[i + 5] <- paste0("input_param_", i)
+    recovery[, i + 7] <- NA
+    names(recovery)[i + 7] <- paste0("input_param_", i)
   }
   # 增加放置输出参数的列
   n_output_params <- length(lower)
   
   for (i in 1:n_output_params) {
-    recovery[, i + 5 + n_input_params] <- NA
-    names(recovery)[i + 5 + n_input_params] <- paste0("output_param_", i)
+    recovery[, i + 7 + n_input_params] <- NA
+    names(recovery)[i + 7 + n_input_params] <- paste0("output_param_", i)
   }
   
   if (nc == 1) {
@@ -214,7 +251,7 @@ recovery_data <- function(
     
     # 抑制每个线程加载包时的信息
     suppressMessages({
-      temp_recovery <- foreach::foreach(
+      model_result <- foreach::foreach(
         i = 1:n_iterations, .combine = rbind,
         .packages = "binaryRL", 
         .export = funcs
@@ -230,6 +267,7 @@ recovery_data <- function(
           n_trials = n_trials,
           lower = lower,
           upper = upper,
+          priors = priors,
           initial_params = initial_params,
           initial_size = initial_size,
           iteration = iteration,
@@ -237,18 +275,20 @@ recovery_data <- function(
           algorithm = algorithm
         )
         
-        row_i <- data.frame(matrix(NA, nrow = 1, ncol = 5 + n_input_params + n_output_params))
+        row_i <- data.frame(matrix(NA, nrow = 1, ncol = 7 + n_input_params + n_output_params))
         row_i[1, 1] <- model_name
         row_i[1, 2] <- binaryRL.res$acc
         row_i[1, 3] <- binaryRL.res$ll
-        row_i[1, 4] <- binaryRL.res$aic
-        row_i[1, 5] <- binaryRL.res$bic
+        row_i[1, 4] <- binaryRL.res$lpr
+        row_i[1, 5] <- binaryRL.res$lpo
+        row_i[1, 6] <- binaryRL.res$aic
+        row_i[1, 7] <- binaryRL.res$bic
         
         for (j in 1:n_input_params) {
-          row_i[1, 5 + j] <- list[[i]]$input[j]
+          row_i[1, 7 + j] <- list[[i]]$input[j]
         }
         for (j in 1:n_output_params) {
-          row_i[1, 5 + n_input_params + j] <- binaryRL.res$output[j]
+          row_i[1, 7 + n_input_params + j] <- binaryRL.res$output[j]
         }
         
         # 更新進度條
@@ -260,9 +300,120 @@ recovery_data <- function(
   })
   
   # 继承recovery的列名
-  colnames(temp_recovery) <- colnames(recovery)
-  recovery <- temp_recovery
+  colnames(model_result) <- colnames(recovery)
   
+  # Expectation-Maximization
+  if (estimate == "MAP") {
+    
+    message("Starting Expectation-Maximization Algorithm")
+    
+    # 初始化LogPo
+    LogPo <- 0
+    
+    # 初始化先验分布
+    update_priors <- list()
+    
+    # 依据上面第一次的结果迭代更新先验概率
+    update_priors <- bayesian_update_priors(
+      model_result = model_result,
+      priors = priors, 
+      n_params = n_params,
+      param_prefix = "output_param_"
+    )
+    
+    delta_LogPo <- tolerance + 1
+    
+    post_iteration <- 0
+    
+    while (delta_LogPo > tolerance) {
+      
+      # 初始化(定义)foreach中的j
+      j <- NA
+      
+      # 抑制每个线程加载包时的信息
+      suppressMessages({
+        model_result <- foreach::foreach(
+          i = 1:n_iterations, .combine = rbind,
+          .packages = "binaryRL", 
+          .export = funcs
+        ) %dorng% {
+          
+          data_i <- list[[i]][["data"]]
+          
+          binaryRL.res <- binaryRL::optimize_para(
+            data = data_i,
+            id = id[i],
+            obj_func = fit_model,
+            n_params = n_params,
+            n_trials = n_trials,
+            lower = lower,
+            upper = upper,
+            priors = update_priors,
+            initial_params = initial_params,
+            initial_size = initial_size,
+            iteration = iteration,
+            seed = seed,
+            algorithm = algorithm
+          )
+          
+          row_i <- data.frame(matrix(NA, nrow = 1, ncol = 7 + n_input_params + n_output_params))
+          row_i[1, 1] <- model_name
+          row_i[1, 2] <- binaryRL.res$acc
+          row_i[1, 3] <- binaryRL.res$ll
+          row_i[1, 4] <- binaryRL.res$lpr
+          row_i[1, 5] <- binaryRL.res$lpo
+          row_i[1, 6] <- binaryRL.res$aic
+          row_i[1, 7] <- binaryRL.res$bic
+          
+          for (j in 1:n_input_params) {
+            row_i[1, 7 + j] <- list[[i]]$input[j]
+          }
+          for (j in 1:n_output_params) {
+            row_i[1, 7 + n_input_params + j] <- binaryRL.res$output[j]
+          }
+          
+          # 更新進度條
+          p() 
+          
+          return(row_i)
+        }
+      })
+      
+      # 继承recovery的列名
+      colnames(model_result) <- colnames(recovery)
+      
+      # 计算此时的LogPo变化量
+      delta_LogPo <- abs(LogPo - sum(model_result$LogPo))
+      
+      # 存放新的LogPo
+      LogPo <- sum(model_result$LogPo)
+      
+      message(
+        paste0(
+          "Log-Posterior Probability: ", round(LogPo, 2),
+          ", ",
+          "\u0394: ", round(delta_LogPo, 2)
+        )
+      )
+      
+      # 修改先验分布
+      update_priors <- bayesian_update_priors(
+        model_result = model_result,
+        priors = update_priors, 
+        n_params = n_params,
+        param_prefix = "output_param_"
+      )
+      
+      # EM也不会无限制跑下去
+      post_iteration <- post_iteration + 1
+      if (post_iteration > iteration) {
+        break 
+      }
+    }
+  }
+  
+  recovery <- model_result
+
   # 取消注册的线程
   future::plan(future::sequential)
 

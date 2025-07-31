@@ -360,6 +360,12 @@
 #'   data = data,
 #'   id = 18,
 #'   eta = c(0.321, 0.765),
+#'   tau = 0.5,
+#'   priors = list(
+#'     eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+#'     eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+#'     tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+#'   ),
 #'   n_params = 2, 
 #'   n_trials = 360
 #' )
@@ -389,16 +395,7 @@ run_m <- function(
   pi = NA,
   tau = 1,
   
-  priors = list(
-    alpha = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
-    beta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
-    gamma = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
-    eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
-    epsilon = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
-    lambda = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
-    pi = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
-    tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
-  ),
+  priors,
   
   util_func = func_gamma,
   rate_func = func_eta,
