@@ -12,7 +12,7 @@ optimize_para(
   n_trials,
   lower,
   upper,
-  priors,
+  priors = NULL,
   initial_params = NA,
   initial_size = 50,
   iteration = 10,
