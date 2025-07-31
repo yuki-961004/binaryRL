@@ -323,6 +323,7 @@ fit_p <- function(
     ))
     
     n_subjects <- length(id)
+    n_params <- length(lower[[i]])
     
     # 进度条
     progressr::handlers(progressr::handler_txtprogressbar)
@@ -343,8 +344,7 @@ fit_p <- function(
           .packages = c("binaryRL"),
           .export = funcs
         ) %dorng% {
-          n_params <- length(lower[[i]])
-          
+
           binaryRL_res <- binaryRL::optimize_para(
             data = data,
             id = id[j],
@@ -416,7 +416,6 @@ fit_p <- function(
             .packages = c("binaryRL"),
             .export = funcs
           ) %dorng% {
-            n_params <- length(lower[[i]])
             
             binaryRL_res <- binaryRL::optimize_para(
               data = data,
