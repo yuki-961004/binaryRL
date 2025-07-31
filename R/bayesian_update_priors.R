@@ -10,7 +10,7 @@ bayesian_update_priors <- function(
       priors[[k]] <- function(x) { 
         stats::dexp(
           x, log = TRUE,
-          rate = 1 / mean(model_result[[col_name]]) + 1e-10
+          rate = 1 / (mean(model_result[[col_name]], na.rm = TRUE) + 1e-10)
         ) 
       }
     } else {

@@ -163,14 +163,15 @@ optimize_para <- function(
 ){
   # 创建临时环境
   binaryRL.env <- new.env()
-  mode <- "fit"
+  
   # 将data传入到临时环境
-  assign(x = "mode", value = mode, envir = binaryRL.env)
-  assign(x = "data", value = data, envir = binaryRL.env)
-  assign(x = "id", value = id, envir = binaryRL.env)
-  assign(x = "n_params", value = n_params, envir = binaryRL.env)
-  assign(x = "n_trials", value = n_trials, envir = binaryRL.env)
-  assign(x = "priors", value = priors, envir = binaryRL.env)
+  binaryRL.env$mode <- "fit"
+  binaryRL.env$data <- data
+  binaryRL.env$id <- id
+  binaryRL.env$n_params <- n_params
+  binaryRL.env$n_trials <- n_trials
+  binaryRL.env$priors <- priors
+  
   # 让obj_func的环境绑定在fit_env中
   environment(obj_func) <- binaryRL.env
   

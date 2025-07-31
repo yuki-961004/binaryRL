@@ -139,13 +139,12 @@ rpl_e <- function(
     params <- stats::na.omit(unlist(result[i, grep(param_prefix, names(result))]))
     
     binaryRL.env <- new.env()
+    binaryRL.env$mode <- "replay"
     binaryRL.env$data <- data
     binaryRL.env$id <- id[i]
     binaryRL.env$n_params <- length(params)
     binaryRL.env$n_trials <- n_trials
-    binaryRL.env$mode <- "replay"
     binaryRL.env$priors <- NULL
-    
     
     obj_func <- model
     
