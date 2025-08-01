@@ -1,25 +1,3 @@
-#' Round Digital
-#'
-#' @param data [data.frame] A data frame resulting from the 'step6' process of the `model_fit` function. 
-#' 
-#' @param options [vector] all alternative options from 'step1' `unique_choice`
-#' 
-#' @param digits_1 [integer] The number of decimal places to retain for columns related 
-#'  to the value function 
-#'  The default is 2.
-#' 
-#' @param digits_2 [integer] The number of decimal places to retain for columns related 
-#'  to the select function. 
-#'  The default is 5.
-#'
-#' @returns data frame:
-#'   \itemize{
-#'     \item{\code{data}: step6 + round(col, digits).}
-#'   }
-#' @export
-#'
-#' @noRd
-#' 
 digits <- function(data, options, digits_1 = 2, digits_2 = 5){
   # round
   for (name in options) {

@@ -250,6 +250,7 @@ rcv_d <- function(
   data,
   id = NULL,
   n_trials = NULL,
+  
   funcs = NULL,
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
@@ -258,11 +259,14 @@ rcv_d <- function(
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  initial_params = NA,
-  initial_size = 50,
+  
   iteration_s = 10,
   iteration_f = 10,
+  
+  initial_params = NA,
+  initial_size = 50,
   seed = 1,
+  
   nc = 1,
   algorithm
 ){

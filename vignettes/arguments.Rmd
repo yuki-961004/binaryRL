@@ -194,8 +194,10 @@ Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational m
 
 The primary aim of `binaryRL` is to enable reinforcement learning models to exhibit behaviors similar to human subjects. While there are various ways to formulate **loss functions**, the built-in loss function expresses the resemblance between human behavior and model predictions.  
 
+#### Log Likelihood  
+
 $$
-LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
+\log P(D|\theta)= \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
 $$ 
 
 *NOTE:* $B_{L}$ and $B_{R}$ the option that the subject chooses. ($B_{L} = 1$: subject chooses the left option; $B_{R} = 1$: subject chooses the right option); $P_{L}$ and $P_{R}$ represent the probabilities of selecting the left or right option, as predicted by the reinforcement learning model. ${k}$ the number of free parameters in the model; ${n}$ represents the total number of trials in the paradigm.  
@@ -204,10 +206,29 @@ $$
 
 Hampton, A. N., Bossaerts, P., & O'doherty, J. P. (2006). The role of the ventromedial prefrontal cortex in abstract state-based inference during decision making in humans. *Journal of Neuroscience, 26*(32), 8360-8367. https://doi.org/10.1523/JNEUROSCI.1010-06.2006
 
+#### Log Prior Probability
+
+$$
+\log P(\theta) = 
+\begin{cases} 
+   \log P(\theta | \mu_0, \sigma_0^2) & 
+   \quad \theta \sim \mathcal{N}(\mu_0, \sigma_0^2) 
+   \\
+   \log P(\theta | \lambda) & 
+   \quad \theta \sim \text{Exp}(\lambda) \quad  
+\end{cases}
+$$
+
+#### Log Posterior Probability
+
+$$
+\log P(\theta|D) = \log P(D|\theta) + \log P(\theta)
+$$
+
+*NOTE: If `estimate = "MAP"` is used instead of `estimate = "MLE"`, the function `run_m` automatically returns the Log Posterior Probability in place of the Log-Likelihood (LL).*
+
 ### AIC & BIC
 Additionally, the program also calculates AIC and BIC based on the Log-Likelihood, number of parameters, and number of trials to penalize overly complex models.
-
-  
 
 $$
 AIC =  - 2 LL + 2 k

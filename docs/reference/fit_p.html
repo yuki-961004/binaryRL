@@ -63,7 +63,7 @@ For more information, please refer to the homepage of this package:
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -127,14 +127,18 @@ For more information, please refer to the homepage of this package:
 <span>  <span class="va">data</span>,</span>
 <span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_trials <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  fit_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Utility.html">Utility</a></span><span class="op">)</span>,</span>
 <span>  funcs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  model_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TD"</span>, <span class="st">"RSTD"</span>, <span class="st">"Utility"</span><span class="op">)</span>,</span>
+<span>  fit_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Utility.html">Utility</a></span><span class="op">)</span>,</span>
+<span>  estimate <span class="op">=</span> <span class="st">"MLE"</span>,</span>
 <span>  lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  priors <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tolerance <span class="op">=</span> <span class="fl">0.001</span>,</span>
+<span>  iteration_i <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  iteration_g <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  initial_params <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  initial_size <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>  iteration <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">123</span>,</span>
 <span>  nc <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">algorithm</span></span>
@@ -181,11 +185,6 @@ Represents the total number of trials a single subject experienced
 <p><code>default: n_trials = NULL</code></p></dd>
 
 
-<dt id="arg-fit-model">fit_model<a class="anchor" aria-label="anchor" href="#arg-fit-model"></a></dt>
-<dd><p>[list]
-A collection of functions applied to fit models to the data.</p></dd>
-
-
 <dt id="arg-funcs">funcs<a class="anchor" aria-label="anchor" href="#arg-funcs"></a></dt>
 <dd><p>[character]
 A character vector containing the names of all user-defined functions
@@ -211,6 +210,24 @@ A character vector containing the names of all user-defined functions
 The name of fit modals</p></dd>
 
 
+<dt id="arg-fit-model">fit_model<a class="anchor" aria-label="anchor" href="#arg-fit-model"></a></dt>
+<dd><p>[list]
+A collection of functions applied to fit models to the data.</p></dd>
+
+
+<dt id="arg-estimate">estimate<a class="anchor" aria-label="anchor" href="#arg-estimate"></a></dt>
+<dd><p>[character]
+Estimation method. Default is <code>"MLE"</code>,
+meaning the algorithm will iterate to find the parameter values that
+maximize the likelihood, without considering any prior information. If
+<code>estimate = "MAP"</code>, prior distributions must be specified via the
+<code>priors</code> argument. After an initial optimization using likelihood,
+the algorithm estimates the distribution of each parameter across all
+subjects, fits a normal or exponential prior, and re-optimizes to maximize
+the posterior. This procedure iterates until convergence and follows the EM
+(Expectation-Maximization) framework.</p></dd>
+
+
 <dt id="arg-lower">lower<a class="anchor" aria-label="anchor" href="#arg-lower"></a></dt>
 <dd><p>[list]
 The lower bounds for model fit models</p></dd>
@@ -219,6 +236,45 @@ The lower bounds for model fit models</p></dd>
 <dt id="arg-upper">upper<a class="anchor" aria-label="anchor" href="#arg-upper"></a></dt>
 <dd><p>[list]
 The upper bounds for model fit models</p></dd>
+
+
+<dt id="arg-priors">priors<a class="anchor" aria-label="anchor" href="#arg-priors"></a></dt>
+<dd><p>[list] A <code>list</code> object for specifying the Bayesian prior
+  distributions for each model parameter. Each element in the list
+  should be named after a parameter and contain a function that returns the
+  log probability density.</p>
+<p>By default, a set of priors is used. For most parameters, this is a
+  <strong>Uniform(0, 1)</strong> distribution, which acts as an uninformative prior.
+  This means that for these parameters, the Maximum A Posteriori (MAP)
+  estimate will be identical to the Maximum Likelihood Estimate (MLE).</p>
+<p>The exception is for the inverse temperature parameter associated with the
+  softmax function (<code>tau</code>). This parameter uses an
+  <strong>Exponential(1)</strong> distribution as its prior. This is a weakly
+  informative prior that regularizes the model by favoring smaller,
+  positive values, thus preventing extremely large parameter estimates.</p></dd>
+
+
+<dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
+<dd><p>[numeric]
+Convergence threshold for MAP estimation. If the change in
+ log posterior probability between iterations is smaller than this value, the
+ algorithm is considered to have converged and the program will stop.</p></dd>
+
+
+<dt id="arg-iteration-i">iteration_i<a class="anchor" aria-label="anchor" href="#arg-iteration-i"></a></dt>
+<dd><p>[integer]
+The number of iterations the optimization algorithm will perform
+ when searching for the best-fitting parameters during the fitting
+ phase. A higher number of iterations may increase the likelihood of
+ finding a global optimum but also increases computation time.</p></dd>
+
+
+<dt id="arg-iteration-g">iteration_g<a class="anchor" aria-label="anchor" href="#arg-iteration-g"></a></dt>
+<dd><p>[integer]
+The maximum number of iterations for the Expectation-Maximization (EM)
+ based MAP estimation. The algorithm will stop once this iteration
+ count is reached, even if the change in the log-posterior value has
+ not yet fallen below the `tolerance` threshold.</p></dd>
 
 
 <dt id="arg-initial-params">initial_params<a class="anchor" aria-label="anchor" href="#arg-initial-params"></a></dt>
@@ -238,14 +294,6 @@ This parameter corresponds to the <strong>population size</strong> in genetic
  This parameter is only required for optimization algorithms that operate on
  a population, such as <code>GA</code> or <code>DEoptim</code>.</p>
 <p><code>default: initial_size = 50</code>.</p></dd>
-
-
-<dt id="arg-iteration">iteration<a class="anchor" aria-label="anchor" href="#arg-iteration"></a></dt>
-<dd><p>[integer]
-The number of iterations the optimization algorithm will perform
- when searching for the best-fitting parameters during the fitting
- phase. A higher number of iterations may increase the likelihood of
- finding a global optimum but also increases computation time.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
@@ -313,10 +361,31 @@ Choose an algorithm package from
 <span class="r-in"><span>  <span class="co">#funcs = c("your_funcs"),</span></span></span>
 <span class="r-in"><span>  fit_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Utility.html">Utility</a></span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  model_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TD"</span>, <span class="st">"RSTD"</span>, <span class="st">"Utility"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="co">#|--------------------------------- estimate ----------------------------------|#</span></span></span>
+<span class="r-in"><span>  estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MLE"</span>, <span class="st">"MAP"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="co">#|------------------------------------ MLE ------------------------------------|#</span></span></span>
 <span class="r-in"><span>  lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span><span class="co">#|----------------------------- interation number -----------------------------|#</span></span></span>
-<span class="r-in"><span>  iteration <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span><span class="co">#|------------------------------------ MAP ------------------------------------|#</span></span></span>
+<span class="r-in"><span>  priors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      eta <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">dunif</a></span><span class="op">(</span><span class="va">x</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">}</span>, </span></span>
+<span class="r-in"><span>      tau <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">dexp</a></span><span class="op">(</span><span class="va">x</span>, rate <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">}</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span>, </span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      eta <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">dunif</a></span><span class="op">(</span><span class="va">x</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">}</span>, </span></span>
+<span class="r-in"><span>      eta <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">dunif</a></span><span class="op">(</span><span class="va">x</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">}</span>, </span></span>
+<span class="r-in"><span>      tau <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">dexp</a></span><span class="op">(</span><span class="va">x</span>, rate <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">}</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span>, </span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      eta <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">dunif</a></span><span class="op">(</span><span class="va">x</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">}</span>, </span></span>
+<span class="r-in"><span>      gamma <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">dunif</a></span><span class="op">(</span><span class="va">x</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">}</span>, </span></span>
+<span class="r-in"><span>      tau <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">dexp</a></span><span class="op">(</span><span class="va">x</span>, rate <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">}</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="co">#|----------------------------- iteration number ------------------------------|#</span></span></span>
+<span class="r-in"><span>  iteration_i <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  iteration_g <span class="op">=</span> <span class="fl">10</span>,</span></span>
 <span class="r-in"><span><span class="co">#|-------------------------------- algorithms ---------------------------------|#</span></span></span>
 <span class="r-in"><span>  nc <span class="op">=</span> <span class="fl">1</span>,                 <span class="co"># &lt;nc &gt; 1&gt;: parallel computation across subjects</span></span></span>
 <span class="r-in"><span>  <span class="co"># Base R Optimization</span></span></span>

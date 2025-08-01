@@ -16,10 +16,10 @@ rcv_d(
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  initial_params = NA,
-  initial_size = 50,
   iteration_s = 10,
   iteration_f = 10,
+  initial_params = NA,
+  initial_size = 50,
   seed = 1,
   nc = 1,
   algorithm
@@ -103,6 +103,16 @@ The lower bounds for model fit models}
 \item{fit_upper}{[list] 
 The upper bounds for model fit models}
 
+\item{iteration_s}{[integer]
+This parameter determines how many simulated datasets are created for 
+ subsequent model and parameter recovery analyses.}
+
+\item{iteration_f}{[integer]
+The number of iterations the optimization algorithm will perform
+ when searching for the best-fitting parameters during the fitting
+ phase. A higher number of iterations may increase the likelihood of 
+ finding a global optimum but also increases computation time.}
+
 \item{initial_params}{[numeric]
 Initial values for the free parameters that the optimization algorithm will
  search from. These are primarily relevant when using algorithms that require
@@ -119,16 +129,6 @@ This parameter corresponds to the \strong{population size} in genetic
  a population, such as \code{GA} or \code{DEoptim}. 
  
  \code{default: initial_size = 50}.}
-
-\item{iteration_s}{[integer]
-This parameter determines how many simulated datasets are created for 
- subsequent model and parameter recovery analyses.}
-
-\item{iteration_f}{[integer]
-The number of iterations the optimization algorithm will perform
- when searching for the best-fitting parameters during the fitting
- phase. A higher number of iterations may increase the likelihood of 
- finding a global optimum but also increases computation time.}
 
 \item{seed}{[integer] 
 Random seed. This ensures that the results are 

@@ -1,150 +1,3 @@
-#' Markov Decision Process
-#'
-#' @param data [data.frame] A data frame resulting from the 'step4' process of the `set_initial_value` function. 
-#' 
-#' @param options [vector] all alternative options from 'step1' `unique_choice`
-#' 
-#' @param seed [integer] 
-#' Random seed. This ensures that the results are 
-#'  reproducible and remain the same each time the function is run. 
-#'  \code{Default: `seed = 123`}
-#'  
-#' @param initial_value [numeric] 
-#' Subject's initial expected value for each stimulus's reward. If this value 
-#'  is not set (`initial_value = NA`), the subject will use the reward received 
-#'  after the first trial as the initial value for that stimulus. In other 
-#'  words, the learning rate for the first trial is 100%. 
-#'  \code{default: `initial_value = NA` e.g., `initial_value = 0`}
-#'  
-#' @param threshold [integer]
-#' Controls the initial exploration phase in the \strong{epsilon-first} strategy.
-#'  This is the number of early trials where the subject makes purely random
-#'  choices, as they haven't yet learned the options' values. For example,
-#'  `threshold = 20` means random choices for the first 20 trials.
-#'  For \strong{epsilon-greedy} or \strong{epsilon-decreasing} strategies,
-#'  `threshold` should be kept at its default value.
-#'  \code{Default: `threshold = 1`}
-#' 
-#' @param alpha [vector]
-#' Extra parameters that may be used in functions. 
-#'
-#' @param beta [vector]
-#' Extra parameters that may be used in functions. 
-#' 
-#' @param gamma [vector]
-#' This parameter represents the exponent in \bold{Stevens' Power Law} within the
-#'  Utility Function, where utility is modeled as 
-#'  \eqn{\mathrm{u(x)} = \mathrm{x}^{\gamma_1}}.
-#'
-#' In \bold{Kahneman's Prospect Theory}, this exponent is applied differently:
-#' \itemize{
-#'   \item \eqn{\mathrm{utility} = \mathrm{reward}^{\gamma_{1}}}, \eqn{reward > 0}.
-#'   \item \eqn{\mathrm{utility} = \beta \times \mathrm{reward}^{\gamma_{2}}}, \eqn{reward < 0}.
-#' }
-#' 
-#' @param eta [numeric]
-#' Parameters used in the Learning Rate Function, \code{rate_func}, representing
-#'  the rate at which the subject updates the difference (prediction error)
-#'  between the reward and the expected value in the subject's mind.
-#'
-#'  The structure of \code{eta} depends on the model type:
-#'  \itemize{
-#'    \item For the \strong{Temporal Difference (TD) model}, 
-#'    where a single learning rate is used throughout the experiment 
-#'      \eqn{\eta, & |p| = 1 \text{ (TD)}}
-#'    \item For the \strong{Risk-Sensitive Temporal Difference (RDTD) model},
-#'    where two different learning rates are used depending on whether the 
-#'    reward is lower or higher than the expected value:
-#'      \eqn{\eta_-; \eta_+, & |p| = 2 \text{ (RDTD)}}.
-#'  }
-#'  e.g., \code{eta = 0.3} for TD, or \code{eta = c(0.3, 0.7)} for RDTD.
-#'
-#' @param epsilon [numeric]
-#' A parameter used in the \strong{epsilon-greedy} exploration strategy. It defines
-#'  the probability of making a completely random choice, as opposed to choosing
-#'  based on the relative values of the left and right options. For example,
-#'  if `epsilon = 0.1`, the subject has a 10% chance of random choice and a
-#'  90% chance of value-based choice. This parameter is only relevant when
-#'  `threshold` is at its default value (1) and `lambda` is not set.
-#'  \code{e.g., `epsilon = 0.1`}
-#' 
-#' @param lambda [vector] 
-#' A numeric value that controls the decay rate of exploration probability
-#'  in the \strong{epsilon-decreasing} strategy. A higher `lambda` value
-#'  means the probability of random choice will decrease more rapidly
-#'  as the number of trials increases.
-#' 
-#' @param pi [numeric]
-#' Parameter used in the Upper-Confidence-Bound (UCB) action selection
-#' formula. `bias_func` controls the degree of exploration by scaling the 
-#' uncertainty bonus given to less-explored options. A larger value of `pi` 
-#' (denoted as `c` in Sutton and Barto(1998) ) increases the influence of this 
-#' bonus, leading to more exploration of actions with uncertain estimated values. 
-#' Conversely, a smaller `pi` results in less exploration.
-#'
-#' \deqn{
-#'   A_t = \arg \max_{a} \left[V_t(a) + \pi \sqrt {\frac{\ln(t)}{N_t(a)}} \right]
-#' }
-#' 
-#' \code{e.g. pi = 0.1}
-#' 
-#' @param tau [vector] 
-#' Parameters used in the Soft-Max Function. `prob_func` representing the 
-#'  sensitivity of the subject to the value difference when making decisions. 
-#'  It determines the probability of selecting the left option versus the right 
-#'  option based on their values. A larger value of tau indicates greater 
-#'  sensitivity to the value difference between the options. In other words, 
-#'  even a small difference in value will make the subject more likely to 
-#'  choose the higher-value option. 
-#'  \code{e.g., `tau = c(0.5)`}
-#' 
-#' @param util_func [function] Utility Function see \code{\link[binaryRL]{func_gamma}}.
-#' 
-#' @param rate_func [function] Learning Rate Function see \code{\link[binaryRL]{func_eta}}.
-#' 
-#' @param expl_func [function] Exploration Strategy Function see \code{\link[binaryRL]{func_epsilon}}.
-#' 
-#' @param bias_func [function] Upper-Confidence-Bound see \code{\link[binaryRL]{func_pi}}.
-#' 
-#' @param prob_func [function] Soft-Max Function see \code{\link[binaryRL]{func_tau}}.
-#' 
-#' @param L_choice [character] 
-#' Column name of left choice. 
-#'  \code{e.g., `L_choice = "Left_Choice"`}
-#' 
-#' @param R_choice [character] 
-#' Column name of right choice. 
-#'  \code{e.g., `R_choice = "Right_Choice"`}
-#'  
-#' @param L_reward [character] 
-#' Column name of the reward of left choice 
-#'  \code{e.g., `L_reward = "Left_reward"`}
-#' 
-#' @param R_reward [character] 
-#' Column name of the reward of right choice 
-#'  \code{e.g., `R_reward = "Right_reward"`}
-#'  
-#' @param var1 [character] 
-#' Column name of extra variable 1. If your model uses more than just reward 
-#'  and expected value, and you need other information, such as whether the 
-#'  choice frame is Gain or Loss, then you can input the 'Frame' column as 
-#'  var1 into the model.
-#'  \code{e.g., `var1 = "Extra_Var1"`}
-#' 
-#' @param var2 [character] 
-#' Column name of extra variable 2. If one additional variable, var1, does not 
-#'  meet your needs, you can add another additional variable, var2, into your 
-#'  model.
-#'  e.g., `var2 = "Extra_Var2"`
-#'
-#' @returns data frame:
-#'   \itemize{
-#'     \item{\code{data}: step4 + all decisions.}
-#'   }
-#'   
-#' @noRd
-#' 
-
 decision_making <- function(
     mode,
     data, 
@@ -168,6 +21,7 @@ decision_making <- function(
     var1 = NA, var2 = NA
 ){
 ########################### [update row by row] ################################  
+  
   # 逐行更新Value
   for (i in 2:nrow(data)) {
     
@@ -185,22 +39,25 @@ decision_making <- function(
       sum(data[[R_choice]][1:(i)] == R_name, na.rm = TRUE)
     
     # 计算此时左选项被选了几次
-    data$L_pick[i] <- sum(data$Rob_Choose == L_name, na.rm = TRUE)
+    data$L_pick[i] <- sum(data[[rob_choose]] == L_name, na.rm = TRUE)
     # 计算此时右选项被选了几次
-    data$R_pick[i] <- sum(data$Rob_Choose == R_name, na.rm = TRUE)
+    data$R_pick[i] <- sum(data[[rob_choose]] == R_name, na.rm = TRUE)
     
     # 在上一行找此时左右选项对应的心中的价值
     data$L_value[i] <- data[[L_name]][i - 1]
     data$R_value[i] <- data[[R_name]][i - 1]
-################################ [L & R prob] ##################################  
+    
+################################## [action] ####################################  
     
     # 查询此次选择时, 已经选过哪些了
-    chosen <- unique(data$Rob_Choose)
+    chosen <- unique(data[[rob_choose]])
     
     # 设置随机种子
     set.seed(seed = seed + i)
     
-    # expl_func -> data$Try[i]: 是否进行探索
+################################## [epsilon] ###################################
+    
+    # epsilon: 确定是否需要随机选择(探索)
     data$Try[i] <- expl_func(
       i = i,
       L_freq = data$L_freq[i],
@@ -219,6 +76,9 @@ decision_making <- function(
       beta = beta
     )
     
+#################################### [pi] ######################################   
+    
+    # pi: 对选项价值的偏差值, 默认和被被选次数成反比例
     data$L_bias[i] <- bias_func(
       i = i,
       L_freq = data$L_freq[i],
@@ -255,7 +115,9 @@ decision_making <- function(
       beta = beta
     )
     
-    # prob_func -> data$L_prob[i] 计算选R概率
+################################### [tau] ######################################
+    
+    # tau: 左右选项备选的概率
     data$L_prob[i] <- prob_func(
       i = i,
       L_freq = data$L_freq[i],
@@ -275,7 +137,6 @@ decision_making <- function(
       beta = beta
     )
     
-    # prob_func -> data$R_prob[i] 计算选R概率
     data$R_prob[i] <- prob_func(
       i = i,
       L_freq = data$L_freq[i],
@@ -297,7 +158,7 @@ decision_making <- function(
     
 ############################### [ PASS VALUE ] #################################  
     
-    # 去上一行找每个选项此时的value
+    # 查询列名等于选项名的列记录该选项之前的价值
     for (name in options) {
       data[[name]][i] <- data[[name]][i - 1]
     }
@@ -321,29 +182,31 @@ decision_making <- function(
     
     # 计算这次是第几次选了这个选项
     data$Occurrence[[i]] <- sum(
-      data$Rob_Choose == data$Rob_Choose[[i]], 
+      data[[rob_choose]] == data[[rob_choose]][[i]], 
       na.rm = TRUE
     )
     
 ################################## [ Reward ] ##################################    
     
     # 基于选择, 来给予奖励
-    if (data$Rob_Choose[i] == data[[L_choice]][i]){
+    if (data[[rob_choose]][i] == data[[L_choice]][i]){
       # 选了左边, 给左的奖励
       data$Reward[i] <- data[[L_reward]][i]
-    } else if (data$Rob_Choose[i] == data[[R_choice]][i]) {
+    } else if (data[[rob_choose]][i] == data[[R_choice]][i]) {
       # 选了右边, 给右的奖励
       data$Reward[i] <- data[[R_reward]][i]
     }
     
-################################ [ update_v ] ##################################     
+################################## [ value ] ###################################     
     
     # 记录这次选了哪个
-    choose <- data$Rob_Choose[i]
+    choose <- data[[rob_choose]][i]
     # 看到奖励前, 对该选项预期的奖励, 去上一行找
     data$V_value[i] <- data[[choose]][i - 1]
     
-    # 看到reward之后的折扣率, 用util_func选择此时对应的gamma, 计算出R_utility
+################################# [ gamma ] #################################### 
+    
+    # gamma: 用幂函数将物理量reward转化成心理量utility
     gamma_utility <- util_func(
       i = i,
       L_freq = data$L_freq[i],
@@ -365,7 +228,9 @@ decision_making <- function(
     data$gamma[i] <- as.numeric(gamma_utility[[1]])
     data$R_utility[i] <- as.numeric(gamma_utility[[2]])
     
-    # 看到reward之后的学习率, 用rate_func选择此时对应的eta
+################################## [ eta ] #####################################     
+    
+    # eta: 基于Rescorla-Wagner Model更新价值
     data$eta[i] <- rate_func(
       i = i,
       L_freq = data$L_freq[i],
@@ -384,16 +249,20 @@ decision_making <- function(
       alpha = alpha,
       beta = beta
     )
+    
 ############################ [1st Learning Rate] ############################### 
     
-    # 如果没有设置初始值, 且是第一次选这个选项, 则此次学习率为1
+    # 如果没有设置初始值, 且是第一次选这个选项
     if (is.na(initial_value) & !(choose %in% chosen)) {
+      # 则此次学习率为1
       data$eta[i] <- 1
+      # 以第一次见到的价值作为初始值
       data$V_update[i] <- data$V_value[i] + 
         data$eta[i] * (data$R_utility[i] - data$V_value[i])
       data[[choose]][i] <- data$V_update[i]
-      # 其余情况, 正常按照eta更新价值
-    } else {
+    } 
+    else {
+      # 以设定的值为初始值, 且依据设定的eta更新价值
       data$V_update[i] <- data$V_value[i] + 
         data$eta[i] * (data$R_utility[i] - data$V_value[i])
       data[[choose]][i] <- data$V_update[i]  

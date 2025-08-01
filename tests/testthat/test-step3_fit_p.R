@@ -10,7 +10,8 @@ testthat::test_that("fit_p() works with valid input", {
     upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
     priors = NULL,
     estimate = "MLE",
-    iteration = 2,
+    iteration_i = 2,
+    iteration_g = NA,
     nc = 1,
     algorithm = "L-BFGS-B"
   )
@@ -30,23 +31,24 @@ testthat::test_that("fit_p() works with valid input", {
     upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
     priors = list(
       list(
-        eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-        tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+        eta = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+        tau = function(x) {stats::dexp(x, rate = 1, log = TRUE)}
       ), 
       list(
-        eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-        eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-        tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+        eta = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+        eta = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+        tau = function(x) {stats::dexp(x, rate = 1, log = TRUE)}
       ), 
       list(
-        eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-        gamma = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-        tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+        eta = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+        gamma = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)} , 
+        tau = function(x) {stats::dexp(x, rate = 1, log = TRUE)}
       )
     ),
     estimate = "MAP",
     tolerance = 0.001,
-    iteration = 5,
+    iteration_i = 5,
+    iteration_g = 3,
     nc = 4,
     algorithm = "L-BFGS-B" 
   )

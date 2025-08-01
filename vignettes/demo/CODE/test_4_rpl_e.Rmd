@@ -55,6 +55,9 @@ list[[3]] <- dplyr::bind_rows(
 
 ## Plot
 ### Frame
+
+<details>
+<summary>Plot Function</summary>
 ```{r eval=FALSE}
 plot <- list()
 
@@ -160,12 +163,16 @@ p
 
 rm(plot, p)
 ```
+</details>
 
 <p align="center">
     <img src="../FIGURE/Exp_Effect(Frame).png" alt="RL Models" width="80%" style="display: inline;">
 </p>
 
 ### Block
+
+<details>
+<summary>Plot Function</summary>
 ```{r eval=FALSE}
 plot <- list()
 
@@ -266,6 +273,7 @@ p
 
 rm(plot, p)
 ```
+</details>
 
 <p align="center">
     <img src="../FIGURE/Exp_Effect(Block).png" alt="RL Models" width="80%" style="display: inline;">

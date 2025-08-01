@@ -507,8 +507,8 @@ run_m <- function(
   )
   
   step8 <- output(
-    name = name,
     data = step7,
+    name = name,
     n_params = n_params,
     n_trials = n_trials,
     initial_value = initial_value,

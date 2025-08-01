@@ -15,13 +15,30 @@ library(ggplot2)
 comparison <- binaryRL::fit_p(
   data = binaryRL::Mason_2024_Exp2,
   n_trials = 360,
-  #id = c(1:8),
   id = unique(binaryRL::Mason_2024_Exp2$Subject),
-  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   model_name = c("TD", "RSTD", "Utility"),
+  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
+  estimate = c("MLE", "MAP"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
-  iteration = 100,
+  priors = list(
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    ), 
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    ), 
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      gamma = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    )
+  ),
+  iteration_i = 10,
+  iteration_g = 10,
   seed = 123,
   nc = 16,
   #algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)
@@ -38,32 +55,6 @@ result <- dplyr::bind_rows(comparison)
 
 write.csv(result, "../OUTPUT/result_comparison.csv", row.names = FALSE)
 ```
-
-<details>
-<summary>Process</summary>
-```{r eval=FALSE}
-binaryRL.res <- binaryRL::optimize_para(
-  data = binaryRL::Mason_2024_Exp2,
-  id = 1,
-  obj_func = binaryRL::RSTD,
-  n_params = 3,
-  n_trials = 360,
-  lower = c(0, 0, 0),
-  upper = c(1, 1, 1),
-  iteration = 10,
-  seed = 123,
-  #algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)
-  #algorithm = "GenSA"        # Simulated Annealing (GenSA)
-  #algorithm = "GA"           # Genetic Algorithm (GA)
-  algorithm = "DEoptim"      # Differential Evolution (DEoptim)
-  #algorithm = "PSO"          # Particle Swarm Optimization (pso)
-  #algorithm = "Bayesian"     # Bayesian Optimization (mlrMBO)
-  #algorithm = "CMA-ES"       # Covariance Matrix Adapting (cmaes)
-  #algorithm = "NLOPT_GN_MLSL"# Nonlinear Optimization (nloptr)
-)
-summary(binaryRL.res)
-```
-</details>
 
 ## Plot
 ### Read Result
@@ -93,6 +84,9 @@ data <- read.csv("../OUTPUT/result_comparison.csv") %>%
 ```
 
 ### Absolute
+
+<details>
+<summary>Plot Function</summary>
 ```{r eval=FALSE}
 #| label: model_comparison(abs)
 #| fig.alt: "Model Comparison (absolute)"
@@ -124,7 +118,6 @@ plots <- data %>%
       )
   })
 
-# 用 patchwork 拼起來
 plot <- patchwork::wrap_plots(plots, ncol = 2) +
   patchwork::plot_annotation(
     title = "Model Comparison (absolute)",
@@ -147,12 +140,16 @@ ggplot2::ggsave(
 
 plot
 ```
+</details>
 
 <p align="center">
     <img src="../FIGURE/model_comparison(abs).png" alt="RL Models" width="90%" style="display: inline;">
 </p>
 
 ### Relative
+
+<details>
+<summary>Plot Function</summary>
 ```{r eval=FALSE}
 #| label: model_comparison(rel)
 #| fig.alt: "Model Comparison (relative)"
@@ -199,6 +196,7 @@ ggplot2::ggsave(
 
 plot
 ```
+</details>
 
 <p align="center">
     <img src="../FIGURE/model_comparison(rel).png" alt="RL Models" width="90%" style="display: inline;">

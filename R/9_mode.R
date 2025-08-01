@@ -1,36 +1,3 @@
-#' Pretend to be Raw Data
-#'
-#' @param data [list] a list resulting from the 'step7' process of the `output` function. 
-#' 
-#' @param mode [character] 'fit' or 'simulate' whether to generate raw data.
-#'  Defaults to FALSE. Set to TRUE to generate fake data.
-#'  This produces a data frame with the same format as
-#'  the actual raw data.
-#' 
-#' @param sub_choose [character] column name of choices made by the subject. 
-#'  e.g., `sub_choose = "Choose"`
-#' 
-#' @param rob_choose [character] column name of choices made by the model. 
-#'  e.g., `rob_choose = "Rob_Choose"`
-#'  you should ignore this argument
-#' 
-#' @param raw_cols [vector] default: c("Subject", "Block", "Trial", 
-#'  "L_choice", "R_choice", "L_reward", "R_reward", "Choose", "Reward")
-#'  These are the column names of the raw data. 
-#'  Only required when `back = 'simulate'`.
-#'
-#' @returns binaryRL[list]:
-#'   \itemize{
-#'     \item{\code{data}: new raw data (decision made by robot)}
-#'     \item{\code{params}: all parameters value}
-#'     \item{\code{numeric}: ACC}
-#'     \item{\code{numeric}: LogL}
-#'     \item{\code{numeric}: AIC}
-#'     \item{\code{numeric}: BIC}
-#'   }
-#'   
-#' @noRd
-#' 
 mode <- function(
   data, 
   mode = "fit",
@@ -45,13 +12,16 @@ mode <- function(
 ){
   switch(
     mode, 
+    # fit中机器人直接抄答案, 让rob_choose直接取sub_choose, 旨在理解人类行为
     "fit" = {
       data <- data
     }, 
+    # 基于输入的参数, 生成和原始数据列数相同的假数据
     "simulate" = {
       data[["data"]][[sub_choose]] <- data[["data"]][[rob_choose]]
       data[["data"]] <- data[["data"]][, raw_cols]
     },
+    # replay中的机器人完全基于参数自主答题. 旨在复现人类行为. 
     "replay" = {
       data <- data
     }, 

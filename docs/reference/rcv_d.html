@@ -79,7 +79,7 @@ For more information, please refer to the homepage of this package:
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -151,18 +151,18 @@ The process involves generating synthetic datasets. First, parameters
 <span>  <span class="va">data</span>,</span>
 <span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_trials <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  funcs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  model_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TD"</span>, <span class="st">"RSTD"</span>, <span class="st">"Utility"</span><span class="op">)</span>,</span>
 <span>  simulate_models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Utility.html">Utility</a></span><span class="op">)</span>,</span>
 <span>  simulate_lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  simulate_upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  fit_models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Utility.html">Utility</a></span><span class="op">)</span>,</span>
 <span>  fit_lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  fit_upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  model_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TD"</span>, <span class="st">"RSTD"</span>, <span class="st">"Utility"</span><span class="op">)</span>,</span>
-<span>  funcs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  initial_params <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  initial_size <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  iteration_s <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  iteration_f <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  initial_params <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  initial_size <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  nc <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">algorithm</span></span>
@@ -211,6 +211,31 @@ Represents the total number of trials a single subject experienced
 <p><code>default: n_trials = NULL</code></p></dd>
 
 
+<dt id="arg-funcs">funcs<a class="anchor" aria-label="anchor" href="#arg-funcs"></a></dt>
+<dd><p>[character]
+A character vector containing the names of all user-defined functions
+ required for the computation. When parallel computation is enabled
+ (i.e., <code>nc &gt; 1</code>), user-defined models and their custom functions
+ might not be automatically accessible within the parallel environment.</p>
+<p>Therefore, if you have created your own reinforcement learning model
+ that modifies the package's default six default functions
+ (default functions:
+    <code>util_func = <a href="func_gamma.html">func_gamma</a></code>,
+    <code>rate_func = <a href="func_eta.html">func_eta</a></code>,
+    <code>expl_func = <a href="func_epsilon.html">func_epsilon</a></code>,
+    <code>bias_func = <a href="func_pi.html">func_pi</a></code>,
+    <code>prob_func = <a href="func_tau.html">func_tau</a></code>,
+    <code>loss_func = <a href="func_logl.html">func_logl</a></code>
+ ),
+ you must explicitly provide the names of your custom functions as a
+ vector here.</p></dd>
+
+
+<dt id="arg-model-names">model_names<a class="anchor" aria-label="anchor" href="#arg-model-names"></a></dt>
+<dd><p>[list]
+The names of fit modals</p></dd>
+
+
 <dt id="arg-simulate-models">simulate_models<a class="anchor" aria-label="anchor" href="#arg-simulate-models"></a></dt>
 <dd><p>[list]
 A collection of functions used to generate simulated data.</p></dd>
@@ -241,29 +266,18 @@ The lower bounds for model fit models</p></dd>
 The upper bounds for model fit models</p></dd>
 
 
-<dt id="arg-model-names">model_names<a class="anchor" aria-label="anchor" href="#arg-model-names"></a></dt>
-<dd><p>[list]
-The names of fit modals</p></dd>
+<dt id="arg-iteration-s">iteration_s<a class="anchor" aria-label="anchor" href="#arg-iteration-s"></a></dt>
+<dd><p>[integer]
+This parameter determines how many simulated datasets are created for
+ subsequent model and parameter recovery analyses.</p></dd>
 
 
-<dt id="arg-funcs">funcs<a class="anchor" aria-label="anchor" href="#arg-funcs"></a></dt>
-<dd><p>[character]
-A character vector containing the names of all user-defined functions
- required for the computation. When parallel computation is enabled
- (i.e., <code>nc &gt; 1</code>), user-defined models and their custom functions
- might not be automatically accessible within the parallel environment.</p>
-<p>Therefore, if you have created your own reinforcement learning model
- that modifies the package's default six default functions
- (default functions:
-    <code>util_func = <a href="func_gamma.html">func_gamma</a></code>,
-    <code>rate_func = <a href="func_eta.html">func_eta</a></code>,
-    <code>expl_func = <a href="func_epsilon.html">func_epsilon</a></code>,
-    <code>bias_func = <a href="func_pi.html">func_pi</a></code>,
-    <code>prob_func = <a href="func_tau.html">func_tau</a></code>,
-    <code>loss_func = <a href="func_logl.html">func_logl</a></code>
- ),
- you must explicitly provide the names of your custom functions as a
- vector here.</p></dd>
+<dt id="arg-iteration-f">iteration_f<a class="anchor" aria-label="anchor" href="#arg-iteration-f"></a></dt>
+<dd><p>[integer]
+The number of iterations the optimization algorithm will perform
+ when searching for the best-fitting parameters during the fitting
+ phase. A higher number of iterations may increase the likelihood of
+ finding a global optimum but also increases computation time.</p></dd>
 
 
 <dt id="arg-initial-params">initial_params<a class="anchor" aria-label="anchor" href="#arg-initial-params"></a></dt>
@@ -283,20 +297,6 @@ This parameter corresponds to the <strong>population size</strong> in genetic
  This parameter is only required for optimization algorithms that operate on
  a population, such as <code>GA</code> or <code>DEoptim</code>.</p>
 <p><code>default: initial_size = 50</code>.</p></dd>
-
-
-<dt id="arg-iteration-s">iteration_s<a class="anchor" aria-label="anchor" href="#arg-iteration-s"></a></dt>
-<dd><p>[integer]
-This parameter determines how many simulated datasets are created for
- subsequent model and parameter recovery analyses.</p></dd>
-
-
-<dt id="arg-iteration-f">iteration_f<a class="anchor" aria-label="anchor" href="#arg-iteration-f"></a></dt>
-<dd><p>[integer]
-The number of iterations the optimization algorithm will perform
- when searching for the best-fitting parameters during the fitting
- phase. A higher number of iterations may increase the likelihood of
- finding a global optimum but also increases computation time.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>

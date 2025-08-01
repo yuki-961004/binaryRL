@@ -53,7 +53,7 @@ For more information, please refer to the homepage of this package:
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -116,6 +116,7 @@ For more information, please refer to the homepage of this package:
 <span>  <span class="va">n_trials</span>,</span>
 <span>  <span class="va">lower</span>,</span>
 <span>  <span class="va">upper</span>,</span>
+<span>  priors <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  initial_params <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  initial_size <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  iteration <span class="op">=</span> <span class="fl">10</span>,</span>
@@ -180,6 +181,22 @@ Lower bounds of free parameters</p></dd>
 <dt id="arg-upper">upper<a class="anchor" aria-label="anchor" href="#arg-upper"></a></dt>
 <dd><p>[vector]
 Upper bounds of free parameters</p></dd>
+
+
+<dt id="arg-priors">priors<a class="anchor" aria-label="anchor" href="#arg-priors"></a></dt>
+<dd><p>[list] A <code>list</code> object for specifying the Bayesian prior
+  distributions for each model parameter. Each element in the list
+  should be named after a parameter and contain a function that returns the
+  log probability density.</p>
+<p>By default, a set of priors is used. For most parameters, this is a
+  <strong>Uniform(0, 1)</strong> distribution, which acts as an uninformative prior.
+  This means that for these parameters, the Maximum A Posteriori (MAP)
+  estimate will be identical to the Maximum Likelihood Estimate (MLE).</p>
+<p>The exception is for the inverse temperature parameter associated with the
+  softmax function (<code>tau</code>). This parameter uses an
+  <strong>Exponential(1)</strong> distribution as its prior. This is a weakly
+  informative prior that regularizes the model by favoring smaller,
+  positive values, thus preventing extremely large parameter estimates.</p></dd>
 
 
 <dt id="arg-initial-params">initial_params<a class="anchor" aria-label="anchor" href="#arg-initial-params"></a></dt>

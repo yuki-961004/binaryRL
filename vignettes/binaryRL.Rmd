@@ -46,6 +46,7 @@ Model <- function(params){
     mode = mode,
     n_trials = n_trials,
     n_params = n_params,
+    priors = priors,
 # ╔═══════════════════════════════════╗ #
 # ║ You only need to modify this part ║ #
     name = "Your Model Name",
@@ -477,8 +478,8 @@ recovery <- binaryRL::rcv_d(
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
 # ║ --------------------------- interation number --------------------------- ║ #
-  iteration_s = 50,
-  iteration_f = 50,
+  iteration_s = 100,
+  iteration_f = 100,
 # ║ ------------------------------- algorithms ------------------------------ ║ #
   nc = 1,                  # <nc > 1>: parallel computation across subjects
   # Base R Optimization    
@@ -510,50 +511,6 @@ Simulating Model: TD | Fitting Model: TD
 </pre>
   
 Check the Example Result: [result_recovery.csv](./demo/OUTPUT/result_recovery.html)
-
-<!---------------------------------------------------------->
-
-`rcv_d()` is the for-loop version of `simulate_list()` and `recovery_data()`, allowing you to generate simulated data using all models at once and then fit all models to the simulated data.
-We also encourage advanced users to use `simulate_list()` and `recovery_data()` separately for parameter recovery and model recovery. Below is an example code.
-
-<details>
-<summary>simulate_list()</summary>
-
-```{r eval=FALSE}
-list_simulated <- binaryRL::simulate_list(
-  data = binaryRL::Mason_2024_Exp2,
-  obj_func = binaryRL::RSTD,
-  n_params = 3, 
-  n_trials = 360,
-  lower = c(0, 0, 1),
-  upper = c(1, 1, 1),
-  iteration = 30
-)
-```
-
-</details>
-
-<!---------------------------------------------------------->
-
-<details>
-<summary>recovery_data()</summary>
-
-```{r eval=FALSE}
-df_recovery <- binaryRL::recovery_data(
-  list = list_simulated,
-  fit_model = binaryRL::RSTD,
-  model_name = "RSTD",
-  n_params = 3,
-  n_trials = 360,
-  lower = c(0, 0, 1),
-  upper = c(1, 1, 5),
-  iteration = 30,
-  nc = 1,
-  algorithm = "L-BFGS-B" 
-)
-```
-
-</details>
 
 <!---------------------------------------------------------->
 
@@ -614,10 +571,31 @@ comparison <- binaryRL::fit_p(
   #funcs = c("your_funcs"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   model_name = c("TD", "RSTD", "Utility"),
+# ║ ------------------------------- estimate -------------------------------- ║ #
+  estimate = c("MLE", "MAP"),
+# ║ ---------------------------------- MLE ---------------------------------- ║ #
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
-# ║ --------------------------- interation number --------------------------- ║ #
-  iteration = 10,
+# ║ ---------------------------------- MAP ---------------------------------- ║ #
+  priors = list(
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    ), 
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    ), 
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      gamma = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    )
+  ),
+# ║ ---------------------------- iteration number --------------------------- ║ #
+  iteration_i = 100,
+  iteration_g = 100,
 # ║ ------------------------------- algorithms ------------------------------ ║ #
   nc = 1,                  # <nc > 1>: parallel computation across subjects
   # Base R Optimization  
@@ -651,79 +629,6 @@ Fitting Model: TD
 Check the Example Result: [result_comparison.csv](./demo/OUTPUT/result_comparison.html)
 
 <!---------------------------------------------------------->
-
-`fit_p()` is the for-loop version of `optimize_para()`, allowing you to fit all models to all subjects at once.   
-If you prefer to fit a single model to a single subject at a time or want to speed up fitting multiple subjects using parallel computing, consider using `optimize_para()`.   
-Below is an example of how to use it. We encourage advanced users to take advantage of this function.
-
-<!---------------------------------------------------------->
-
-<details>
-<summary>optimize_para()</summary>
-
-```{r eval=FALSE}
-binaryRL.res <- binaryRL::optimize_para(
-  data = Mason_2024_Exp2,
-  id = 1,
-  n_params = 3,
-  n_trials = 360,
-  obj_func = binaryRL::RSTD,
-  lower = c(0, 0, 0),
-  upper = c(1, 1, 10),
-  iteration = 30,
-  algorithm = "L-BFGS-B"
-)
-
-summary(binaryRL.res)
-```
-
-```{r eval=FALSE}
-#> Results of RSTD Model:
-#> 
-#> Exploration and Exploitation Trade-off:
-#>   Initial Values: Initial reward received
-#>   Exploration Strategy: off
-#>   Upper-Confidence-Bound: off
-#>   Soft-Max: on
-#>   
-#> Model Fit:
-#>   Accuracy: 67.22%
-#>   LogL: -535.87
-#>   AIC: 1077.74
-#>   BIC: 1089.4
-#>   
-#> Free Parameters:
-#>   α: NA
-#>   β: NA
-#>   γ: 1
-#>   η: 0.123, 0.456
-#>   ε: NA
-#>   λ: NA
-#>   π: NA
-#>   τ: 0.789
-#>   
-#> [[1]]
-#>    Parameter Value1 Value2
-#> 1         Q1     NA     NA
-#> 2  threshold  1.000     NA
-#> 3      alpha     NA     NA
-#> 4       beta     NA     NA
-#> 5      gamma  1.000     NA
-#> 6        eta  0.123  0.456
-#> 7    epsilon     NA     NA
-#> 8     lambda     NA     NA
-#> 9         pi     NA     NA
-#> 10       tau  0.789     NA
-#> 
-#> [[2]]
-#>     Metric   Value
-#> 1 Accuracy   67.22
-#> 2     LogL -535.87
-#> 3      AIC 1077.74
-#> 4      BIC 1089.40
-```
-
-</details>
 
 ### Model Comparison
 

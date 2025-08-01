@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -333,8 +333,12 @@ learning models to exhibit behaviors similar to human subjects. While
 there are various ways to formulate <strong>loss functions</strong>, the
 built-in loss function expresses the resemblance between human behavior
 and model predictions.</p>
+<div class="section level4">
+<h4 id="log-likelihood">Log Likelihood<a class="anchor" aria-label="anchor" href="#log-likelihood"></a>
+</h4>
 <p><span class="math display">\[
-LL = \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log P_{R}
+\log P(D|\theta)= \sum B_{L} \times \log P_{L} + \sum B_{R} \times \log
+P_{R}
 \]</span></p>
 <p><em>NOTE:</em> <span class="math inline">\(B_{L}\)</span> and <span class="math inline">\(B_{R}\)</span> the option that the subject
 chooses. (<span class="math inline">\(B_{L} = 1\)</span>: subject
@@ -349,6 +353,32 @@ represents the total number of trials in the paradigm.</p>
 role of the ventromedial prefrontal cortex in abstract state-based
 inference during decision making in humans. <em>Journal of Neuroscience,
 26</em>(32), 8360-8367. <a href="https://doi.org/10.1523/JNEUROSCI.1010-06.2006" class="external-link uri">https://doi.org/10.1523/JNEUROSCI.1010-06.2006</a></p>
+</div>
+<div class="section level4">
+<h4 id="log-prior-probability">Log Prior Probability<a class="anchor" aria-label="anchor" href="#log-prior-probability"></a>
+</h4>
+<p><span class="math display">\[
+\log P(\theta) =
+\begin{cases}
+   \log P(\theta | \mu_0, \sigma_0^2) &amp;
+   \quad \theta \sim \mathcal{N}(\mu_0, \sigma_0^2)
+   \\
+   \log P(\theta | \lambda) &amp;
+   \quad \theta \sim \text{Exp}(\lambda) \quad  
+\end{cases}
+\]</span></p>
+</div>
+<div class="section level4">
+<h4 id="log-posterior-probability">Log Posterior Probability<a class="anchor" aria-label="anchor" href="#log-posterior-probability"></a>
+</h4>
+<p><span class="math display">\[
+\log P(\theta|D) = \log P(D|\theta) + \log P(\theta)
+\]</span></p>
+<p><em>NOTE: If <code>estimate = "MAP"</code> is used instead of
+<code>estimate = "MLE"</code>, the function <code>run_m</code>
+automatically returns the Log Posterior Probability in place of the
+Log-Likelihood (LL).</em></p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="aic-bic">AIC &amp; BIC<a class="anchor" aria-label="anchor" href="#aic-bic"></a>

@@ -155,11 +155,17 @@
 #'  
 #'  \code{default: initial_size = 50}.
 #'  
-#' @param iteration [integer] 
+#' @param iteration_i [integer] 
 #' The number of iterations the optimization algorithm will perform
 #'  when searching for the best-fitting parameters during the fitting
 #'  phase. A higher number of iterations may increase the likelihood of 
 #'  finding a global optimum but also increases computation time.
+#'  
+#' @param iteration_g [integer]
+#' The maximum number of iterations for the Expectation-Maximization (EM)
+#'  based MAP estimation. The algorithm will stop once this iteration
+#'  count is reached, even if the change in the log-posterior value has
+#'  not yet fallen below the `tolerance` threshold.
 #' 
 #' @param seed [integer] 
 #' Random seed. This ensures that the results are 
@@ -211,10 +217,31 @@
 #'   #funcs = c("your_funcs"),
 #'   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
 #'   model_name = c("TD", "RSTD", "Utility"),
+#' #|--------------------------------- estimate ----------------------------------|#
+#'   estimate = c("MLE", "MAP"),
+#' #|------------------------------------ MLE ------------------------------------|#
 #'   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
 #'   upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
-#' #|----------------------------- interation number -----------------------------|#
-#'   iteration = 10,
+#' #|------------------------------------ MAP ------------------------------------|#
+#'   priors = list(
+#'     list(
+#'       eta = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+#'       tau = function(x) {stats::dexp(x, rate = 1, log = TRUE)}
+#'     ), 
+#'     list(
+#'       eta = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+#'       eta = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+#'       tau = function(x) {stats::dexp(x, rate = 1, log = TRUE)}
+#'     ), 
+#'     list(
+#'       eta = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+#'       gamma = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+#'       tau = function(x) {stats::dexp(x, rate = 1, log = TRUE)}
+#'     )
+#'   ),
+#' #|----------------------------- iteration number ------------------------------|#
+#'   iteration_i = 10,
+#'   iteration_g = 10,
 #' #|-------------------------------- algorithms ---------------------------------|#
 #'   nc = 1,                 # <nc > 1>: parallel computation across subjects
 #'   # Base R Optimization
@@ -248,36 +275,30 @@ fit_p <- function(
   data,
   id = NULL,
   n_trials = NULL,
-  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
+  
   funcs = NULL,
   model_name = c("TD", "RSTD", "Utility"),
+  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
+  
+  estimate = "MLE",
+  
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  priors = list(
-    list(
-      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
-    ), 
-    list(
-      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
-    ), 
-    list(
-      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      gamma = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
-    )
-  ),
-  estimate = "MLE",
+  priors = NULL,
   tolerance = 0.001,
+  
+  iteration_i = 10,
+  iteration_g = 10,
+  
   initial_params = NA,
   initial_size = 50,
-  iteration = 10,
   seed = 123,
+  
   nc = 1,
   algorithm
 ){
+################################# [ info ] #####################################   
+  
   # 事前准备. 探测信息
   info <- suppressWarnings(suppressMessages(detect_information(data = data)))
   
@@ -292,6 +313,8 @@ fit_p <- function(
   # 创建空list用于储存结果
   model_comparison <- list()
   model_result <- list()
+
+################################ [ threads ] ###################################  
   
   # 单线程还是多线程
   if (nc == 1) {
@@ -310,9 +333,11 @@ fit_p <- function(
   }
   
   doFuture::registerDoFuture()
-  
+
+############################# [ for loop models] ###############################
+    
   # 每个model都使用初始的priors
-  update_priors <- list()
+  params_priors <- list()
   
   for (i in 1:length(fit_model)){
     
@@ -324,18 +349,24 @@ fit_p <- function(
     
     n_subjects <- length(id)
     n_params <- length(lower[[i]])
+
+########################### [ foreach loop subs ] ##############################    
     
     # 进度条
     progressr::handlers(progressr::handler_txtprogressbar)
     
     progressr::with_progress({
       
+      # 进度条与此时运行的被试数绑定
       p <- progressr::progressor(steps = n_subjects)
       
+      # doRNG保证种子不变
       doRNG::registerDoRNG(seed = seed)
       
       # 初始化(定义)foreach中的j
       j <- NA
+
+################################# [ MLE ] ######################################
       
       # 抑制每个线程加载包时的信息
       suppressMessages({
@@ -354,7 +385,7 @@ fit_p <- function(
             lower = lower[[i]],
             upper = upper[[i]],
             priors = priors[[i]],
-            iteration = iteration,
+            iteration = iteration_i,
             seed = seed,
             initial_params = initial_params,
             initial_size = initial_size,
@@ -383,30 +414,33 @@ fit_p <- function(
         }
       })
     })
-    
+
+################################# [ MAP ] ######################################
+        
     # Expectation-Maximization Algorithm
     if (estimate == "MAP") {
       
       message("Starting Expectation-Maximization Algorithm")
       
-      # 初始化LogPo
-      LogPo <- 0
-      
       # 基于上面第一次的结果更新先验概率
-      update_priors[[i]] <- bayesian_update_priors(
+      params_priors[[i]] <- update_priors(
         model_result = model_result,
         priors = priors[[i]], 
         n_params = n_params,
         param_prefix = "param_"
       )
       
+      # 因为之后使用while循环
+      # 设定初始后验差值, 永远比tolerance大1, 保证一定会运行一次
       delta_LogPo <- tolerance + 1
-      
-      post_iteration <- 0
+      # 计算第一次拟合时的似然后验值
+      LogPo <- sum(model_result$LogPo)
+      # 初始化后验迭代次数
+      iteration <- 0
       
       while (delta_LogPo > tolerance) {
         
-        # 初始化(定义)foreach中的j
+        # 初始化(定义)foreach中的j (无意义, 仅为通过R CMD check)
         j <- NA
         
         # 抑制每个线程加载包时的信息
@@ -425,8 +459,8 @@ fit_p <- function(
               obj_func = fit_model[[i]],
               lower = lower[[i]],
               upper = upper[[i]],
-              priors = update_priors[[i]],
-              iteration = iteration,
+              priors = params_priors[[i]],
+              iteration = iteration_i,
               seed = seed,
               initial_params = initial_params,
               initial_size = initial_size,
@@ -455,10 +489,10 @@ fit_p <- function(
           }
         })
         
-        # 计算此时的LogPo变化量
+        # 计算此时的似然后验变化量
         delta_LogPo <- abs(LogPo - sum(model_result$LogPo))
         
-        # 存放新的LogPo
+        # 更新似然后验
         LogPo <- sum(model_result$LogPo)
         
         message(
@@ -470,22 +504,22 @@ fit_p <- function(
         )
         
         # 修改先验分布
-        update_priors[[i]] <- bayesian_update_priors(
+        params_priors[[i]] <- update_priors(
           model_result = model_result,
-          priors = update_priors[[i]], 
+          priors = params_priors[[i]], 
           n_params = n_params,
           param_prefix = "param_"
         )
         
         # EM也不会无限制跑下去
-        post_iteration <- post_iteration + 1
-        if (post_iteration > iteration) {
+        iteration <- iteration + 1
+        if (iteration > iteration_g) {
           break 
         }
       }
     }
     
-    # 將結果包在一個 list 裡面，保持結構一致性
+    # 每次将一个模型的结果输出, 然后跑下一个模型的拟合
     model_comparison[[i]] <- model_result
   }
   

@@ -130,6 +130,8 @@ binaryRL::run_m(
 
 # Parallel Data Fitting
 
+## Maximum Likelihood Estimation (MLE)
+
 While this R package is primarily designed for constructing **Reinforcement Learning (RL)** models (with `run_m()` at its core), its flexibility extends further. 
 
 The key functions, `rcv_d()` and `fit_p()`, provide a unified interface to seamlessly integrate a diverse range of optimization algorithms. Crucially, they offer a parallel solution for tasks like parameter optimization, parameter recovery, and model recovery.
@@ -154,3 +156,17 @@ This means you can leverage this package not only for building and fitting RL mo
 1. If you want to use an algorithm other than `L-BFGS-B`, you'll need to install its corresponding R package.  
 2. This package supports **parallel computation**. When you set the `nc` argument in `rcv_d()` or `fit_p()` to a value greater than 1, calculations will run in parallel, meaning each participant's parameter optimization happens simultaneously.  
 3. If you've defined a custom model, you must provide the names of your custom functions as a character vector to the `funcs` argument within `rcv_d()` or `fit_p()`.  
+
+## Maximum A Posteriori (MAP)   
+
+In addition to standard **Maximum Likelihood Estimation (MLE)**, the package offers a more robust fitting procedure using **Maximum A Posteriori (MAP)** estimation, implemented via an **Expectation-Maximization (EM)** algorithm. This option is enabled when the user sets `fit_p(estimate = "MAP")` and provides prior distributions for the free parameters. (The core logic is adapted from the MATLAB toolbox, [mfit](https://github.com/sjgershm/mfit))
+
+The procedure leverages the collective data from all subjects to refine individual parameter estimates in an iterative fashion. It begins by performing an initial MLE fit for every participant. Then, it enters the EM-like loop:
+
+- **M-Step (Update Priors)**: The algorithm treats the distribution of individually-fitted MLE parameters as empirical data. It uses this data to update the hyperparameters of the provided prior distributions. By default, the program assigns an Exponential prior to the inverse temperature ($\tau$). All other parameters are consequently forced into a Normal distribution for the fitting process. 
+
+  *NOTE: This forces parameters into a potentially inappropriate distribution. To address this rigidity, I am actively working on integrating MCMC into the package, which will allow for more flexible and accurate Bayesian inference in the future.*
+
+- **E-Step (Update Posterior)**: With these updated priors, the objective function for optimization is altered. Instead of returning the log-likelihood, the function now returns the log-posterior probability, which is defined as the sum of the log-likelihood and the log-prior probability of each parameter.
+
+This process iteratively refines the group-level priors and the individual-level posterior estimates until convergence. The key benefit of this approach is shrinkage: by informing individual fits with group-level information, it pulls extreme parameter values from any single subject closer to the group average. This acts as a powerful form of regularization, effectively preventing the model from overfitting to noisy or idiosyncratic trials within an individual's dataset and yielding more robust parameter estimates for the entire cohort.

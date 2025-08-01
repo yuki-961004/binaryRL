@@ -24,7 +24,8 @@ binaryRL.res <- binaryRL::run_m(
   tau = c(0.789),
   n_params = 2,            
   n_trials = 360,            
-  mode = "fit"
+  mode = "replay",
+  priors = NULL
 )
 
 summary(binaryRL.res)
@@ -40,7 +41,8 @@ binaryRL.res <- binaryRL::run_m(
   n_trials = 360,
   eta = c(0.123, 0.456),
   tau = c(0.789),            
-  mode = "fit"
+  mode = "replay",
+  priors = NULL
 )
 
 summary(binaryRL.res)
@@ -57,7 +59,8 @@ binaryRL.res <- binaryRL::run_m(
   eta = c(0.123),
   gamma = c(0.456),
   tau = c(0.789),            
-  mode = "fit"
+  mode = "replay",
+  priors = NULL
 )
 
 summary(binaryRL.res)
@@ -106,8 +109,9 @@ binaryRL.res <- binaryRL::run_m(
   gamma = c(0.12, 0.89),
   tau = c(0.34),
   beta = c(1.56),
-  util_func = func_prospect,
-  mode = "fit"
+  util_func = func_prospect,            
+  mode = "replay",
+  priors = NULL
 )
 
 summary(binaryRL.res)

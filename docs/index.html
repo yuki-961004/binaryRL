@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -389,6 +389,9 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <div class="section level1">
 <h1 id="parallel-data-fitting">Parallel Data Fitting<a class="anchor" aria-label="anchor" href="#parallel-data-fitting"></a>
 </h1>
+<div class="section level2">
+<h2 id="maximum-likelihood-estimation-mle">Maximum Likelihood Estimation (MLE)<a class="anchor" aria-label="anchor" href="#maximum-likelihood-estimation-mle"></a>
+</h2>
 <p>While this R package is primarily designed for constructing <strong>Reinforcement Learning (RL)</strong> models (with <code><a href="reference/run_m.html">run_m()</a></code> at its core), its flexibility extends further.</p>
 <p>The key functions, <code><a href="reference/rcv_d.html">rcv_d()</a></code> and <code><a href="reference/fit_p.html">fit_p()</a></code>, provide a unified interface to seamlessly integrate a diverse range of optimization algorithms. Crucially, they offer a parallel solution for tasks like parameter optimization, parameter recovery, and model recovery.</p>
 <p>This means you can leverage this package not only for building and fitting RL models, but also as a versatile algorithm library for fitting other <strong>“black-box functions”</strong> in parallel for each subject. This significantly reduces processing time, provided your function’s parameters can be optimized independently for each subject.</p>
@@ -407,6 +410,21 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 1. If you want to use an algorithm other than <code>L-BFGS-B</code>, you’ll need to install its corresponding R package.<br>
 2. This package supports <strong>parallel computation</strong>. When you set the <code>nc</code> argument in <code><a href="reference/rcv_d.html">rcv_d()</a></code> or <code><a href="reference/fit_p.html">fit_p()</a></code> to a value greater than 1, calculations will run in parallel, meaning each participant’s parameter optimization happens simultaneously.<br>
 3. If you’ve defined a custom model, you must provide the names of your custom functions as a character vector to the <code>funcs</code> argument within <code><a href="reference/rcv_d.html">rcv_d()</a></code> or <code><a href="reference/fit_p.html">fit_p()</a></code>.</p>
+</div>
+<div class="section level2">
+<h2 id="maximum-a-posteriori-map">Maximum A Posteriori (MAP)<a class="anchor" aria-label="anchor" href="#maximum-a-posteriori-map"></a>
+</h2>
+<p>In addition to standard <strong>Maximum Likelihood Estimation (MLE)</strong>, the package offers a more robust fitting procedure using <strong>Maximum A Posteriori (MAP)</strong> estimation, implemented via an <strong>Expectation-Maximization (EM)</strong> algorithm. This option is enabled when the user sets <code>fit_p(estimate = "MAP")</code> and provides prior distributions for the free parameters. (The core logic is adapted from the MATLAB toolbox, <a href="https://github.com/sjgershm/mfit" class="external-link">mfit</a>)</p>
+<p>The procedure leverages the collective data from all subjects to refine individual parameter estimates in an iterative fashion. It begins by performing an initial MLE fit for every participant. Then, it enters the EM-like loop:</p>
+<ul>
+<li>
+<p><strong>M-Step (Update Priors)</strong>: The algorithm treats the distribution of individually-fitted MLE parameters as empirical data. It uses this data to update the hyperparameters of the provided prior distributions. By default, the program assigns an Exponential prior to the inverse temperature (<span class="math inline">\(\tau\)</span>). All other parameters are consequently forced into a Normal distribution for the fitting process.</p>
+<p><em>NOTE: This forces parameters into a potentially inappropriate distribution. To address this rigidity, I am actively working on integrating MCMC into the package, which will allow for more flexible and accurate Bayesian inference in the future.</em></p>
+</li>
+<li><p><strong>E-Step (Update Posterior)</strong>: With these updated priors, the objective function for optimization is altered. Instead of returning the log-likelihood, the function now returns the log-posterior probability, which is defined as the sum of the log-likelihood and the log-prior probability of each parameter.</p></li>
+</ul>
+<p>This process iteratively refines the group-level priors and the individual-level posterior estimates until convergence. The key benefit of this approach is shrinkage: by informing individual fits with group-level information, it pulls extreme parameter values from any single subject closer to the group average. This acts as a powerful form of regularization, effectively preventing the model from overfitting to noisy or idiosyncratic trials within an individual’s dataset and yielding more robust parameter estimates for the entire cohort.</p>
+</div>
 </div>
 
   </main><aside class="col-md-3"><div class="links">

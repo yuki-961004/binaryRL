@@ -8,40 +8,18 @@ fit_p(
   data,
   id = NULL,
   n_trials = NULL,
-  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   funcs = NULL,
   model_name = c("TD", "RSTD", "Utility"),
+  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
+  estimate = "MLE",
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  priors = list(list(eta = function(x) {
-     stats::dunif(x, min = 0, max = 1, log =
-    TRUE)
- }, tau = function(x) {
-     stats::dexp(x, rate = 1, log = TRUE)
- }), list(eta
-    = function(x) {
-     stats::dunif(x, min = 0, max = 1, log = TRUE)
- }, eta =
-    function(x) {
-     stats::dunif(x, min = 0, max = 1, log = TRUE)
- }, tau =
-    function(x) {
-     stats::dexp(x, rate = 1, log = TRUE)
- }), list(eta = function(x)
-    {
-     stats::dunif(x, min = 0, max = 1, log = TRUE)
- }, gamma = function(x) {
-    
-    stats::dunif(x, min = 0, max = 1, log = TRUE)
- }, tau = function(x) {
-    
-    stats::dexp(x, rate = 1, log = TRUE)
- })),
-  estimate = "MLE",
+  priors = NULL,
   tolerance = 0.001,
+  iteration_i = 10,
+  iteration_g = 10,
   initial_params = NA,
   initial_size = 50,
-  iteration = 10,
   seed = 123,
   nc = 1,
   algorithm
@@ -82,9 +60,6 @@ Represents the total number of trials a single subject experienced
  
  \code{default: n_trials = NULL}}
 
-\item{fit_model}{[list] 
-A collection of functions applied to fit models to the data.}
-
 \item{funcs}{[character]
 A character vector containing the names of all user-defined functions
  required for the computation. When parallel computation is enabled
@@ -106,6 +81,20 @@ Therefore, if you have created your own reinforcement learning model
 
 \item{model_name}{[list] 
 The name of fit modals}
+
+\item{fit_model}{[list] 
+A collection of functions applied to fit models to the data.}
+
+\item{estimate}{[character] 
+Estimation method. Default is \code{"MLE"}, 
+meaning the algorithm will iterate to find the parameter values that 
+maximize the likelihood, without considering any prior information. If 
+\code{estimate = "MAP"}, prior distributions must be specified via the 
+\code{priors} argument. After an initial optimization using likelihood, 
+the algorithm estimates the distribution of each parameter across all 
+subjects, fits a normal or exponential prior, and re-optimizes to maximize 
+the posterior. This procedure iterates until convergence and follows the EM 
+(Expectation-Maximization) framework.}
 
 \item{lower}{[list] 
 The lower bounds for model fit models}
@@ -129,21 +118,22 @@ The upper bounds for model fit models}
   informative prior that regularizes the model by favoring smaller,
   positive values, thus preventing extremely large parameter estimates.}
 
-\item{estimate}{[character] 
-Estimation method. Default is \code{"MLE"}, 
-meaning the algorithm will iterate to find the parameter values that 
-maximize the likelihood, without considering any prior information. If 
-\code{estimate = "MAP"}, prior distributions must be specified via the 
-\code{priors} argument. After an initial optimization using likelihood, 
-the algorithm estimates the distribution of each parameter across all 
-subjects, fits a normal or exponential prior, and re-optimizes to maximize 
-the posterior. This procedure iterates until convergence and follows the EM 
-(Expectation-Maximization) framework.}
-
 \item{tolerance}{[numeric] 
 Convergence threshold for MAP estimation. If the change in
  log posterior probability between iterations is smaller than this value, the
  algorithm is considered to have converged and the program will stop.}
+
+\item{iteration_i}{[integer] 
+The number of iterations the optimization algorithm will perform
+ when searching for the best-fitting parameters during the fitting
+ phase. A higher number of iterations may increase the likelihood of 
+ finding a global optimum but also increases computation time.}
+
+\item{iteration_g}{[integer]
+The maximum number of iterations for the Expectation-Maximization (EM)
+ based MAP estimation. The algorithm will stop once this iteration
+ count is reached, even if the change in the log-posterior value has
+ not yet fallen below the `tolerance` threshold.}
 
 \item{initial_params}{[vector]
 Initial values for the free parameters that the optimization algorithm will
@@ -161,12 +151,6 @@ This parameter corresponds to the \strong{population size} in genetic
  a population, such as \code{GA} or \code{DEoptim}. 
  
  \code{default: initial_size = 50}.}
-
-\item{iteration}{[integer] 
-The number of iterations the optimization algorithm will perform
- when searching for the best-fitting parameters during the fitting
- phase. A higher number of iterations may increase the likelihood of 
- finding a global optimum but also increases computation time.}
 
 \item{seed}{[integer] 
 Random seed. This ensures that the results are 
@@ -258,10 +242,31 @@ comparison <- binaryRL::fit_p(
   #funcs = c("your_funcs"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   model_name = c("TD", "RSTD", "Utility"),
+#|--------------------------------- estimate ----------------------------------|#
+  estimate = c("MLE", "MAP"),
+#|------------------------------------ MLE ------------------------------------|#
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
-#|----------------------------- interation number -----------------------------|#
-  iteration = 10,
+#|------------------------------------ MAP ------------------------------------|#
+  priors = list(
+    list(
+      eta = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+      tau = function(x) {stats::dexp(x, rate = 1, log = TRUE)}
+    ), 
+    list(
+      eta = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+      eta = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+      tau = function(x) {stats::dexp(x, rate = 1, log = TRUE)}
+    ), 
+    list(
+      eta = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+      gamma = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
+      tau = function(x) {stats::dexp(x, rate = 1, log = TRUE)}
+    )
+  ),
+#|----------------------------- iteration number ------------------------------|#
+  iteration_i = 10,
+  iteration_g = 10,
 #|-------------------------------- algorithms ---------------------------------|#
   nc = 1,                 # <nc > 1>: parallel computation across subjects
   # Base R Optimization

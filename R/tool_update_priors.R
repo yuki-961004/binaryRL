@@ -1,5 +1,5 @@
-bayesian_update_priors <- function(
-    model_result, priors, n_params, param_prefix
+update_priors <- function(
+  model_result, priors, n_params, param_prefix
 ){
   for (k in 1:n_params) {
     
