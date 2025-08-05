@@ -50,7 +50,7 @@ testthat::test_that("fit_p() works with valid input", {
     iteration_i = 5,
     iteration_g = 2,
     nc = 4,
-    algorithm = "L-BFGS-B" 
+    algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
   )
   
   testthat::expect_type(comparison, "list")
