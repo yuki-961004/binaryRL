@@ -165,7 +165,7 @@ The procedure leverages the collective data from all subjects to refine individu
 
 - **M-Step (Update Priors)**: The algorithm treats the distribution of individually-fitted MLE parameters as empirical data. It uses this data to update the hyperparameters of the provided prior distributions. By default, the program assigns an Exponential prior to the inverse temperature ($\tau$). All other parameters are consequently forced into a Normal distribution for the fitting process. 
 
-  *NOTE: This forces parameters into a potentially inappropriate distribution. To address this rigidity, I am actively working on integrating MCMC into the package, which will allow for more flexible and accurate Bayesian inference in the future.*
+  *NOTE: This forces parameters into a potentially inappropriate distribution. To address this rigidity, I am working on integrating MCMC into the package, which will allow for more flexible and accurate Bayesian inference in the future.*
 
 - **E-Step (Update Posterior)**: With these updated priors, the objective function for optimization is altered. Instead of returning the log-likelihood, the function now returns the log-posterior probability, which is defined as the sum of the log-likelihood and the log-prior probability of each parameter.
 

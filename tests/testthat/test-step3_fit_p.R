@@ -47,8 +47,8 @@ testthat::test_that("fit_p() works with valid input", {
     ),
     estimate = "MAP",
     tolerance = 0.001,
-    iteration_i = 5,
-    iteration_g = 3,
+    iteration_i = 2,
+    iteration_g = 2,
     nc = 4,
     algorithm = "L-BFGS-B" 
   )

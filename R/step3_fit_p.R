@@ -435,62 +435,81 @@ fit_p <- function(
       delta_LogPo <- tolerance + 1
       # 计算第一次拟合时的似然后验值
       LogPo <- sum(model_result$LogPo)
+      
+      message(
+        paste0(
+          "Log-Posterior Probability: ", round(LogPo, 2)
+        )
+      )
+      
       # 初始化后验迭代次数
       iteration <- 0
       
-      while (delta_LogPo > tolerance) {
+      while (abs(delta_LogPo) > tolerance) {
         
-        # 初始化(定义)foreach中的j (无意义, 仅为通过R CMD check)
-        j <- NA
+        # 进度条
+        progressr::handlers(progressr::handler_txtprogressbar)
         
-        # 抑制每个线程加载包时的信息
-        suppressMessages({
-          model_result <- foreach::foreach(
-            j = 1:n_subjects, .combine = rbind,
-            .packages = c("binaryRL"),
-            .export = funcs
-          ) %dorng% {
-            
-            binaryRL_res <- binaryRL::optimize_para(
-              data = data,
-              id = id[j],
-              n_params = n_params,
-              n_trials = n_trials,
-              obj_func = fit_model[[i]],
-              lower = lower[[i]],
-              upper = upper[[i]],
-              priors = params_priors[[i]],
-              iteration = iteration_i,
-              seed = seed,
-              initial_params = initial_params,
-              initial_size = initial_size,
-              algorithm = algorithm
-            )
-            
-            result_j <- data.frame(
-              fit_model = model_name[i],
-              Subject = id[j],
-              ACC = binaryRL_res$acc,
-              LogL = -binaryRL_res$ll,
-              LogPr = -binaryRL_res$lpr,
-              LogPo = -binaryRL_res$lpo,
-              AIC = binaryRL_res$aic,
-              BIC = binaryRL_res$bic
-            )
-            
-            for (k in 1:n_params) {
-              result_j[1, k + 8] <- binaryRL_res$output[k]
-              names(result_j)[k + 8] <- paste0("param_", k)
+        progressr::with_progress({
+          
+          # 进度条与此时运行的被试数绑定
+          p <- progressr::progressor(steps = n_subjects)
+          
+          # doRNG保证种子不变
+          doRNG::registerDoRNG(seed = seed)
+          
+          # 初始化(定义)foreach中的j (无意义, 仅为通过R CMD check)
+          j <- NA
+          
+          # 抑制每个线程加载包时的信息
+          suppressMessages({
+            model_result <- foreach::foreach(
+              j = 1:n_subjects, .combine = rbind,
+              .packages = c("binaryRL"),
+              .export = funcs
+            ) %dorng% {
+              
+              binaryRL_res <- binaryRL::optimize_para(
+                data = data,
+                id = id[j],
+                n_params = n_params,
+                n_trials = n_trials,
+                obj_func = fit_model[[i]],
+                lower = lower[[i]],
+                upper = upper[[i]],
+                priors = params_priors[[i]],
+                iteration = iteration_i,
+                seed = seed,
+                initial_params = initial_params,
+                initial_size = initial_size,
+                algorithm = algorithm
+              )
+              
+              result_j <- data.frame(
+                fit_model = model_name[i],
+                Subject = id[j],
+                ACC = binaryRL_res$acc,
+                LogL = -binaryRL_res$ll,
+                LogPr = -binaryRL_res$lpr,
+                LogPo = -binaryRL_res$lpo,
+                AIC = binaryRL_res$aic,
+                BIC = binaryRL_res$bic
+              )
+              
+              for (k in 1:n_params) {
+                result_j[1, k + 8] <- binaryRL_res$output[k]
+                names(result_j)[k + 8] <- paste0("param_", k)
+              }
+              
+              # 在foreach循环内更新进度条
+              p() 
+              return(result_j)
             }
-            
-            # 在foreach循环内更新进度条
-            p() 
-            return(result_j)
-          }
+          })
         })
         
         # 计算此时的似然后验变化量
-        delta_LogPo <- abs(LogPo - sum(model_result$LogPo))
+        delta_LogPo <- sum(model_result$LogPo) - LogPo
         
         # 更新似然后验
         LogPo <- sum(model_result$LogPo)
@@ -499,7 +518,7 @@ fit_p <- function(
           paste0(
             "Log-Posterior Probability: ", round(LogPo, 2),
             ", ",
-            "\u0394: ", round(delta_LogPo, 2)
+            "\u0394: ", sign_numbers(delta_LogPo), round(delta_LogPo, 2)
           )
         )
         
@@ -513,7 +532,7 @@ fit_p <- function(
         
         # EM也不会无限制跑下去
         iteration <- iteration + 1
-        if (iteration > iteration_g) {
+        if (iteration >= iteration_g) {
           break 
         }
       }
