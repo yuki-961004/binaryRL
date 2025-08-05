@@ -414,7 +414,7 @@ fit_p <- function(
         }
       })
     })
-    
+
 ################################# [ MAP ] ######################################
         
     # Expectation-Maximization Algorithm
@@ -446,57 +446,67 @@ fit_p <- function(
       iteration <- 0
       
       while (abs(delta_LogPo) > tolerance) {
+        
+        # 进度条
+        progressr::handlers(progressr::handler_txtprogressbar)
+        
+        progressr::with_progress({
           
-        # doRNG保证种子不变
-        doRNG::registerDoRNG(seed = seed)
-        
-        # 初始化(定义)foreach中的j (无意义, 仅为通过R CMD check)
-        j <- NA
-        
-        # 抑制每个线程加载包时的信息
-        suppressMessages({
-          model_result <- foreach::foreach(
-            j = 1:n_subjects, .combine = rbind,
-            .packages = c("binaryRL"),
-            .export = funcs
-          ) %dorng% {
-            
-            binaryRL_res <- binaryRL::optimize_para(
-              data = data,
-              id = id[j],
-              n_params = n_params,
-              n_trials = n_trials,
-              obj_func = fit_model[[i]],
-              lower = lower[[i]],
-              upper = upper[[i]],
-              priors = params_priors[[i]],
-              iteration = iteration_i,
-              seed = seed,
-              initial_params = initial_params,
-              initial_size = initial_size,
-              algorithm = algorithm
-            )
-            
-            result_j <- data.frame(
-              fit_model = model_name[i],
-              Subject = id[j],
-              ACC = binaryRL_res$acc,
-              LogL = -binaryRL_res$ll,
-              LogPr = -binaryRL_res$lpr,
-              LogPo = -binaryRL_res$lpo,
-              AIC = binaryRL_res$aic,
-              BIC = binaryRL_res$bic
-            )
-            
-            for (k in 1:n_params) {
-              result_j[1, k + 8] <- binaryRL_res$output[k]
-              names(result_j)[k + 8] <- paste0("param_", k)
+          # 进度条与此时运行的被试数绑定
+          p <- progressr::progressor(steps = n_subjects)
+          
+          # doRNG保证种子不变
+          doRNG::registerDoRNG(seed = seed)
+          
+          # 初始化(定义)foreach中的j (无意义, 仅为通过R CMD check)
+          j <- NA
+          
+          # 抑制每个线程加载包时的信息
+          suppressMessages({
+            model_result <- foreach::foreach(
+              j = 1:n_subjects, .combine = rbind,
+              .packages = c("binaryRL"),
+              .export = funcs
+            ) %dorng% {
+              
+              binaryRL_res <- binaryRL::optimize_para(
+                data = data,
+                id = id[j],
+                n_params = n_params,
+                n_trials = n_trials,
+                obj_func = fit_model[[i]],
+                lower = lower[[i]],
+                upper = upper[[i]],
+                priors = params_priors[[i]],
+                iteration = iteration_i,
+                seed = seed,
+                initial_params = initial_params,
+                initial_size = initial_size,
+                algorithm = algorithm
+              )
+              
+              result_j <- data.frame(
+                fit_model = model_name[i],
+                Subject = id[j],
+                ACC = binaryRL_res$acc,
+                LogL = -binaryRL_res$ll,
+                LogPr = -binaryRL_res$lpr,
+                LogPo = -binaryRL_res$lpo,
+                AIC = binaryRL_res$aic,
+                BIC = binaryRL_res$bic
+              )
+              
+              for (k in 1:n_params) {
+                result_j[1, k + 8] <- binaryRL_res$output[k]
+                names(result_j)[k + 8] <- paste0("param_", k)
+              }
+              
+              # 在foreach循环内更新进度条
+              p() 
+              return(result_j)
             }
-            
-            return(result_j)
-          }
+          })
         })
-
         
         # 计算此时的似然后验变化量
         delta_LogPo <- sum(model_result$LogPo) - LogPo
