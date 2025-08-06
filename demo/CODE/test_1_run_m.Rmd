@@ -14,7 +14,7 @@ library(binaryRL)
 head(binaryRL::Mason_2024_Exp2)
 ```
 
-## TD
+## TD {#td}
 
 ```{r}
 binaryRL.res <- binaryRL::run_m(
@@ -24,13 +24,14 @@ binaryRL.res <- binaryRL::run_m(
   tau = c(0.789),
   n_params = 2,            
   n_trials = 360,            
-  mode = "fit"
+  mode = "replay",
+  priors = NULL
 )
 
 summary(binaryRL.res)
 ```
 
-## RSTD
+## RSTD {#rstd}
 
 ```{r}
 binaryRL.res <- binaryRL::run_m(
@@ -40,13 +41,14 @@ binaryRL.res <- binaryRL::run_m(
   n_trials = 360,
   eta = c(0.123, 0.456),
   tau = c(0.789),            
-  mode = "fit"
+  mode = "replay",
+  priors = NULL
 )
 
 summary(binaryRL.res)
 ```
 
-## Utility
+## Utility {#utility}
 
 ```{r}
 binaryRL.res <- binaryRL::run_m(
@@ -57,7 +59,59 @@ binaryRL.res <- binaryRL::run_m(
   eta = c(0.123),
   gamma = c(0.456),
   tau = c(0.789),            
-  mode = "fit"
+  mode = "replay",
+  priors = NULL
+)
+
+summary(binaryRL.res)
+```
+
+## Prospect {#prospect}
+```{r}
+func_prospect <- function(
+  i, L_freq, R_freq, L_pick, R_pick, L_value, R_value, var1 = NA, var2 = NA,  
+  value, utility, reward, occurrence,
+  gamma, alpha, beta
+){
+  # Stevens's Power Law
+  if (length(gamma) == 1) {
+    gamma <- as.numeric(gamma)
+    utility <- sign(reward) * (abs(reward) ^ gamma)
+  }
+  # Prospect Theory
+  else if (length(gamma) == 2 & reward < 0) {
+    gamma <- as.numeric(gamma[1])
+    beta <- as.numeric(beta)
+    
+    utility <- beta * sign(reward) * (abs(reward) ^ gamma)
+  }
+  else if (length(gamma) == 2 & reward >= 0) {
+    gamma <- as.numeric(gamma[2])
+    beta <- 1
+    
+    utility <- beta * sign(reward) * (abs(reward) ^ gamma)
+  }
+  else {
+    utility <- "ERROR" 
+  }
+  return(list(gamma, utility))
+}
+```
+
+```{r}
+binaryRL.res <- binaryRL::run_m(
+  name = "Prospect",
+  data = binaryRL::Mason_2024_Exp2,
+  id = 1,
+  n_params = 5,
+  n_trials = 360,
+  eta = c(0.5),
+  gamma = c(0.12, 0.89),
+  tau = c(0.34),
+  beta = c(1.56),
+  util_func = func_prospect,            
+  mode = "replay",
+  priors = NULL
 )
 
 summary(binaryRL.res)

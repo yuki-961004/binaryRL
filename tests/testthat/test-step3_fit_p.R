@@ -19,7 +19,7 @@ testthat::test_that("fit_p() works with valid input", {
   testthat::expect_type(comparison, "list")
 })
 
-# L-BFGS-B (nc > 1)
+# NLOPT (nc > 1)
 testthat::test_that("fit_p() works with valid input", {
   
   comparison <- binaryRL::fit_p(
