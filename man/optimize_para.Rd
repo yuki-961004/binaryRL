@@ -5,8 +5,8 @@
 \title{Process: Optimizing Parameters}
 \usage{
 optimize_para(
-  policy,
-  estimate,
+  policy = "off",
+  estimate = "MLE",
   data,
   id,
   n_trials,

@@ -183,8 +183,8 @@
 #' }
 #' 
 optimize_para <- function(
-  policy,
-  estimate,
+  policy = "off",
+  estimate = "MLE",
   
   data,
   id,
