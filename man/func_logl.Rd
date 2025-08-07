@@ -142,8 +142,8 @@ func_logl <- function(
 ){
   logl <- switch(
     EXPR = LR,
-    "L" = L_dir * log(L_prob + 1e-2),
-    "R" = R_dir * log(R_prob + 1e-2)
+    "L" = L_dir * log(L_prob),
+    "R" = R_dir * log(R_prob)
   )
 }
 }

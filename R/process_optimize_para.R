@@ -22,6 +22,42 @@
 #'  For more information, please refer to the homepage of this package:
 #'  \url{https://yuki-961004.github.io/binaryRL/}
 #'  
+#' @param estimate [character] 
+#'  Estimation method. Default is \code{"MLE"}, 
+#'   meaning the algorithm will iterate to find the parameter values that 
+#'   maximize the likelihood, without considering any prior information. If 
+#'   \code{estimate = "MAP"}, prior distributions must be specified via the 
+#'   \code{priors} argument. After an initial optimization using likelihood, 
+#'   the algorithm estimates the distribution of each parameter across all 
+#'   subjects, fits a normal or exponential prior, and re-optimizes to maximize 
+#'   the posterior. This procedure iterates until convergence and follows the 
+#'   EM (Expectation-Maximization) framework.
+#'  
+#' @param policy [character]
+#' Specifies the learning policy to be used.
+#' This determines how the model updates action values based on observed or
+#'   simulated choices. It can be either \code{"off"} or \code{"on"}.
+#'   
+#' \itemize{
+#'   \item \strong{Off-Policy}: \strong{Q-learning}
+#'    This is the most common approach for modeling
+#'     reinforcement learning in Two-Alternative Forced Choice (TAFC) tasks.
+#'     In this mode, the model's goal is to learn the underlying value of
+#'     each option by observing the human participant's behavior. It achieves
+#'     this by consistently updating the value of the option that the
+#'     human actually chose. The focus is on understanding the value 
+#'     representation that likely drove the participant's decisions.
+#'
+#'   \item \item \strong{Off-Policy}: \strong{SARSA} 
+#'    In this mode, the target policy and the behavior policy are identical. 
+#'     The model first computes the selection probability for each option based 
+#'     on their current values. Critically, it then uses these probabilities to 
+#'     sample its own action. The value update is then performed on the action 
+#'     that the model itself selected. This approach focuses more on directly 
+#'     mimicking the stochastic choice patterns of the agent, rather than just 
+#'     learning the underlying values from a fixed sequence of actions.
+#' }
+#'  
 #' @param data [data.frame] 
 #' This data should include the following mandatory columns: 
 #'  \itemize{
@@ -40,6 +76,12 @@
 #'  ID must correspond to an existing subject identifier within the raw
 #'  dataset provided to the function.
 #' 
+#' @param n_trials [integer] 
+#' The total number of trials in your experiment.
+#' 
+#' @param n_params [integer] 
+#' The number of free parameters in your model. 
+#' 
 #' @param obj_func [function]
 #' The objective function that the optimization algorithm package accepts.
 #'  This function must strictly take only one argument, `params` (a vector
@@ -51,12 +93,6 @@
 #'     \code{\link[binaryRL]{RSTD}}, 
 #'     \code{\link[binaryRL]{Utility}}
 #'  ).
-#'  
-#' @param n_params [integer] 
-#' The number of free parameters in your model. 
-#' 
-#' @param n_trials [integer] 
-#' The total number of trials in your experiment.
 #' 
 #' @param lower [vector] 
 #' Lower bounds of free parameters
@@ -147,30 +183,40 @@
 #' }
 #' 
 optimize_para <- function(
-    data,
-    id,
-    obj_func,
-    n_params,
-    n_trials,
-    lower,
-    upper,
-    priors = NULL,
-    initial_params = NA,
-    initial_size = 50,
-    iteration = 10,
-    seed = 123,
-    algorithm
+  policy,
+  estimate,
+  
+  data,
+  id,
+  n_trials,
+  n_params,
+  
+  obj_func,
+  lower,
+  upper,
+  priors = NULL,
+  
+  initial_params = NA,
+  initial_size = 50,
+  
+  iteration = 10,
+  seed = 123,
+  algorithm
 ){
   # 创建临时环境
   binaryRL.env <- new.env()
   
-  # 将data传入到临时环境
+  # 给临时环境创建全局变量
   binaryRL.env$mode <- "fit"
+  binaryRL.env$policy <- policy
+  
+  binaryRL.env$estimate <- estimate
+  binaryRL.env$priors <- priors
+  
   binaryRL.env$data <- data
   binaryRL.env$id <- id
   binaryRL.env$n_params <- n_params
   binaryRL.env$n_trials <- n_trials
-  binaryRL.env$priors <- priors
   
   # 让obj_func的环境绑定在fit_env中
   environment(obj_func) <- binaryRL.env

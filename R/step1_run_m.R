@@ -86,6 +86,31 @@
 #'  In most cases, you won't need to modify this parameter directly, as suitable
 #'  default values are set for different contexts.
 #' 
+#' @param policy [character]
+#' Specifies the learning policy to be used.
+#' This determines how the model updates action values based on observed or
+#'   simulated choices. It can be either \code{"off"} or \code{"on"}.
+#'   
+#' \itemize{
+#'   \item \strong{Off-Policy}: \strong{Q-learning}
+#'    This is the most common approach for modeling
+#'     reinforcement learning in Two-Alternative Forced Choice (TAFC) tasks.
+#'     In this mode, the model's goal is to learn the underlying value of
+#'     each option by observing the human participant's behavior. It achieves
+#'     this by consistently updating the value of the option that the
+#'     human actually chose. The focus is on understanding the value 
+#'     representation that likely drove the participant's decisions.
+#'
+#'   \item \item \strong{Off-Policy}: \strong{SARSA} 
+#'    In this mode, the target policy and the behavior policy are identical. 
+#'     The model first computes the selection probability for each option based 
+#'     on their current values. Critically, it then uses these probabilities to 
+#'     sample its own action. The value update is then performed on the action 
+#'     that the model itself selected. This approach focuses more on directly 
+#'     mimicking the stochastic choice patterns of the agent, rather than just 
+#'     learning the underlying values from a fixed sequence of actions.
+#' }
+#' 
 #' @param data [data.frame] 
 #' This data should include the following mandatory columns: 
 #'  \itemize{
@@ -140,6 +165,32 @@
 #'  \code{default: threshold = 1}
 #'  
 #'  \code{epsilon-first: threshold = 20, epsilon = NA, lambda = NA}
+#' 
+#' @param lapse [numeric]
+#' A numeric value between 0 and 1, representing the lapse rate.
+#' 
+#' You can interpret this parameter as the probability of the agent "slipping"
+#'  or making a random choice, irrespective of the learned action values. This
+#'  accounts for moments of inattention or motor errors. In this sense, it
+#'  represents the minimum probability with which any given option will be
+#'  selected. It is a free parameter that acknowledges that individuals do not
+#'  always make decisions with full concentration throughout an experiment.
+#'  
+#' From a modeling perspective, the lapse rate is crucial for preventing the
+#'  log-likelihood calculation from returning \code{-Inf}. This issue arises 
+#'  when the model assigns a probability of zero to an action that the 
+#'  participant actually chose (\code{log(0)} is undefined). By ensuring every 
+#'  option has a non-zero minimum probability, the \code{lapse} parameter makes 
+#'  the fitting process more stable and robust against noise in the data.
+#'  
+#'  \deqn{
+#'    P_{final} = (1 - lapse) \cdot P_{softmax} + \frac{lapse}{N_{choices}}
+#'  }
+#'  
+#' \code{default: lapse = 0.02} 
+#' 
+#' This ensures each option has a minimum selection probability of 1 percent 
+#'  in TAFC tasks. 
 #' 
 #' @param alpha [vector]
 #' Extra parameters that may be used in functions. 
@@ -356,7 +407,7 @@
 #' data <- binaryRL::Mason_2024_Exp1
 #' 
 #' binaryRL.res <- binaryRL::run_m(
-#'   mode = "fit",
+#'   mode = "replay",
 #'   data = data,
 #'   id = 18,
 #'   eta = c(0.321, 0.765),
@@ -370,6 +421,7 @@
 run_m <- function(
   name = NA,
   mode = c("simulate", "fit", "replay"),
+  policy = c("on", "off"),
 
   data,
   id,
@@ -380,6 +432,7 @@ run_m <- function(
 
   initial_value = NA,
   threshold = 1,
+  lapse = 0.02,
   
   alpha = NA,
   beta = NA,
@@ -388,7 +441,7 @@ run_m <- function(
   epsilon = NA,
   lambda = NA,
   pi = NA,
-  tau = 1,
+  tau = NA,
   
   priors = NULL,
   
@@ -414,6 +467,15 @@ run_m <- function(
   digits_1 = 2,
   digits_2 = 5
 ){
+  # 只有fit模式需要关心是否是on-policy还是off-policy
+  if (mode == "fit") {
+    policy <- policy
+  }
+  # 因为不论是simulate还是repay, 都是根据参数生成假数据, 一定是on
+  else {
+    policy <- "on"
+  }
+  
   # model name
   if (!(is.na(name))) {
     name <- name
@@ -431,7 +493,7 @@ run_m <- function(
     name <- "Customed"
   }
   
-  
+  # 原始数据集的列名
   if (is.null(raw_cols)) {
     raw_cols = colnames(data)
   }
@@ -461,7 +523,8 @@ run_m <- function(
   )
   
   step5 <- decision_making(
-    mode,
+    mode = mode,
+    policy = policy,
     data = step4,
     options = step1[["options"]],
     sub_choose = sub_choose, rob_choose = rob_choose,
@@ -470,6 +533,7 @@ run_m <- function(
     
     threshold = threshold,
     initial_value = initial_value,
+    lapse = lapse,
     
     alpha = alpha,
     beta = beta,
@@ -507,12 +571,17 @@ run_m <- function(
   )
   
   step8 <- output(
+    mode = mode,
+    policy = policy,
+    
     data = step7,
     name = name,
     n_params = n_params,
     n_trials = n_trials,
+    
     initial_value = initial_value,
     threshold = threshold,
+    lapse = lapse,
     
     alpha = alpha,
     beta = beta,

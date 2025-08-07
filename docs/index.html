@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -419,7 +419,7 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <ul>
 <li>
 <p><strong>M-Step (Update Priors)</strong>: The algorithm treats the distribution of individually-fitted MLE parameters as empirical data. It uses this data to update the hyperparameters of the provided prior distributions. By default, the program assigns an Exponential prior to the inverse temperature (<span class="math inline">\(\tau\)</span>). All other parameters are consequently forced into a Normal distribution for the fitting process.</p>
-<p><em>NOTE: This forces parameters into a potentially inappropriate distribution. To address this rigidity, I am actively working on integrating MCMC into the package, which will allow for more flexible and accurate Bayesian inference in the future.</em></p>
+<p><em>NOTE: This forces parameters into a potentially inappropriate distribution. To address this rigidity, I am working on integrating MCMC into the package, which will allow for more flexible and accurate Bayesian inference in the future.</em></p>
 </li>
 <li><p><strong>E-Step (Update Posterior)</strong>: With these updated priors, the objective function for optimization is altered. Instead of returning the log-likelihood, the function now returns the log-posterior probability, which is defined as the sum of the log-likelihood and the log-prior probability of each parameter.</p></li>
 </ul>

@@ -3,9 +3,10 @@ testthat::test_that("rev_e() works with valid input", {
   
   filepath <- testthat::test_path("testdata", "result_comparison.csv")
   comparison <- utils::read.csv(filepath)
+  data <- subset(binaryRL::Mason_2024_Exp2, Subject %in% 1:10)
   
   replay <- binaryRL::rpl_e(
-    data = binaryRL::Mason_2024_Exp2,
+    data = data,
     result = comparison, 
     model = binaryRL::TD,
     model_name = "TD", 
@@ -20,9 +21,10 @@ testthat::test_that("rev_e() works with valid input", {
   
   filepath <- testthat::test_path("testdata", "result_comparison.csv")
   comparison <- utils::read.csv(filepath)
+  data <- subset(binaryRL::Mason_2024_Exp2, Subject %in% 1:10)
   
   replay <- binaryRL::rpl_e(
-    data = binaryRL::Mason_2024_Exp2,
+    data = data,
     result = comparison, 
     model = binaryRL::RSTD,
     model_name = "RSTD", 
@@ -37,9 +39,10 @@ testthat::test_that("rev_e() works with valid input", {
   
   filepath <- testthat::test_path("testdata", "result_comparison.csv")
   comparison <- utils::read.csv(filepath)
+  data <- subset(binaryRL::Mason_2024_Exp2, Subject %in% 1:10)
   
   replay <- binaryRL::rpl_e(
-    data = binaryRL::Mason_2024_Exp2,
+    data = data,
     result = comparison, 
     model = binaryRL::Utility,
     model_name = "Utility", 

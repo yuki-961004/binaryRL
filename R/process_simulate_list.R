@@ -137,11 +137,15 @@ simulate_list <- function(
     
     # 给临时环境创建全局变量
     binaryRL.env$mode <- "simulate"
+    binaryRL.env$policy <- "on"
+    
+    binaryRL.env$estimate <- "MLE"
+    binaryRL.env$priors <- NULL
+    
     binaryRL.env$data <- data
     binaryRL.env$id <- id[i]
     binaryRL.env$n_params <- n_params
     binaryRL.env$n_trials <- n_trials
-    binaryRL.env$priors <- NULL
     
     # 让obj_func的环境绑定在fit_env中
     environment(obj_func) <- binaryRL.env

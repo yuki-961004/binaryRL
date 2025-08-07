@@ -43,10 +43,11 @@ Model <- function(params){
   res <- binaryRL::run_m(
     data = data,
     id = id,
-    mode = mode,
     n_trials = n_trials,
     n_params = n_params,
     priors = priors,
+    mode = mode,
+    policy = policy,
 # ╔═══════════════════════════════════╗ #
 # ║ You only need to modify this part ║ #
     name = "Your Model Name",
@@ -62,6 +63,7 @@ Model <- function(params){
     # upper-confidence-bound
     pi = c(params[7]),
     # soft-max
+    lapse = 0.02,
     tau = c(params[8]),
     # extra parameters
     alpha = c(param[...], param[...]),
@@ -88,7 +90,8 @@ Model <- function(params){
   )
 
   assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
-  switch(mode, "fit" = -res$ll, "simulate" = res, "replay" = res)
+  loss <- switch(EXPR = estimate, "MLE" = -res$ll, "MAP" = -res$lpo)
+  switch(EXPR = mode, "fit" = loss, "simulate" = res, "replay" = res)
 }
 ```
 
@@ -282,7 +285,7 @@ func_pi <- function(
   else {
     bias <- "ERROR"
   }
-  
+
   return(bias)
 }
 ```
@@ -306,6 +309,7 @@ func_tau <- function (
   # calculating Left option or Right option probability
   LR,
   # parameters
+  lapse,
   tau, 
   # extra variables
   var1, var2, 
@@ -350,6 +354,9 @@ func_tau <- function (
   else {
     prob <- "ERROR"
   }
+  
+  prob <- (1 - lapse) * prob + (lapse / 2)
+  
   return(prob)
 }
 ```
@@ -569,8 +576,9 @@ comparison <- binaryRL::fit_p(
 # ╔═══════════════════════════════════════════════════════════════════════════╗ #
 # ║ --------------------------- black-box function -------------------------- ║ #
   #funcs = c("your_funcs"),
-  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
+  policy = c("off", "on"),
   model_name = c("TD", "RSTD", "Utility"),
+  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
 # ║ ------------------------------- estimate -------------------------------- ║ #
   estimate = c("MLE", "MAP"),
 # ║ ---------------------------------- MLE ---------------------------------- ║ #

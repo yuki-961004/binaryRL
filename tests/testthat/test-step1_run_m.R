@@ -5,6 +5,8 @@ testthat::test_that("run_m() works with valid input", {
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
+    policy = "off",
+    
     data = data,
     id = 1,
     eta = c(0.321, 0.765),
@@ -31,6 +33,8 @@ testthat::test_that("run_m() works with valid input", {
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
+    policy = "off",
+    
     data = data,
     id = 1,
     eta = c(0.321, 0.765),
@@ -57,6 +61,8 @@ testthat::test_that("run_m() works with valid input", {
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
+    policy = "off",
+    
     data = data,
     id = 1,
     eta = c(0.321, 0.765),
@@ -83,6 +89,8 @@ testthat::test_that("run_m() works with valid input", {
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
+    policy = "off",
+    
     data = data,
     id = 1,
     eta = c(0.321, 0.765),
@@ -109,6 +117,8 @@ testthat::test_that("run_m() works with valid input", {
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
+    policy = "off",
+    
     data = data,
     id = 1,
     eta = c(0.321, 0.765),
@@ -135,6 +145,8 @@ testthat::test_that("run_m() works with valid input", {
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
+    policy = "off",
+    
     data = data,
     id = 1,
     eta = c(0.321, 0.765),

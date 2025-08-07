@@ -41,6 +41,42 @@
 #'  recovering, even if your proposed model outperforms it in `fit_p`,
 #'  it doesn't necessarily make your proposed model a good one.
 #'  
+#' @param policy [character]
+#' Specifies the learning policy to be used.
+#' This determines how the model updates action values based on observed or
+#'   simulated choices. It can be either \code{"off"} or \code{"on"}.
+#'   
+#' \itemize{
+#'   \item \strong{Off-Policy}: \strong{Q-learning}
+#'    This is the most common approach for modeling
+#'     reinforcement learning in Two-Alternative Forced Choice (TAFC) tasks.
+#'     In this mode, the model's goal is to learn the underlying value of
+#'     each option by observing the human participant's behavior. It achieves
+#'     this by consistently updating the value of the option that the
+#'     human actually chose. The focus is on understanding the value 
+#'     representation that likely drove the participant's decisions.
+#'
+#'   \item \item \strong{Off-Policy}: \strong{SARSA} 
+#'    In this mode, the target policy and the behavior policy are identical. 
+#'     The model first computes the selection probability for each option based 
+#'     on their current values. Critically, it then uses these probabilities to 
+#'     sample its own action. The value update is then performed on the action 
+#'     that the model itself selected. This approach focuses more on directly 
+#'     mimicking the stochastic choice patterns of the agent, rather than just 
+#'     learning the underlying values from a fixed sequence of actions.
+#' }
+#'  
+#' @param estimate [character] 
+#'  Estimation method. Default is \code{"MLE"}, 
+#'   meaning the algorithm will iterate to find the parameter values that 
+#'   maximize the likelihood, without considering any prior information. If 
+#'   \code{estimate = "MAP"}, prior distributions must be specified via the 
+#'   \code{priors} argument. After an initial optimization using likelihood, 
+#'   the algorithm estimates the distribution of each parameter across all 
+#'   subjects, fits a normal or exponential prior, and re-optimizes to maximize 
+#'   the posterior. This procedure iterates until convergence and follows the 
+#'   EM (Expectation-Maximization) framework.
+#'  
 #' @param data [data.frame] 
 #' This data should include the following mandatory columns: 
 #'  \itemize{
@@ -74,9 +110,6 @@
 #'  Criterion).
 #'  
 #'  \code{default: n_trials = NULL}
-#'  
-#' @param fit_model [list] 
-#' A collection of functions applied to fit models to the data.
 #' 
 #' @param funcs [character]
 #' A character vector containing the names of all user-defined functions
@@ -100,6 +133,9 @@
 #' @param model_name [list] 
 #' The name of fit modals
 #' 
+#' @param fit_model [list] 
+#' A collection of functions applied to fit models to the data.
+#' 
 #' @param lower [list] 
 #' The lower bounds for model fit models
 #' 
@@ -121,17 +157,6 @@
 #'   \strong{Exponential(1)} distribution as its prior. This is a weakly
 #'   informative prior that regularizes the model by favoring smaller,
 #'   positive values, thus preventing extremely large parameter estimates.
-#' 
-#' @param estimate [character] 
-#'  Estimation method. Default is \code{"MLE"}, 
-#'  meaning the algorithm will iterate to find the parameter values that 
-#'  maximize the likelihood, without considering any prior information. If 
-#'  \code{estimate = "MAP"}, prior distributions must be specified via the 
-#'  \code{priors} argument. After an initial optimization using likelihood, 
-#'  the algorithm estimates the distribution of each parameter across all 
-#'  subjects, fits a normal or exponential prior, and re-optimizes to maximize 
-#'  the posterior. This procedure iterates until convergence and follows the EM 
-#'  (Expectation-Maximization) framework.
 #' 
 #' @param tolerance [numeric] 
 #' Convergence threshold for MAP estimation. If the change in
@@ -215,6 +240,7 @@
 #' #+-----------------------------------------------------------------------------+#
 #' #|----------------------------- black-box function ----------------------------|#
 #'   #funcs = c("your_funcs"),
+#'   policy = c("off", "on"),
 #'   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
 #'   model_name = c("TD", "RSTD", "Utility"),
 #' #|--------------------------------- estimate ----------------------------------|#
@@ -272,6 +298,9 @@
 #' }
 #' 
 fit_p <- function(
+  policy = c("off", "on"),
+  estimate = c("MLE", "MAP"),  
+  
   data,
   id = NULL,
   n_trials = NULL,
@@ -279,11 +308,9 @@ fit_p <- function(
   funcs = NULL,
   model_name = c("TD", "RSTD", "Utility"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  
-  estimate = "MLE",
-  
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  
   priors = NULL,
   tolerance = 0.001,
   
@@ -377,18 +404,24 @@ fit_p <- function(
         ) %dorng% {
 
           binaryRL_res <- binaryRL::optimize_para(
+            policy = policy,
+            estimate = estimate,
+            
             data = data,
             id = id[j],
-            n_params = n_params,
             n_trials = n_trials,
+            n_params = n_params,
+            
             obj_func = fit_model[[i]],
             lower = lower[[i]],
             upper = upper[[i]],
             priors = priors[[i]],
-            iteration = iteration_i,
-            seed = seed,
+            
             initial_params = initial_params,
             initial_size = initial_size,
+            
+            iteration = iteration_i,
+            seed = seed,
             algorithm = algorithm
           )
           
@@ -470,18 +503,24 @@ fit_p <- function(
             ) %dorng% {
               
               binaryRL_res <- binaryRL::optimize_para(
+                policy = policy,
+                estimate = estimate,
+                
                 data = data,
                 id = id[j],
-                n_params = n_params,
                 n_trials = n_trials,
+                n_params = n_params,
+                
                 obj_func = fit_model[[i]],
                 lower = lower[[i]],
                 upper = upper[[i]],
                 priors = params_priors[[i]],
-                iteration = iteration_i,
-                seed = seed,
+                
                 initial_params = initial_params,
                 initial_size = initial_size,
+                
+                iteration = iteration_i,
+                seed = seed,
                 algorithm = algorithm
               )
               

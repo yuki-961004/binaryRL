@@ -33,7 +33,7 @@ The fitting procedure is analogous to that performed by `fit_p`,
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,11 +84,12 @@ The fitting procedure is analogous to that performed by `fit_p`,
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">recovery_data</span><span class="op">(</span></span>
 <span>  <span class="va">list</span>,</span>
 <span>  id <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  <span class="va">fit_model</span>,</span>
-<span>  funcs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">model_name</span>,</span>
-<span>  <span class="va">n_params</span>,</span>
 <span>  <span class="va">n_trials</span>,</span>
+<span>  <span class="va">n_params</span>,</span>
+<span>  funcs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">policy</span>,</span>
+<span>  <span class="va">model_name</span>,</span>
+<span>  <span class="va">fit_model</span>,</span>
 <span>  <span class="va">lower</span>,</span>
 <span>  <span class="va">upper</span>,</span>
 <span>  initial_params <span class="op">=</span> <span class="cn">NA</span>,</span>
@@ -123,9 +124,14 @@ Specifies which subject's data to use. In parameter and model recovery
 <p><code>default: id = NULL</code></p></dd>
 
 
-<dt id="arg-fit-model">fit_model<a class="anchor" aria-label="anchor" href="#arg-fit-model"></a></dt>
-<dd><p>[function]
-fit model</p></dd>
+<dt id="arg-n-trials">n_trials<a class="anchor" aria-label="anchor" href="#arg-n-trials"></a></dt>
+<dd><p>[integer]
+The total number of trials in your experiment.</p></dd>
+
+
+<dt id="arg-n-params">n_params<a class="anchor" aria-label="anchor" href="#arg-n-params"></a></dt>
+<dd><p>[integer]
+The number of free parameters in your model.</p></dd>
 
 
 <dt id="arg-funcs">funcs<a class="anchor" aria-label="anchor" href="#arg-funcs"></a></dt>
@@ -147,19 +153,39 @@ A character vector containing the names of all user-defined functions
  vector here.</p></dd>
 
 
+<dt id="arg-policy">policy<a class="anchor" aria-label="anchor" href="#arg-policy"></a></dt>
+<dd><p>[character]
+Specifies the learning policy to be used.
+This determines how the model updates action values based on observed or
+  simulated choices. It can be either <code>"off"</code> or <code>"on"</code>.</p>
+<ul><li><p><strong>Off-Policy</strong>: <strong>Q-learning</strong>
+   This is the most common approach for modeling
+    reinforcement learning in Two-Alternative Forced Choice (TAFC) tasks.
+    In this mode, the model's goal is to learn the underlying value of
+    each option by observing the human participant's behavior. It achieves
+    this by consistently updating the value of the option that the
+    human actually chose. The focus is on understanding the value
+    representation that likely drove the participant's decisions.</p></li>
+<li><p></p></li>
+<li><p><strong>Off-Policy</strong>: <strong>SARSA</strong>
+   In this mode, the target policy and the behavior policy are identical.
+    The model first computes the selection probability for each option based
+    on their current values. Critically, it then uses these probabilities to
+    sample its own action. The value update is then performed on the action
+    that the model itself selected. This approach focuses more on directly
+    mimicking the stochastic choice patterns of the agent, rather than just
+    learning the underlying values from a fixed sequence of actions.</p></li>
+</ul></dd>
+
+
 <dt id="arg-model-name">model_name<a class="anchor" aria-label="anchor" href="#arg-model-name"></a></dt>
 <dd><p>[character]
 The name of your modal</p></dd>
 
 
-<dt id="arg-n-params">n_params<a class="anchor" aria-label="anchor" href="#arg-n-params"></a></dt>
-<dd><p>[integer]
-The number of free parameters in your model.</p></dd>
-
-
-<dt id="arg-n-trials">n_trials<a class="anchor" aria-label="anchor" href="#arg-n-trials"></a></dt>
-<dd><p>[integer]
-The total number of trials in your experiment.</p></dd>
+<dt id="arg-fit-model">fit_model<a class="anchor" aria-label="anchor" href="#arg-fit-model"></a></dt>
+<dd><p>[function]
+fit model</p></dd>
 
 
 <dt id="arg-lower">lower<a class="anchor" aria-label="anchor" href="#arg-lower"></a></dt>

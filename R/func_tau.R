@@ -55,6 +55,32 @@
 #' If the choice was random, the value is 1; 
 #' If the choice was based on value, the value is 0.
 #' 
+#' @param lapse [numeric]
+#' A numeric value between 0 and 1, representing the lapse rate.
+#' 
+#' You can interpret this parameter as the probability of the agent "slipping"
+#'  or making a random choice, irrespective of the learned action values. This
+#'  accounts for moments of inattention or motor errors. In this sense, it
+#'  represents the minimum probability with which any given option will be
+#'  selected. It is a free parameter that acknowledges that individuals do not
+#'  always make decisions with full concentration throughout an experiment.
+#'  
+#' From a modeling perspective, the lapse rate is crucial for preventing the
+#'  log-likelihood calculation from returning \code{-Inf}. This issue arises 
+#'  when the model assigns a probability of zero to an action that the 
+#'  participant actually chose (\code{log(0)} is undefined). By ensuring every 
+#'  option has a non-zero minimum probability, the \code{lapse} parameter makes 
+#'  the fitting process more stable and robust against noise in the data.
+#'  
+#'  \deqn{
+#'    P_{final} = (1 - lapse) \cdot P_{softmax} + \frac{lapse}{N_{choices}}
+#'  }
+#'  
+#' \code{default: lapse = 0.02} 
+#' 
+#' This ensures each option has a minimum selection probability of 1 percent 
+#'  in TAFC tasks. 
+#' 
 #' @param tau [vector] 
 #' Parameters used in the Soft-Max Function. \code{prob_func} 
 #'  representing the sensitivity of the subject to the value difference when 
@@ -143,6 +169,9 @@
 #'   else {
 #'     prob <- "ERROR"
 #'   }
+#' ################################ [ lapse ] ##################################  
+#' 
+#'   prob <- (1 - lapse) * prob + (lapse / 2)
 #'
 #'   return(prob)
 #' }
@@ -171,6 +200,7 @@ func_tau <- function(
   try,
   
   # 自由参数
+  lapse,
   tau,
   # 额外参数
   alpha,
@@ -214,6 +244,9 @@ func_tau <- function(
   else {
     prob <- "ERROR"
   }
+################################# [ lapse ] ####################################  
+  
+  prob <- (1 - lapse) * prob + (lapse / 2)
   
   return(prob)
 }

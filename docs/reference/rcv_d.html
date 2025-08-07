@@ -79,7 +79,7 @@ For more information, please refer to the homepage of this package:
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -152,6 +152,7 @@ The process involves generating synthetic datasets. First, parameters
 <span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_trials <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  funcs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  policy <span class="op">=</span> <span class="st">"off"</span>,</span>
 <span>  model_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TD"</span>, <span class="st">"RSTD"</span>, <span class="st">"Utility"</span><span class="op">)</span>,</span>
 <span>  simulate_models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Utility.html">Utility</a></span><span class="op">)</span>,</span>
 <span>  simulate_lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -229,6 +230,31 @@ A character vector containing the names of all user-defined functions
  ),
  you must explicitly provide the names of your custom functions as a
  vector here.</p></dd>
+
+
+<dt id="arg-policy">policy<a class="anchor" aria-label="anchor" href="#arg-policy"></a></dt>
+<dd><p>[character]
+Specifies the learning policy to be used.
+This determines how the model updates action values based on observed or
+  simulated choices. It can be either <code>"off"</code> or <code>"on"</code>.</p>
+<ul><li><p><strong>Off-Policy</strong>: <strong>Q-learning</strong>
+   This is the most common approach for modeling
+    reinforcement learning in Two-Alternative Forced Choice (TAFC) tasks.
+    In this mode, the model's goal is to learn the underlying value of
+    each option by observing the human participant's behavior. It achieves
+    this by consistently updating the value of the option that the
+    human actually chose. The focus is on understanding the value
+    representation that likely drove the participant's decisions.</p></li>
+<li><p></p></li>
+<li><p><strong>Off-Policy</strong>: <strong>SARSA</strong>
+   In this mode, the target policy and the behavior policy are identical.
+    The model first computes the selection probability for each option based
+    on their current values. Critically, it then uses these probabilities to
+    sample its own action. The value update is then performed on the action
+    that the model itself selected. This approach focuses more on directly
+    mimicking the stochastic choice patterns of the agent, rather than just
+    learning the underlying values from a fixed sequence of actions.</p></li>
+</ul></dd>
 
 
 <dt id="arg-model-names">model_names<a class="anchor" aria-label="anchor" href="#arg-model-names"></a></dt>

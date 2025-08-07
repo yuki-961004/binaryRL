@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../../../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,7 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yuki-961004.github.io/binaryRL/">binaryRL</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Package 'binaryRL' Version:  0.9.4</span></span></code></pre>
+<pre><code><span><span class="co">## Package 'binaryRL' Version:  0.9.6</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   Subject Block Trial L_choice R_choice L_reward R_reward Sub_Choose Frame</span></span>
@@ -108,30 +108,31 @@
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">binaryRL.res</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../../../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
+<span>  mode <span class="op">=</span> <span class="st">"replay"</span>,</span>
 <span>  data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span>,                    </span>
 <span>  id <span class="op">=</span> <span class="fl">1</span>,                       </span>
 <span>  eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.123</span><span class="op">)</span>,  </span>
 <span>  tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.789</span><span class="op">)</span>,</span>
 <span>  n_params <span class="op">=</span> <span class="fl">2</span>,            </span>
-<span>  n_trials <span class="op">=</span> <span class="fl">360</span>,            </span>
-<span>  mode <span class="op">=</span> <span class="st">"replay"</span>,</span>
+<span>  n_trials <span class="op">=</span> <span class="fl">360</span>, </span>
 <span>  priors <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">binaryRL.res</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Results of TD Model:</span></span></code></pre>
+<pre><code><span><span class="co">## Results of TD Model(replay):</span></span></code></pre>
+<pre><code><span><span class="co">## Estimation Method: NA</span></span></code></pre>
 <pre><code><span><span class="co">## Exploration and Exploitation Trade-off:</span></span>
 <span><span class="co">##   Initial Values: Initial reward received</span></span>
 <span><span class="co">##   Exploration Strategy: off</span></span>
 <span><span class="co">##   Upper-Confidence-Bound: off</span></span>
 <span><span class="co">##   Soft-Max: on</span></span></code></pre>
 <pre><code><span><span class="co">## Model Fit:</span></span>
-<span><span class="co">##   Accuracy: 63.61%</span></span>
-<span><span class="co">##   Log-Likelihood: -542.4</span></span>
+<span><span class="co">##   Accuracy: 63.89%</span></span>
+<span><span class="co">##   Log-Likelihood: -349.69</span></span>
 <span><span class="co">##   Log-Prior Probability: NA</span></span>
 <span><span class="co">##   Log-Posterior Probability: NA</span></span>
-<span><span class="co">##   AIC: 1088.8</span></span>
-<span><span class="co">##   BIC: 1096.57</span></span></code></pre>
+<span><span class="co">##   AIC: 703.38</span></span>
+<span><span class="co">##   BIC: 711.15</span></span></code></pre>
 <pre><code><span><span class="co">## Free Parameters:</span></span>
 <span><span class="co">##   α: NA</span></span>
 <span><span class="co">##   β: NA</span></span>
@@ -145,53 +146,55 @@
 <span><span class="co">##    Parameter Value1</span></span>
 <span><span class="co">## 1         Q1     NA</span></span>
 <span><span class="co">## 2  threshold  1.000</span></span>
-<span><span class="co">## 3      alpha     NA</span></span>
-<span><span class="co">## 4       beta     NA</span></span>
-<span><span class="co">## 5      gamma  1.000</span></span>
-<span><span class="co">## 6        eta  0.123</span></span>
-<span><span class="co">## 7    epsilon     NA</span></span>
-<span><span class="co">## 8     lambda     NA</span></span>
-<span><span class="co">## 9         pi     NA</span></span>
-<span><span class="co">## 10       tau  0.789</span></span>
+<span><span class="co">## 3      lapse  0.020</span></span>
+<span><span class="co">## 4      alpha     NA</span></span>
+<span><span class="co">## 5       beta     NA</span></span>
+<span><span class="co">## 6      gamma  1.000</span></span>
+<span><span class="co">## 7        eta  0.123</span></span>
+<span><span class="co">## 8    epsilon     NA</span></span>
+<span><span class="co">## 9     lambda     NA</span></span>
+<span><span class="co">## 10        pi     NA</span></span>
+<span><span class="co">## 11       tau  0.789</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## [[2]]</span></span>
 <span><span class="co">##     Metric   Value</span></span>
-<span><span class="co">## 1 Accuracy   63.61</span></span>
-<span><span class="co">## 2     LogL -542.40</span></span>
+<span><span class="co">## 1 Accuracy   63.89</span></span>
+<span><span class="co">## 2     LogL -349.69</span></span>
 <span><span class="co">## 3    LogPr      NA</span></span>
 <span><span class="co">## 4    LogPo      NA</span></span>
-<span><span class="co">## 5      AIC 1088.80</span></span>
-<span><span class="co">## 6      BIC 1096.57</span></span></code></pre>
+<span><span class="co">## 5      AIC  703.38</span></span>
+<span><span class="co">## 6      BIC  711.15</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="rstd">RSTD<a class="anchor" aria-label="anchor" href="#rstd"></a>
 </h2>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">binaryRL.res</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../../../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
+<span>  mode <span class="op">=</span> <span class="st">"replay"</span>,</span>
 <span>  data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span>,</span>
 <span>  id <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  n_params <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  n_trials <span class="op">=</span> <span class="fl">360</span>,</span>
 <span>  eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.123</span>, <span class="fl">0.456</span><span class="op">)</span>,</span>
-<span>  tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.789</span><span class="op">)</span>,            </span>
-<span>  mode <span class="op">=</span> <span class="st">"replay"</span>,</span>
+<span>  tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.789</span><span class="op">)</span>, </span>
 <span>  priors <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">binaryRL.res</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Results of RSTD Model:</span></span></code></pre>
+<pre><code><span><span class="co">## Results of RSTD Model(replay):</span></span></code></pre>
+<pre><code><span><span class="co">## Estimation Method: NA</span></span></code></pre>
 <pre><code><span><span class="co">## Exploration and Exploitation Trade-off:</span></span>
 <span><span class="co">##   Initial Values: Initial reward received</span></span>
 <span><span class="co">##   Exploration Strategy: off</span></span>
 <span><span class="co">##   Upper-Confidence-Bound: off</span></span>
 <span><span class="co">##   Soft-Max: on</span></span></code></pre>
 <pre><code><span><span class="co">## Model Fit:</span></span>
-<span><span class="co">##   Accuracy: 67.22%</span></span>
-<span><span class="co">##   Log-Likelihood: -535.87</span></span>
+<span><span class="co">##   Accuracy: 67.78%</span></span>
+<span><span class="co">##   Log-Likelihood: -332.16</span></span>
 <span><span class="co">##   Log-Prior Probability: NA</span></span>
 <span><span class="co">##   Log-Posterior Probability: NA</span></span>
-<span><span class="co">##   AIC: 1077.74</span></span>
-<span><span class="co">##   BIC: 1089.4</span></span></code></pre>
+<span><span class="co">##   AIC: 670.32</span></span>
+<span><span class="co">##   BIC: 681.98</span></span></code></pre>
 <pre><code><span><span class="co">## Free Parameters:</span></span>
 <span><span class="co">##   α: NA</span></span>
 <span><span class="co">##   β: NA</span></span>
@@ -205,54 +208,56 @@
 <span><span class="co">##    Parameter Value1 Value2</span></span>
 <span><span class="co">## 1         Q1     NA     NA</span></span>
 <span><span class="co">## 2  threshold  1.000     NA</span></span>
-<span><span class="co">## 3      alpha     NA     NA</span></span>
-<span><span class="co">## 4       beta     NA     NA</span></span>
-<span><span class="co">## 5      gamma  1.000     NA</span></span>
-<span><span class="co">## 6        eta  0.123  0.456</span></span>
-<span><span class="co">## 7    epsilon     NA     NA</span></span>
-<span><span class="co">## 8     lambda     NA     NA</span></span>
-<span><span class="co">## 9         pi     NA     NA</span></span>
-<span><span class="co">## 10       tau  0.789     NA</span></span>
+<span><span class="co">## 3      lapse  0.020     NA</span></span>
+<span><span class="co">## 4      alpha     NA     NA</span></span>
+<span><span class="co">## 5       beta     NA     NA</span></span>
+<span><span class="co">## 6      gamma  1.000     NA</span></span>
+<span><span class="co">## 7        eta  0.123  0.456</span></span>
+<span><span class="co">## 8    epsilon     NA     NA</span></span>
+<span><span class="co">## 9     lambda     NA     NA</span></span>
+<span><span class="co">## 10        pi     NA     NA</span></span>
+<span><span class="co">## 11       tau  0.789     NA</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## [[2]]</span></span>
 <span><span class="co">##     Metric   Value</span></span>
-<span><span class="co">## 1 Accuracy   67.22</span></span>
-<span><span class="co">## 2     LogL -535.87</span></span>
+<span><span class="co">## 1 Accuracy   67.78</span></span>
+<span><span class="co">## 2     LogL -332.16</span></span>
 <span><span class="co">## 3    LogPr      NA</span></span>
 <span><span class="co">## 4    LogPo      NA</span></span>
-<span><span class="co">## 5      AIC 1077.74</span></span>
-<span><span class="co">## 6      BIC 1089.40</span></span></code></pre>
+<span><span class="co">## 5      AIC  670.32</span></span>
+<span><span class="co">## 6      BIC  681.98</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="utility">Utility<a class="anchor" aria-label="anchor" href="#utility"></a>
 </h2>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">binaryRL.res</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../../../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
+<span>  mode <span class="op">=</span> <span class="st">"replay"</span>,</span>
 <span>  data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span>,</span>
 <span>  id <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  n_params <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  n_trials <span class="op">=</span> <span class="fl">360</span>,</span>
 <span>  eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.123</span><span class="op">)</span>,</span>
 <span>  gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.456</span><span class="op">)</span>,</span>
-<span>  tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.789</span><span class="op">)</span>,            </span>
-<span>  mode <span class="op">=</span> <span class="st">"replay"</span>,</span>
+<span>  tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.789</span><span class="op">)</span>, </span>
 <span>  priors <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">binaryRL.res</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Results of Utility Model:</span></span></code></pre>
+<pre><code><span><span class="co">## Results of Utility Model(replay):</span></span></code></pre>
+<pre><code><span><span class="co">## Estimation Method: NA</span></span></code></pre>
 <pre><code><span><span class="co">## Exploration and Exploitation Trade-off:</span></span>
 <span><span class="co">##   Initial Values: Initial reward received</span></span>
 <span><span class="co">##   Exploration Strategy: off</span></span>
 <span><span class="co">##   Upper-Confidence-Bound: off</span></span>
 <span><span class="co">##   Soft-Max: on</span></span></code></pre>
 <pre><code><span><span class="co">## Model Fit:</span></span>
-<span><span class="co">##   Accuracy: 57.22%</span></span>
-<span><span class="co">##   Log-Likelihood: -314.16</span></span>
+<span><span class="co">##   Accuracy: 57.5%</span></span>
+<span><span class="co">##   Log-Likelihood: -265.9</span></span>
 <span><span class="co">##   Log-Prior Probability: NA</span></span>
 <span><span class="co">##   Log-Posterior Probability: NA</span></span>
-<span><span class="co">##   AIC: 634.32</span></span>
-<span><span class="co">##   BIC: 645.98</span></span></code></pre>
+<span><span class="co">##   AIC: 537.8</span></span>
+<span><span class="co">##   BIC: 549.46</span></span></code></pre>
 <pre><code><span><span class="co">## Free Parameters:</span></span>
 <span><span class="co">##   α: NA</span></span>
 <span><span class="co">##   β: NA</span></span>
@@ -266,28 +271,29 @@
 <span><span class="co">##    Parameter Value1</span></span>
 <span><span class="co">## 1         Q1     NA</span></span>
 <span><span class="co">## 2  threshold  1.000</span></span>
-<span><span class="co">## 3      alpha     NA</span></span>
-<span><span class="co">## 4       beta     NA</span></span>
-<span><span class="co">## 5      gamma  0.456</span></span>
-<span><span class="co">## 6        eta  0.123</span></span>
-<span><span class="co">## 7    epsilon     NA</span></span>
-<span><span class="co">## 8     lambda     NA</span></span>
-<span><span class="co">## 9         pi     NA</span></span>
-<span><span class="co">## 10       tau  0.789</span></span>
+<span><span class="co">## 3      lapse  0.020</span></span>
+<span><span class="co">## 4      alpha     NA</span></span>
+<span><span class="co">## 5       beta     NA</span></span>
+<span><span class="co">## 6      gamma  0.456</span></span>
+<span><span class="co">## 7        eta  0.123</span></span>
+<span><span class="co">## 8    epsilon     NA</span></span>
+<span><span class="co">## 9     lambda     NA</span></span>
+<span><span class="co">## 10        pi     NA</span></span>
+<span><span class="co">## 11       tau  0.789</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## [[2]]</span></span>
 <span><span class="co">##     Metric   Value</span></span>
-<span><span class="co">## 1 Accuracy   57.22</span></span>
-<span><span class="co">## 2     LogL -314.16</span></span>
+<span><span class="co">## 1 Accuracy   57.50</span></span>
+<span><span class="co">## 2     LogL -265.90</span></span>
 <span><span class="co">## 3    LogPr      NA</span></span>
 <span><span class="co">## 4    LogPo      NA</span></span>
-<span><span class="co">## 5      AIC  634.32</span></span>
-<span><span class="co">## 6      BIC  645.98</span></span></code></pre>
+<span><span class="co">## 5      AIC  537.80</span></span>
+<span><span class="co">## 6      BIC  549.46</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="prospect">Prospect<a class="anchor" aria-label="anchor" href="#prospect"></a>
 </h2>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">func_prospect</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span></span>
 <span>  <span class="va">i</span>, <span class="va">L_freq</span>, <span class="va">R_freq</span>, <span class="va">L_pick</span>, <span class="va">R_pick</span>, <span class="va">L_value</span>, <span class="va">R_value</span>, <span class="va">var1</span> <span class="op">=</span> <span class="cn">NA</span>, <span class="va">var2</span> <span class="op">=</span> <span class="cn">NA</span>,  </span>
 <span>  <span class="va">value</span>, <span class="va">utility</span>, <span class="va">reward</span>, <span class="va">occurrence</span>,</span>
@@ -316,8 +322,9 @@
 <span>  <span class="op">}</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">gamma</span>, <span class="va">utility</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">binaryRL.res</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../../../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
+<span>  mode <span class="op">=</span> <span class="st">"replay"</span>,</span>
 <span>  name <span class="op">=</span> <span class="st">"Prospect"</span>,</span>
 <span>  data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span>,</span>
 <span>  id <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -327,25 +334,25 @@
 <span>  gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.12</span>, <span class="fl">0.89</span><span class="op">)</span>,</span>
 <span>  tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.34</span><span class="op">)</span>,</span>
 <span>  beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.56</span><span class="op">)</span>,</span>
-<span>  util_func <span class="op">=</span> <span class="va">func_prospect</span>,            </span>
-<span>  mode <span class="op">=</span> <span class="st">"replay"</span>,</span>
+<span>  util_func <span class="op">=</span> <span class="va">func_prospect</span>,</span>
 <span>  priors <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">binaryRL.res</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Results of Prospect Model:</span></span></code></pre>
+<pre><code><span><span class="co">## Results of Prospect Model(replay):</span></span></code></pre>
+<pre><code><span><span class="co">## Estimation Method: NA</span></span></code></pre>
 <pre><code><span><span class="co">## Exploration and Exploitation Trade-off:</span></span>
 <span><span class="co">##   Initial Values: Initial reward received</span></span>
 <span><span class="co">##   Exploration Strategy: off</span></span>
 <span><span class="co">##   Upper-Confidence-Bound: off</span></span>
 <span><span class="co">##   Soft-Max: on</span></span></code></pre>
 <pre><code><span><span class="co">## Model Fit:</span></span>
-<span><span class="co">##   Accuracy: 55%</span></span>
-<span><span class="co">##   Log-Likelihood: -425.44</span></span>
+<span><span class="co">##   Accuracy: 54.72%</span></span>
+<span><span class="co">##   Log-Likelihood: -346.59</span></span>
 <span><span class="co">##   Log-Prior Probability: NA</span></span>
 <span><span class="co">##   Log-Posterior Probability: NA</span></span>
-<span><span class="co">##   AIC: 860.88</span></span>
-<span><span class="co">##   BIC: 880.31</span></span></code></pre>
+<span><span class="co">##   AIC: 703.18</span></span>
+<span><span class="co">##   BIC: 722.61</span></span></code></pre>
 <pre><code><span><span class="co">## Free Parameters:</span></span>
 <span><span class="co">##   α: NA</span></span>
 <span><span class="co">##   β: 1.56</span></span>
@@ -359,23 +366,24 @@
 <span><span class="co">##    Parameter Value1 Value2</span></span>
 <span><span class="co">## 1         Q1     NA     NA</span></span>
 <span><span class="co">## 2  threshold   1.00     NA</span></span>
-<span><span class="co">## 3      alpha     NA     NA</span></span>
-<span><span class="co">## 4       beta   1.56     NA</span></span>
-<span><span class="co">## 5      gamma   0.12   0.89</span></span>
-<span><span class="co">## 6        eta   0.50     NA</span></span>
-<span><span class="co">## 7    epsilon     NA     NA</span></span>
-<span><span class="co">## 8     lambda     NA     NA</span></span>
-<span><span class="co">## 9         pi     NA     NA</span></span>
-<span><span class="co">## 10       tau   0.34     NA</span></span>
+<span><span class="co">## 3      lapse   0.02     NA</span></span>
+<span><span class="co">## 4      alpha     NA     NA</span></span>
+<span><span class="co">## 5       beta   1.56     NA</span></span>
+<span><span class="co">## 6      gamma   0.12   0.89</span></span>
+<span><span class="co">## 7        eta   0.50     NA</span></span>
+<span><span class="co">## 8    epsilon     NA     NA</span></span>
+<span><span class="co">## 9     lambda     NA     NA</span></span>
+<span><span class="co">## 10        pi     NA     NA</span></span>
+<span><span class="co">## 11       tau   0.34     NA</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## [[2]]</span></span>
 <span><span class="co">##     Metric   Value</span></span>
-<span><span class="co">## 1 Accuracy   55.00</span></span>
-<span><span class="co">## 2     LogL -425.44</span></span>
+<span><span class="co">## 1 Accuracy   54.72</span></span>
+<span><span class="co">## 2     LogL -346.59</span></span>
 <span><span class="co">## 3    LogPr      NA</span></span>
 <span><span class="co">## 4    LogPo      NA</span></span>
-<span><span class="co">## 5      AIC  860.88</span></span>
-<span><span class="co">## 6      BIC  880.31</span></span></code></pre>
+<span><span class="co">## 5      AIC  703.18</span></span>
+<span><span class="co">## 6      BIC  722.61</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

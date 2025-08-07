@@ -138,17 +138,25 @@ rpl_e <- function(
     
     params <- stats::na.omit(unlist(result[i, grep(param_prefix, names(result))]))
     
+    # 创建临时环境
     binaryRL.env <- new.env()
+    
+    # 给临时环境创建全局变量
     binaryRL.env$mode <- "replay"
+    binaryRL.env$policy <- "on"
+    
+    binaryRL.env$estimate <- "MLE"
+    binaryRL.env$priors <- NULL
+    
     binaryRL.env$data <- data
     binaryRL.env$id <- id[i]
     binaryRL.env$n_params <- length(params)
     binaryRL.env$n_trials <- n_trials
-    binaryRL.env$priors <- NULL
     
+    # 让obj_func的环境绑定在fit_env中
     obj_func <- model
-    
     environment(obj_func) <- binaryRL.env
+    
     res[[i]] <- obj_func(params = params)[[1]]
   }
   

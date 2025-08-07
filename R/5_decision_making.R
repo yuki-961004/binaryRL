@@ -1,12 +1,14 @@
 decision_making <- function(
-    mode,
+    mode = "fit",
+    policy = "off",
     data, 
     options,
     sub_choose, rob_choose,
     seed = 123, 
     
-    initial_value,
+    initial_value = NA,
     threshold = 1,
+    lapse = 0.02,
     
     alpha, beta, gamma, eta, epsilon, lambda, pi, tau, 
     
@@ -132,6 +134,7 @@ decision_making <- function(
       try = data$Try[i],
       LR = "L",
       
+      lapse = lapse,
       tau = tau,
       alpha = alpha,
       beta = beta
@@ -151,6 +154,7 @@ decision_making <- function(
       try = data$Try[i],
       LR = "R",
       
+      lapse = lapse,
       tau = tau,
       alpha = alpha,
       beta = beta
@@ -165,14 +169,14 @@ decision_making <- function(
     
 ############################# [ action select ] ################################    
     
-    # 如果是fit, 则直接抄答案
-    if (mode == "fit") {
+    # 如果是off-policy, 以人类的选择作为被更新的价值
+    if (policy == "off") {
       data[[rob_choose]][i] <- data[[sub_choose]][i] 
     }
-    # 如果是simulate或者replay则是自己做题
-    else {
+    # 如果是on-policy, 机器人自己做选择, 更新自己选择的价值
+    else if (policy == "on") {
       data[[rob_choose]][i] <- sample(
-        c(data[[L_choice]][i], data[[R_choice]][i]), 
+        x = c(data[[L_choice]][i], data[[R_choice]][i]), 
         prob = c(data$L_prob[i], data$R_prob[i]),
         size = 1
       )

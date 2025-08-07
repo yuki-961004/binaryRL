@@ -1,4 +1,4 @@
-# L-BFGS-B (nc = 1)
+# NLOPT (nc = 1)
 testthat::test_that("rcv_d() works with valid input", {
   
   recovery <- binaryRL::rcv_d(
@@ -13,14 +13,14 @@ testthat::test_that("rcv_d() works with valid input", {
     iteration_s = 2,
     iteration_f = 2,
     nc = 1,
-    algorithm = "L-BFGS-B"
+    algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
   )
   
   testthat::expect_type(recovery, "list")
 })
 
 
-# L-BFGS-B (nc > 1)
+# NLOPT (nc > 1)
 testthat::test_that("rcv_d() works with valid input", {
   
   recovery <- binaryRL::rcv_d(
@@ -32,10 +32,10 @@ testthat::test_that("rcv_d() works with valid input", {
     fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
     fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
     fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
-    iteration_s = 2,
-    iteration_f = 2,
-    nc = 2,
-    algorithm = "L-BFGS-B"
+    iteration_s = 4,
+    iteration_f = 5,
+    nc = 4,
+    algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
   )
   
   testthat::expect_type(recovery, "list")

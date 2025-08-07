@@ -37,7 +37,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -132,10 +132,11 @@ Rare and extreme outcomes in risky choice. <em>Psychonomic Bulletin
 <span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">data</span>,</span>
 <span>    id <span class="op">=</span> <span class="va">id</span>,</span>
-<span>    mode <span class="op">=</span> <span class="va">mode</span>,</span>
 <span>    n_trials <span class="op">=</span> <span class="va">n_trials</span>,</span>
 <span>    n_params <span class="op">=</span> <span class="va">n_params</span>,</span>
 <span>    priors <span class="op">=</span> <span class="va">priors</span>,</span>
+<span>    mode <span class="op">=</span> <span class="va">mode</span>,</span>
+<span>    policy <span class="op">=</span> <span class="va">policy</span>,</span>
 <span><span class="co"># ╔═══════════════════════════════════╗ #</span></span>
 <span><span class="co"># ║ You only need to modify this part ║ #</span></span>
 <span>    name <span class="op">=</span> <span class="st">"Your Model Name"</span>,</span>
@@ -151,6 +152,7 @@ Rare and extreme outcomes in risky choice. <em>Psychonomic Bulletin
 <span>    <span class="co"># upper-confidence-bound</span></span>
 <span>    pi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">params</span><span class="op">[</span><span class="fl">7</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>    <span class="co"># soft-max</span></span>
+<span>    lapse <span class="op">=</span> <span class="fl">0.02</span>,</span>
 <span>    tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">params</span><span class="op">[</span><span class="fl">8</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>    <span class="co"># extra parameters</span></span>
 <span>    alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">param</span><span class="op">[</span><span class="va">...</span><span class="op">]</span>, <span class="va">param</span><span class="op">[</span><span class="va">...</span><span class="op">]</span><span class="op">)</span>,</span>
@@ -177,7 +179,8 @@ Rare and extreme outcomes in risky choice. <em>Psychonomic Bulletin
 <span>  <span class="op">)</span></span>
 <span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/assign.html" class="external-link">assign</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"binaryRL.res"</span>, value <span class="op">=</span> <span class="va">res</span>, envir <span class="op">=</span> <span class="va">binaryRL.env</span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch</a></span><span class="op">(</span><span class="va">mode</span>, <span class="st">"fit"</span> <span class="op">=</span> <span class="op">-</span><span class="va">res</span><span class="op">$</span><span class="va">ll</span>, <span class="st">"simulate"</span> <span class="op">=</span> <span class="va">res</span>, <span class="st">"replay"</span> <span class="op">=</span> <span class="va">res</span><span class="op">)</span></span>
+<span>  <span class="va">loss</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch</a></span><span class="op">(</span>EXPR <span class="op">=</span> <span class="va">estimate</span>, <span class="st">"MLE"</span> <span class="op">=</span> <span class="op">-</span><span class="va">res</span><span class="op">$</span><span class="va">ll</span>, <span class="st">"MAP"</span> <span class="op">=</span> <span class="op">-</span><span class="va">res</span><span class="op">$</span><span class="va">lpo</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch</a></span><span class="op">(</span>EXPR <span class="op">=</span> <span class="va">mode</span>, <span class="st">"fit"</span> <span class="op">=</span> <span class="va">loss</span>, <span class="st">"simulate"</span> <span class="op">=</span> <span class="va">res</span>, <span class="st">"replay"</span> <span class="op">=</span> <span class="va">res</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <!---------------------------------------------------------->
 <div class="section level3">
@@ -340,7 +343,7 @@ Upper-Confidence-Bound (π)
 <span>  <span class="kw">else</span> <span class="op">{</span></span>
 <span>    <span class="va">bias</span> <span class="op">&lt;-</span> <span class="st">"ERROR"</span></span>
 <span>  <span class="op">}</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">bias</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </details><!----------------------------------------------------------><details><summary>
@@ -356,6 +359,7 @@ Soft-Max (τ)
 <span>  <span class="co"># calculating Left option or Right option probability</span></span>
 <span>  <span class="va">LR</span>,</span>
 <span>  <span class="co"># parameters</span></span>
+<span>  <span class="va">lapse</span>,</span>
 <span>  <span class="va">tau</span>, </span>
 <span>  <span class="co"># extra variables</span></span>
 <span>  <span class="va">var1</span>, <span class="va">var2</span>, </span>
@@ -400,6 +404,9 @@ Soft-Max (τ)
 <span>  <span class="kw">else</span> <span class="op">{</span></span>
 <span>    <span class="va">prob</span> <span class="op">&lt;-</span> <span class="st">"ERROR"</span></span>
 <span>  <span class="op">}</span></span>
+<span>  </span>
+<span>  <span class="va">prob</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">lapse</span><span class="op">)</span> <span class="op">*</span> <span class="va">prob</span> <span class="op">+</span> <span class="op">(</span><span class="va">lapse</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span>
+<span>  </span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">prob</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </details><details><summary>
@@ -645,8 +652,9 @@ question you are trying to answer.</p>
 <span><span class="co"># ╔═══════════════════════════════════════════════════════════════════════════╗ #</span></span>
 <span><span class="co"># ║ --------------------------- black-box function -------------------------- ║ #</span></span>
 <span>  <span class="co">#funcs = c("your_funcs"),</span></span>
-<span>  fit_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/Utility.html">Utility</a></span><span class="op">)</span>,</span>
+<span>  policy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"off"</span>, <span class="st">"on"</span><span class="op">)</span>,</span>
 <span>  model_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TD"</span>, <span class="st">"RSTD"</span>, <span class="st">"Utility"</span><span class="op">)</span>,</span>
+<span>  fit_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/Utility.html">Utility</a></span><span class="op">)</span>,</span>
 <span><span class="co"># ║ ------------------------------- estimate -------------------------------- ║ #</span></span>
 <span>  estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MLE"</span>, <span class="st">"MAP"</span><span class="op">)</span>,</span>
 <span><span class="co"># ║ ---------------------------------- MLE ---------------------------------- ║ #</span></span>

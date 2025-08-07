@@ -1,3 +1,21 @@
+# L-BFGS-B
+testthat::test_that("L-BFGS-B() works with valid input", {
+  binaryRL.res <- binaryRL::optimize_para(
+    data = binaryRL::Mason_2024_Exp2,
+    id = 1,
+    obj_func = binaryRL::RSTD,
+    n_params = 3,
+    n_trials = 360,
+    lower = c(0, 0, 0),
+    upper = c(1, 1, 1),
+    iteration = 5,
+    seed = 123,
+    algorithm = "L-BFGS-B" 
+  )
+  
+  testthat::expect_type(binaryRL.res, "list")
+})
+
 # GenSA
 testthat::test_that("GenSA() works with valid input", {
   binaryRL.res <- binaryRL::optimize_para(

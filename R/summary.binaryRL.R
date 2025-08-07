@@ -66,9 +66,24 @@ summary.binaryRL <- function(object, ...) {
     softmax <- "on"
   }
   
+  # 只有fit的时候, 才需要讨论是否是on-policy还是off-policy
+  if (object$mode == "fit") {
+    # on还是off
+    note <- paste0("(", object$policy, "-policy", ")")
+  }
+  else if (object$mode == "simulate") {
+    note <- "(simulate)"
+  }
+  else if (object$mode == "replay") {
+    note <- "(replay)"
+  }
+  
   message(
-    "Results of ", object$name, " Model: ", "\n",
-    "\n"
+    "Results of ", object$name, " Model ",  note, ": ", "\n"
+  )
+  
+  message(
+    "Estimation Method: ", object$estimate, "\n"
   )
   
   message(
@@ -76,9 +91,7 @@ summary.binaryRL <- function(object, ...) {
     "  ", "Initial Values: ", Q1, "\n",
     "  ", "Exploration Strategy: ", EE_tradeof, "\n",
     "  ", "Upper-Confidence-Bound: ", UCB, "\n",
-    "  ", "Soft-Max: ", softmax, "\n",
-    
-    "\n"
+    "  ", "Soft-Max: ", softmax, "\n"
   )
   
   message(

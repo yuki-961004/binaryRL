@@ -1,8 +1,9 @@
 output <- function(
+    mode, policy,
     name = NA,
     data, 
     n_params, n_trials, 
-    initial_value, threshold,
+    initial_value, threshold, lapse,
     alpha, beta, gamma, eta, epsilon, lambda, pi, tau,
     priors
 ){
@@ -12,6 +13,7 @@ output <- function(
   params <- list(
     Q1 = initial_value,
     threshold = threshold,
+    lapse = lapse,
     
     alpha = c(alpha),
     beta = c(beta),
@@ -31,11 +33,13 @@ output <- function(
   
   # 如果没有输入先验分布, 则说明使用的是MLE
   if (is.null(priors)) {
+    estimate <- "MLE"
     sum_logPr <- NA
     sum_logPo <- NA
   }
   # 输入了先验分布, 就计算后验概率
   else {
+    estimate <- "MAP"
     # 找到priors定义了几类参数的先验概率
     priors_name <- unique(names(priors))
     
@@ -61,9 +65,10 @@ output <- function(
     
     # Log-Posterior Probability
     sum_logPo <- sum_logLi + sum_logPr
-    
-    # 如果输入了先验概率, 则说明在采用MAP, 则用logPo替换logLi
-    sum_logLi <- sum_logPo
+  }
+  
+  if (mode != "fit") {
+    estimate <- NA
   }
 
   AIC <- round(2 * n_params - 2 * sum_logLi, digits = 2)
@@ -73,6 +78,9 @@ output <- function(
     data = data,
     params = params,
     name = name,
+    mode = mode,
+    policy = policy,
+    estimate = estimate,
     acc = mean_ACC,
     ll = sum_logLi,
     lpr = sum_logPr,

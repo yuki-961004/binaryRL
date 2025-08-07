@@ -7,11 +7,12 @@
 recovery_data(
   list,
   id = 1,
-  fit_model,
-  funcs = NULL,
-  model_name,
-  n_params,
   n_trials,
+  n_params,
+  funcs = NULL,
+  policy,
+  model_name,
+  fit_model,
   lower,
   upper,
   initial_params = NA,
@@ -40,8 +41,11 @@ The default value for this argument is `NULL`. When `id` is `NULL`,
  
  \code{default: id = NULL}}
 
-\item{fit_model}{[function] 
-fit model}
+\item{n_trials}{[integer] 
+The total number of trials in your experiment.}
+
+\item{n_params}{[integer] 
+The number of free parameters in your model.}
 
 \item{funcs}{[character]
 A character vector containing the names of all user-defined functions
@@ -61,14 +65,36 @@ Therefore, if you have created your own reinforcement learning model
  you must explicitly provide the names of your custom functions as a 
  vector here.}
 
+\item{policy}{[character]
+Specifies the learning policy to be used.
+This determines how the model updates action values based on observed or
+  simulated choices. It can be either \code{"off"} or \code{"on"}.
+  
+\itemize{
+  \item \strong{Off-Policy}: \strong{Q-learning}
+   This is the most common approach for modeling
+    reinforcement learning in Two-Alternative Forced Choice (TAFC) tasks.
+    In this mode, the model's goal is to learn the underlying value of
+    each option by observing the human participant's behavior. It achieves
+    this by consistently updating the value of the option that the
+    human actually chose. The focus is on understanding the value 
+    representation that likely drove the participant's decisions.
+
+  \item \item \strong{Off-Policy}: \strong{SARSA} 
+   In this mode, the target policy and the behavior policy are identical. 
+    The model first computes the selection probability for each option based 
+    on their current values. Critically, it then uses these probabilities to 
+    sample its own action. The value update is then performed on the action 
+    that the model itself selected. This approach focuses more on directly 
+    mimicking the stochastic choice patterns of the agent, rather than just 
+    learning the underlying values from a fixed sequence of actions.
+}}
+
 \item{model_name}{[character] 
 The name of your modal}
 
-\item{n_params}{[integer] 
-The number of free parameters in your model.}
-
-\item{n_trials}{[integer] 
-The total number of trials in your experiment.}
+\item{fit_model}{[function] 
+fit model}
 
 \item{lower}{[vector] 
 Lower bounds of free parameters}

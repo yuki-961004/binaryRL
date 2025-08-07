@@ -28,8 +28,11 @@
 #'  
 #'  \code{default: id = NULL}
 #' 
-#' @param fit_model [function] 
-#' fit model
+#' @param n_trials [integer] 
+#' The total number of trials in your experiment.
+#' 
+#' @param n_params [integer] 
+#' The number of free parameters in your model. 
 #' 
 #' @param funcs [character]
 #' A character vector containing the names of all user-defined functions
@@ -49,14 +52,42 @@
 #'  you must explicitly provide the names of your custom functions as a 
 #'  vector here.
 #' 
+#' @param policy [character]
+#' Specifies the learning policy to be used.
+#' This determines how the model updates action values based on observed or
+#'   simulated choices. It can be either \code{"off"} or \code{"on"}.
+#'   
+#' \itemize{
+#'   \item \strong{Off-Policy}: \strong{Q-learning}
+#'    This is the most common approach for modeling
+#'     reinforcement learning in Two-Alternative Forced Choice (TAFC) tasks.
+#'     In this mode, the model's goal is to learn the underlying value of
+#'     each option by observing the human participant's behavior. It achieves
+#'     this by consistently updating the value of the option that the
+#'     human actually chose. The focus is on understanding the value 
+#'     representation that likely drove the participant's decisions.
+#'
+#'   \item \item \strong{Off-Policy}: \strong{SARSA} 
+#'    In this mode, the target policy and the behavior policy are identical. 
+#'     The model first computes the selection probability for each option based 
+#'     on their current values. Critically, it then uses these probabilities to 
+#'     sample its own action. The value update is then performed on the action 
+#'     that the model itself selected. This approach focuses more on directly 
+#'     mimicking the stochastic choice patterns of the agent, rather than just 
+#'     learning the underlying values from a fixed sequence of actions.
+#' }
+#' 
 #' @param model_name [character] 
 #' The name of your modal
+#'
+#' @param fit_model [function] 
+#' fit model
+#'
+#' @param lower [vector] 
+#' Lower bounds of free parameters
 #' 
-#' @param n_params [integer] 
-#' The number of free parameters in your model. 
-#' 
-#' @param n_trials [integer] 
-#' The total number of trials in your experiment.
+#' @param upper [vector] 
+#' Upper bounds of free parameters
 #'
 #' @param initial_params [numeric]
 #' Initial values for the free parameters that the optimization algorithm will
@@ -74,24 +105,18 @@
 #'  a population, such as `GA` or `DEoptim`. 
 #'  
 #'  \code{Default: initial_size = 50}.
-#' 
-#' @param lower [vector] 
-#' Lower bounds of free parameters
-#' 
-#' @param upper [vector] 
-#' Upper bounds of free parameters
-#' 
-#' @param seed [integer] 
-#' Random seed. This ensures that the results are 
-#'  reproducible and remain the same each time the function is run. 
-#'  
-#'  \code{default: seed = 123}
 #'  
 #' @param iteration [integer] 
 #' The number of iterations the optimization algorithm will perform
 #'  when searching for the best-fitting parameters during the fitting
 #'  phase. A higher number of iterations may increase the likelihood of 
 #'  finding a global optimum but also increases computation time.
+#'  
+#' @param seed [integer] 
+#' Random seed. This ensures that the results are 
+#'  reproducible and remain the same each time the function is run. 
+#'  
+#'  \code{default: seed = 123}
 #'  
 #' @param nc [integer]
 #' Number of cores to use for parallel processing. Since fitting
@@ -141,15 +166,19 @@
 recovery_data <- function(
     list,
     id = 1,
-    fit_model,
-    funcs = NULL,
-    model_name,
-    n_params, 
     n_trials,
+    n_params, 
+    
+    funcs = NULL,
+    policy,
+    model_name,
+    fit_model,
     lower,
     upper,
+    
     initial_params = NA,
     initial_size = 50,
+    
     iteration = 10,
     seed = 123,
     nc = 1,
@@ -225,16 +254,22 @@ recovery_data <- function(
         data_i <- list[[i]][["data"]]
         
         binaryRL.res <- binaryRL::optimize_para(
+          policy = policy,
+          estimate = "MLE",
+          
           data = data_i,
           id = id[i],
-          obj_func = fit_model,
-          n_params = n_params,
           n_trials = n_trials,
+          n_params = n_params,
+          
+          obj_func = fit_model,
           lower = lower,
           upper = upper,
           priors = NULL,
+
           initial_params = initial_params,
           initial_size = initial_size,
+          
           iteration = iteration,
           seed = seed,
           algorithm = algorithm
