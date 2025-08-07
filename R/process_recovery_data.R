@@ -214,17 +214,22 @@ recovery_data <- function(
     names(recovery)[i + 7 + n_input_params] <- paste0("output_param_", i)
   }
   
+  sys <- Sys.info()[["sysname"]]
+  
   if (nc == 1) {
     future::plan(future::sequential)
-  }
-  else if (nc >= 1 & base::.Platform$OS.type == "windows") {
+  } 
+  # Windows
+  else if (sys == "Windows") {
     future::plan(future::multisession, workers = nc)
   } 
-  else if (nc >= 1 & base::.Platform$OS.type != "windows") { 
+  # macOS
+  else if (sys == "Darwin") {  
+    future::plan(future::multisession, workers = nc)
+  } 
+  # Linux
+  else if (sys == "Linux") {
     future::plan(future::multicore, workers = nc)
-  }
-  else {
-    stop("Something went wrong with parallel computation setup.")
   }
   
   doFuture::registerDoFuture()

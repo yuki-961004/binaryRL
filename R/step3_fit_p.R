@@ -343,20 +343,22 @@ fit_p <- function(
 
 ################################ [ threads ] ###################################  
   
-  # 单线程还是多线程
+  sys <- Sys.info()[["sysname"]]
+  
   if (nc == 1) {
     future::plan(future::sequential)
-  }
-  # 是多线程, 且是Windows系统
-  else if (nc >= 1 & base::.Platform$OS.type == "windows") {
+  } 
+  # Windows
+  else if (sys == "Windows") {
     future::plan(future::multisession, workers = nc)
   } 
-  # 是多线程, 且不是Windows系统, macOS和Linux
-  else if (nc >= 1 & base::.Platform$OS.type != "windows") { 
+  # macOS
+  else if (sys == "Darwin") {  
+    future::plan(future::multisession, workers = nc)
+  } 
+  # Linux
+  else if (sys == "Linux") {
     future::plan(future::multicore, workers = nc)
-  }
-  else {
-    stop("Something went wrong with parallel computation setup.")
   }
   
   doFuture::registerDoFuture()
