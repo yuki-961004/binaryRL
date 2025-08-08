@@ -7,10 +7,14 @@
 Utility(params)
 }
 \arguments{
-\item{params}{[vector] algorithm packages accept only one argument}
+\item{params}{[vector] 
+
+algorithm packages accept only one argument}
 }
 \value{
-[numeric] algorithm packages accept only one return
+loss [numeric] 
+
+algorithm packages accept only one return
 }
 \description{
 \deqn{U(R) = {R}^{\gamma}}
@@ -18,8 +22,7 @@ Utility(params)
 }
 \examples{
 \dontrun{
-Utility <- function(params){
-
+Utility <- function(params) {
   res <- binaryRL::run_m(
     data = data,
     id = id,
@@ -29,13 +32,13 @@ Utility <- function(params){
     priors = priors,
     n_params = n_params,
     n_trials = n_trials,
-    mode = mode
+    mode = mode,
+    policy = policy
   )
 
   assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
-
-  switch(mode, "fit" = -res$ll, "simulate" = res, "replay" = res)
+  loss <- switch(EXPR = estimate, "MLE" = -res$ll, "MAP" = -res$lpo)
+  switch(EXPR = mode, "fit" = loss, "simulate" = res, "replay" = res)
 }
 }
-
 }

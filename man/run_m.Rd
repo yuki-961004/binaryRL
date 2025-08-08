@@ -12,18 +12,17 @@ run_m(
   id,
   n_params,
   n_trials,
-  seed = 123,
-  initial_value = NA,
-  threshold = 1,
-  lapse = 0.02,
-  alpha = NA,
-  beta = NA,
   gamma = 1,
   eta,
+  initial_value = NA,
+  threshold = 1,
   epsilon = NA,
   lambda = NA,
   pi = NA,
   tau = NA,
+  lapse = 0.02,
+  alpha = NA,
+  beta = NA,
   priors = NULL,
   util_func = func_gamma,
   rate_func = func_eta,
@@ -42,15 +41,18 @@ run_m(
   raw_cols = NULL,
   var1 = NA,
   var2 = NA,
+  seed = 123,
   digits_1 = 2,
   digits_2 = 5
 )
 }
 \arguments{
 \item{name}{[character] 
+
 The name of your RL model}
 
-\item{mode}{[character]
+\item{mode}{[character] 
+
 This parameter controls the function's operational mode. It has three
  possible values, each typically associated with a specific function:
  \itemize{
@@ -65,12 +67,14 @@ This parameter controls the function's operational mode. It has three
  default values are set for different contexts.}
 
 \item{policy}{[character]
+
 Specifies the learning policy to be used.
 This determines how the model updates action values based on observed or
   simulated choices. It can be either \code{"off"} or \code{"on"}.
   
-\itemize{
-  \item \strong{Off-Policy}: \strong{Q-learning}
+ \itemize{
+  \item {
+   \strong{Off-Policy (Q-learning): }
    This is the most common approach for modeling
     reinforcement learning in Two-Alternative Forced Choice (TAFC) tasks.
     In this mode, the model's goal is to learn the underlying value of
@@ -78,8 +82,9 @@ This determines how the model updates action values based on observed or
     this by consistently updating the value of the option that the
     human actually chose. The focus is on understanding the value 
     representation that likely drove the participant's decisions.
-
-  \item \item \strong{Off-Policy}: \strong{SARSA} 
+  }
+  \item {
+   \strong{Off-Policy (SARSA): }
    In this mode, the target policy and the behavior policy are identical. 
     The model first computes the selection probability for each option based 
     on their current values. Critically, it then uses these probabilities to 
@@ -87,9 +92,11 @@ This determines how the model updates action values based on observed or
     that the model itself selected. This approach focuses more on directly 
     mimicking the stochastic choice patterns of the agent, rather than just 
     learning the underlying values from a fixed sequence of actions.
-}}
+  }
+ }}
 
 \item{data}{[data.frame] 
+
 This data should include the following mandatory columns: 
  \itemize{
    \item \code{sub} "Subject"
@@ -102,32 +109,79 @@ This data should include the following mandatory columns:
  }}
 
 \item{id}{[integer] 
+
 Which subject is going to be analyzed. The value should correspond to an 
  entry in the "sub" column, which must contain the subject IDs. 
  
- \code{e.g., id = 18}}
+e.g. \code{id = 18}}
 
 \item{n_params}{[integer] 
+
 The number of free parameters in your model.}
 
 \item{n_trials}{[integer] 
+
 The total number of trials in your experiment.}
 
-\item{seed}{[integer] 
-Random seed. This ensures that the results are 
- reproducible and remain the same each time the function is run. 
+\item{gamma}{[vector] 
+
+ \strong{Note}: This should not be confused with the discount rate parameter
+  (also named gamma) found in Temporal Difference (TD) models. 
+  Rescorla-Wagner model does not include a discount rate.
+  Here, \code{gamma} is used as a free parameter to shape the 
+  utility function.
  
- \code{default: seed = 123}}
+ \itemize{
+   \item \strong{Stevens' Power Law}:
+   Utility is modeled as:
+   \deqn{U(R) = {R}^{\gamma}}
+
+   \item \strong{Kahneman's Prospect Theory}:
+   This exponent is applied differently based on the sign of the reward:
+   \deqn{U(R) = \begin{cases}
+     R^{\gamma_{1}}, & R > 0 \\
+     \beta \cdot R^{\gamma_{2}}, & R < 0
+   \end{cases}}
+ }
+ 
+default: \code{gamma = 1}}
+
+\item{eta}{[vector] 
+
+Parameters used in the Learning Rate Function, 
+ \code{rate_func}, 
+ representing the rate at which the subject updates the difference 
+ (prediction error) between the reward and the expected value in the 
+ subject's mind.
+
+ The structure of \code{eta} depends on the model type:
+ \itemize{
+   \item For the \strong{Temporal Difference (TD) model}, 
+   where a single learning rate is used throughout the experiment 
+   \deqn{V_{new} = V_{old} + \eta \cdot (R - V_{old})}
+   
+   \item For the \strong{Risk-Sensitive Temporal Difference (RDTD) model},
+   where two different learning rates are used depending on whether the 
+   reward is lower or higher than the expected value:
+   \deqn{V_{new} = V_{old} + \eta_{+} \cdot (R - V_{old}), R > V_{old}}
+   \deqn{V_{new} = V_{old} + \eta_{-} \cdot (R - V_{old}), R < V_{old}}
+ }
+ 
+ TD: \code{eta = 0.3}
+ 
+ RSTD: \code{eta = c(0.3, 0.7)}}
 
 \item{initial_value}{[numeric] 
+
 Subject's initial expected value for each stimulus's reward. If this value 
  is not set \code{initial_value = NA}, the subject will use the reward received 
  after the first trial as the initial value for that stimulus. In other 
  words, the learning rate for the first trial is 100%. 
  
- \code{default: initial_value = NA}}
+default: \code{initial_value = NA}}
 
 \item{threshold}{[integer]
+
 Controls the initial exploration phase in the \strong{epsilon-first} strategy.
  This is the number of early trials where the subject makes purely random
  choices, as they haven't yet learned the options' values. For example,
@@ -140,11 +194,73 @@ Controls the initial exploration phase in the \strong{epsilon-first} strategy.
    \text{trial} > \text{threshold}, & x=0 \text{ (value-based choosing)}
  \end{cases}}
  
- \code{default: threshold = 1}
+ default: \code{threshold = 1}
  
- \code{epsilon-first: threshold = 20, epsilon = NA, lambda = NA}}
+ epsilon-first: \code{threshold = 20, epsilon = NA, lambda = NA}}
 
-\item{lapse}{[numeric]
+\item{epsilon}{[numeric] 
+
+A parameter used in the \strong{epsilon-greedy} exploration strategy. It 
+ defines the probability of making a completely random choice, as opposed 
+ to choosing based on the relative values of the left and right options. 
+ For example, if \code{epsilon = 0.1}, the subject has a 10% chance of random 
+ choice and a 90% chance of value-based choice. This parameter is only 
+ relevant when \code{threshold} is at its default value (1) and 
+ \code{lambda} is not set.
+ 
+ \deqn{P(x) = \begin{cases}
+   \epsilon, & x=1 \text{ (random choosing)} \\
+   1-\epsilon, & x=0 \text{ (value-based choosing)}
+ \end{cases}}
+
+ epsilon-greedy: \code{threshold = 1, epsilon = 0.1, lambda = NA}}
+
+\item{lambda}{[vector] 
+
+A numeric value that controls the decay rate of exploration probability
+ in the \strong{epsilon-decreasing} strategy. A higher \code{lambda} value
+ means the probability of random choice will decrease more rapidly
+ as the number of trials increases.
+ 
+ \deqn{P(x) = \begin{cases}
+   \frac{1}{1+\lambda \cdot trial}, & x=1 \text{ (random choosing)} \\
+   \frac{\lambda \cdot trial}{1+\lambda \cdot trial}, & x=0 \text{ (value-based choosing)}
+ \end{cases}}
+ 
+epsilon-decreasing: \code{threshold = 1, epsilon = NA, lambda = 0.5}}
+
+\item{pi}{[vector]
+
+Parameter used in the Upper-Confidence-Bound (UCB) action selection
+ formula. \code{bias_func} controls the degree of 
+ exploration by scaling the uncertainty bonus given to less-explored options. 
+ A larger value of \code{pi} (denoted as \code{c} in Sutton and Barto(2018) ) 
+ increases the influence of this bonus, leading to more exploration of 
+ actions with uncertain estimated values. Conversely, a smaller \code{pi} 
+ results in less exploration.
+
+\deqn{
+  A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}} \right]
+}
+
+default: \code{pi = NA}}
+
+\item{tau}{[vector] 
+
+Parameters used in the Soft-Max Function. \code{prob_func} 
+ representing the sensitivity of the subject to the value difference when 
+ making decisions. It determines the probability of selecting the left option 
+ versus the right option based on their values. A larger value of tau 
+ indicates greater sensitivity to the value difference between the options. 
+ In other words, even a small difference in value will make the subject more 
+ likely to choose the higher-value option. 
+ 
+ \deqn{P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}} 
+
+ default \code{tau = NA}}
+
+\item{lapse}{[numeric] 
+
 A numeric value between 0 and 1, representing the lapse rate.
 
 You can interpret this parameter as the probability of the agent "slipping"
@@ -165,218 +281,141 @@ From a modeling perspective, the lapse rate is crucial for preventing the
    P_{final} = (1 - lapse) \cdot P_{softmax} + \frac{lapse}{N_{choices}}
  }
  
-\code{default: lapse = 0.02} 
+default: \code{lapse = 0.02} 
 
 This ensures each option has a minimum selection probability of 1 percent 
  in TAFC tasks.}
 
-\item{alpha}{[vector]
+\item{alpha}{[vector] 
+
 Extra parameters that may be used in functions.}
 
-\item{beta}{[vector]
+\item{beta}{[vector] 
+
 Extra parameters that may be used in functions.}
 
-\item{gamma}{[vector]
-This parameter represents the exponent in utility functions, 
- \code{util_func}, specifically:
- \itemize{
-   \item \strong{Stevens' Power Law}:
-   Utility is modeled as:
-   \deqn{U(R) = {R}^{\gamma}}
+\item{priors}{[list]
 
-   \item \strong{Kahneman's Prospect Theory}:
-   This exponent is applied differently based on the sign of the reward:
-   \deqn{U(R) = \begin{cases}
-     R^{\gamma_{1}}, & R > 0 \\
-     \beta \cdot R^{\gamma_{2}}, & R < 0
-   \end{cases}}
- }}
+  A list specifying the prior distributions for the model parameters.
+  This argument is mandatory when using \code{estimate = "MAP"}.
 
-\item{eta}{[vector]
-Parameters used in the Learning Rate Function, 
- \code{rate_func}, 
- representing the rate at which the subject updates the difference 
- (prediction error) between the reward and the expected value in the 
- subject's mind.
-
- The structure of \code{eta} depends on the model type:
- \itemize{
-   \item For the \strong{Temporal Difference (TD) model}, 
-   where a single learning rate is used throughout the experiment 
-   \deqn{V_{new} = V_{old} + \eta \cdot (R - V_{old})}
-   
-   \item For the \strong{Risk-Sensitive Temporal Difference (RDTD) model},
-   where two different learning rates are used depending on whether the 
-   reward is lower or higher than the expected value:
-   \deqn{V_{new} = V_{old} + \eta_{+} \cdot (R - V_{old}), R > V_{old}}
-   \deqn{V_{new} = V_{old} + \eta_{-} \cdot (R - V_{old}), R < V_{old}}
- }
- 
- \code{TD: eta = 0.3}
- 
- \code{RSTD: eta = c(0.3, 0.7)}}
-
-\item{epsilon}{[numeric]
-A parameter used in the \strong{epsilon-greedy} exploration strategy. It 
- defines the probability of making a completely random choice, as opposed 
- to choosing based on the relative values of the left and right options. 
- For example, if \code{epsilon = 0.1}, the subject has a 10% chance of random 
- choice and a 90% chance of value-based choice. This parameter is only 
- relevant when \code{threshold} is at its default value (1) and 
- \code{lambda} is not set.
- 
- \deqn{P(x) = \begin{cases}
-   \epsilon, & x=1 \text{ (random choosing)} \\
-   1-\epsilon, & x=0 \text{ (value-based choosing)}
- \end{cases}}
-
- \code{epsilon-greedy: threshold = 1, epsilon = 0.1, lambda = NA}}
-
-\item{lambda}{[vector] 
-A numeric value that controls the decay rate of exploration probability
- in the \strong{epsilon-decreasing} strategy. A higher \code{lambda} value
- means the probability of random choice will decrease more rapidly
- as the number of trials increases.
- 
- \deqn{P(x) = \begin{cases}
-   \frac{1}{1+\lambda \cdot trial}, & x=1 \text{ (random choosing)} \\
-   \frac{\lambda \cdot trial}{1+\lambda \cdot trial}, & x=0 \text{ (value-based choosing)}
- \end{cases}}
- 
- \code{epsilon-decreasing threshold = 1, epsilon = NA, lambda = 0.5}}
-
-\item{pi}{[vector]
-Parameter used in the Upper-Confidence-Bound (UCB) action selection
- formula. \code{bias_func} controls the degree of 
- exploration by scaling the uncertainty bonus given to less-explored options. 
- A larger value of \code{pi} (denoted as \code{c} in Sutton and Barto(1998) ) 
- increases the influence of this bonus, leading to more exploration of 
- actions with uncertain estimated values. Conversely, a smaller \code{pi} 
- results in less exploration.
-
-\deqn{
-  A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}} \right]
-}
-
-\code{default: pi = NA}}
-
-\item{tau}{[vector] 
-Parameters used in the Soft-Max Function. \code{prob_func} 
- representing the sensitivity of the subject to the value difference when 
- making decisions. It determines the probability of selecting the left option 
- versus the right option based on their values. A larger value of tau 
- indicates greater sensitivity to the value difference between the options. 
- In other words, even a small difference in value will make the subject more 
- likely to choose the higher-value option. 
- 
- \deqn{P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}} 
-
- \code{e.g., tau = c(0.5)}}
-
-\item{priors}{[list] A \code{list} object for specifying the Bayesian prior
-  distributions for each model parameter. Each element in the list
-  should be named after a parameter and contain a function that returns the 
-  log probability density.
-  
-  By default, a set of priors is used. For most parameters, this is a
-  \strong{Uniform(0, 1)} distribution, which acts as an uninformative prior.
-  This means that for these parameters, the Maximum A Posteriori (MAP)
-  estimate will be identical to the Maximum Likelihood Estimate (MLE).
-
-  The exception is for the inverse temperature parameter associated with the
-  softmax function (\code{tau}). This parameter uses an 
-  \strong{Exponential(1)} distribution as its prior. This is a weakly
-  informative prior that regularizes the model by favoring smaller,
-  positive values, thus preventing extremely large parameter estimates.}
+ default: \code{priors = NULL}}
 
 \item{util_func}{[function] 
-Utility Function see \code{\link[binaryRL]{func_gamma}}.}
+
+ Utility Function see \code{\link[binaryRL]{func_gamma}}.}
 
 \item{rate_func}{[function] 
-Learning Rate Function see \code{\link[binaryRL]{func_eta}}.}
+
+ Learning Rate Function see \code{\link[binaryRL]{func_eta}}.}
 
 \item{expl_func}{[function] 
-Exploration Strategy Function see \code{\link[binaryRL]{func_epsilon}}.}
+
+ Exploration Strategy Function see \code{\link[binaryRL]{func_epsilon}}.}
 
 \item{bias_func}{[function] 
-Upper-Confidence-Bound see \code{\link[binaryRL]{func_pi}}.}
+
+ Upper-Confidence-Bound see \code{\link[binaryRL]{func_pi}}.}
 
 \item{prob_func}{[function] 
-Soft-Max Function see \code{\link[binaryRL]{func_tau}}.}
+
+ Soft-Max Function see \code{\link[binaryRL]{func_tau}}.}
 
 \item{loss_func}{[function] 
-Loss Function see \code{\link[binaryRL]{func_logl}}.}
 
-\item{sub}{[character] column name of subject ID
+ Loss Function see \code{\link[binaryRL]{func_logl}}.}
 
- \code{e.g., sub = "Subject"}}
+\item{sub}{[character] 
+
+ Column name of subject ID
+
+ e.g. \code{sub = "Subject"}}
 
 \item{time_line}{[vector] 
+
 A vector specifying the name of the column that the sequence of the 
  experiment. This argument defines how the experiment is structured, 
  such as whether it is organized by "Block" with breaks in between, and 
  multiple trials within each block. 
  
-\code{default: time_line = c("Block", "Trial")}}
+default: \code{time_line = c("Block", "Trial")}}
 
-\item{L_choice}{[character] 
+\item{L_choice}{[character]
+ 
 Column name of left choice. 
 
- \code{default: L_choice = "Left_Choice"}}
+ default: \code{L_choice = "Left_Choice"}}
 
 \item{R_choice}{[character] 
+
 Column name of right choice. 
 
- \code{default: R_choice = "Right_Choice"}}
+default: \code{R_choice = "Right_Choice"}}
 
 \item{L_reward}{[character] 
+
 Column name of the reward of left choice 
 
- \code{default: L_reward = "Left_reward"}}
+default: \code{L_reward = "Left_reward"}}
 
 \item{R_reward}{[character] 
+
 Column name of the reward of right choice 
 
- \code{default: R_reward = "Right_reward"}}
+default: \code{R_reward = "Right_reward"}}
 
 \item{sub_choose}{[character] 
+
 Column name of choices made by the subject. 
 
- \code{default: sub_choose = "Choose"}}
+default: \code{sub_choose = "Choose"}}
 
 \item{rob_choose}{[character] 
+
 Column name of choices made by the model, which you could ignore. 
 
- \code{default: rob_choose = "Rob_Choose"}}
+default: \code{rob_choose = "Rob_Choose"}}
 
 \item{raw_cols}{[vector] 
+
 Defaults to \code{NULL}. If left as \code{NULL}, it will directly capture 
  all column names from the raw data.}
 
 \item{var1}{[character] 
+
 Column name of extra variable 1. If your model uses more than just reward 
  and expected value, and you need other information, such as whether the 
  choice frame is Gain or Loss, then you can input the 'Frame' column as 
  var1 into the model.
  
- \code{default: var1 = "Extra_Var1"}}
+default: \code{var1 = "Extra_Var1"}}
 
 \item{var2}{[character] 
+
 Column name of extra variable 2. If one additional variable, var1, does not 
  meet your needs, you can add another additional variable, var2, into your 
  model.
  
- \code{default: var2 = "Extra_Var2"}}
+default: \code{var2 = "Extra_Var2"}}
+
+\item{seed}{[integer] 
+
+Random seed. This ensures that the results are 
+ reproducible and remain the same each time the function is run. 
+ 
+default: \code{seed = 123}}
 
 \item{digits_1}{[integer] 
+
 The number of decimal places to retain for columns related to value function 
  
- \code{default: digits_1 = 2}}
+default: \code{digits_1 = 2}}
 
 \item{digits_2}{[integer] 
+
 The number of decimal places to retain for columns related to select function. 
  
- \code{default: digits_2 = 5}}
+default: \code{digits_2 = 5}}
 }
 \value{
 A list of class \code{binaryRL} containing the results of the model fitting.

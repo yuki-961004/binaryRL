@@ -63,8 +63,8 @@ Model <- function(params){
     # upper-confidence-bound
     pi = c(params[7]),
     # soft-max
-    lapse = 0.02,
     tau = c(params[8]),
+    lapse = 0.02,
     # extra parameters
     alpha = c(param[...], param[...]),
     beta = c(param[...], param[...]),
@@ -392,8 +392,8 @@ func_logl <- function(
 ){
   logl <- switch(
     EXPR = LR,
-    "L" = L_dir * log(L_prob + 1e-10),
-    "R" = R_dir * log(R_prob + 1e-10)
+    "L" = L_dir * log(L_prob),
+    "R" = R_dir * log(R_prob)
   )
   
   return(logl)  

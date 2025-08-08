@@ -12,28 +12,36 @@
 #'  the arguments. Instead, only modify the \code{if-else} statements or 
 #'  the internal logic to adapt the function to your needs.
 #' 
-#' @param i 
+#' @param i [numeric]
+#' 
 #' The current row number.
 #' 
-#' @param L_freq 
+#' @param L_freq [numeric]
+#'  
 #' The frequency of left option appearance
 #' 
-#' @param R_freq 
+#' @param R_freq [numeric]
+#'  
 #' The frequency of right option appearance
 #' 
-#' @param L_pick 
+#' @param L_pick [numeric]
+#'  
 #' The number of times left option was picked
 #' 
-#' @param R_pick 
+#' @param R_pick [numeric]
+#'  
 #' The number of times left option was picked
 #' 
-#' @param L_value 
+#' @param L_value [numeric]
+#'  
 #' The value of the left option with bias (if pi != 0)
 #' 
-#' @param R_value 
+#' @param R_value [numeric]
+#'  
 #' The value of the right option with bias (if pi != 0)
 #' 
 #' @param var1 [character] 
+#' 
 #' Column name of extra variable 1. If your model uses more than just reward 
 #'  and expected value, and you need other information, such as whether the 
 #'  choice frame is Gain or Loss, then you can input the 'Frame' column as 
@@ -42,20 +50,40 @@
 #'  \code{default: var1 = "Extra_Var1"}
 #' 
 #' @param var2 [character] 
+#' 
 #' Column name of extra variable 2. If one additional variable, var1, does not 
 #'  meet your needs, you can add another additional variable, var2, into your 
 #'  model.
 #'  
-#'  \code{default: var2 = "Extra_Var2"}
+#'  default: \code{var2 = "Extra_Var2"}
 #'  
-#' @param LR 
+#' @param LR [character] 
+#' 
 #' Are you calculating the probability for the left option or the right option?
+#' 
+#' \code{LR = "L"; LR = "R"}  
 #'  
-#' @param try 
+#' @param try [numeric]
+#'  
 #' If the choice was random, the value is 1; 
 #' If the choice was based on value, the value is 0.
 #' 
-#' @param lapse [numeric]
+#' @param tau [vector] 
+#' 
+#' Parameters used in the Soft-Max Function. \code{prob_func} 
+#'  representing the sensitivity of the subject to the value difference when 
+#'  making decisions. It determines the probability of selecting the left option 
+#'  versus the right option based on their values. A larger value of tau 
+#'  indicates greater sensitivity to the value difference between the options. 
+#'  In other words, even a small difference in value will make the subject more 
+#'  likely to choose the higher-value option. 
+#'  
+#'  \deqn{P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}} 
+#' 
+#'  \code{e.g., tau = c(0.5)}
+#' 
+#' @param lapse [numeric] 
+#' 
 #' A numeric value between 0 and 1, representing the lapse rate.
 #' 
 #' You can interpret this parameter as the probability of the agent "slipping"
@@ -81,23 +109,12 @@
 #' This ensures each option has a minimum selection probability of 1 percent 
 #'  in TAFC tasks. 
 #' 
-#' @param tau [vector] 
-#' Parameters used in the Soft-Max Function. \code{prob_func} 
-#'  representing the sensitivity of the subject to the value difference when 
-#'  making decisions. It determines the probability of selecting the left option 
-#'  versus the right option based on their values. A larger value of tau 
-#'  indicates greater sensitivity to the value difference between the options. 
-#'  In other words, even a small difference in value will make the subject more 
-#'  likely to choose the higher-value option. 
-#'  
-#'  \deqn{P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}} 
+#' @param alpha [vector] 
 #' 
-#'  \code{e.g., tau = c(0.5)}
-#' 
-#' @param alpha [vector]
 #' Extra parameters that may be used in functions. 
 #'
-#' @param beta [vector]
+#' @param beta [vector] 
+#' 
 #' Extra parameters that may be used in functions. 
 #' 
 #' @return The probability of choosing this option
@@ -200,8 +217,8 @@ func_tau <- function(
   try,
   
   # 自由参数
-  lapse,
   tau,
+  lapse,
   # 额外参数
   alpha,
   beta

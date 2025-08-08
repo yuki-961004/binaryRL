@@ -71,19 +71,20 @@
 
 
 <dl><dt id="arg-params">params<a class="anchor" aria-label="anchor" href="#arg-params"></a></dt>
-<dd><p>[vector] algorithm packages accept only one argument</p></dd>
+<dd><p>[vector]</p>
+<p>algorithm packages accept only one argument</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>[numeric] algorithm packages accept only one return</p>
+    <p>loss [numeric]</p>
+<p>algorithm packages accept only one return</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">RSTD</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">{</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">RSTD</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">params</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="run_m.html">run_m</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    data <span class="op">=</span> <span class="va">data</span>,</span></span>
 <span class="r-in"><span>    id <span class="op">=</span> <span class="va">id</span>,</span></span>
@@ -92,12 +93,13 @@
 <span class="r-in"><span>    priors <span class="op">=</span> <span class="va">priors</span>,</span></span>
 <span class="r-in"><span>    n_params <span class="op">=</span> <span class="va">n_params</span>,</span></span>
 <span class="r-in"><span>    n_trials <span class="op">=</span> <span class="va">n_trials</span>,</span></span>
-<span class="r-in"><span>    mode <span class="op">=</span> <span class="va">mode</span></span></span>
+<span class="r-in"><span>    mode <span class="op">=</span> <span class="va">mode</span>,</span></span>
+<span class="r-in"><span>    policy <span class="op">=</span> <span class="va">policy</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/assign.html" class="external-link">assign</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"binaryRL.res"</span>, value <span class="op">=</span> <span class="va">res</span>, envir <span class="op">=</span> <span class="va">binaryRL.env</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch</a></span><span class="op">(</span><span class="va">mode</span>, <span class="st">"fit"</span> <span class="op">=</span> <span class="op">-</span><span class="va">res</span><span class="op">$</span><span class="va">ll</span>, <span class="st">"simulate"</span> <span class="op">=</span> <span class="va">res</span>, <span class="st">"replay"</span> <span class="op">=</span> <span class="va">res</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">loss</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch</a></span><span class="op">(</span>EXPR <span class="op">=</span> <span class="va">estimate</span>, <span class="st">"MLE"</span> <span class="op">=</span> <span class="op">-</span><span class="va">res</span><span class="op">$</span><span class="va">ll</span>, <span class="st">"MAP"</span> <span class="op">=</span> <span class="op">-</span><span class="va">res</span><span class="op">$</span><span class="va">lpo</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch</a></span><span class="op">(</span>EXPR <span class="op">=</span> <span class="va">mode</span>, <span class="st">"fit"</span> <span class="op">=</span> <span class="va">loss</span>, <span class="st">"simulate"</span> <span class="op">=</span> <span class="va">res</span>, <span class="st">"replay"</span> <span class="op">=</span> <span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>

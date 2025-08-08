@@ -9,21 +9,21 @@
  using random numbers. For all parameters except the last one, their
  values are drawn from a uniform distribution within their respective
  specified ranges.
-The last parameter, representing the temperature (`tau`) in the soft-max
- function, is drawn from an exponential distribution. If its `upper` bound
- is set to 1, it implies `tau` is sampled from `Exp(1)` (an exponential
- distribution with a rate parameter of 1). If its `lower` bound is set
- to 1, this means that after `tau` is randomly generated, it is shifted
- to the right by adding 1 (i.e., `tau + 1`), establishing a minimum value."><meta property="og:description" content="This function is responsible for generating synthetic (fake) data
+The last parameter, representing the temperature (tau) in the soft-max
+ function, is drawn from an exponential distribution. If its upper bound
+ is set to 1, it implies tau is sampled from Exp(1) (an exponential
+ distribution with a rate parameter of 1). If its lower bound is set
+ to 1, this means that after tau is randomly generated, it is shifted
+ to the right by adding 1 (i.e., tau+1), establishing a minimum value."><meta property="og:description" content="This function is responsible for generating synthetic (fake) data
  using random numbers. For all parameters except the last one, their
  values are drawn from a uniform distribution within their respective
  specified ranges.
-The last parameter, representing the temperature (`tau`) in the soft-max
- function, is drawn from an exponential distribution. If its `upper` bound
- is set to 1, it implies `tau` is sampled from `Exp(1)` (an exponential
- distribution with a rate parameter of 1). If its `lower` bound is set
- to 1, this means that after `tau` is randomly generated, it is shifted
- to the right by adding 1 (i.e., `tau + 1`), establishing a minimum value."><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-BBRBG6HVWB"></script><script>
+The last parameter, representing the temperature (tau) in the soft-max
+ function, is drawn from an exponential distribution. If its upper bound
+ is set to 1, it implies tau is sampled from Exp(1) (an exponential
+ distribution with a rate parameter of 1). If its lower bound is set
+ to 1, this means that after tau is randomly generated, it is shifted
+ to the right by adding 1 (i.e., tau+1), establishing a minimum value."><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-BBRBG6HVWB"></script><script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
@@ -77,12 +77,12 @@ The last parameter, representing the temperature (`tau`) in the soft-max
  using random numbers. For all parameters except the last one, their
  values are drawn from a uniform distribution within their respective
  specified ranges.</p>
-<p>The last parameter, representing the temperature (`tau`) in the soft-max
- function, is drawn from an exponential distribution. If its `upper` bound
- is set to 1, it implies `tau` is sampled from `Exp(1)` (an exponential
- distribution with a rate parameter of 1). If its `lower` bound is set
- to 1, this means that after `tau` is randomly generated, it is shifted
- to the right by adding 1 (i.e., `tau + 1`), establishing a minimum value.</p>
+<p>The last parameter, representing the temperature (<code>tau</code>) in the soft-max
+ function, is drawn from an exponential distribution. If its <code>upper</code> bound
+ is set to 1, it implies <code>tau</code> is sampled from <code>Exp(1)</code> (an exponential
+ distribution with a rate parameter of 1). If its <code>lower</code> bound is set
+ to 1, this means that after <code>tau</code> is randomly generated, it is shifted
+ to the right by adding 1 (i.e., <code>tau+1</code>), establishing a minimum value.</p>
     </div>
 
     <div class="section level2">
@@ -105,8 +105,8 @@ The last parameter, representing the temperature (`tau`) in the soft-max
 
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>[data.frame]
-This data should include the following mandatory columns:</p><ul><li><p>"sub"</p></li>
+<dd><p>[data.frame]</p>
+<p>This data should include the following mandatory columns:</p><ul><li><p>"sub"</p></li>
 <li><p>"time_line" (e.g., "Block", "Trial")</p></li>
 <li><p>"L_choice"</p></li>
 <li><p>"R_choice"</p></li>
@@ -117,23 +117,23 @@ This data should include the following mandatory columns:</p><ul><li><p>"sub"</p
 
 
 <dt id="arg-id">id<a class="anchor" aria-label="anchor" href="#arg-id"></a></dt>
-<dd><p>[vector]
-Specifies which subject's data to use. In parameter and model recovery
+<dd><p>[vector]</p>
+<p>Specifies which subject's data to use. In parameter and model recovery
  analyses, the specific subject ID is often irrelevant. Although the
  experimental trial order might have some randomness for each subject,
  the sequence of reward feedback is typically pseudo-random.</p>
-<p>The default value for this argument is `NULL`. When `id` is `NULL`,
+<p>The default value for this argument is <code>NULL</code>. When <code>id = NULL</code>,
  the program automatically detects existing subject IDs within the
  dataset. It then randomly selects one subject as a sample, and the
  parameter and model recovery procedures are performed based on this
  selected subject's data.</p>
-<p><code>default: id = NULL</code></p></dd>
+<p>default: <code>id = NULL</code></p></dd>
 
 
 <dt id="arg-obj-func">obj_func<a class="anchor" aria-label="anchor" href="#arg-obj-func"></a></dt>
-<dd><p>[function]
-The objective function that the optimization algorithm package accepts.
- This function must strictly take only one argument, `params` (a vector
+<dd><p>[function]</p>
+<p>The objective function that the optimization algorithm package accepts.
+ This function must strictly take only one argument, <code>params</code> (a vector
  of model parameters). Its output must be a single numeric value
  representing the loss function to be minimized. For more detailed
  requirements and examples, please refer to the relevant documentation
@@ -145,36 +145,36 @@ The objective function that the optimization algorithm package accepts.
 
 
 <dt id="arg-n-params">n_params<a class="anchor" aria-label="anchor" href="#arg-n-params"></a></dt>
-<dd><p>[integer]
-The number of free parameters in your model.</p></dd>
+<dd><p>[integer]</p>
+<p>The number of free parameters in your model.</p></dd>
 
 
 <dt id="arg-n-trials">n_trials<a class="anchor" aria-label="anchor" href="#arg-n-trials"></a></dt>
-<dd><p>[integer]
-The total number of trials in your experiment.</p></dd>
+<dd><p>[integer]</p>
+<p>The total number of trials in your experiment.</p></dd>
 
 
 <dt id="arg-lower">lower<a class="anchor" aria-label="anchor" href="#arg-lower"></a></dt>
-<dd><p>[vector]
-Lower bounds of free parameters</p></dd>
+<dd><p>[vector]</p>
+<p>Lower bounds of free parameters</p></dd>
 
 
 <dt id="arg-upper">upper<a class="anchor" aria-label="anchor" href="#arg-upper"></a></dt>
-<dd><p>[vector]
-Upper bounds of free parameters</p></dd>
+<dd><p>[vector]</p>
+<p>Upper bounds of free parameters</p></dd>
 
 
 <dt id="arg-iteration">iteration<a class="anchor" aria-label="anchor" href="#arg-iteration"></a></dt>
-<dd><p>[integer]
-This parameter determines how many simulated datasets are created for
+<dd><p>[integer]</p>
+<p>This parameter determines how many simulated datasets are created for
  subsequent model and parameter recovery analyses.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
-<dd><p>[integer]
-Random seed. This ensures that the results are
+<dd><p>[integer]</p>
+<p>Random seed. This ensures that the results are
  reproducible and remain the same each time the function is run.</p>
-<p><code>default: seed = 123</code></p></dd>
+<p>default: <code>seed = 123</code></p></dd>
 
 </dl></div>
     <div class="section level2">

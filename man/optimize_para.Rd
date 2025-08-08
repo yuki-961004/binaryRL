@@ -24,12 +24,14 @@ optimize_para(
 }
 \arguments{
 \item{policy}{[character]
+
 Specifies the learning policy to be used.
 This determines how the model updates action values based on observed or
   simulated choices. It can be either \code{"off"} or \code{"on"}.
   
-\itemize{
-  \item \strong{Off-Policy}: \strong{Q-learning}
+ \itemize{
+  \item {
+   \strong{Off-Policy (Q-learning): }
    This is the most common approach for modeling
     reinforcement learning in Two-Alternative Forced Choice (TAFC) tasks.
     In this mode, the model's goal is to learn the underlying value of
@@ -37,8 +39,9 @@ This determines how the model updates action values based on observed or
     this by consistently updating the value of the option that the
     human actually chose. The focus is on understanding the value 
     representation that likely drove the participant's decisions.
-
-  \item \item \strong{Off-Policy}: \strong{SARSA} 
+  }
+  \item {
+   \strong{Off-Policy (SARSA): }
    In this mode, the target policy and the behavior policy are identical. 
     The model first computes the selection probability for each option based 
     on their current values. Critically, it then uses these probabilities to 
@@ -46,20 +49,51 @@ This determines how the model updates action values based on observed or
     that the model itself selected. This approach focuses more on directly 
     mimicking the stochastic choice patterns of the agent, rather than just 
     learning the underlying values from a fixed sequence of actions.
-}}
+  }
+ }
+ 
+default: \code{policy = "off"}}
 
 \item{estimate}{[character] 
-Estimation method. Default is \code{"MLE"}, 
- meaning the algorithm will iterate to find the parameter values that 
- maximize the likelihood, without considering any prior information. If 
- \code{estimate = "MAP"}, prior distributions must be specified via the 
- \code{priors} argument. After an initial optimization using likelihood, 
- the algorithm estimates the distribution of each parameter across all 
- subjects, fits a normal or exponential prior, and re-optimizes to maximize 
- the posterior. This procedure iterates until convergence and follows the 
- EM (Expectation-Maximization) framework.}
+
+  Estimation method. Can be either \code{"MLE"} or \code{"MAP"}.
+  \itemize{
+    \item{\code{"MLE"}: (Default) Maximum Likelihood Estimation. This
+      method finds the parameter values that maximize the log-likelihood
+      of the data. A higher log-likelihood indicates that the parameters
+      provide a better explanation for the observed human behavior. In
+      other words, data simulated using these parameters would most
+      closely resemble the actual human data. This method does not
+      consider any prior information about the parameters.}
+      
+    \item{\code{"MAP"}: Maximum A Posteriori Estimation. This method
+      finds the parameter values that maximize the posterior probability.
+      It is an iterative process based on the Expectation-Maximization
+      (EM) framework.
+      \itemize{
+        \item{\strong{Initialization}: The process begins by assuming a
+          uniform distribution as the prior for each parameter, making the
+          initial log-prior zero. The first optimization is thus
+          equivalent to MLE.}
+        \item{\strong{Iteration}: After finding the best parameters for
+          all subjects, the algorithm assesses the actual distribution of
+          each parameter and fits a normal distribution to it. This
+          fitted distribution becomes the new empirical prior.}
+        \item{\strong{Re-estimation}: The parameters are then re-optimized
+          to maximize the updated posterior probability.}
+        \item{\strong{Convergence}: This cycle repeats until the posterior
+          probability converges or the maximum number of iterations
+          (specified by \code{iteration_g}) is reached.}
+      }
+      Using this method requires that the \code{priors} argument
+      be specified to define the initial prior distributions.
+    }
+   }
+
+default: \code{estimate = "MLE"}}
 
 \item{data}{[data.frame] 
+
 This data should include the following mandatory columns: 
  \itemize{
    \item "sub"
@@ -72,20 +106,24 @@ This data should include the following mandatory columns:
  }}
 
 \item{id}{[character]
+
 Specifies the ID of the subject whose optimal parameters will be fitted.
  This parameter accepts either string or numeric values. The provided
  ID must correspond to an existing subject identifier within the raw
  dataset provided to the function.}
 
 \item{n_trials}{[integer] 
+
 The total number of trials in your experiment.}
 
 \item{n_params}{[integer] 
+
 The number of free parameters in your model.}
 
 \item{obj_func}{[function]
+
 The objective function that the optimization algorithm package accepts.
- This function must strictly take only one argument, `params` (a vector
+ This function must strictly take only one argument, \code{fit_p} (a vector
  of model parameters). Its output must be a single numeric value
  representing the loss function to be minimized. For more detailed
  requirements and examples, please refer to the relevant documentation 
@@ -96,57 +134,93 @@ The objective function that the optimization algorithm package accepts.
  ).}
 
 \item{lower}{[vector] 
+
 Lower bounds of free parameters}
 
 \item{upper}{[vector] 
+
 Upper bounds of free parameters}
 
-\item{priors}{[list] A \code{list} object for specifying the Bayesian prior
-  distributions for each model parameter. Each element in the list
-  should be named after a parameter and contain a function that returns the 
-  log probability density.
-  
-  By default, a set of priors is used. For most parameters, this is a
-  \strong{Uniform(0, 1)} distribution, which acts as an uninformative prior.
-  This means that for these parameters, the Maximum A Posteriori (MAP)
-  estimate will be identical to the Maximum Likelihood Estimate (MLE).
+\item{priors}{[list]
+  A list specifying the prior distributions for the model parameters.
+  This argument is mandatory when using \code{estimate = "MAP"}.
+  There are two primary scenarios for its use:
 
-  The exception is for the inverse temperature parameter associated with the
-  softmax function (\code{tau}). This parameter uses an 
-  \strong{Exponential(1)} distribution as its prior. This is a weakly
-  informative prior that regularizes the model by favoring smaller,
-  positive values, thus preventing extremely large parameter estimates.}
+  \strong{1. Static MAP Estimation (Non-Hierarchical)}
+  This approach is used when you have a strong, pre-defined belief about
+  the parameter priors and do not want the model to update them iteratively.
+  \describe{
+    \item{Configuration:}{
+      \itemize{
+        \item{Set \code{estimate = "MAP"}.}
+        \item{Provide a \code{list} defining your confident prior
+          distributions.}
+        \item{Keep \code{iteration_g = 0} (the default).}
+      }
+    }
+    \item{Behavior:}{ The algorithm maximizes the posterior
+      probability based solely on your specified priors. It will not
+      use the EM (Expectation-Maximization) framework to learn new
+      priors from the data.}
+  }
+
+  \strong{2. Hierarchical Bayesian Estimation via EM}
+  This approach is used to let the model learn the group-level (hierarchical)
+  prior distributions directly from the data.
+  \describe{
+    \item{Configuration:}{
+      \itemize{
+        \item{Set \code{estimate = "MAP"}.}
+        \item{Specify a weak or non-informative initial prior, such as a
+          uniform distribution for all parameters.}
+        \item{Set \code{iteration_g} to a value greater than 0.}
+      }
+    }
+    \item{Behavior:}{ With a uniform prior, the initial
+      log-posterior equals the log-likelihood, making the first estimation
+      step equivalent to MLE. The algorithm then initiates the EM procedure:
+      it iteratively assesses the actual parameter distribution across all
+      subjects and updates the group-level priors. This cycle continues
+      until the posterior converges or \code{iteration_g} is reached.}
+  }
+
+ default: \code{priors = NULL}}
 
 \item{initial_params}{[vector]
+
 Initial values for the free parameters that the optimization algorithm will
  search from. These are primarily relevant when using algorithms that require
  an explicit starting point, such as \code{L-BFGS-B}. If not specified,
  the function will automatically generate initial values close to zero.
  
- \code{default: initial_params = NA}.}
+ default: \code{initial_params = NA}.}
 
 \item{initial_size}{[integer]
-This parameter corresponds to the \strong{population size} in genetic 
+
+This parameter corresponds to the population size in genetic 
  algorithms (\code{GA}). It specifies the number of initial candidate
  solutions that the algorithm starts with for its evolutionary search.
  This parameter is only required for optimization algorithms that operate on
  a population, such as `GA` or `DEoptim`. 
  
- \code{default: initial_size = 50}.}
+ default: \code{initial_size = 50}.}
 
 \item{iteration}{[integer] 
+
 The number of iterations the optimization algorithm will perform
  when searching for the best-fitting parameters during the fitting
  phase. A higher number of iterations may increase the likelihood of 
  finding a global optimum but also increases computation time.}
 
 \item{seed}{[integer] 
+
 Random seed. This ensures that the results are 
  reproducible and remain the same each time the function is run. 
  
- \code{default: seed = 123}}
+default: \code{seed = 123}}
 
 \item{algorithm}{[character] 
+
 Choose an algorithm package from
  \code{L-BFGS-B}, \code{GenSA},\code{GA},\code{DEoptim},\code{PSO},
  \code{Bayesian}, \code{CMA-ES}.
@@ -161,7 +235,7 @@ In addition, any algorithm from the \code{nloptr} package is also
 the result of binaryRL with optimal parameters
 }
 \description{
-This is an internal helper function for `fit_p`. Its primary purpose
+This is an internal helper function for \code{fit_p}. Its primary purpose
  is to provide a unified interface for users to interact with various
  optimization algorithm packages. It adapts the inputs and outputs
  to be compatible with eight distinct algorithms, ensuring a seamless

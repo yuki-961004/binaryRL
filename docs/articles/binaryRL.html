@@ -152,8 +152,8 @@ Rare and extreme outcomes in risky choice. <em>Psychonomic Bulletin
 <span>    <span class="co"># upper-confidence-bound</span></span>
 <span>    pi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">params</span><span class="op">[</span><span class="fl">7</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>    <span class="co"># soft-max</span></span>
-<span>    lapse <span class="op">=</span> <span class="fl">0.02</span>,</span>
 <span>    tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">params</span><span class="op">[</span><span class="fl">8</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>    lapse <span class="op">=</span> <span class="fl">0.02</span>,</span>
 <span>    <span class="co"># extra parameters</span></span>
 <span>    alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">param</span><span class="op">[</span><span class="va">...</span><span class="op">]</span>, <span class="va">param</span><span class="op">[</span><span class="va">...</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>    beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">param</span><span class="op">[</span><span class="va">...</span><span class="op">]</span>, <span class="va">param</span><span class="op">[</span><span class="va">...</span><span class="op">]</span><span class="op">)</span>,</span>
@@ -436,8 +436,8 @@ Loss Function (LL)
 <span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">logl</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch</a></span><span class="op">(</span></span>
 <span>    EXPR <span class="op">=</span> <span class="va">LR</span>,</span>
-<span>    <span class="st">"L"</span> <span class="op">=</span> <span class="va">L_dir</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">L_prob</span> <span class="op">+</span> <span class="fl">1e-10</span><span class="op">)</span>,</span>
-<span>    <span class="st">"R"</span> <span class="op">=</span> <span class="va">R_dir</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">R_prob</span> <span class="op">+</span> <span class="fl">1e-10</span><span class="op">)</span></span>
+<span>    <span class="st">"L"</span> <span class="op">=</span> <span class="va">L_dir</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">L_prob</span><span class="op">)</span>,</span>
+<span>    <span class="st">"R"</span> <span class="op">=</span> <span class="va">R_dir</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">R_prob</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">logl</span><span class="op">)</span>  </span>

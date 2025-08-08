@@ -16,28 +16,43 @@ func_tau(
   var2 = NA,
   LR,
   try,
-  lapse,
   tau,
+  lapse,
   alpha,
   beta
 )
 }
 \arguments{
-\item{i}{The current row number.}
+\item{i}{[numeric]
 
-\item{L_freq}{The frequency of left option appearance}
+The current row number.}
 
-\item{R_freq}{The frequency of right option appearance}
+\item{L_freq}{[numeric]
+ 
+The frequency of left option appearance}
 
-\item{L_pick}{The number of times left option was picked}
+\item{R_freq}{[numeric]
+ 
+The frequency of right option appearance}
 
-\item{R_pick}{The number of times left option was picked}
+\item{L_pick}{[numeric]
+ 
+The number of times left option was picked}
 
-\item{L_value}{The value of the left option with bias (if pi != 0)}
+\item{R_pick}{[numeric]
+ 
+The number of times left option was picked}
 
-\item{R_value}{The value of the right option with bias (if pi != 0)}
+\item{L_value}{[numeric]
+ 
+The value of the left option with bias (if pi != 0)}
+
+\item{R_value}{[numeric]
+ 
+The value of the right option with bias (if pi != 0)}
 
 \item{var1}{[character] 
+
 Column name of extra variable 1. If your model uses more than just reward 
  and expected value, and you need other information, such as whether the 
  choice frame is Gain or Loss, then you can input the 'Frame' column as 
@@ -46,18 +61,40 @@ Column name of extra variable 1. If your model uses more than just reward
  \code{default: var1 = "Extra_Var1"}}
 
 \item{var2}{[character] 
+
 Column name of extra variable 2. If one additional variable, var1, does not 
  meet your needs, you can add another additional variable, var2, into your 
  model.
  
- \code{default: var2 = "Extra_Var2"}}
+ default: \code{var2 = "Extra_Var2"}}
 
-\item{LR}{Are you calculating the probability for the left option or the right option?}
+\item{LR}{[character] 
 
-\item{try}{If the choice was random, the value is 1; 
+Are you calculating the probability for the left option or the right option?
+
+\code{LR = "L"; LR = "R"}}
+
+\item{try}{[numeric]
+ 
+If the choice was random, the value is 1; 
 If the choice was based on value, the value is 0.}
 
-\item{lapse}{[numeric]
+\item{tau}{[vector] 
+
+Parameters used in the Soft-Max Function. \code{prob_func} 
+ representing the sensitivity of the subject to the value difference when 
+ making decisions. It determines the probability of selecting the left option 
+ versus the right option based on their values. A larger value of tau 
+ indicates greater sensitivity to the value difference between the options. 
+ In other words, even a small difference in value will make the subject more 
+ likely to choose the higher-value option. 
+ 
+ \deqn{P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}} 
+
+ \code{e.g., tau = c(0.5)}}
+
+\item{lapse}{[numeric] 
+
 A numeric value between 0 and 1, representing the lapse rate.
 
 You can interpret this parameter as the probability of the agent "slipping"
@@ -83,23 +120,12 @@ From a modeling perspective, the lapse rate is crucial for preventing the
 This ensures each option has a minimum selection probability of 1 percent 
  in TAFC tasks.}
 
-\item{tau}{[vector] 
-Parameters used in the Soft-Max Function. \code{prob_func} 
- representing the sensitivity of the subject to the value difference when 
- making decisions. It determines the probability of selecting the left option 
- versus the right option based on their values. A larger value of tau 
- indicates greater sensitivity to the value difference between the options. 
- In other words, even a small difference in value will make the subject more 
- likely to choose the higher-value option. 
- 
- \deqn{P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}} 
+\item{alpha}{[vector] 
 
- \code{e.g., tau = c(0.5)}}
-
-\item{alpha}{[vector]
 Extra parameters that may be used in functions.}
 
-\item{beta}{[vector]
+\item{beta}{[vector] 
+
 Extra parameters that may be used in functions.}
 }
 \value{

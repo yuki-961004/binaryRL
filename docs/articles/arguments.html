@@ -85,6 +85,49 @@
     
     
 <div class="section level2">
+<h2 id="off-policy-vs-on-policy">Off-policy vs On-policy<a class="anchor" aria-label="anchor" href="#off-policy-vs-on-policy"></a>
+</h2>
+<p>During each trial, should the model’s learning be guided by the
+human’s actual choice, or by a choice stochastically generated from the
+model’s own estimated probabilities? This question represents two
+different perspectives in reinforcement learning: off-policy (akin to
+Q-learning) and on-policy (akin to SARSA).</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">run_m</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  ...,</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="at">policy =</span> <span class="fu">c</span>(<span class="st">"off"</span>, <span class="st">"on"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  ...</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="cf">if</span> (policy <span class="sc">==</span> <span class="st">"off"</span>) {</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  data[[rob_choose]][i] <span class="ot">&lt;-</span> data[[sub_choose]][i] </span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>}</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="cf">else</span> <span class="cf">if</span> (policy <span class="sc">==</span> <span class="st">"on"</span>) {</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  data[[rob_choose]][i] <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">c</span>(data[[L_choice]][i], data[[R_choice]][i]), </span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    <span class="at">prob =</span> <span class="fu">c</span>(data<span class="sc">$</span>L_prob[i], data<span class="sc">$</span>R_prob[i]),</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">1</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  )</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>}</span></code></pre></div>
+<p>These two strategies have distinct advantages and are suited for
+different analytical goals:</p>
+<ul>
+<li><p>Off-policy (e.g., Q-learning): This approach generally leads to
+more accurate parameter estimation. In parameter recovery tests, this is
+demonstrated by a higher correlation between the ground-truth input
+parameters and the final fitted output parameters.</p></li>
+<li><p>On-policy (e.g., SARSA): This approach, in contrast, is better at
+mimicking human behavioral patterns. Its strength is evident in the
+ability of the resulting parameters to better reproduce key experimental
+effects observed in psychological studies.</p></li>
+</ul>
+<p>In published research, many studies favor the off-policy approach to
+achieve greater parameter accuracy. However, there is no definitive
+“better” choice. The most suitable strategy for your research depends on
+your primary objective—whether it is to precisely quantify cognitive
+processes or to more faithfully simulate behavioral patterns. The final
+decision is left to the user.</p>
+</div>
+<div class="section level2">
 <h2 id="value-function">Value Function<a class="anchor" aria-label="anchor" href="#value-function"></a>
 </h2>
 <div class="section level3">
@@ -100,7 +143,7 @@ between subjective and objective value.</p>
 exhibit distinct utility functions for <strong>gains</strong> and
 <strong>losses</strong>. Referencing Nilsson et al. <a href="https://doi.org/10.1016/j.jmp.2010.08.006" class="external-link">(2012)</a>, we have
 implemented the model below.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">func_gamma</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span></span>
 <span>  <span class="va">i</span>, <span class="va">L_freq</span>, <span class="va">R_freq</span>, <span class="va">L_pick</span>, <span class="va">R_pick</span>, <span class="va">L_value</span>, <span class="va">R_value</span>, <span class="va">var1</span> <span class="op">=</span> <span class="cn">NA</span>, <span class="va">var2</span> <span class="op">=</span> <span class="cn">NA</span>,  </span>
 <span>  <span class="va">value</span>, <span class="va">utility</span>, <span class="va">reward</span>, <span class="va">occurrence</span>,</span>
@@ -156,7 +199,7 @@ bias or even reported a negativity bias (<span class="math inline">\(\alpha_{+} 
 “Because Q-values initialization markedly affect learning rate and
 learning bias estimates.”</p>
 </blockquote>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
 <span>  <span class="va">...</span>,</span>
 <span>  initial_value <span class="op">=</span> <span class="cn">NA</span>,</span>
@@ -213,39 +256,39 @@ instance, if the threshold is set to <code>threshold = 20</code> (The
 default value is set to 1), it means that participants will choose
 completely randomly until trial number 20, after which their choices
 will be based on value.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># epsilon-first</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  ...</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="dv">20</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="cn">NA</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="cn">NA</span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  ...</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># epsilon-first</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  ...</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="dv">20</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="cn">NA</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="cn">NA</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  ...</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>)</span></code></pre></div>
 <p>The <span class="math inline">\(\epsilon\)</span>-greedy strategy is
 commonly employed in reinforcement learning models. With this approach
 (<code>epsilon = 0.1</code>), the participant has a 10% probability of
 randomly selecting an option and a 90% probability of choosing based on
 the currently learned value of the options.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># epsilon-greedy</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  ...</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="dv">1</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="fl">0.1</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="cn">NA</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  ...</span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># epsilon-greedy</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  ...</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="dv">1</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="fl">0.1</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="cn">NA</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  ...</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>)</span></code></pre></div>
 <p>You can also create an <span class="math inline">\(\epsilon\)</span>-decreasing exploration strategy
 by setting <code>lambda</code> instead of <code>epsilon</code>. In this
 model, the probability of participants choosing randomly will decrease
 as the trial number increases.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># epsilon-decreasing</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  ...</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="dv">1</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="cn">NA</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="fl">0.1</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  ...</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># epsilon-decreasing</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">run_m</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  ...</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="dv">1</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">epsilon =</span> <span class="cn">NA</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="fl">0.1</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  ...</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>Reference</strong></p>
 <p>Namiki, N., Oyo, K., &amp; Takahashi, T. (2014, December). How do
 humans handle the dilemma of exploration and exploitation in sequential
@@ -265,11 +308,11 @@ This value defaults to <code>NA</code>, ensuring each option is selected
 at least once. Once an option has been chosen, its bias will be set to
 zero. If <span class="math inline">\(\pi\)</span> is very small, for
 example 0.001, the effect is almost the same.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">run_m</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  ...</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">pi =</span> <span class="fl">0.1</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  ...</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">run_m</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  ...</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">pi =</span> <span class="fl">0.1</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  ...</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>Reference</strong></p>
 <p>Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement Learning:
 An Introduction</em> (2nd ed). MIT press.</p>
@@ -308,12 +351,12 @@ exponential distribution from which <span class="math inline">\(\tau\)</span> is
 if this value is 1, then <span class="math inline">\(\tau\)</span> is
 drawn from an exponential distribution with a rate of 10, i.e., <span class="math inline">\(\tau \sim \text{Exp}(1)\)</span>.</p></li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>binaryRL<span class="sc">::</span><span class="fu">rcv_d</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  ...</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">simulate_lower =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>)),</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">simulate_upper =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)),</span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  ...</span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>binaryRL<span class="sc">::</span><span class="fu">rcv_d</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  ...</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">simulate_lower =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>)),</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">simulate_upper =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)),</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  ...</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>Reference</strong></p>
 <p>Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement Learning:
 An Introduction</em> (2nd ed). MIT press.</p>

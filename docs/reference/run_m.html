@@ -239,18 +239,17 @@ learning models.</p>
 <span>  <span class="va">id</span>,</span>
 <span>  <span class="va">n_params</span>,</span>
 <span>  <span class="va">n_trials</span>,</span>
-<span>  seed <span class="op">=</span> <span class="fl">123</span>,</span>
-<span>  initial_value <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  threshold <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  lapse <span class="op">=</span> <span class="fl">0.02</span>,</span>
-<span>  alpha <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  beta <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  gamma <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">eta</span>,</span>
+<span>  initial_value <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  epsilon <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  lambda <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  pi <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  tau <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  lapse <span class="op">=</span> <span class="fl">0.02</span>,</span>
+<span>  alpha <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  beta <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  priors <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  util_func <span class="op">=</span> <span class="va">func_gamma</span>,</span>
 <span>  rate_func <span class="op">=</span> <span class="va">func_eta</span>,</span>
@@ -269,6 +268,7 @@ learning models.</p>
 <span>  raw_cols <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  var1 <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  var2 <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">123</span>,</span>
 <span>  digits_1 <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  digits_2 <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -279,13 +279,13 @@ learning models.</p>
 
 
 <dl><dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
-<dd><p>[character]
-The name of your RL model</p></dd>
+<dd><p>[character]</p>
+<p>The name of your RL model</p></dd>
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
-<dd><p>[character]
-This parameter controls the function's operational mode. It has three
+<dd><p>[character]</p>
+<p>This parameter controls the function's operational mode. It has three
  possible values, each typically associated with a specific function:</p><ul><li><p><code>"simulate"</code>: Should be used when working with
      <code><a href="rcv_d.html">rcv_d</a></code>.</p></li>
 <li><p><code>"fit"</code>: Should be used when working with
@@ -297,11 +297,11 @@ This parameter controls the function's operational mode. It has three
 
 
 <dt id="arg-policy">policy<a class="anchor" aria-label="anchor" href="#arg-policy"></a></dt>
-<dd><p>[character]
-Specifies the learning policy to be used.
+<dd><p>[character]</p>
+<p>Specifies the learning policy to be used.
 This determines how the model updates action values based on observed or
   simulated choices. It can be either <code>"off"</code> or <code>"on"</code>.</p>
-<ul><li><p><strong>Off-Policy</strong>: <strong>Q-learning</strong>
+<p></p><ul><li><p><strong>Off-Policy (Q-learning): </strong>
    This is the most common approach for modeling
     reinforcement learning in Two-Alternative Forced Choice (TAFC) tasks.
     In this mode, the model's goal is to learn the underlying value of
@@ -309,8 +309,7 @@ This determines how the model updates action values based on observed or
     this by consistently updating the value of the option that the
     human actually chose. The focus is on understanding the value
     representation that likely drove the participant's decisions.</p></li>
-<li><p></p></li>
-<li><p><strong>Off-Policy</strong>: <strong>SARSA</strong>
+<li><p><strong>Off-Policy (SARSA): </strong>
    In this mode, the target policy and the behavior policy are identical.
     The model first computes the selection probability for each option based
     on their current values. Critically, it then uses these probabilities to
@@ -322,8 +321,8 @@ This determines how the model updates action values based on observed or
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>[data.frame]
-This data should include the following mandatory columns:</p><ul><li><p><code>sub</code> "Subject"</p></li>
+<dd><p>[data.frame]</p>
+<p>This data should include the following mandatory columns:</p><ul><li><p><code>sub</code> "Subject"</p></li>
 <li><p><code>time_line</code> "Block" "Trial"</p></li>
 <li><p><code>L_choice</code> "L_choice"</p></li>
 <li><p><code>R_choice</code> "R_choice"</p></li>
@@ -334,41 +333,72 @@ This data should include the following mandatory columns:</p><ul><li><p><code>su
 
 
 <dt id="arg-id">id<a class="anchor" aria-label="anchor" href="#arg-id"></a></dt>
-<dd><p>[integer]
-Which subject is going to be analyzed. The value should correspond to an
+<dd><p>[integer]</p>
+<p>Which subject is going to be analyzed. The value should correspond to an
  entry in the "sub" column, which must contain the subject IDs.</p>
-<p><code>e.g., id = 18</code></p></dd>
+<p>e.g. <code>id = 18</code></p></dd>
 
 
 <dt id="arg-n-params">n_params<a class="anchor" aria-label="anchor" href="#arg-n-params"></a></dt>
-<dd><p>[integer]
-The number of free parameters in your model.</p></dd>
+<dd><p>[integer]</p>
+<p>The number of free parameters in your model.</p></dd>
 
 
 <dt id="arg-n-trials">n_trials<a class="anchor" aria-label="anchor" href="#arg-n-trials"></a></dt>
-<dd><p>[integer]
-The total number of trials in your experiment.</p></dd>
+<dd><p>[integer]</p>
+<p>The total number of trials in your experiment.</p></dd>
 
 
-<dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
-<dd><p>[integer]
-Random seed. This ensures that the results are
- reproducible and remain the same each time the function is run.</p>
-<p><code>default: seed = 123</code></p></dd>
+<dt id="arg-gamma">gamma<a class="anchor" aria-label="anchor" href="#arg-gamma"></a></dt>
+<dd><p>[vector]</p>
+<p><strong>Note</strong>: This should not be confused with the discount rate parameter
+  (also named gamma) found in Temporal Difference (TD) models.
+  Rescorla-Wagner model does not include a discount rate.
+  Here, <code>gamma</code> is used as a free parameter to shape the
+  utility function.</p>
+<p></p><ul><li><p><strong>Stevens' Power Law</strong>:
+   Utility is modeled as:
+   $$U(R) = {R}^{\gamma}$$</p></li>
+<li><p><strong>Kahneman's Prospect Theory</strong>:
+   This exponent is applied differently based on the sign of the reward:
+   $$U(R) = \begin{cases}
+     R^{\gamma_{1}}, &amp; R &gt; 0 \\
+     \beta \cdot R^{\gamma_{2}}, &amp; R &lt; 0
+   \end{cases}$$</p></li>
+</ul><p>default: <code>gamma = 1</code></p></dd>
+
+
+<dt id="arg-eta">eta<a class="anchor" aria-label="anchor" href="#arg-eta"></a></dt>
+<dd><p>[vector]</p>
+<p>Parameters used in the Learning Rate Function,
+ <code>rate_func</code>,
+ representing the rate at which the subject updates the difference
+ (prediction error) between the reward and the expected value in the
+ subject's mind.</p>
+<p>The structure of <code>eta</code> depends on the model type:</p><ul><li><p>For the <strong>Temporal Difference (TD) model</strong>,
+   where a single learning rate is used throughout the experiment
+   $$V_{new} = V_{old} + \eta \cdot (R - V_{old})$$</p></li>
+<li><p>For the <strong>Risk-Sensitive Temporal Difference (RDTD) model</strong>,
+   where two different learning rates are used depending on whether the
+   reward is lower or higher than the expected value:
+   $$V_{new} = V_{old} + \eta_{+} \cdot (R - V_{old}), R &gt; V_{old}$$
+   $$V_{new} = V_{old} + \eta_{-} \cdot (R - V_{old}), R &lt; V_{old}$$</p></li>
+</ul><p>TD: <code>eta = 0.3</code></p>
+<p>RSTD: <code>eta = c(0.3, 0.7)</code></p></dd>
 
 
 <dt id="arg-initial-value">initial_value<a class="anchor" aria-label="anchor" href="#arg-initial-value"></a></dt>
-<dd><p>[numeric]
-Subject's initial expected value for each stimulus's reward. If this value
+<dd><p>[numeric]</p>
+<p>Subject's initial expected value for each stimulus's reward. If this value
  is not set <code>initial_value = NA</code>, the subject will use the reward received
  after the first trial as the initial value for that stimulus. In other
  words, the learning rate for the first trial is 100<!-- %.  --></p>
-<p><code>default: initial_value = NA</code></p></dd>
+<p>default: <code>initial_value = NA</code></p></dd>
 
 
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
-<dd><p>[integer]
-Controls the initial exploration phase in the <strong>epsilon-first</strong> strategy.
+<dd><p>[integer]</p>
+<p>Controls the initial exploration phase in the <strong>epsilon-first</strong> strategy.
  This is the number of early trials where the subject makes purely random
  choices, as they haven't yet learned the options' values. For example,
  <code>threshold = 20</code> means random choices for the first 20 trials.
@@ -378,13 +408,70 @@ Controls the initial exploration phase in the <strong>epsilon-first</strong> str
    \text{trial} \le \text{threshold}, &amp; x=1 \text{ (random choosing)} \\
    \text{trial} &gt; \text{threshold}, &amp; x=0 \text{ (value-based choosing)}
  \end{cases}$$</p>
-<p><code>default: threshold = 1</code></p>
-<p><code>epsilon-first: threshold = 20, epsilon = NA, lambda = NA</code></p></dd>
+<p>default: <code>threshold = 1</code></p>
+<p>epsilon-first: <code>threshold = 20, epsilon = NA, lambda = NA</code></p></dd>
+
+
+<dt id="arg-epsilon">epsilon<a class="anchor" aria-label="anchor" href="#arg-epsilon"></a></dt>
+<dd><p>[numeric]</p>
+<p>A parameter used in the <strong>epsilon-greedy</strong> exploration strategy. It
+ defines the probability of making a completely random choice, as opposed
+ to choosing based on the relative values of the left and right options.
+ For example, if <code>epsilon = 0.1</code>, the subject has a 10<!-- % chance of random  -->
+ choice and a 90<!-- % chance of value-based choice. This parameter is only  -->
+ relevant when <code>threshold</code> is at its default value (1) and
+ <code>lambda</code> is not set.</p>
+<p>$$P(x) = \begin{cases}
+   \epsilon, &amp; x=1 \text{ (random choosing)} \\
+   1-\epsilon, &amp; x=0 \text{ (value-based choosing)}
+ \end{cases}$$</p>
+<p>epsilon-greedy: <code>threshold = 1, epsilon = 0.1, lambda = NA</code></p></dd>
+
+
+<dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
+<dd><p>[vector]</p>
+<p>A numeric value that controls the decay rate of exploration probability
+ in the <strong>epsilon-decreasing</strong> strategy. A higher <code>lambda</code> value
+ means the probability of random choice will decrease more rapidly
+ as the number of trials increases.</p>
+<p>$$P(x) = \begin{cases}
+   \frac{1}{1+\lambda \cdot trial}, &amp; x=1 \text{ (random choosing)} \\
+   \frac{\lambda \cdot trial}{1+\lambda \cdot trial}, &amp; x=0 \text{ (value-based choosing)}
+ \end{cases}$$</p>
+<p>epsilon-decreasing: <code>threshold = 1, epsilon = NA, lambda = 0.5</code></p></dd>
+
+
+<dt id="arg-pi">pi<a class="anchor" aria-label="anchor" href="#arg-pi"></a></dt>
+<dd><p>[vector]</p>
+<p>Parameter used in the Upper-Confidence-Bound (UCB) action selection
+ formula. <code>bias_func</code> controls the degree of
+ exploration by scaling the uncertainty bonus given to less-explored options.
+ A larger value of <code>pi</code> (denoted as <code>c</code> in Sutton and Barto(2018) )
+ increases the influence of this bonus, leading to more exploration of
+ actions with uncertain estimated values. Conversely, a smaller <code>pi</code>
+ results in less exploration.</p>
+<p>$$
+  A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}} \right]
+$$</p>
+<p>default: <code>pi = NA</code></p></dd>
+
+
+<dt id="arg-tau">tau<a class="anchor" aria-label="anchor" href="#arg-tau"></a></dt>
+<dd><p>[vector]</p>
+<p>Parameters used in the Soft-Max Function. <code>prob_func</code>
+ representing the sensitivity of the subject to the value difference when
+ making decisions. It determines the probability of selecting the left option
+ versus the right option based on their values. A larger value of tau
+ indicates greater sensitivity to the value difference between the options.
+ In other words, even a small difference in value will make the subject more
+ likely to choose the higher-value option.</p>
+<p>$$P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}$$</p>
+<p>default <code>tau = NA</code></p></dd>
 
 
 <dt id="arg-lapse">lapse<a class="anchor" aria-label="anchor" href="#arg-lapse"></a></dt>
-<dd><p>[numeric]
-A numeric value between 0 and 1, representing the lapse rate.</p>
+<dd><p>[numeric]</p>
+<p>A numeric value between 0 and 1, representing the lapse rate.</p>
 <p>You can interpret this parameter as the probability of the agent "slipping"
  or making a random choice, irrespective of the learned action values. This
  accounts for moments of inattention or motor errors. In this sense, it
@@ -400,241 +487,149 @@ A numeric value between 0 and 1, representing the lapse rate.</p>
 <p>$$
    P_{final} = (1 - lapse) \cdot P_{softmax} + \frac{lapse}{N_{choices}}
  $$</p>
-<p><code>default: lapse = 0.02</code></p>
+<p>default: <code>lapse = 0.02</code></p>
 <p>This ensures each option has a minimum selection probability of 1 percent
  in TAFC tasks.</p></dd>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
-<dd><p>[vector]
-Extra parameters that may be used in functions.</p></dd>
+<dd><p>[vector]</p>
+<p>Extra parameters that may be used in functions.</p></dd>
 
 
 <dt id="arg-beta">beta<a class="anchor" aria-label="anchor" href="#arg-beta"></a></dt>
-<dd><p>[vector]
-Extra parameters that may be used in functions.</p></dd>
-
-
-<dt id="arg-gamma">gamma<a class="anchor" aria-label="anchor" href="#arg-gamma"></a></dt>
-<dd><p>[vector]
-This parameter represents the exponent in utility functions,
- <code>util_func</code>, specifically:</p><ul><li><p><strong>Stevens' Power Law</strong>:
-   Utility is modeled as:
-   $$U(R) = {R}^{\gamma}$$</p></li>
-<li><p><strong>Kahneman's Prospect Theory</strong>:
-   This exponent is applied differently based on the sign of the reward:
-   $$U(R) = \begin{cases}
-     R^{\gamma_{1}}, &amp; R &gt; 0 \\
-     \beta \cdot R^{\gamma_{2}}, &amp; R &lt; 0
-   \end{cases}$$</p></li>
-</ul></dd>
-
-
-<dt id="arg-eta">eta<a class="anchor" aria-label="anchor" href="#arg-eta"></a></dt>
-<dd><p>[vector]
-Parameters used in the Learning Rate Function,
- <code>rate_func</code>,
- representing the rate at which the subject updates the difference
- (prediction error) between the reward and the expected value in the
- subject's mind.</p>
-<p>The structure of <code>eta</code> depends on the model type:</p><ul><li><p>For the <strong>Temporal Difference (TD) model</strong>,
-   where a single learning rate is used throughout the experiment
-   $$V_{new} = V_{old} + \eta \cdot (R - V_{old})$$</p></li>
-<li><p>For the <strong>Risk-Sensitive Temporal Difference (RDTD) model</strong>,
-   where two different learning rates are used depending on whether the
-   reward is lower or higher than the expected value:
-   $$V_{new} = V_{old} + \eta_{+} \cdot (R - V_{old}), R &gt; V_{old}$$
-   $$V_{new} = V_{old} + \eta_{-} \cdot (R - V_{old}), R &lt; V_{old}$$</p></li>
-</ul><p><code>TD: eta = 0.3</code></p>
-<p><code>RSTD: eta = c(0.3, 0.7)</code></p></dd>
-
-
-<dt id="arg-epsilon">epsilon<a class="anchor" aria-label="anchor" href="#arg-epsilon"></a></dt>
-<dd><p>[numeric]
-A parameter used in the <strong>epsilon-greedy</strong> exploration strategy. It
- defines the probability of making a completely random choice, as opposed
- to choosing based on the relative values of the left and right options.
- For example, if <code>epsilon = 0.1</code>, the subject has a 10<!-- % chance of random  -->
- choice and a 90<!-- % chance of value-based choice. This parameter is only  -->
- relevant when <code>threshold</code> is at its default value (1) and
- <code>lambda</code> is not set.</p>
-<p>$$P(x) = \begin{cases}
-   \epsilon, &amp; x=1 \text{ (random choosing)} \\
-   1-\epsilon, &amp; x=0 \text{ (value-based choosing)}
- \end{cases}$$</p>
-<p><code>epsilon-greedy: threshold = 1, epsilon = 0.1, lambda = NA</code></p></dd>
-
-
-<dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
-<dd><p>[vector]
-A numeric value that controls the decay rate of exploration probability
- in the <strong>epsilon-decreasing</strong> strategy. A higher <code>lambda</code> value
- means the probability of random choice will decrease more rapidly
- as the number of trials increases.</p>
-<p>$$P(x) = \begin{cases}
-   \frac{1}{1+\lambda \cdot trial}, &amp; x=1 \text{ (random choosing)} \\
-   \frac{\lambda \cdot trial}{1+\lambda \cdot trial}, &amp; x=0 \text{ (value-based choosing)}
- \end{cases}$$</p>
-<p><code>epsilon-decreasing threshold = 1, epsilon = NA, lambda = 0.5</code></p></dd>
-
-
-<dt id="arg-pi">pi<a class="anchor" aria-label="anchor" href="#arg-pi"></a></dt>
-<dd><p>[vector]
-Parameter used in the Upper-Confidence-Bound (UCB) action selection
- formula. <code>bias_func</code> controls the degree of
- exploration by scaling the uncertainty bonus given to less-explored options.
- A larger value of <code>pi</code> (denoted as <code>c</code> in Sutton and Barto(1998) )
- increases the influence of this bonus, leading to more exploration of
- actions with uncertain estimated values. Conversely, a smaller <code>pi</code>
- results in less exploration.</p>
-<p>$$
-  A_t = \arg \max_{a} \left[ V_t(a) + \pi \sqrt{\frac{\ln(t)}{N_t(a)}} \right]
-$$</p>
-<p><code>default: pi = NA</code></p></dd>
-
-
-<dt id="arg-tau">tau<a class="anchor" aria-label="anchor" href="#arg-tau"></a></dt>
-<dd><p>[vector]
-Parameters used in the Soft-Max Function. <code>prob_func</code>
- representing the sensitivity of the subject to the value difference when
- making decisions. It determines the probability of selecting the left option
- versus the right option based on their values. A larger value of tau
- indicates greater sensitivity to the value difference between the options.
- In other words, even a small difference in value will make the subject more
- likely to choose the higher-value option.</p>
-<p>$$P_L = \frac{1}{1+e^{-(V_L-V_R) \cdot \tau}}; P_R = \frac{1}{1+e^{-(V_R-V_L) \cdot \tau}}$$</p>
-<p><code>e.g., tau = c(0.5)</code></p></dd>
+<dd><p>[vector]</p>
+<p>Extra parameters that may be used in functions.</p></dd>
 
 
 <dt id="arg-priors">priors<a class="anchor" aria-label="anchor" href="#arg-priors"></a></dt>
-<dd><p>[list] A <code>list</code> object for specifying the Bayesian prior
-  distributions for each model parameter. Each element in the list
-  should be named after a parameter and contain a function that returns the
-  log probability density.</p>
-<p>By default, a set of priors is used. For most parameters, this is a
-  <strong>Uniform(0, 1)</strong> distribution, which acts as an uninformative prior.
-  This means that for these parameters, the Maximum A Posteriori (MAP)
-  estimate will be identical to the Maximum Likelihood Estimate (MLE).</p>
-<p>The exception is for the inverse temperature parameter associated with the
-  softmax function (<code>tau</code>). This parameter uses an
-  <strong>Exponential(1)</strong> distribution as its prior. This is a weakly
-  informative prior that regularizes the model by favoring smaller,
-  positive values, thus preventing extremely large parameter estimates.</p></dd>
+<dd><p>[list]</p>
+<p>A list specifying the prior distributions for the model parameters.
+  This argument is mandatory when using <code>estimate = "MAP"</code>.</p>
+<p>default: <code>priors = NULL</code></p></dd>
 
 
 <dt id="arg-util-func">util_func<a class="anchor" aria-label="anchor" href="#arg-util-func"></a></dt>
-<dd><p>[function]
-Utility Function see <code><a href="func_gamma.html">func_gamma</a></code>.</p></dd>
+<dd><p>[function]</p>
+<p>Utility Function see <code><a href="func_gamma.html">func_gamma</a></code>.</p></dd>
 
 
 <dt id="arg-rate-func">rate_func<a class="anchor" aria-label="anchor" href="#arg-rate-func"></a></dt>
-<dd><p>[function]
-Learning Rate Function see <code><a href="func_eta.html">func_eta</a></code>.</p></dd>
+<dd><p>[function]</p>
+<p>Learning Rate Function see <code><a href="func_eta.html">func_eta</a></code>.</p></dd>
 
 
 <dt id="arg-expl-func">expl_func<a class="anchor" aria-label="anchor" href="#arg-expl-func"></a></dt>
-<dd><p>[function]
-Exploration Strategy Function see <code><a href="func_epsilon.html">func_epsilon</a></code>.</p></dd>
+<dd><p>[function]</p>
+<p>Exploration Strategy Function see <code><a href="func_epsilon.html">func_epsilon</a></code>.</p></dd>
 
 
 <dt id="arg-bias-func">bias_func<a class="anchor" aria-label="anchor" href="#arg-bias-func"></a></dt>
-<dd><p>[function]
-Upper-Confidence-Bound see <code><a href="func_pi.html">func_pi</a></code>.</p></dd>
+<dd><p>[function]</p>
+<p>Upper-Confidence-Bound see <code><a href="func_pi.html">func_pi</a></code>.</p></dd>
 
 
 <dt id="arg-prob-func">prob_func<a class="anchor" aria-label="anchor" href="#arg-prob-func"></a></dt>
-<dd><p>[function]
-Soft-Max Function see <code><a href="func_tau.html">func_tau</a></code>.</p></dd>
+<dd><p>[function]</p>
+<p>Soft-Max Function see <code><a href="func_tau.html">func_tau</a></code>.</p></dd>
 
 
 <dt id="arg-loss-func">loss_func<a class="anchor" aria-label="anchor" href="#arg-loss-func"></a></dt>
-<dd><p>[function]
-Loss Function see <code><a href="func_logl.html">func_logl</a></code>.</p></dd>
+<dd><p>[function]</p>
+<p>Loss Function see <code><a href="func_logl.html">func_logl</a></code>.</p></dd>
 
 
 <dt id="arg-sub">sub<a class="anchor" aria-label="anchor" href="#arg-sub"></a></dt>
-<dd><p>[character] column name of subject ID</p>
-<p><code>e.g., sub = "Subject"</code></p></dd>
+<dd><p>[character]</p>
+<p>Column name of subject ID</p>
+<p>e.g. <code>sub = "Subject"</code></p></dd>
 
 
 <dt id="arg-time-line">time_line<a class="anchor" aria-label="anchor" href="#arg-time-line"></a></dt>
-<dd><p>[vector]
-A vector specifying the name of the column that the sequence of the
+<dd><p>[vector]</p>
+<p>A vector specifying the name of the column that the sequence of the
  experiment. This argument defines how the experiment is structured,
  such as whether it is organized by "Block" with breaks in between, and
  multiple trials within each block.</p>
-<p><code>default: time_line = c("Block", "Trial")</code></p></dd>
+<p>default: <code>time_line = c("Block", "Trial")</code></p></dd>
 
 
 <dt id="arg-l-choice">L_choice<a class="anchor" aria-label="anchor" href="#arg-l-choice"></a></dt>
-<dd><p>[character]
-Column name of left choice.</p>
-<p><code>default: L_choice = "Left_Choice"</code></p></dd>
+<dd><p>[character]</p>
+<p>Column name of left choice.</p>
+<p>default: <code>L_choice = "Left_Choice"</code></p></dd>
 
 
 <dt id="arg-r-choice">R_choice<a class="anchor" aria-label="anchor" href="#arg-r-choice"></a></dt>
-<dd><p>[character]
-Column name of right choice.</p>
-<p><code>default: R_choice = "Right_Choice"</code></p></dd>
+<dd><p>[character]</p>
+<p>Column name of right choice.</p>
+<p>default: <code>R_choice = "Right_Choice"</code></p></dd>
 
 
 <dt id="arg-l-reward">L_reward<a class="anchor" aria-label="anchor" href="#arg-l-reward"></a></dt>
-<dd><p>[character]
-Column name of the reward of left choice</p>
-<p><code>default: L_reward = "Left_reward"</code></p></dd>
+<dd><p>[character]</p>
+<p>Column name of the reward of left choice</p>
+<p>default: <code>L_reward = "Left_reward"</code></p></dd>
 
 
 <dt id="arg-r-reward">R_reward<a class="anchor" aria-label="anchor" href="#arg-r-reward"></a></dt>
-<dd><p>[character]
-Column name of the reward of right choice</p>
-<p><code>default: R_reward = "Right_reward"</code></p></dd>
+<dd><p>[character]</p>
+<p>Column name of the reward of right choice</p>
+<p>default: <code>R_reward = "Right_reward"</code></p></dd>
 
 
 <dt id="arg-sub-choose">sub_choose<a class="anchor" aria-label="anchor" href="#arg-sub-choose"></a></dt>
-<dd><p>[character]
-Column name of choices made by the subject.</p>
-<p><code>default: sub_choose = "Choose"</code></p></dd>
+<dd><p>[character]</p>
+<p>Column name of choices made by the subject.</p>
+<p>default: <code>sub_choose = "Choose"</code></p></dd>
 
 
 <dt id="arg-rob-choose">rob_choose<a class="anchor" aria-label="anchor" href="#arg-rob-choose"></a></dt>
-<dd><p>[character]
-Column name of choices made by the model, which you could ignore.</p>
-<p><code>default: rob_choose = "Rob_Choose"</code></p></dd>
+<dd><p>[character]</p>
+<p>Column name of choices made by the model, which you could ignore.</p>
+<p>default: <code>rob_choose = "Rob_Choose"</code></p></dd>
 
 
 <dt id="arg-raw-cols">raw_cols<a class="anchor" aria-label="anchor" href="#arg-raw-cols"></a></dt>
-<dd><p>[vector]
-Defaults to <code>NULL</code>. If left as <code>NULL</code>, it will directly capture
+<dd><p>[vector]</p>
+<p>Defaults to <code>NULL</code>. If left as <code>NULL</code>, it will directly capture
  all column names from the raw data.</p></dd>
 
 
 <dt id="arg-var-">var1<a class="anchor" aria-label="anchor" href="#arg-var-"></a></dt>
-<dd><p>[character]
-Column name of extra variable 1. If your model uses more than just reward
+<dd><p>[character]</p>
+<p>Column name of extra variable 1. If your model uses more than just reward
  and expected value, and you need other information, such as whether the
  choice frame is Gain or Loss, then you can input the 'Frame' column as
  var1 into the model.</p>
-<p><code>default: var1 = "Extra_Var1"</code></p></dd>
+<p>default: <code>var1 = "Extra_Var1"</code></p></dd>
 
 
 <dt id="arg-var-">var2<a class="anchor" aria-label="anchor" href="#arg-var-"></a></dt>
-<dd><p>[character]
-Column name of extra variable 2. If one additional variable, var1, does not
+<dd><p>[character]</p>
+<p>Column name of extra variable 2. If one additional variable, var1, does not
  meet your needs, you can add another additional variable, var2, into your
  model.</p>
-<p><code>default: var2 = "Extra_Var2"</code></p></dd>
+<p>default: <code>var2 = "Extra_Var2"</code></p></dd>
+
+
+<dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
+<dd><p>[integer]</p>
+<p>Random seed. This ensures that the results are
+ reproducible and remain the same each time the function is run.</p>
+<p>default: <code>seed = 123</code></p></dd>
 
 
 <dt id="arg-digits-">digits_1<a class="anchor" aria-label="anchor" href="#arg-digits-"></a></dt>
-<dd><p>[integer]
-The number of decimal places to retain for columns related to value function</p>
-<p><code>default: digits_1 = 2</code></p></dd>
+<dd><p>[integer]</p>
+<p>The number of decimal places to retain for columns related to value function</p>
+<p>default: <code>digits_1 = 2</code></p></dd>
 
 
 <dt id="arg-digits-">digits_2<a class="anchor" aria-label="anchor" href="#arg-digits-"></a></dt>
-<dd><p>[integer]
-The number of decimal places to retain for columns related to select function.</p>
-<p><code>default: digits_2 = 5</code></p></dd>
+<dd><p>[integer]</p>
+<p>The number of decimal places to retain for columns related to select function.</p>
+<p>default: <code>digits_2 = 5</code></p></dd>
 
 </dl></div>
     <div class="section level2">

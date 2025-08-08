@@ -275,6 +275,13 @@ differences in value between the two options.</p>
 P_{L} = \frac{1}{1 + e^{-(V_{L} - V_{R}) \cdot \tau}}
 \quad \quad
 P_{R} = \frac{1}{1 + e^{-(V_{R} - V_{L}) \cdot \tau}}
+\]</span> The lapse rate prevents the log-likelihood calculation
+(<code>log(P)</code>) from returning
+<code>log(P) -&gt; log(0) -&gt; -Inf</code>. The default value is set to
+<code>lapse = 0.02</code>, which, in TAFC tasks, means that each option
+has at least a 1% probability of being selected.</p>
+<p><span class="math display">\[
+P_{final} = (1 - lapse) \cdot P_{softmax} + \frac{lapse}{N_{choices}}
 \]</span>
 <!----------------------------------------------------------></p>
 </div>

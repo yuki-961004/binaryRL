@@ -6,6 +6,37 @@ vignette: >
   %\VignetteIndexEntry{Arguments}
   %\VignetteEngine{knitr::rmarkdown}
 ---
+## Off-policy vs On-policy
+
+During each trial, should the model's learning be guided by the human's actual choice, or by a choice stochastically generated from the model's own estimated probabilities? This question represents two different perspectives in reinforcement learning: off-policy (akin to Q-learning) and on-policy (akin to SARSA).
+
+```{r eval=FALSE}
+run_m(
+  ...,
+  policy = c("off", "on")
+  ...
+)
+
+if (policy == "off") {
+  data[[rob_choose]][i] <- data[[sub_choose]][i] 
+}
+else if (policy == "on") {
+  data[[rob_choose]][i] <- sample(
+    x = c(data[[L_choice]][i], data[[R_choice]][i]), 
+    prob = c(data$L_prob[i], data$R_prob[i]),
+    size = 1
+  )
+}
+```
+
+These two strategies have distinct advantages and are suited for different analytical goals:
+
+- Off-policy (e.g., Q-learning): This approach generally leads to more accurate parameter estimation. In parameter recovery tests, this is demonstrated by a higher correlation between the ground-truth input parameters and the final fitted output parameters.
+
+- On-policy (e.g., SARSA): This approach, in contrast, is better at mimicking human behavioral patterns. Its strength is evident in the ability of the resulting parameters to better reproduce key experimental effects observed in psychological studies.
+
+In published research, many studies favor the off-policy approach to achieve greater parameter accuracy. However, there is no definitive "better" choice. The most suitable strategy for your research depends on your primary objective—whether it is to precisely quantify cognitive processes or to more faithfully simulate behavioral patterns. The final decision is left to the user.
+
 ## Value Function
 
 ### Utility Function  
