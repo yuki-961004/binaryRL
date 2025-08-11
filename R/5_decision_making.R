@@ -22,6 +22,12 @@ decision_making <- function(
     L_reward = "L_reward", R_reward = "R_reward", 
     var1 = NA, var2 = NA
 ){
+  # 用于记录每个选项作为刺激呈现次数的计数器
+  stim_freq <- stats::setNames(object = rep(0L, length(options)), nm = options)
+  
+  # 用于记录每个选项被选择次数的计数器
+  pick_counts <- stats::setNames(object = rep(0L, length(options)), nm = options)
+  
 ########################### [update row by row] ################################  
   
   # 逐行更新Value
@@ -31,19 +37,20 @@ decision_making <- function(
     L_name <- data[[L_choice]][i]
     R_name <- data[[R_choice]][i]
     
+    # 在计数器中给这两个刺激的呈现次数 +1
+    stim_freq[unique(c(L_name, R_name))] <- 
+      # 仅针对不重复的情况
+      stim_freq[unique(c(L_name, R_name))] + 1
+    
     # 查询此时左选项已经出现过几次了
-    data$L_freq[i] <- 
-      sum(data[[L_choice]][1:(i)] == L_name, na.rm = TRUE) + 
-      sum(data[[R_choice]][1:(i)] == L_name, na.rm = TRUE)
+    data$L_freq[i] <- stim_freq[L_name]
     # 计算此时右选项已经出现过几次了
-    data$R_freq[i] <- 
-      sum(data[[L_choice]][1:(i)] == R_name, na.rm = TRUE) + 
-      sum(data[[R_choice]][1:(i)] == R_name, na.rm = TRUE)
+    data$R_freq[i] <- stim_freq[R_name]
     
     # 计算此时左选项被选了几次
-    data$L_pick[i] <- sum(data[[rob_choose]] == L_name, na.rm = TRUE)
+    data$L_pick[i] <- pick_counts[L_name]
     # 计算此时右选项被选了几次
-    data$R_pick[i] <- sum(data[[rob_choose]] == R_name, na.rm = TRUE)
+    data$R_pick[i] <- pick_counts[R_name]
     
     # 在上一行找此时左右选项对应的心中的价值
     data$L_value[i] <- data[[L_name]][i - 1]
@@ -182,13 +189,13 @@ decision_making <- function(
       )
     }
 
+    # 对被选的选项, 在计数器上+1
+    pick_counts[data[[rob_choose]][i]] <- pick_counts[data[[rob_choose]][i]] + 1
+    
 ################################ [occurrence] ##################################   
     
     # 计算这次是第几次选了这个选项
-    data$Occurrence[[i]] <- sum(
-      data[[rob_choose]] == data[[rob_choose]][[i]], 
-      na.rm = TRUE
-    )
+    data$Occurrence[[i]] <- pick_counts[data[[rob_choose]][i]]
     
 ################################## [ Reward ] ##################################    
     
