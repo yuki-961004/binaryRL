@@ -1,0 +1,231 @@
+---
+title: "Markov Chain Monte Carlo"
+author: "YuKi"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MCMC}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+`LaplacesDemon` provides a user-friendly interface for performing MCMC sampling on arbitrary R functions, which are often treated as "black boxes." This makes it exceptionally convenient for conducting Bayesian inference on existing, complex models without significant refactoring.
+
+This approach stands in contrast to probabilistic programming languages like `Stan`. `Stan` delivers superior computational performance by first requiring the user to rewrite the entire model logic in its own high-level statistical language. The `Stan` compiler then translates this model into highly optimized `C++` code, which eliminates the overhead of an interpreted language like R.
+
+The primary drawback and performance bottleneck of using `LaplacesDemon` with an R-based model function lies here: while the sampler itself is efficient, it must repeatedly call the R function at every MCMC iteration. As observed with the binaryRL package, this process becomes extremely inefficient for complex models, as the runtime is dominated by the interpreted R code within the "black-box" function.
+
+To address this critical performance issue, the future direction for `binaryRL` will be to rewrite the core `run_m` function in `C++` (likely using the `Rcpp` package). By compiling the model's core logic, we can drastically reduce the evaluation time of the objective function, thus making large-scale Bayesian inference with samplers like `LaplacesDemon` both practical and efficient.
+
+## Example Data
+
+```{r}
+test_data <- binaryRL::Mason_2024_Exp2
+# Ensure the Subject ID is a numeric value for easier indexing
+test_data$Subject <- as.numeric(test_data$Subject)
+# Filter the dataset to include only subjects 1 through 5
+test_data <- test_data[test_data$Subject <= 5, ]
+
+unique(test_data$Subject)
+```
+
+## Object Function
+
+### Argument 1: parm
+
+Similar to other frameworks designed for individual-level analysis, the primary argument to the `LaplacesDemon` model function is a single vector of free parameters. Crucially, this vector does not represent the parameters for a single "black-box" function call. Instead, it is a concatenated vector containing the complete set of free parameters for every subject being modeled. Consequently, its total length is the number of free parameters per subject multiplied by the number of subjects.
+
+### Argument 2: Data
+
+A key convenience of `LaplacesDemon` is that the user-defined Model function can accept a `Data` argument. This feature provides a clean and explicit mechanism for passing supplementary information—such as prior distributions, trial counts, or policy settings—directly to the model. Consequently, users can avoid more cumbersome methods, like environment binding, and instead bundle all necessary data and constants into a single, well-organized list.
+
+```{r}
+Data <- list(
+  # The prepared dataframe containing the experimental data
+  df = test_data,
+  # A vector of unique subject IDs to loop over during modeling
+  id = unique(test_data$Subject),
+  # A list of prior distributions for the parameters
+  priors = list(
+    # A uniform prior for eta, constraining it between 0 and 1
+    eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
+    # An exponential prior for tau, with a rate of 1
+    tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+  ),
+  # The number of free parameters per subject (eta and tau)
+  n_params = 2,
+  # The total number of trials per subject in the experiment
+  n_trials = 360,
+  # The operational mode for the binaryRL::run_m function, set to "fit"
+  mode = "fit",
+  # The learning policy for binaryRL::run_m, set to "off-policy"
+  policy = "off",
+  # A vector of descriptive names for each parameter across all subjects
+  parm.names = LaplacesDemon::as.parm.names(
+    list(
+      # Creates names like "[1,1]", "[1,2]", "[2,1]", "[2,2]", etc.
+      outer(
+        X = c("eta", "tau"),
+        Y = 1:length(unique(test_data$Subject)),
+        FUN = paste, sep = ""
+      )
+    )
+  ),
+  # The names of variables to monitor during the MCMC run (Log Posterior)
+  mon.names = "LP",
+  # The total number of subjects
+  N = length(unique(test_data$Subject))
+)
+```
+
+### Defining Object Function
+
+Create a model function that accepts `parm` and `Data` as its arguments, with a return value that conforms to the structure required by `LaplacesDemon.` Within this function, you need to calculate the sum of the log-likelihoods and the sum of the log-posteriors across all subjects by using specified prior distributions. These priors effectively define the valid domain for the parameters. If `LaplacesDemon` attempts to use a parameter value that falls outside the support of its prior distribution, the function will return negative infinity.
+
+```{r}
+Model <- function(parm, Data) {
+  
+  # Initialize accumulators for sum of log-likelihood and log-posterior
+  sum_LL <- 0
+  sum_LP <- 0
+  
+  # Loop through each subject ID provided in the Data list
+  for (i in as.vector(Data$id)) {
+    
+    eta <- parm[(i - 1) * 2 + 1]
+    tau <- parm[(i - 1) * 2 + 2]
+    
+    res <- binaryRL::run_m(
+      data = Data$df,
+      id = Data$id[i],
+      eta = eta,
+      tau = tau,
+      priors = Data$priors,
+      n_params = Data$n_params,
+      n_trials = Data$n_trials,
+      mode = Data$mode,
+      policy = Data$policy
+    )
+    
+    # Add the log-likelihood of the current subject to the total
+    sum_LL <- sum_LL + res$ll
+    # Add the log-posterior of the current subject to the total
+    sum_LP <- sum_LP + res$lpo
+  }
+  
+  # Return a list in the format required by LaplacesDemon
+  return(
+    list(
+      LP = sum_LP,
+      Dev = -2 * sum_LL,
+      Monitor = c(LP = sum_LP),
+      yhat = NULL,
+      parm = parm
+    )
+  )
+}
+```
+
+### Test Object Function
+
+```{r}
+Initial.Values <- stats::runif(Data$N * Data$n_params)
+Model(parm = Initial.Values, Data = Data)
+```
+
+## Run LaplacesDemon
+
+```{r eval=FALSE}
+Fit <- LaplacesDemon::LaplacesDemon.hpc(
+  Model = Model,
+  Data = Data,
+  Packages = "binaryRL",
+  # Set initial values (# of free params * # of subjects)
+  Initial.Values = stats::runif(length(Data$id) * 2),
+  # The relationship between `Algorithm` and `Specs` is special
+  # Refer to the LaplacesDemon help documents for details
+  Algorithm = "MWG", Specs = list(B = NULL),
+  # The total number of iterations to perform in each chain.
+  Iterations = 10,
+  # The thinning interval. A value of n keeps one sample every n-th iteration.
+  Thinning = 1,
+  # The number of parallel chains to run (Chains == CPUs).
+  Chains = 16, 
+  # The number of CPU cores to use (CPUs == Chains).
+  CPUs = 16
+)
+
+print(Fit, Burnin = 1)
+```
+
+```
+[[1]]
+Call:
+LaplacesDemon(Model = Model, Data = Data, Initial.Values = Initial.Values[x, 
+    ], Covar = Covar, Iterations = Iterations, Status = Status, 
+    Thinning = Thinning, Algorithm = Algorithm, Specs = Specs, 
+    Debug = Debug, LogFile = paste(LogFile, ".", x, sep = ""))
+
+Acceptance Rate: 0.06364
+Algorithm: Metropolis-within-Gibbs
+Covariance Matrix: (NOT SHOWN HERE; diagonal shown instead)
+    [1,1]     [2,1]     [1,2]     [2,2]     [1,3]     [2,3]     [1,4]     [2,4]     [1,5]     [2,5] 
+0.5670132 0.5670132 0.5670132 0.5670132 0.5670132 0.5670132 0.5670132 0.5670132 0.5670132 0.5670132 
+
+Covariance (Diagonal) History: (NOT SHOWN HERE)
+Deviance Information Criterion (DIC):
+          All Stationary
+Dbar 2275.985   2275.985
+pD     74.704     74.704
+DIC  2350.690   2350.690
+Initial Values:
+ [1] 0.09859165 0.69300856 0.75132556 0.99870695 0.34549739 0.29300554 0.66773598 0.59801099 0.70105000 0.10186876
+
+Iterations: 11
+Log(Marginal Likelihood): NA
+Minutes of run-time: 3.49
+Model: (NOT SHOWN HERE)
+Monitor: (NOT SHOWN HERE)
+Parameters (Number of): 10
+Posterior1: (NOT SHOWN HERE)
+Posterior2: (NOT SHOWN HERE)
+Recommended Burn-In of Thinned Samples: 0
+Recommended Burn-In of Un-thinned Samples: 0
+Recommended Thinning: 10
+Specs: (NOT SHOWN HERE)
+Status is displayed every 10 iterations
+Summary1: (SHOWN BELOW)
+Summary2: (SHOWN BELOW)
+Thinned Samples: 11
+Thinning: 1
+
+
+Summary of All Samples
+                  Mean         SD       MCSE          ESS            LB        Median            UB
+[1,1]     9.859165e-02  0.0000000 0.00000000 2.220446e-16  9.859165e-02  9.859165e-02  9.859165e-02
+[2,1]     5.200845e-01  0.0000000 0.00000000 2.220446e-16  5.200845e-01  5.200845e-01  5.200845e-01
+[1,2]     7.513256e-01  0.0000000 0.00000000 2.220446e-16  7.513256e-01  7.513256e-01  7.513256e-01
+[2,2]     5.810195e-01  0.0000000 0.00000000 2.220446e-16  5.810195e-01  5.810195e-01  5.810195e-01
+[1,3]     7.691418e-01  0.0000000 0.00000000 2.220446e-16  7.691418e-01  7.691418e-01  7.691418e-01
+[2,3]     8.243759e-01  0.1762356 0.05020148 1.100000e+01  4.391324e-01  8.775129e-01  8.775129e-01
+[1,4]     9.930241e-01  0.0000000 0.00000000 2.220446e-16  9.930241e-01  9.930241e-01  9.930241e-01
+[2,4]     9.920084e-01  0.1306741 0.03722310 1.100000e+01  7.063603e-01  1.031408e+00  1.031408e+00
+[1,5]     7.010500e-01  0.0000000 0.00000000 2.220446e-16  7.010500e-01  7.010500e-01  7.010500e-01
+[2,5]     6.699087e-01  0.1883975 0.05366585 1.100000e+01  2.580797e-01  7.267127e-01  7.267127e-01
+Deviance  2.275985e+03 12.2232699 3.48185156 1.100000e+01  2.272300e+03  2.272300e+03  2.302705e+03
+LP       -1.141580e+03  5.6163277 1.59983535 1.100000e+01 -1.153857e+03 -1.139887e+03 -1.139887e+03
+
+
+Summary of Stationary Samples
+                  Mean         SD       MCSE          ESS            LB        Median            UB
+[1,1]     9.859165e-02  0.0000000 0.00000000 2.220446e-16  9.859165e-02  9.859165e-02  9.859165e-02
+[2,1]     5.200845e-01  0.0000000 0.00000000 2.220446e-16  5.200845e-01  5.200845e-01  5.200845e-01
+[1,2]     7.513256e-01  0.0000000 0.00000000 2.220446e-16  7.513256e-01  7.513256e-01  7.513256e-01
+[2,2]     5.810195e-01  0.0000000 0.00000000 2.220446e-16  5.810195e-01  5.810195e-01  5.810195e-01
+[1,3]     7.691418e-01  0.0000000 0.00000000 2.220446e-16  7.691418e-01  7.691418e-01  7.691418e-01
+[2,3]     8.243759e-01  0.1762356 0.05020148 1.100000e+01  4.391324e-01  8.775129e-01  8.775129e-01
+[1,4]     9.930241e-01  0.0000000 0.00000000 2.220446e-16  9.930241e-01  9.930241e-01  9.930241e-01
+[2,4]     9.920084e-01  0.1306741 0.03722310 1.100000e+01  7.063603e-01  1.031408e+00  1.031408e+00
+[1,5]     7.010500e-01  0.0000000 0.00000000 2.220446e-16  7.010500e-01  7.010500e-01  7.010500e-01
+[2,5]     6.699087e-01  0.1883975 0.05366585 1.100000e+01  2.580797e-01  7.267127e-01  7.267127e-01
+Deviance  2.275985e+03 12.2232699 3.48185156 1.100000e+01  2.272300e+03  2.272300e+03  2.302705e+03
+LP       -1.141580e+03  5.6163277 1.59983535 1.100000e+01 -1.153857e+03 -1.139887e+03 -1.139887e+03
+```
+

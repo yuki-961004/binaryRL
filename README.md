@@ -157,16 +157,26 @@ This means you can leverage this package not only for building and fitting RL mo
 2. This package supports **parallel computation**. When you set the `nc` argument in `rcv_d()` or `fit_p()` to a value greater than 1, calculations will run in parallel, meaning each participant's parameter optimization happens simultaneously.  
 3. If you've defined a custom model, you must provide the names of your custom functions as a character vector to the `funcs` argument within `rcv_d()` or `fit_p()`.  
 
-## Maximum A Posteriori (MAP)   
+## Maximum A Posteriori (MAP)
 
-In addition to standard **Maximum Likelihood Estimation (MLE)**, the package offers a more robust fitting procedure using **Maximum A Posteriori (MAP)** estimation, implemented via an **Expectation-Maximization (EM)** algorithm. This option is enabled when the user sets `fit_p(estimate = "MAP")` and provides prior distributions for the free parameters. (The core logic is adapted from the MATLAB toolbox, [mfit](https://github.com/sjgershm/mfit))
+For more robust parameter estimates, the package supports **Maximum A Posteriori (MAP)** estimation via an EM-like algorithm (adapted from [mfit](https://github.com/sjgershm/mfit)). This approach leverages the entire group's data to inform and regularize individual-level fits. 
 
-The procedure leverages the collective data from all subjects to refine individual parameter estimates in an iterative fashion. It begins by performing an initial MLE fit for every participant. Then, it enters the EM-like loop:
+- **M-Step (Update Priors)**: Find the optimal parameter values for each subject individually and calculate the log-posterior using the prior distributions.
 
-- **M-Step (Update Priors)**: The algorithm treats the distribution of individually-fitted MLE parameters as empirical data. It uses this data to update the hyperparameters of the provided prior distributions. By default, the program assigns an Exponential prior to the inverse temperature ($\tau$). All other parameters are consequently forced into a Normal distribution for the fitting process. 
+- **E-Step (Update Posterior)**: Update the prior distributions based on the optimal parameters obtained from the M-step, then repeat the M-step iteratively.
 
-  *NOTE: This forces parameters into a potentially inappropriate distribution. To address this rigidity, I am working on integrating MCMC into the package, which will allow for more flexible and accurate Bayesian inference in the future.*
+*Note*:   
+1. To enable MAP estimation, specify `estimate = "MAP"` in the `fit_p()` function and provide a prior distribution for each free parameter.  
+2. The fitting process forces a Normal distribution on all parameters except for the inverse temperature, which is given an Exponential prior. This may not always be appropriate.   
 
-- **E-Step (Update Posterior)**: With these updated priors, the objective function for optimization is altered. Instead of returning the log-likelihood, the function now returns the log-posterior probability, which is defined as the sum of the log-likelihood and the log-prior probability of each parameter.
+## Markov Chain Monte Carlo (MCMC)
 
-This process iteratively refines the group-level priors and the individual-level posterior estimates until convergence. The key benefit of this approach is shrinkage: by informing individual fits with group-level information, it pulls extreme parameter values from any single subject closer to the group average. This acts as a powerful form of regularization, effectively preventing the model from overfitting to noisy or idiosyncratic trials within an individual's dataset and yielding more robust parameter estimates for the entire cohort.
+For a full Bayesian analysis, you can perform **Markov Chain Monte Carlo (MCMC)** to characterize the entire posterior distribution, capturing a complete picture of parameter uncertainty.  
+
+- `rstan`: Requires rewriting the entire MDP model in Stan, which reduces the flexibility and ease-of-use that `binaryRL` aims to provide.  
+
+- `LaplacesDemon`: Offers a convenient interface for Bayesian inference directly on black-box functions ([example code](./articles/MCMC.html)). However, it runs slower compared to `rstan`.   
+
+*Note*:   
+1. With a small number of iterations, the results may be less accurate compared to standard MLE algorithms.   
+2. The runtime would be very long because `binaryRL` is fully written in R, an interpreted language with slower execution speed.   
