@@ -394,6 +394,9 @@ rcv_d <- function(
     # recovery data
     for (j in 1:n_round_f){
       
+      # 编译对象函数
+      obj_func <- compiler::cmpfun(fit_models[[j]])
+      
       message(paste0(
         "\n", 
         "Simulating Model: ", model_names[i], 
@@ -413,7 +416,7 @@ rcv_d <- function(
         funcs = funcs,
         policy = policy,
         model_name = model_names[j],
-        fit_model = fit_models[[j]],
+        fit_model = obj_func,
         lower = fit_lower[[j]],
         upper = fit_upper[[j]],
         

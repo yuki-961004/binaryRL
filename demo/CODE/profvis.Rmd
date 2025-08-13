@@ -1,0 +1,106 @@
+---
+title: "Untitled"
+author: "yuki"
+date: "2025-08-13"
+output: html_document
+---
+## run_m
+
+```{r}
+profvis::profvis({
+  binaryRL.res <- binaryRL::run_m(
+    mode = "replay",
+    policy = "off",
+    
+    data = binaryRL::Mason_2024_Exp2,
+    id = 1,
+    eta = c(0.321, 0.765),
+    n_params = 2, 
+    n_trials = 360,
+    
+    initial_value = 100,
+    threshold = 1,
+    epsilon = NA,
+    lambda = 0.1,
+    pi = 0.01,
+    tau = 0.5
+  )
+})
+```
+
+
+## cmpfun
+
+```{r}
+obj_func <- function(params){
+  binaryRL.res <- binaryRL::run_m(
+    mode = "replay",
+    policy = "on",
+    
+    data = binaryRL::Mason_2024_Exp2,
+    id = 1,
+    eta = c(0.1, 0.8),
+    n_params = 2, 
+    n_trials = 360,
+    
+    initial_value = 100,
+    threshold = 1,
+    epsilon = NA,
+    lambda = 0.1,
+    pi = 0.01,
+    tau = 0.5
+  )
+  
+  return(binaryRL.res$ll)
+}
+
+original_obj_func <- obj_func
+compiled_obj_func <- compiler::cmpfun(obj_func)
+
+microbenchmark::microbenchmark(
+  "original" = { original_obj_func() },
+  "compiled" = { compiled_obj_func() },
+  times = 50
+)
+```
+
+```{r}
+obj_func <- function(params){
+  binaryRL.res <- binaryRL::run_m(
+    mode = "replay",
+    policy = "on",
+    
+    data = binaryRL::Mason_2024_Exp2,
+    id = 1,
+    eta = c(params[1], params[2]),
+    n_params = 2, 
+    n_trials = 360,
+    
+    initial_value = 100,
+    threshold = 1,
+    epsilon = NA,
+    lambda = 0.1,
+    pi = 0.01,
+    tau = 0.5
+  )
+  
+  return(binaryRL.res$ll)
+}
+
+obj_func <- compiler::cmpfun(obj_func)
+
+result <- GA::ga(
+  type = "real-valued",
+  fitness = function(x) -obj_func(x),
+  popSize = 50,
+  lower = c(0, 0),
+  upper = c(1, 1),
+  maxiter = 10,
+  monitor = TRUE,
+  parallel = TRUE
+)
+```
+
+
+
+

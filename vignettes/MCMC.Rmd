@@ -42,13 +42,8 @@ Data <- list(
   df = test_data,
   # A vector of unique subject IDs to loop over during modeling
   id = unique(test_data$Subject),
-  # A list of prior distributions for the parameters
-  priors = list(
-    # A uniform prior for eta, constraining it between 0 and 1
-    eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) },
-    # An exponential prior for tau, with a rate of 1
-    tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
-  ),
+  # Need to constrain the free parameters with Laplace
+  priors = NULL,
   # The number of free parameters per subject (eta and tau)
   n_params = 2,
   # The total number of trials per subject in the experiment
@@ -89,8 +84,17 @@ Model <- function(parm, Data) {
   # Loop through each subject ID provided in the Data list
   for (i in as.vector(Data$id)) {
     
-    eta <- parm[(i - 1) * 2 + 1]
-    tau <- parm[(i - 1) * 2 + 2]
+    # read unconstrained params
+    eta_unconstrained <- parm[(i - 1) * 2 + 1]
+    tau_unconstrained <- parm[(i - 1) * 2 + 2]
+    
+    # convert to constrained params
+    eta <- stats::plogis(eta_unconstrained)
+    tau <- exp(tau_unconstrained)
+    
+    # pass constrained params to the input vector
+    parm[(i - 1) * 2 + 1] <- eta
+    parm[(i - 1) * 2 + 2] <- tau
     
     res <- binaryRL::run_m(
       data = Data$df,
@@ -107,7 +111,9 @@ Model <- function(parm, Data) {
     # Add the log-likelihood of the current subject to the total
     sum_LL <- sum_LL + res$ll
     # Add the log-posterior of the current subject to the total
-    sum_LP <- sum_LP + res$lpo
+    LP_eta <- stats::dnorm(x = eta, mean = 0.5, sd = 0.15, log = TRUE)
+    LP_tau <- stats::dexp(x = tau, rate = 1, log = TRUE)
+    sum_LP <- sum_LL + LP_eta + LP_tau
   }
   
   # Return a list in the format required by LaplacesDemon
@@ -133,12 +139,12 @@ Model(parm = Initial.Values, Data = Data)
 ## Run LaplacesDemon
 
 ```{r eval=FALSE}
-Fit <- LaplacesDemon::LaplacesDemon.hpc(
+Fit <- LaplacesDemon::LaplacesDemon(
   Model = Model,
   Data = Data,
   Packages = "binaryRL",
   # Set initial values (# of free params * # of subjects)
-  Initial.Values = stats::runif(length(Data$id) * 2),
+  Initial.Values = stats::runif(length(Data$id) * Data$n_params),
   # The relationship between `Algorithm` and `Specs` is special
   # Refer to the LaplacesDemon help documents for details
   Algorithm = "MWG", Specs = list(B = NULL),
@@ -146,24 +152,23 @@ Fit <- LaplacesDemon::LaplacesDemon.hpc(
   Iterations = 10,
   # The thinning interval. A value of n keeps one sample every n-th iteration.
   Thinning = 1,
-  # The number of parallel chains to run (Chains == CPUs).
-  Chains = 16, 
-  # The number of CPU cores to use (CPUs == Chains).
-  CPUs = 16
+  # Logs for every ? iterations
+  Status = 1
 )
 
-print(Fit, Burnin = 1)
+LaplacesDemon::Consort(Fit)
 ```
 
 ```
-[[1]]
+#############################################################
+# Consort with Laplace's Demon                              #
+#############################################################
 Call:
-LaplacesDemon(Model = Model, Data = Data, Initial.Values = Initial.Values[x, 
-    ], Covar = Covar, Iterations = Iterations, Status = Status, 
-    Thinning = Thinning, Algorithm = Algorithm, Specs = Specs, 
-    Debug = Debug, LogFile = paste(LogFile, ".", x, sep = ""))
+LaplacesDemon::LaplacesDemon(Model = Model, Data = Data, Initial.Values = stats::runif(length(Data$id) * 
+    Data$n_params), Iterations = 10, Status = 1, Thinning = 1, 
+    Algorithm = "MWG", Specs = list(B = NULL), Packages = "binaryRL")
 
-Acceptance Rate: 0.06364
+Acceptance Rate: 0
 Algorithm: Metropolis-within-Gibbs
 Covariance Matrix: (NOT SHOWN HERE; diagonal shown instead)
     [1,1]     [2,1]     [1,2]     [2,2]     [1,3]     [2,3]     [1,4]     [2,4]     [1,5]     [2,5] 
@@ -171,16 +176,17 @@ Covariance Matrix: (NOT SHOWN HERE; diagonal shown instead)
 
 Covariance (Diagonal) History: (NOT SHOWN HERE)
 Deviance Information Criterion (DIC):
-          All Stationary
-Dbar 2275.985   2275.985
-pD     74.704     74.704
-DIC  2350.690   2350.690
+        All Stationary
+Dbar 3284.1     3284.1
+pD      0.0        0.0
+DIC  3284.1     3284.1
 Initial Values:
- [1] 0.09859165 0.69300856 0.75132556 0.99870695 0.34549739 0.29300554 0.66773598 0.59801099 0.70105000 0.10186876
+ [1] 0.09859165 0.69300856 0.75132556 0.99870695 0.34549739 0.29300554 0.66773598 0.59801099 0.70105000
+[10] 0.10186876
 
 Iterations: 11
 Log(Marginal Likelihood): NA
-Minutes of run-time: 3.49
+Minutes of run-time: 1.34
 Model: (NOT SHOWN HERE)
 Monitor: (NOT SHOWN HERE)
 Parameters (Number of): 10
@@ -190,7 +196,7 @@ Recommended Burn-In of Thinned Samples: 0
 Recommended Burn-In of Un-thinned Samples: 0
 Recommended Thinning: 10
 Specs: (NOT SHOWN HERE)
-Status is displayed every 10 iterations
+Status is displayed every 1 iterations
 Summary1: (SHOWN BELOW)
 Summary2: (SHOWN BELOW)
 Thinned Samples: 11
@@ -198,34 +204,41 @@ Thinning: 1
 
 
 Summary of All Samples
-                  Mean         SD       MCSE          ESS            LB        Median            UB
-[1,1]     9.859165e-02  0.0000000 0.00000000 2.220446e-16  9.859165e-02  9.859165e-02  9.859165e-02
-[2,1]     5.200845e-01  0.0000000 0.00000000 2.220446e-16  5.200845e-01  5.200845e-01  5.200845e-01
-[1,2]     7.513256e-01  0.0000000 0.00000000 2.220446e-16  7.513256e-01  7.513256e-01  7.513256e-01
-[2,2]     5.810195e-01  0.0000000 0.00000000 2.220446e-16  5.810195e-01  5.810195e-01  5.810195e-01
-[1,3]     7.691418e-01  0.0000000 0.00000000 2.220446e-16  7.691418e-01  7.691418e-01  7.691418e-01
-[2,3]     8.243759e-01  0.1762356 0.05020148 1.100000e+01  4.391324e-01  8.775129e-01  8.775129e-01
-[1,4]     9.930241e-01  0.0000000 0.00000000 2.220446e-16  9.930241e-01  9.930241e-01  9.930241e-01
-[2,4]     9.920084e-01  0.1306741 0.03722310 1.100000e+01  7.063603e-01  1.031408e+00  1.031408e+00
-[1,5]     7.010500e-01  0.0000000 0.00000000 2.220446e-16  7.010500e-01  7.010500e-01  7.010500e-01
-[2,5]     6.699087e-01  0.1883975 0.05366585 1.100000e+01  2.580797e-01  7.267127e-01  7.267127e-01
-Deviance  2.275985e+03 12.2232699 3.48185156 1.100000e+01  2.272300e+03  2.272300e+03  2.302705e+03
-LP       -1.141580e+03  5.6163277 1.59983535 1.100000e+01 -1.153857e+03 -1.139887e+03 -1.139887e+03
+                  Mean SD MCSE          ESS            LB        Median            UB
+[1,1]        0.5246280  0    0 2.220446e-16     0.5246280     0.5246280     0.5246280
+[2,1]        1.9997228  0    0 2.220446e-16     1.9997228     1.9997228     1.9997228
+[1,2]        0.6794675  0    0 2.220446e-16     0.6794675     0.6794675     0.6794675
+[2,2]        2.7147692  0    0 2.220446e-16     2.7147692     2.7147692     2.7147692
+[1,3]        0.5855253  0    0 2.220446e-16     0.5855253     0.5855253     0.5855253
+[2,3]        1.3404502  0    0 2.220446e-16     1.3404502     1.3404502     1.3404502
+[1,4]        0.6609960  0    0 2.220446e-16     0.6609960     0.6609960     0.6609960
+[2,4]        1.8184982  0    0 2.220446e-16     1.8184982     1.8184982     1.8184982
+[1,5]        0.6684205  0    0 2.220446e-16     0.6684205     0.6684205     0.6684205
+[2,5]        1.1072381  0    0 2.220446e-16     1.1072381     1.1072381     1.1072381
+Deviance  3284.1000000  0    0 2.220446e-16  3284.1000000  3284.1000000  3284.1000000
+LP       -1642.8094006  0    0 2.220446e-16 -1642.8094006 -1642.8094006 -1642.8094006
 
 
 Summary of Stationary Samples
-                  Mean         SD       MCSE          ESS            LB        Median            UB
-[1,1]     9.859165e-02  0.0000000 0.00000000 2.220446e-16  9.859165e-02  9.859165e-02  9.859165e-02
-[2,1]     5.200845e-01  0.0000000 0.00000000 2.220446e-16  5.200845e-01  5.200845e-01  5.200845e-01
-[1,2]     7.513256e-01  0.0000000 0.00000000 2.220446e-16  7.513256e-01  7.513256e-01  7.513256e-01
-[2,2]     5.810195e-01  0.0000000 0.00000000 2.220446e-16  5.810195e-01  5.810195e-01  5.810195e-01
-[1,3]     7.691418e-01  0.0000000 0.00000000 2.220446e-16  7.691418e-01  7.691418e-01  7.691418e-01
-[2,3]     8.243759e-01  0.1762356 0.05020148 1.100000e+01  4.391324e-01  8.775129e-01  8.775129e-01
-[1,4]     9.930241e-01  0.0000000 0.00000000 2.220446e-16  9.930241e-01  9.930241e-01  9.930241e-01
-[2,4]     9.920084e-01  0.1306741 0.03722310 1.100000e+01  7.063603e-01  1.031408e+00  1.031408e+00
-[1,5]     7.010500e-01  0.0000000 0.00000000 2.220446e-16  7.010500e-01  7.010500e-01  7.010500e-01
-[2,5]     6.699087e-01  0.1883975 0.05366585 1.100000e+01  2.580797e-01  7.267127e-01  7.267127e-01
-Deviance  2.275985e+03 12.2232699 3.48185156 1.100000e+01  2.272300e+03  2.272300e+03  2.302705e+03
-LP       -1.141580e+03  5.6163277 1.59983535 1.100000e+01 -1.153857e+03 -1.139887e+03 -1.139887e+03
-```
+                  Mean SD MCSE          ESS            LB        Median            UB
+[1,1]        0.5246280  0    0 2.220446e-16     0.5246280     0.5246280     0.5246280
+[2,1]        1.9997228  0    0 2.220446e-16     1.9997228     1.9997228     1.9997228
+[1,2]        0.6794675  0    0 2.220446e-16     0.6794675     0.6794675     0.6794675
+[2,2]        2.7147692  0    0 2.220446e-16     2.7147692     2.7147692     2.7147692
+[1,3]        0.5855253  0    0 2.220446e-16     0.5855253     0.5855253     0.5855253
+[2,3]        1.3404502  0    0 2.220446e-16     1.3404502     1.3404502     1.3404502
+[1,4]        0.6609960  0    0 2.220446e-16     0.6609960     0.6609960     0.6609960
+[2,4]        1.8184982  0    0 2.220446e-16     1.8184982     1.8184982     1.8184982
+[1,5]        0.6684205  0    0 2.220446e-16     0.6684205     0.6684205     0.6684205
+[2,5]        1.1072381  0    0 2.220446e-16     1.1072381     1.1072381     1.1072381
+Deviance  3284.1000000  0    0 2.220446e-16  3284.1000000  3284.1000000  3284.1000000
+LP       -1642.8094006  0    0 2.220446e-16 -1642.8094006 -1642.8094006 -1642.8094006
 
+WARNING: Acceptance Rate = 0
+
+Fit <- LaplacesDemon(Model, Data=Data, Initial.Values,
+     Covar=NULL, Iterations=100000, Status=1000, Thinning=100,
+     Algorithm="AMM", Specs=list(Adaptive=500, B=NULL, Periodicity=100, w=0.05))
+Error in LaplacesDemon::Consort(Fit) :
+Try the above code before consorting again.
+```

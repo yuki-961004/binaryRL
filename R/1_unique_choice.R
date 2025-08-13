@@ -8,6 +8,8 @@ unique_choice <- function(data, L_choice = "L_choice", R_choice = "R_choice"){
   
   # 记录所有选项
   options <- sort(unique(c(unique_L, unique_R)))
+  # 转换成向量
+  options <- as.vector(options)
   
   # 把所有备选项以列名创建, 方便存放价值更新
   for (name in options) {

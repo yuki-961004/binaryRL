@@ -491,6 +491,9 @@ fit_p <- function(
   
   for (i in 1:length(fit_model)){
     
+    # 编译对象函数
+    obj_func <- compiler::cmpfun(fit_model[[i]])
+    
     message(paste0(
       "\n", 
       "Fitting Model: ", model_name[i], 
@@ -535,7 +538,7 @@ fit_p <- function(
             n_trials = n_trials,
             n_params = n_params,
             
-            obj_func = fit_model[[i]],
+            obj_func = obj_func,
             lower = lower[[i]],
             upper = upper[[i]],
             priors = priors[[i]],
@@ -639,7 +642,7 @@ fit_p <- function(
                 n_trials = n_trials,
                 n_params = n_params,
                 
-                obj_func = fit_model[[i]],
+                obj_func = obj_func,
                 lower = lower[[i]],
                 upper = upper[[i]],
                 priors = params_priors[[i]],

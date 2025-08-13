@@ -16,106 +16,65 @@ model_fit <- function(
   }
   
   # ACC & LL
-  for (i in 1:nrow(data)){
-    
-    # 记录人类的选择方向
-    if (
-      # 人类选了左边
-      data$Sub_Choose[i] == data[[L_choice]][i] & 
-      data$Sub_Choose[i] != data[[R_choice]][i]
-    ) {
-      data$L_dir[i] <- 1
-      data$R_dir[i] <- 0
-    } 
-    else if (
-      # 人类选了右边
-      data$Sub_Choose[i] != data[[L_choice]][i] & 
-      data$Sub_Choose[i] == data[[R_choice]][i]
-    ) {
-      data$L_dir[i] <- 0
-      data$R_dir[i] <- 1
-    } 
-    else if (
-      # 左右选项相等, 则这次不记录
-      data$Sub_Choose[i] == data[[L_choice]][i] & 
-      data$Sub_Choose[i] == data[[R_choice]][i]
-    ) {
-      data$L_dir[i] <- 0
-      data$R_dir[i] <- 0
-    } 
-    else {
-      data$L_dir[i] <- "ERROR"
-      data$R_dir[i] <- "ERROR"
-    }
-    
-    # 计算ACC
-    if (data$Sub_Choose[i] == data$Rob_Choose[i]) {
-      data$ACC[i] <- 1
-    } 
-    else if (data$Sub_Choose[i] != data$Rob_Choose[i]) {
-      data$ACC[i] <- 0
-    } 
-    else {
-      data$ACC[i] <- "ERROR"
-    }
-    
-############################## [loss function] ################################# 
-    
-    # 计算左右选项的log-likelihood
-    data$L_logl[i] <- loss_func(
-      i = i,
-      L_freq = data$L_freq[i],
-      R_freq = data$R_freq[i],
-      L_pick = data$L_pick[i],
-      R_pick = data$R_pick[i],
-      L_value = data$L_value[i],
-      R_value = data$R_value[i],
-      L_dir = data$L_dir[i],
-      R_dir = data$R_dir[i],
-      L_prob = data$L_prob[i],
-      R_prob = data$R_prob[i],
-      var1 = data[[var1]][i],
-      var2 = data[[var2]][i],
-      
-      try = data$Try[i],
-      LR = "L",
-      
-      value = data$V_value[i],
-      utility = data$R_utility[i],
-      reward = data$Reward[i],
-      occurrence = data$Occurrence[i],
-      
-      alpha = alpha,
-      beta = beta
-    )
-    
-    data$R_logl[i] <- loss_func(
-      i = i,
-      L_freq = data$L_freq[i],
-      R_freq = data$R_freq[i],
-      L_pick = data$L_pick[i],
-      R_pick = data$R_pick[i],
-      L_value = data$L_value[i],
-      R_value = data$R_value[i],
-      L_dir = data$L_dir[i],
-      R_dir = data$R_dir[i],
-      L_prob = data$L_prob[i],
-      R_prob = data$R_prob[i],
-      var1 = data[[var1]][i],
-      var2 = data[[var2]][i],
-      
-      try = data$Try[i],
-      LR = "R",
-      
-      value = data$V_value[i],
-      utility = data$R_utility[i],
-      reward = data$Reward[i],
-      occurrence = data$Occurrence[i],
-      
-      alpha = alpha,
-      beta = beta
-    )
-  }
+  # 记录人类选了左还是右
+  chose_L <- (data$Sub_Choose == data[[L_choice]])
+  chose_R <- (data$Sub_Choose == data[[R_choice]])
+  
+  # 如果选了左, 就是左 = 1, 右 = 0, 反之亦然
+  data$L_dir <- as.integer(chose_L & !chose_R)
+  data$R_dir <- as.integer(chose_R & !chose_L)
+  
+  # 如果人类选择和机器人选择一样, 这ACC为1, 否则为0
+  data$ACC <- as.integer(data$Sub_Choose == data$Rob_Choose)
+  
+  # 向量型计算, 重点在于i = 1:nrow(data), 避免了循环
+  data$L_logl <- loss_func(
+    i = 1:nrow(data), 
+    L_freq = data$L_freq,
+    R_freq = data$R_freq,
+    L_pick = data$L_pick,
+    R_pick = data$R_pick,
+    L_value = data$L_value,
+    R_value = data$R_value,
+    L_dir = data$L_dir,
+    R_dir = data$R_dir,
+    L_prob = data$L_prob,
+    R_prob = data$R_prob,
+    var1 = data[[var1]],
+    var2 = data[[var2]],
+    try = data$Try,
+    LR = "L", 
+    value = data$V_value,
+    utility = data$R_utility,
+    reward = data$Reward,
+    occurrence = data$Occurrence,
+    alpha = alpha,
+    beta = beta
+  )
+  
+  data$R_logl <- loss_func(
+    i = 1:nrow(data),
+    L_freq = data$L_freq,
+    R_freq = data$R_freq,
+    L_pick = data$L_pick,
+    R_pick = data$R_pick,
+    L_value = data$L_value,
+    R_value = data$R_value,
+    L_dir = data$L_dir,
+    R_dir = data$R_dir,
+    L_prob = data$L_prob,
+    R_prob = data$R_prob,
+    var1 = data[[var1]],
+    var2 = data[[var2]],
+    try = data$Try,
+    LR = "R", 
+    value = data$V_value,
+    utility = data$R_utility,
+    reward = data$Reward,
+    occurrence = data$Occurrence,
+    alpha = alpha,
+    beta = beta
+  )
 
   return(data)
 }

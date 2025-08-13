@@ -27,9 +27,10 @@ BugReports: https://github.com/yuki-961004/binaryRL/issues
 License: GPL-3
 Encoding: UTF-8
 LazyData: TRUE
+ByteCompile: TRUE
 RoxygenNote: 7.3.2
 Depends: R (>= 4.0.0)
-Imports: future, doFuture, foreach, doRNG, progressr
+Imports: compiler, future, doFuture, foreach, doRNG, progressr
 Suggests: 
   stats,
   GenSA, 

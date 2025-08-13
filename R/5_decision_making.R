@@ -28,6 +28,9 @@ decision_making <- function(
   # 用于记录每个选项被选择次数的计数器
   pick_counts <- stats::setNames(object = rep(0L, length(options)), nm = options)
   
+  # 记录被选过的选项的名字
+  chosen <- c()
+  
 ########################### [update row by row] ################################  
   
   # 逐行更新Value
@@ -57,9 +60,6 @@ decision_making <- function(
     data$R_value[i] <- data[[R_name]][i - 1]
     
 ################################## [action] ####################################  
-    
-    # 查询此次选择时, 已经选过哪些了
-    chosen <- unique(data[[rob_choose]])
     
     # 设置随机种子
     set.seed(seed = seed + i)
@@ -170,9 +170,7 @@ decision_making <- function(
 ############################### [ PASS VALUE ] #################################  
     
     # 查询列名等于选项名的列记录该选项之前的价值
-    for (name in options) {
-      data[[name]][i] <- data[[name]][i - 1]
-    }
+    data[i, options] <- data[i - 1, options]
     
 ############################# [ action select ] ################################    
     
@@ -191,6 +189,12 @@ decision_making <- function(
 
     # 对被选的选项, 在计数器上+1
     pick_counts[data[[rob_choose]][i]] <- pick_counts[data[[rob_choose]][i]] + 1
+    
+    # 只有chosen中还没有填满所有options才执行
+    if (all(options %in% chosen)) {
+      # 在chosen这个向量中, 加上此次机器人的选择
+      chosen <- c(chosen, data[[rob_choose]][i])
+    }
     
 ################################ [occurrence] ##################################   
     
