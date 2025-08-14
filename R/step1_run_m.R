@@ -564,12 +564,14 @@ run_m <- function(
     policy = policy,
     data = step4,
     options = step1[["options"]],
+    seed = seed,
     sub_choose = sub_choose, rob_choose = rob_choose,
     L_choice = L_choice, R_choice = R_choice,
     L_reward = L_reward, R_reward = R_reward,
+    var1 = var1, var2 = var2,
     
-    threshold = threshold,
     initial_value = initial_value,
+    threshold = threshold,
     lapse = lapse,
     
     alpha = alpha,

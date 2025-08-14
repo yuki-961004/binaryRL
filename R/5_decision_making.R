@@ -3,8 +3,11 @@ decision_making <- function(
     policy = "off",
     data, 
     options,
-    sub_choose, rob_choose,
     seed = 123, 
+    sub_choose, rob_choose,
+    L_choice = "L_choice", R_choice = "R_choice",
+    L_reward = "L_reward", R_reward = "R_reward", 
+    var1 = NA, var2 = NA,
     
     initial_value = NA,
     threshold = 1,
@@ -16,11 +19,7 @@ decision_making <- function(
     bias_func = func_pi,
     prob_func = func_tau,
     util_func = func_gamma,
-    rate_func = func_eta,
-    
-    L_choice = "L_choice", R_choice = "R_choice",
-    L_reward = "L_reward", R_reward = "R_reward", 
-    var1 = NA, var2 = NA
+    rate_func = func_eta
 ){
   # 用于记录每个选项作为刺激呈现次数的计数器
   stim_freq <- stats::setNames(object = rep(0L, length(options)), nm = options)
@@ -39,11 +38,10 @@ decision_making <- function(
     # 记录此时L和R的名字
     L_name <- data[[L_choice]][i]
     R_name <- data[[R_choice]][i]
+    shown_name <- unique(c(L_name, R_name))
     
-    # 在计数器中给这两个刺激的呈现次数 +1
-    stim_freq[unique(c(L_name, R_name))] <- 
-      # 仅针对不重复的情况
-      stim_freq[unique(c(L_name, R_name))] + 1
+    # 在计数器中给这两个刺激的呈现次数 +1, 仅针对不重复的情况
+    stim_freq[shown_name] <- stim_freq[shown_name] + 1
     
     # 查询此时左选项已经出现过几次了
     data$L_freq[i] <- stim_freq[L_name]
@@ -190,9 +188,9 @@ decision_making <- function(
     # 对被选的选项, 在计数器上+1
     pick_counts[data[[rob_choose]][i]] <- pick_counts[data[[rob_choose]][i]] + 1
     
-    # 只有chosen中还没有填满所有options才执行
-    if (all(options %in% chosen)) {
-      # 在chosen这个向量中, 加上此次机器人的选择
+    # 只有当 chosen 中还没有包含 options 的全部元素时, 才执行
+    if (!all(options %in% chosen)) {
+      # 在 chosen 这个向量中, 加上此次机器人的选择
       chosen <- c(chosen, data[[rob_choose]][i])
     }
     

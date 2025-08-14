@@ -213,8 +213,8 @@ function will return negative infinity.</p>
 <span>    <span class="va">tau</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">tau_unconstrained</span><span class="op">)</span></span>
 <span>    </span>
 <span>    <span class="co"># pass constrained params to the input vector</span></span>
-<span>    <span class="va">parm</span><span class="op">[</span><span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">eta</span></span>
-<span>    <span class="va">parm</span><span class="op">[</span><span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">tau</span></span>
+<span>    <span class="co">#parm[(i - 1) * 2 + 1] &lt;- eta</span></span>
+<span>    <span class="co">#parm[(i - 1) * 2 + 2] &lt;- tau</span></span>
 <span>    </span>
 <span>    <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../reference/run_m.html">run_m</a></span><span class="op">(</span></span>
 <span>      data <span class="op">=</span> <span class="va">Data</span><span class="op">$</span><span class="va">df</span>,</span>
@@ -233,15 +233,17 @@ function will return negative infinity.</p>
 <span>    <span class="co"># Add the log-posterior of the current subject to the total</span></span>
 <span>    <span class="va">LP_eta</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">dnorm</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">eta</span>, mean <span class="op">=</span> <span class="fl">0.5</span>, sd <span class="op">=</span> <span class="fl">0.15</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>    <span class="va">LP_tau</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">dexp</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tau</span>, rate <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>    <span class="va">sum_LP</span> <span class="op">&lt;-</span> <span class="va">sum_LL</span> <span class="op">+</span> <span class="va">LP_eta</span> <span class="op">+</span> <span class="va">LP_tau</span></span>
+<span>    <span class="va">sum_LP</span> <span class="op">&lt;-</span> <span class="va">sum_LP</span> <span class="op">+</span> <span class="va">LP_eta</span> <span class="op">+</span> <span class="va">LP_tau</span></span>
 <span>  <span class="op">}</span></span>
+<span>  </span>
+<span>  <span class="va">LP</span> <span class="op">&lt;-</span> <span class="va">sum_LL</span> <span class="op">+</span> <span class="va">sum_LP</span></span>
 <span>  </span>
 <span>  <span class="co"># Return a list in the format required by LaplacesDemon</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      LP <span class="op">=</span> <span class="va">sum_LP</span>,</span>
+<span>      LP <span class="op">=</span> <span class="va">LP</span>,</span>
 <span>      Dev <span class="op">=</span> <span class="op">-</span><span class="fl">2</span> <span class="op">*</span> <span class="va">sum_LL</span>,</span>
-<span>      Monitor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>LP <span class="op">=</span> <span class="va">sum_LP</span><span class="op">)</span>,</span>
+<span>      Monitor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>LP <span class="op">=</span> <span class="va">LP</span><span class="op">)</span>,</span>
 <span>      yhat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>      parm <span class="op">=</span> <span class="va">parm</span></span>
 <span>    <span class="op">)</span></span>
@@ -255,21 +257,21 @@ function will return negative infinity.</p>
 <code class="sourceCode R"><span><span class="va">Initial.Values</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">Data</span><span class="op">$</span><span class="va">N</span> <span class="op">*</span> <span class="va">Data</span><span class="op">$</span><span class="va">n_params</span><span class="op">)</span></span>
 <span><span class="fu">Model</span><span class="op">(</span>parm <span class="op">=</span> <span class="va">Initial.Values</span>, Data <span class="op">=</span> <span class="va">Data</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $LP</span></span>
-<span><span class="co">## [1] -1432.751</span></span>
+<span><span class="co">## [1] -1738.974</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $Dev</span></span>
-<span><span class="co">## [1] 2861.76</span></span>
+<span><span class="co">## [1] 3467.6</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $Monitor</span></span>
 <span><span class="co">##        LP </span></span>
-<span><span class="co">## -1432.751 </span></span>
+<span><span class="co">## -1738.974 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $yhat</span></span>
 <span><span class="co">## NULL</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $parm</span></span>
-<span><span class="co">##  [1] 0.5201766 2.3032773 0.6458304 1.1702395 0.5018499 1.5942342 0.6219369</span></span>
-<span><span class="co">##  [8] 1.3361165 0.6754374 2.1652190</span></span></code></pre>
+<span><span class="co">##  [1] 0.080750138 0.834333037 0.600760886 0.157208442 0.007399441 0.466393497</span></span>
+<span><span class="co">##  [7] 0.497777389 0.289767245 0.732881987 0.772521511</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -285,6 +287,7 @@ function will return negative infinity.</p>
 <span>  <span class="co"># The relationship between `Algorithm` and `Specs` is special</span></span>
 <span>  <span class="co"># Refer to the LaplacesDemon help documents for details</span></span>
 <span>  Algorithm <span class="op">=</span> <span class="st">"MWG"</span>, Specs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>B <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,</span>
+<span>  <span class="co">#Algorithm = "NUTS", Specs = list(A = 5, delta = 0.6, epsilon = NULL, Lmax = Inf),</span></span>
 <span>  <span class="co"># The total number of iterations to perform in each chain.</span></span>
 <span>  Iterations <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  <span class="co"># The thinning interval. A value of n keeps one sample every n-th iteration.</span></span>
