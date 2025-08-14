@@ -4,6 +4,7 @@ decision_making <- function(
     data, 
     options,
     seed = 123, 
+    
     sub_choose, rob_choose,
     L_choice = "L_choice", R_choice = "R_choice",
     L_reward = "L_reward", R_reward = "R_reward", 
@@ -266,7 +267,7 @@ decision_making <- function(
 ############################ [1st Learning Rate] ############################### 
     
     # 如果没有设置初始值, 且是第一次选这个选项
-    if (is.na(initial_value) & !(choose %in% chosen)) {
+    if (is.na(initial_value) & data$Occurrence[[i]] == 1) {
       # 则此次学习率为1
       data$eta[i] <- 1
       # 以第一次见到的价值作为初始值

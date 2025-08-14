@@ -257,14 +257,14 @@ function will return negative infinity.</p>
 <code class="sourceCode R"><span><span class="va">Initial.Values</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">Data</span><span class="op">$</span><span class="va">N</span> <span class="op">*</span> <span class="va">Data</span><span class="op">$</span><span class="va">n_params</span><span class="op">)</span></span>
 <span><span class="fu">Model</span><span class="op">(</span>parm <span class="op">=</span> <span class="va">Initial.Values</span>, Data <span class="op">=</span> <span class="va">Data</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $LP</span></span>
-<span><span class="co">## [1] -1738.974</span></span>
+<span><span class="co">## [1] -1635.234</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $Dev</span></span>
-<span><span class="co">## [1] 3467.6</span></span>
+<span><span class="co">## [1] 3260.12</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $Monitor</span></span>
 <span><span class="co">##        LP </span></span>
-<span><span class="co">## -1738.974 </span></span>
+<span><span class="co">## -1635.234 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $yhat</span></span>
 <span><span class="co">## NULL</span></span>
@@ -305,7 +305,7 @@ LaplacesDemon::LaplacesDemon(Model = Model, Data = Data, Initial.Values = stats:
     Data$n_params), Iterations = 10, Status = 1, Thinning = 1, 
     Algorithm = "MWG", Specs = list(B = NULL), Packages = "binaryRL")
 
-Acceptance Rate: 0
+Acceptance Rate: 0.29091
 Algorithm: Metropolis-within-Gibbs
 Covariance Matrix: (NOT SHOWN HERE; diagonal shown instead)
     [1,1]     [2,1]     [1,2]     [2,2]     [1,3]     [2,3]     [1,4]     [2,4]     [1,5]     [2,5] 
@@ -313,17 +313,16 @@ Covariance Matrix: (NOT SHOWN HERE; diagonal shown instead)
 
 Covariance (Diagonal) History: (NOT SHOWN HERE)
 Deviance Information Criterion (DIC):
-        All Stationary
-Dbar 3284.1     3284.1
-pD      0.0        0.0
-DIC  3284.1     3284.1
+          All Stationary
+Dbar 3355.960   3355.960
+pD    378.877    378.877
+DIC  3734.837   3734.837
 Initial Values:
- [1] 0.09859165 0.69300856 0.75132556 0.99870695 0.34549739 0.29300554 0.66773598 0.59801099 0.70105000
-[10] 0.10186876
+ [1] 0.09859165 0.69300856 0.75132556 0.99870695 0.34549739 0.29300554 0.66773598 0.59801099 0.70105000 0.10186876
 
 Iterations: 11
 Log(Marginal Likelihood): NA
-Minutes of run-time: 1.34
+Minutes of run-time: 1.39
 Model: (NOT SHOWN HERE)
 Monitor: (NOT SHOWN HERE)
 Parameters (Number of): 10
@@ -341,43 +340,59 @@ Thinning: 1
 
 
 Summary of All Samples
-                  Mean SD MCSE          ESS            LB        Median            UB
-[1,1]        0.5246280  0    0 2.220446e-16     0.5246280     0.5246280     0.5246280
-[2,1]        1.9997228  0    0 2.220446e-16     1.9997228     1.9997228     1.9997228
-[1,2]        0.6794675  0    0 2.220446e-16     0.6794675     0.6794675     0.6794675
-[2,2]        2.7147692  0    0 2.220446e-16     2.7147692     2.7147692     2.7147692
-[1,3]        0.5855253  0    0 2.220446e-16     0.5855253     0.5855253     0.5855253
-[2,3]        1.3404502  0    0 2.220446e-16     1.3404502     1.3404502     1.3404502
-[1,4]        0.6609960  0    0 2.220446e-16     0.6609960     0.6609960     0.6609960
-[2,4]        1.8184982  0    0 2.220446e-16     1.8184982     1.8184982     1.8184982
-[1,5]        0.6684205  0    0 2.220446e-16     0.6684205     0.6684205     0.6684205
-[2,5]        1.1072381  0    0 2.220446e-16     1.1072381     1.1072381     1.1072381
-Deviance  3284.1000000  0    0 2.220446e-16  3284.1000000  3284.1000000  3284.1000000
-LP       -1642.8094006  0    0 2.220446e-16 -1642.8094006 -1642.8094006 -1642.8094006
+                  Mean          SD        MCSE          ESS            LB        Median            UB
+[1,1]    -6.326389e-01  0.00000000  0.00000000 2.220446e-16 -6.326389e-01 -6.326389e-01    -0.6326389
+[2,1]     6.930086e-01  0.00000000  0.00000000 2.220446e-16  6.930086e-01  6.930086e-01     0.6930086
+[1,2]    -7.464188e-03  0.19969803  0.09095104 1.100000e+01 -9.168507e-02 -9.168507e-02     0.4487322
+[2,2]     9.987070e-01  0.00000000  0.00000000 2.220446e-16  9.987070e-01  9.987070e-01     0.9987070
+[1,3]     6.445531e-01  0.00000000  0.00000000 2.220446e-16  6.445531e-01  6.445531e-01     0.6445531
+[2,3]    -5.424715e-01  0.31279239  0.14245907 1.100000e+01 -6.743889e-01 -6.743889e-01     0.1720812
+[1,4]     6.677360e-01  0.00000000  0.00000000 2.220446e-16  6.677360e-01  6.677360e-01     0.6677360
+[2,4]    -2.994002e-01  0.30341356  0.22470223 2.220446e-16 -7.339427e-01 -2.994002e-01     0.1351423
+[1,5]     7.705329e-01  0.04985889  0.03392331 3.014025e+00  6.831834e-01  8.100874e-01     0.8100874
+[2,5]     4.602979e-01  0.59291341  0.43910024 2.220446e-16 -3.888602e-01  4.602979e-01     1.3094560
+Deviance  3.355960e+03 27.52734495 14.79642686 3.718372e+00  3.330060e+03  3.349300e+03  3415.7700000
+LP       -1.683476e+03 13.59142083  7.03639451 3.903581e+00 -1.713494e+03 -1.679777e+03 -1671.8078968
 
 
 Summary of Stationary Samples
-                  Mean SD MCSE          ESS            LB        Median            UB
-[1,1]        0.5246280  0    0 2.220446e-16     0.5246280     0.5246280     0.5246280
-[2,1]        1.9997228  0    0 2.220446e-16     1.9997228     1.9997228     1.9997228
-[1,2]        0.6794675  0    0 2.220446e-16     0.6794675     0.6794675     0.6794675
-[2,2]        2.7147692  0    0 2.220446e-16     2.7147692     2.7147692     2.7147692
-[1,3]        0.5855253  0    0 2.220446e-16     0.5855253     0.5855253     0.5855253
-[2,3]        1.3404502  0    0 2.220446e-16     1.3404502     1.3404502     1.3404502
-[1,4]        0.6609960  0    0 2.220446e-16     0.6609960     0.6609960     0.6609960
-[2,4]        1.8184982  0    0 2.220446e-16     1.8184982     1.8184982     1.8184982
-[1,5]        0.6684205  0    0 2.220446e-16     0.6684205     0.6684205     0.6684205
-[2,5]        1.1072381  0    0 2.220446e-16     1.1072381     1.1072381     1.1072381
-Deviance  3284.1000000  0    0 2.220446e-16  3284.1000000  3284.1000000  3284.1000000
-LP       -1642.8094006  0    0 2.220446e-16 -1642.8094006 -1642.8094006 -1642.8094006
+                  Mean          SD        MCSE          ESS            LB        Median            UB
+[1,1]    -6.326389e-01  0.00000000  0.00000000 2.220446e-16 -6.326389e-01 -6.326389e-01    -0.6326389
+[2,1]     6.930086e-01  0.00000000  0.00000000 2.220446e-16  6.930086e-01  6.930086e-01     0.6930086
+[1,2]    -7.464188e-03  0.19969803  0.09095104 1.100000e+01 -9.168507e-02 -9.168507e-02     0.4487322
+[2,2]     9.987070e-01  0.00000000  0.00000000 2.220446e-16  9.987070e-01  9.987070e-01     0.9987070
+[1,3]     6.445531e-01  0.00000000  0.00000000 2.220446e-16  6.445531e-01  6.445531e-01     0.6445531
+[2,3]    -5.424715e-01  0.31279239  0.14245907 1.100000e+01 -6.743889e-01 -6.743889e-01     0.1720812
+[1,4]     6.677360e-01  0.00000000  0.00000000 2.220446e-16  6.677360e-01  6.677360e-01     0.6677360
+[2,4]    -2.994002e-01  0.30341356  0.22470223 2.220446e-16 -7.339427e-01 -2.994002e-01     0.1351423
+[1,5]     7.705329e-01  0.04985889  0.03392331 3.014025e+00  6.831834e-01  8.100874e-01     0.8100874
+[2,5]     4.602979e-01  0.59291341  0.43910024 2.220446e-16 -3.888602e-01  4.602979e-01     1.3094560
+Deviance  3.355960e+03 27.52734495 14.79642686 3.718372e+00  3.330060e+03  3.349300e+03  3415.7700000
+LP       -1.683476e+03 13.59142083  7.03639451 3.903581e+00 -1.713494e+03 -1.679777e+03 -1671.8078968
 
-WARNING: Acceptance Rate = 0
+Demonic Suggestion
 
+Due to the combination of the following conditions,
+
+1. Metropolis-within-Gibbs
+2. The acceptance rate (0.2909091) is within the interval [0.15,0.5].
+3. At least one target MCSE is &gt;= 6.27% of its marginal posterior
+   standard deviation.
+4. At least one target distribution has an effective sample size
+   (ESS) less than 100. The worst mixing chain is: [1,1] (ESS=2.220446e-16).
+5. Each target distribution became stationary by
+   1 iteration.
+
+Laplace's Demon has not been appeased, and suggests
+copy/pasting the following R code into the R console,
+and running it.
+
+Initial.Values &lt;- as.initial.values(Fit)
 Fit &lt;- LaplacesDemon(Model, Data=Data, Initial.Values,
-     Covar=NULL, Iterations=100000, Status=1000, Thinning=100,
-     Algorithm="AMM", Specs=list(Adaptive=500, B=NULL, Periodicity=100, w=0.05))
-Error in LaplacesDemon::Consort(Fit) :
-Try the above code before consorting again.</code></pre>
+     Covar=Fit$Covar, Iterations=110, Status=7, Thinning=10,
+     Algorithm="AMWG", Specs=list(B=NULL, n=11, Periodicity=34))
+
+Laplace's Demon is finished consorting.</code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
