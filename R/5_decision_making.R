@@ -257,7 +257,7 @@ decision_making <- function(
       value = data$V_value[i],
       utility = data$R_utility[i],
       reward = data$Reward[i],
-      occurrence = data$Time_Line[i],
+      occurrence = data$Occurrence[i],
       
       eta = eta,
       alpha = alpha,
