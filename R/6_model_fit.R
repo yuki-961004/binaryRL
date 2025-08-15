@@ -9,6 +9,9 @@ model_fit <- function(
   R_choice = "R_choice", 
   sub_choose = "Sub_Choose"
 ){
+  # 删除第一行赋予的初始值
+  data <- data[-1, ]
+  
   # 如果输入了sub_choose, 就计算rob_choose和sub_choose的匹配度
   if (is.character(sub_choose)) {
     # 重新命名成Sub_Choose

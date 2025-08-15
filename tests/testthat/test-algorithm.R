@@ -1,7 +1,7 @@
 # L-BFGS-B
 testthat::test_that("L-BFGS-B() works with valid input", {
   binaryRL.res <- binaryRL::optimize_para(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     id = 1,
     obj_func = binaryRL::RSTD,
     n_params = 3,
@@ -19,7 +19,7 @@ testthat::test_that("L-BFGS-B() works with valid input", {
 # GenSA
 testthat::test_that("GenSA() works with valid input", {
   binaryRL.res <- binaryRL::optimize_para(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     id = 1,
     obj_func = binaryRL::RSTD,
     n_params = 3,
@@ -37,7 +37,7 @@ testthat::test_that("GenSA() works with valid input", {
 # GA
 testthat::test_that("GA() works with valid input", {
   binaryRL.res <- binaryRL::optimize_para(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     id = 1,
     obj_func = binaryRL::RSTD,
     n_params = 3,
@@ -55,7 +55,7 @@ testthat::test_that("GA() works with valid input", {
 # DEoptim
 testthat::test_that("DEoptim() works with valid input", {
   binaryRL.res <- binaryRL::optimize_para(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     id = 1,
     obj_func = binaryRL::RSTD,
     n_params = 3,
@@ -73,7 +73,7 @@ testthat::test_that("DEoptim() works with valid input", {
 # PSO
 testthat::test_that("PSO() works with valid input", {
   binaryRL.res <- binaryRL::optimize_para(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     id = 1,
     obj_func = binaryRL::RSTD,
     n_params = 3,
@@ -91,7 +91,7 @@ testthat::test_that("PSO() works with valid input", {
 # Bayesian
 testthat::test_that("Bayesian() works with valid input", {
   binaryRL.res <- binaryRL::optimize_para(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     id = 1,
     obj_func = binaryRL::RSTD,
     n_params = 3,
@@ -109,7 +109,7 @@ testthat::test_that("Bayesian() works with valid input", {
 # CMA-ES
 testthat::test_that("CMA-ES() works with valid input", {
   binaryRL.res <- binaryRL::optimize_para(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     id = 1,
     obj_func = binaryRL::RSTD,
     n_params = 3,

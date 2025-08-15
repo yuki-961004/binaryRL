@@ -1,8 +1,8 @@
-\name{Mason_2024_Exp1}
-\alias{Mason_2024_Exp1}
-\title{Experiment 1 from Mason et al. (2024)}
+\name{Mason_2024_G2}
+\alias{Mason_2024_G2}
+\title{Group 2 from Mason et al. (2024)}
 \description{
-  This dataset originates from Experiment 1 of Mason et al. (2024),
+  This dataset originates from Experiment 2 of Mason et al. (2024),
   titled "Rare and extreme outcomes in risky choice"
   (\doi{10.3758/s13423-023-02415-x}).
   The raw data is publicly available on the Open Science Framework (OSF)
@@ -20,20 +20,20 @@
       Left choice, a character indicating the option presented.
       The possible options are:
       \itemize{
-        \item A: 100\% gain 4.
-        \item B: 90\% gain 0 and 10\% gain 40.
-        \item C: 100\% lose 4.
-        \item D: 90\% lose 0 and 10\% lose 40.
+        \item A: 100\% gain 36.
+        \item B: 90\% gain 40 and 10\% gain 0.
+        \item C: 100\% lose 36.
+        \item D: 90\% lose 40 and 10\% lose 0.
       }
     }
     \item{R_choice}{
       Right choice, a character indicating the option presented.
       The possible options are:
       \itemize{
-        \item A: 100\% gain 4.
-        \item B: 90\% gain 0 and 10\% gain 40.
-        \item C: 100\% lose 4.
-        \item D: 90\% lose 0 and 10\% lose 40.
+        \item A: 100\% gain 36.
+        \item B: 90\% gain 40 and 10\% gain 0.
+        \item C: 100\% lose 36.
+        \item D: 90\% lose 40 and 10\% lose 0.
       }
     }
     \item{L_reward}{Reward associated with the left choice.}
@@ -45,7 +45,7 @@
   }
 }
 \examples{
-  # Load the Mason_2024_Exp1 dataset
-  data(binaryRL::Mason_2024_Exp1)
-  head(binaryRL::Mason_2024_Exp1)
+  # Load the Mason_2024_G2 dataset
+  data(binaryRL::Mason_2024_G2)
+  head(binaryRL::Mason_2024_G2)
 }

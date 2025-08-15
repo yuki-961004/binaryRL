@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,37 +85,17 @@
 
     
     
-<p><code>LaplacesDemon</code> provides a user-friendly interface for
-performing MCMC sampling on arbitrary R functions, which are often
-treated as “black boxes.” This makes it exceptionally convenient for
-conducting Bayesian inference on existing, complex models without
-significant refactoring.</p>
-<p>This approach stands in contrast to probabilistic programming
-languages like <code>Stan</code>. <code>Stan</code> delivers superior
-computational performance by first requiring the user to rewrite the
-entire model logic in its own high-level statistical language. The
-<code>Stan</code> compiler then translates this model into highly
-optimized <code>C++</code> code, which eliminates the overhead of an
-interpreted language like R.</p>
-<p>The primary drawback and performance bottleneck of using
-<code>LaplacesDemon</code> with an R-based model function lies here:
-while the sampler itself is efficient, it must repeatedly call the R
-function at every MCMC iteration. As observed with the binaryRL package,
-this process becomes extremely inefficient for complex models, as the
-runtime is dominated by the interpreted R code within the “black-box”
-function.</p>
-<p>To address this critical performance issue, the future direction for
-<code>binaryRL</code> will be to rewrite the core <code>run_m</code>
-function in <code>C++</code> (likely using the <code>Rcpp</code>
-package). By compiling the model’s core logic, we can drastically reduce
-the evaluation time of the objective function, thus making large-scale
-Bayesian inference with samplers like <code>LaplacesDemon</code> both
-practical and efficient.</p>
+<p>The core functions of <code>binaryRL</code> have already been
+rewritten in <code>Rcpp</code>. This optimization reduces the runtime to
+roughly one-tenth of the previous R-based for-loop implementation. As a
+result, running MCMC with <code>LaplacesDemon</code> on
+<code>binaryRL</code> is very fast, while still allowing users to easily
+define and customize their reinforcement learning models.</p>
 <div class="section level2">
 <h2 id="example-data">Example Data<a class="anchor" aria-label="anchor" href="#example-data"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">test_data</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span></span>
+<code class="sourceCode R"><span><span class="va">test_data</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/Mason_2024_G2.html">Mason_2024_G2</a></span></span>
 <span><span class="co"># Ensure the Subject ID is a numeric value for easier indexing</span></span>
 <span><span class="va">test_data</span><span class="op">$</span><span class="va">Subject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">test_data</span><span class="op">$</span><span class="va">Subject</span><span class="op">)</span></span>
 <span><span class="co"># Filter the dataset to include only subjects 1 through 5</span></span>
@@ -190,10 +170,7 @@ all necessary data and constants into a single, well-organized list.</p>
 the structure required by <code>LaplacesDemon.</code> Within this
 function, you need to calculate the sum of the log-likelihoods and the
 sum of the log-posteriors across all subjects by using specified prior
-distributions. These priors effectively define the valid domain for the
-parameters. If <code>LaplacesDemon</code> attempts to use a parameter
-value that falls outside the support of its prior distribution, the
-function will return negative infinity.</p>
+distributions.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">parm</span>, <span class="va">Data</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
@@ -257,14 +234,14 @@ function will return negative infinity.</p>
 <code class="sourceCode R"><span><span class="va">Initial.Values</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">Data</span><span class="op">$</span><span class="va">N</span> <span class="op">*</span> <span class="va">Data</span><span class="op">$</span><span class="va">n_params</span><span class="op">)</span></span>
 <span><span class="fu">Model</span><span class="op">(</span>parm <span class="op">=</span> <span class="va">Initial.Values</span>, Data <span class="op">=</span> <span class="va">Data</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $LP</span></span>
-<span><span class="co">## [1] -1635.234</span></span>
+<span><span class="co">## [1] -1738.074</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $Dev</span></span>
-<span><span class="co">## [1] 3260.12</span></span>
+<span><span class="co">## [1] 3465.8</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $Monitor</span></span>
 <span><span class="co">##        LP </span></span>
-<span><span class="co">## -1635.234 </span></span>
+<span><span class="co">## -1738.074 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $yhat</span></span>
 <span><span class="co">## NULL</span></span>

@@ -1,4 +1,7 @@
+import(Rcpp)
+useDynLib(binaryRL, .registration = TRUE)
 import(compiler)
+
 import(doRNG)
 
 export(func_gamma)

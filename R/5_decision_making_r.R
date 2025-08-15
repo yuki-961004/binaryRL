@@ -1,4 +1,4 @@
-decision_making <- function(
+decision_making_r <- function(
     mode = "fit",
     policy = "off",
     data, 
@@ -8,9 +8,9 @@ decision_making <- function(
     sub_choose, rob_choose,
     L_choice = "L_choice", R_choice = "R_choice",
     L_reward = "L_reward", R_reward = "R_reward", 
-    var1 = NA, var2 = NA,
+    var1 = NA_character_, var2 = NA_character_,
     
-    initial_value = NA,
+    initial_value = NA_real_,
     threshold = 1,
     lapse = 0.02,
     
@@ -171,7 +171,7 @@ decision_making <- function(
     # 查询列名等于选项名的列记录该选项之前的价值
     data[i, options] <- data[i - 1, options]
     
-############################# [ action select ] ################################    
+############################# [ on/off policy ] ################################    
     
     # 如果是off-policy, 以人类的选择作为被更新的价值
     if (policy == "off") {
@@ -186,6 +186,14 @@ decision_making <- function(
       )
     }
 
+############################# [ chosen count ] #################################  
+
+    # 记录这次选了哪个
+    choose <- data[[rob_choose]][i]
+
+    # 计算这次是第几次选了这个选项
+    data$Occurrence[[i]] <- pick_counts[data[[rob_choose]][i]]
+
     # 对被选的选项, 在计数器上+1
     pick_counts[data[[rob_choose]][i]] <- pick_counts[data[[rob_choose]][i]] + 1
     
@@ -194,12 +202,7 @@ decision_making <- function(
       # 在 chosen 这个向量中, 加上此次机器人的选择
       chosen <- c(chosen, data[[rob_choose]][i])
     }
-    
-################################ [occurrence] ##################################   
-    
-    # 计算这次是第几次选了这个选项
-    data$Occurrence[[i]] <- pick_counts[data[[rob_choose]][i]]
-    
+     
 ################################## [ Reward ] ##################################    
     
     # 基于选择, 来给予奖励
@@ -211,14 +214,10 @@ decision_making <- function(
       data$Reward[i] <- data[[R_reward]][i]
     }
     
-################################## [ value ] ###################################     
+################################# [ gamma ] ####################################     
     
-    # 记录这次选了哪个
-    choose <- data[[rob_choose]][i]
     # 看到奖励前, 对该选项预期的奖励, 去上一行找
     data$V_value[i] <- data[[choose]][i - 1]
-    
-################################# [ gamma ] #################################### 
     
     # gamma: 用幂函数将物理量reward转化成心理量utility
     gamma_utility <- util_func(
@@ -264,7 +263,7 @@ decision_making <- function(
       beta = beta
     )
     
-############################ [1st Learning Rate] ############################### 
+########################### [ 1st Learning Rate ] ############################## 
     
     # 如果没有设置初始值, 且是第一次选这个选项
     if (is.na(initial_value) & data$Occurrence[[i]] == 1) {
@@ -282,9 +281,6 @@ decision_making <- function(
       data[[choose]][i] <- data$V_update[i]  
     }
   }
-  
-  # 删除第一行赋予的初始值
-  data <- data[-1, ]
   
   return(data)
 }

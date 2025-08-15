@@ -4,17 +4,66 @@ author: "yuki"
 date: "2025-08-13"
 output: html_document
 ---
+```{r}
+name = NA
+mode = "fit"
+policy = "on"
+options = step1[["options"]]
+data = binaryRL::Mason_2024_G2
+id = 1
+n_params = 3
+n_trials = 360
+
+gamma = 1
+eta = c(0.1, 0.3)
+initial_value = NA_real_
+threshold = 1
+epsilon = NA
+lambda = NA
+pi = NA
+tau = NA
+lapse = 0.02
+alpha = NA
+beta = NA
+
+priors = NULL
+
+util_func = binaryRL::func_gamma
+rate_func = binaryRL::func_eta
+expl_func = binaryRL::func_epsilon
+bias_func = binaryRL::func_pi
+prob_func = binaryRL::func_tau
+loss_func = binaryRL::func_logl
+
+sub = "Subject"
+time_line = c("Block", "Trial")
+L_choice = "L_choice"
+R_choice = "R_choice"
+L_reward = "L_reward"
+R_reward = "R_reward"
+sub_choose = "Sub_Choose"
+rob_choose = "Rob_Choose"
+raw_cols = NULL
+var1 = NA_character_
+var2 = NA_character_
+
+seed = 123
+digits_1 = 2
+digits_2 = 5
+```
+
+
 ## run_m
 
 ```{r}
-profvis::profvis({
+obj_func_r <- function(params){
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
-    policy = "off",
+    policy = "on",
     
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     id = 1,
-    eta = c(0.321, 0.765),
+    eta = c(0.1, 0.8),
     n_params = 2, 
     n_trials = 360,
     
@@ -23,9 +72,43 @@ profvis::profvis({
     epsilon = NA,
     lambda = 0.1,
     pi = 0.01,
-    tau = 0.5
+    tau = 0.5,
+    
+    engine = "r"
   )
-})
+  
+  return(binaryRL.res$ll)
+}
+
+obj_func_cpp <- function(params){
+  binaryRL.res <- binaryRL::run_m(
+    mode = "replay",
+    policy = "on",
+    
+    data = binaryRL::Mason_2024_G2,
+    id = 1,
+    eta = c(0.1, 0.8),
+    n_params = 2, 
+    n_trials = 360,
+    
+    initial_value = 100,
+    threshold = 1,
+    epsilon = NA,
+    lambda = 0.1,
+    pi = 0.01,
+    tau = 0.5,
+    
+    engine = "cpp"
+  )
+  
+  return(binaryRL.res$ll)
+}
+
+microbenchmark::microbenchmark(
+  "r" = { obj_func_r() },
+  "cpp" = { obj_func_cpp() },
+  times = 50
+)
 ```
 
 
@@ -37,7 +120,7 @@ obj_func <- function(params){
     mode = "replay",
     policy = "on",
     
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     id = 1,
     eta = c(0.1, 0.8),
     n_params = 2, 
@@ -70,7 +153,7 @@ obj_func <- function(params){
     mode = "replay",
     policy = "on",
     
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     id = 1,
     eta = c(params[1], params[2]),
     n_params = 2, 

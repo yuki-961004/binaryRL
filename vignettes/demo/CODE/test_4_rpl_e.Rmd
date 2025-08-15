@@ -15,7 +15,7 @@ list <- list()
 ```{r eval=FALSE}
 list[[1]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::TD,
     model_name = "TD",
@@ -29,7 +29,7 @@ list[[1]] <- dplyr::bind_rows(
 ```{r eval=FALSE}
 list[[2]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::RSTD,
     model_name = "RSTD", 
@@ -43,7 +43,7 @@ list[[2]] <- dplyr::bind_rows(
 ```{r eval=FALSE}
 list[[3]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::Utility,
     param_prefix = "param_",
@@ -82,7 +82,7 @@ for(i in 1:3){
     dplyr::arrange(Subject, Frame)
 }
 
-plot[[4]] <- binaryRL::Mason_2024_Exp2%>%
+plot[[4]] <- binaryRL::Mason_2024_G2%>%
     dplyr::filter(Frame %in% c("Gain","Loss")) %>%
     dplyr::filter(Block %in% c(4, 5, 6)) %>%
     dplyr::select(Subject, Frame, Sub_Choose) %>%
@@ -196,7 +196,7 @@ for(i in 1:3){
     dplyr::arrange(Subject, Frame)
 }
 
-plot[[4]] <- binaryRL::Mason_2024_Exp2 %>%
+plot[[4]] <- binaryRL::Mason_2024_G2 %>%
     dplyr::filter(Frame %in% c("Gain","Loss")) %>%
     dplyr::select(Subject, Frame, Block, Sub_Choose) %>%
     dplyr::mutate(

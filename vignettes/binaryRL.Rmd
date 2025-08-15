@@ -56,7 +56,7 @@ Model <- function(params){
     eta = c(params[1], params[2]),
     gamma = c(params[3], params[4]),
     # exploration–exploitation trade-off  
-    initial_value = NA,
+    initial_value = NA_real_,
     threshold = 1,
     epsilon = c(params[5]),
     lambda = c(params[6]),
@@ -473,7 +473,7 @@ Here, using the publicly available data from Mason et al. [(2024)](https://doi.o
 
 ```{r eval=FALSE}
 recovery <- binaryRL::rcv_d(
-  data = binaryRL::Mason_2024_Exp2,
+  data = binaryRL::Mason_2024_G2,
 # ╔═══════════════════════════════════════════════════════════════════════════╗ #
 # ║ --------------------------- black-box function -------------------------- ║ #
   #funcs = c("your_funcs"),
@@ -571,8 +571,8 @@ Following the recommendations of Wilson & Collins [(2019)](https://doi.org/10.75
 
 ```{r eval=FALSE}
 comparison <- binaryRL::fit_p(
-  data = binaryRL::Mason_2024_Exp2,
-  id = unique(binaryRL::Mason_2024_Exp2$Subject),
+  data = binaryRL::Mason_2024_G2,
+  id = unique(binaryRL::Mason_2024_G2$Subject),
 # ╔═══════════════════════════════════════════════════════════════════════════╗ #
 # ║ --------------------------- black-box function -------------------------- ║ #
   #funcs = c("your_funcs"),
@@ -661,7 +661,7 @@ list <- list()
 
 list[[1]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::TD,
     model_name = "TD", 
@@ -671,7 +671,7 @@ list[[1]] <- dplyr::bind_rows(
 
 list[[2]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::RSTD,
     model_name = "RSTD", 
@@ -681,7 +681,7 @@ list[[2]] <- dplyr::bind_rows(
 
 list[[3]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::Utility,
     param_prefix = "param_",

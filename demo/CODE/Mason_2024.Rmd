@@ -82,20 +82,20 @@ summary(Mason_2024)
 ```
 
 ```{r}
-Mason_2024_Exp1 <- Mason_2024 %>%
+Mason_2024_G1 <- Mason_2024 %>%
   dplyr::filter(Exp == 1) %>%
   dplyr::select(-Exp)
 
-summary(Mason_2024_Exp1)
+summary(Mason_2024_G1)
 
-usethis::use_data(Mason_2024_Exp1, overwrite = TRUE)
+usethis::use_data(Mason_2024_G1, overwrite = TRUE)
 
-Mason_2024_Exp2 <- Mason_2024 %>%
+Mason_2024_G2 <- Mason_2024 %>%
   dplyr::filter(Exp == 2) %>%
   dplyr::select(-Exp)
 
-summary(Mason_2024_Exp2)
+summary(Mason_2024_G2)
 
-usethis::use_data(Mason_2024_Exp2, overwrite = TRUE)
+usethis::use_data(Mason_2024_G2, overwrite = TRUE)
 ```
 

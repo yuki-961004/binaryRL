@@ -6,18 +6,13 @@ vignette: >
   %\VignetteIndexEntry{MCMC}
   %\VignetteEngine{knitr::rmarkdown}
 ---
-`LaplacesDemon` provides a user-friendly interface for performing MCMC sampling on arbitrary R functions, which are often treated as "black boxes." This makes it exceptionally convenient for conducting Bayesian inference on existing, complex models without significant refactoring.
 
-This approach stands in contrast to probabilistic programming languages like `Stan`. `Stan` delivers superior computational performance by first requiring the user to rewrite the entire model logic in its own high-level statistical language. The `Stan` compiler then translates this model into highly optimized `C++` code, which eliminates the overhead of an interpreted language like R.
-
-The primary drawback and performance bottleneck of using `LaplacesDemon` with an R-based model function lies here: while the sampler itself is efficient, it must repeatedly call the R function at every MCMC iteration. As observed with the binaryRL package, this process becomes extremely inefficient for complex models, as the runtime is dominated by the interpreted R code within the "black-box" function.
-
-To address this critical performance issue, the future direction for `binaryRL` will be to rewrite the core `run_m` function in `C++` (likely using the `Rcpp` package). By compiling the model's core logic, we can drastically reduce the evaluation time of the objective function, thus making large-scale Bayesian inference with samplers like `LaplacesDemon` both practical and efficient.
+The core functions of `binaryRL` have already been rewritten in `Rcpp`. This optimization reduces the runtime to roughly one-tenth of the previous R-based for-loop implementation. As a result, running MCMC with `LaplacesDemon` on `binaryRL` is very fast, while still allowing users to easily define and customize their reinforcement learning models.
 
 ## Example Data
 
 ```{r}
-test_data <- binaryRL::Mason_2024_Exp2
+test_data <- binaryRL::Mason_2024_G2
 # Ensure the Subject ID is a numeric value for easier indexing
 test_data$Subject <- as.numeric(test_data$Subject)
 # Filter the dataset to include only subjects 1 through 5
@@ -72,7 +67,7 @@ Data <- list(
 
 ### Defining Object Function
 
-Create a model function that accepts `parm` and `Data` as its arguments, with a return value that conforms to the structure required by `LaplacesDemon.` Within this function, you need to calculate the sum of the log-likelihoods and the sum of the log-posteriors across all subjects by using specified prior distributions. These priors effectively define the valid domain for the parameters. If `LaplacesDemon` attempts to use a parameter value that falls outside the support of its prior distribution, the function will return negative infinity.
+Create a model function that accepts `parm` and `Data` as its arguments, with a return value that conforms to the structure required by `LaplacesDemon.` Within this function, you need to calculate the sum of the log-likelihoods and the sum of the log-posteriors across all subjects by using specified prior distributions. 
 
 ```{r}
 Model <- function(parm, Data) {

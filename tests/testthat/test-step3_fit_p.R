@@ -5,7 +5,7 @@ testthat::test_that("fit_p() works with valid input", {
     estimate = "MLE",
     policy = "on",
     
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     id = c(1:2),
     
     fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
@@ -32,7 +32,7 @@ testthat::test_that("fit_p() works with valid input", {
     estimate = "MAP",
     policy = "off",
     
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     id = c(1:4),
     
     fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
@@ -73,7 +73,7 @@ testthat::test_that("fit_p() works with valid input", {
     estimate = "MAP",
     policy = "off",
     
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     id = c(1:4),
     
     fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),

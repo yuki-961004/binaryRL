@@ -79,7 +79,7 @@ For more information, please refer to the homepage of this package:
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -176,7 +176,7 @@ The process involves generating synthetic datasets. First, parameters
 
 
 <dl><dt id="arg-policy">policy<a class="anchor" aria-label="anchor" href="#arg-policy"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>Specifies the learning policy to be used.
 This determines how the model updates action values based on observed or
   simulated choices. It can be either <code>"off"</code> or <code>"on"</code>.</p>
@@ -212,7 +212,7 @@ This determines how the model updates action values based on observed or
 
 
 <dt id="arg-id">id<a class="anchor" aria-label="anchor" href="#arg-id"></a></dt>
-<dd><p>[vector]</p>
+<dd><p>[CharacterVector]</p>
 <p>Specifies which subject's data to use. In parameter and model recovery
  analyses, the specific subject ID is often irrelevant. Although the
  experimental trial order might have some randomness for each subject,
@@ -238,7 +238,7 @@ This determines how the model updates action values based on observed or
 
 
 <dt id="arg-funcs">funcs<a class="anchor" aria-label="anchor" href="#arg-funcs"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[CharacterVector]</p>
 <p>A character vector containing the names of all user-defined functions
  required for the computation. When parallel computation is enabled
  (i.e., <code>nc &gt; 1</code>), user-defined models and their custom functions
@@ -258,42 +258,42 @@ This determines how the model updates action values based on observed or
 
 
 <dt id="arg-model-names">model_names<a class="anchor" aria-label="anchor" href="#arg-model-names"></a></dt>
-<dd><p>[list]</p>
+<dd><p>[List]</p>
 <p>The names of fit modals</p>
 <p>e.g. <code>model_names = c("TD", "RSTD", "Utility")</code></p></dd>
 
 
 <dt id="arg-simulate-models">simulate_models<a class="anchor" aria-label="anchor" href="#arg-simulate-models"></a></dt>
-<dd><p>[list]</p>
+<dd><p>[List]</p>
 <p>A collection of functions used to generate simulated data.</p></dd>
 
 
 <dt id="arg-simulate-lower">simulate_lower<a class="anchor" aria-label="anchor" href="#arg-simulate-lower"></a></dt>
-<dd><p>[list]</p>
+<dd><p>[List]</p>
 <p>The lower bounds for simulate models</p>
 <p>e.g. <code>simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))</code></p></dd>
 
 
 <dt id="arg-simulate-upper">simulate_upper<a class="anchor" aria-label="anchor" href="#arg-simulate-upper"></a></dt>
-<dd><p>[list]
+<dd><p>[List]
 The upper bounds for simulate models</p>
 <p>e.g. <code>simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1))</code></p></dd>
 
 
 <dt id="arg-fit-models">fit_models<a class="anchor" aria-label="anchor" href="#arg-fit-models"></a></dt>
-<dd><p>[list]</p>
+<dd><p>[List]</p>
 <p>A collection of functions applied to fit models to the data.</p>
 <p>e.g. <code>fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility)</code></p></dd>
 
 
 <dt id="arg-fit-lower">fit_lower<a class="anchor" aria-label="anchor" href="#arg-fit-lower"></a></dt>
-<dd><p>[list]</p>
+<dd><p>[List]</p>
 <p>The lower bounds for model fit models</p>
 <p>e.g. <code>fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))</code></p></dd>
 
 
 <dt id="arg-fit-upper">fit_upper<a class="anchor" aria-label="anchor" href="#arg-fit-upper"></a></dt>
-<dd><p>[list]</p>
+<dd><p>[List]</p>
 <p>The upper bounds for model fit models</p>
 <p>e.g. <code>fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 10))</code></p></dd>
 
@@ -315,7 +315,7 @@ The upper bounds for simulate models</p>
 
 
 <dt id="arg-initial-params">initial_params<a class="anchor" aria-label="anchor" href="#arg-initial-params"></a></dt>
-<dd><p>[numeric]</p>
+<dd><p>[NumericVector]</p>
 <p>Initial values for the free parameters that the optimization algorithm will
  search from. These are primarily relevant when using algorithms that require
  an explicit starting point, such as <code>L-BFGS-B</code>. If not specified,
@@ -356,7 +356,7 @@ parallel computation can significantly speed up the fitting process:</p><ul><li>
 
 
 <dt id="arg-algorithm">algorithm<a class="anchor" aria-label="anchor" href="#arg-algorithm"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>Choose an algorithm package from
  <code>L-BFGS-B</code>, <code>GenSA</code>,<code>GA</code>,<code>DEoptim</code>,<code>PSO</code>,
  <code>Bayesian</code>, <code>CMA-ES</code>.</p>
@@ -407,7 +407,7 @@ distinct and sequential roles in the modeling pipeline.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">recovery</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu">rcv_d</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Mason_2024_Exp2.html">Mason_2024_Exp2</a></span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Mason_2024_G2.html">Mason_2024_G2</a></span>,</span></span>
 <span class="r-in"><span><span class="co">#+-----------------------------------------------------------------------------+#</span></span></span>
 <span class="r-in"><span><span class="co">#|----------------------------- black-box function ----------------------------|#</span></span></span>
 <span class="r-in"><span>  <span class="co">#funcs = c("your_funcs"),</span></span></span>

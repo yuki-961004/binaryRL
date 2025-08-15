@@ -105,7 +105,7 @@ The last parameter, representing the temperature (\code{tau}) in the soft-max
 \examples{
 \dontrun{
 list_simulated <- binaryRL::simulate_list(
-  data = binaryRL::Mason_2024_Exp2,
+  data = binaryRL::Mason_2024_G2,
   obj_func = binaryRL::RSTD,
   n_params = 3,
   n_trials = 360,

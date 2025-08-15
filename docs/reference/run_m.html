@@ -13,8 +13,8 @@ Data Input and Specification: You must provide the raw
     run_m function about the corresponding column
     names within your dataset
     (e.g.,
-    Mason_2024_Exp1,
-    Mason_2024_Exp2
+    Mason_2024_G1,
+    Mason_2024_G2
     )
     This is a game, so it's critical that your dataset includes rewards
     for both the human-chosen option and the unchosen options.
@@ -72,8 +72,8 @@ Data Input and Specification: You must provide the raw
     run_m function about the corresponding column
     names within your dataset
     (e.g.,
-    Mason_2024_Exp1,
-    Mason_2024_Exp2
+    Mason_2024_G1,
+    Mason_2024_G2
     )
     This is a game, so it's critical that your dataset includes rewards
     for both the human-chosen option and the unchosen options.
@@ -137,7 +137,7 @@ For more information, please refer to the homepage of this package:
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -181,8 +181,8 @@ learning models.</p>
     <code>run_m</code> function about the corresponding column
     names within your dataset
     (e.g.,
-    <code><a href="Mason_2024_Exp1.html">Mason_2024_Exp1</a></code>,
-    <code><a href="Mason_2024_Exp2.html">Mason_2024_Exp2</a></code>
+    <code><a href="Mason_2024_G1.html">Mason_2024_G1</a></code>,
+    <code><a href="Mason_2024_G2.html">Mason_2024_G2</a></code>
     )
     This is a game, so it's critical that your dataset includes rewards
     for both the human-chosen option and the unchosen options.</p></li>
@@ -242,7 +242,7 @@ learning models.</p>
 <span>  <span class="va">n_trials</span>,</span>
 <span>  gamma <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">eta</span>,</span>
-<span>  initial_value <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  initial_value <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>  threshold <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  epsilon <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  lambda <span class="op">=</span> <span class="cn">NA</span>,</span>
@@ -267,11 +267,12 @@ learning models.</p>
 <span>  sub_choose <span class="op">=</span> <span class="st">"Sub_Choose"</span>,</span>
 <span>  rob_choose <span class="op">=</span> <span class="st">"Rob_Choose"</span>,</span>
 <span>  raw_cols <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  var1 <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  var2 <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  var1 <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
+<span>  var2 <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">123</span>,</span>
 <span>  digits_1 <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  digits_2 <span class="op">=</span> <span class="fl">5</span></span>
+<span>  digits_2 <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  engine <span class="op">=</span> <span class="st">"cpp"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -280,12 +281,12 @@ learning models.</p>
 
 
 <dl><dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>The name of your RL model</p></dd>
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>This parameter controls the function's operational mode. It has three
  possible values, each typically associated with a specific function:</p><ul><li><p><code>"simulate"</code>: Should be used when working with
      <code><a href="rcv_d.html">rcv_d</a></code>.</p></li>
@@ -298,7 +299,7 @@ learning models.</p>
 
 
 <dt id="arg-policy">policy<a class="anchor" aria-label="anchor" href="#arg-policy"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>Specifies the learning policy to be used.
 This determines how the model updates action values based on observed or
   simulated choices. It can be either <code>"off"</code> or <code>"on"</code>.</p>
@@ -334,7 +335,7 @@ This determines how the model updates action values based on observed or
 
 
 <dt id="arg-id">id<a class="anchor" aria-label="anchor" href="#arg-id"></a></dt>
-<dd><p>[integer]</p>
+<dd><p>[string]</p>
 <p>Which subject is going to be analyzed. The value should correspond to an
  entry in the "sub" column, which must contain the subject IDs.</p>
 <p>e.g. <code>id = 18</code></p></dd>
@@ -351,7 +352,7 @@ This determines how the model updates action values based on observed or
 
 
 <dt id="arg-gamma">gamma<a class="anchor" aria-label="anchor" href="#arg-gamma"></a></dt>
-<dd><p>[vector]</p>
+<dd><p>[NumericVector]</p>
 <p><strong>Note</strong>: This should not be confused with the discount rate parameter
   (also named gamma) found in Temporal Difference (TD) models.
   Rescorla-Wagner model does not include a discount rate.
@@ -370,7 +371,7 @@ This determines how the model updates action values based on observed or
 
 
 <dt id="arg-eta">eta<a class="anchor" aria-label="anchor" href="#arg-eta"></a></dt>
-<dd><p>[vector]</p>
+<dd><p>[NumericVector]</p>
 <p>Parameters used in the Learning Rate Function,
  <code>rate_func</code>,
  representing the rate at which the subject updates the difference
@@ -389,12 +390,12 @@ This determines how the model updates action values based on observed or
 
 
 <dt id="arg-initial-value">initial_value<a class="anchor" aria-label="anchor" href="#arg-initial-value"></a></dt>
-<dd><p>[numeric]</p>
+<dd><p>[double]</p>
 <p>Subject's initial expected value for each stimulus's reward. If this value
  is not set <code>initial_value = NA</code>, the subject will use the reward received
  after the first trial as the initial value for that stimulus. In other
  words, the learning rate for the first trial is 100<!-- %.  --></p>
-<p>default: <code>initial_value = NA</code></p></dd>
+<p>default: <code>initial_value = NA_real_</code></p></dd>
 
 
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
@@ -414,7 +415,7 @@ This determines how the model updates action values based on observed or
 
 
 <dt id="arg-epsilon">epsilon<a class="anchor" aria-label="anchor" href="#arg-epsilon"></a></dt>
-<dd><p>[numeric]</p>
+<dd><p>[NumericVector]</p>
 <p>A parameter used in the <strong>epsilon-greedy</strong> exploration strategy. It
  defines the probability of making a completely random choice, as opposed
  to choosing based on the relative values of the left and right options.
@@ -430,7 +431,7 @@ This determines how the model updates action values based on observed or
 
 
 <dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
-<dd><p>[vector]</p>
+<dd><p>[NumericVector]</p>
 <p>A numeric value that controls the decay rate of exploration probability
  in the <strong>epsilon-decreasing</strong> strategy. A higher <code>lambda</code> value
  means the probability of random choice will decrease more rapidly
@@ -443,7 +444,7 @@ This determines how the model updates action values based on observed or
 
 
 <dt id="arg-pi">pi<a class="anchor" aria-label="anchor" href="#arg-pi"></a></dt>
-<dd><p>[vector]</p>
+<dd><p>[NumericVector]</p>
 <p>Parameter used in the Upper-Confidence-Bound (UCB) action selection
  formula. <code>bias_func</code> controls the degree of
  exploration by scaling the uncertainty bonus given to less-explored options.
@@ -458,7 +459,7 @@ $$</p>
 
 
 <dt id="arg-tau">tau<a class="anchor" aria-label="anchor" href="#arg-tau"></a></dt>
-<dd><p>[vector]</p>
+<dd><p>[NumericVector]</p>
 <p>Parameters used in the Soft-Max Function. <code>prob_func</code>
  representing the sensitivity of the subject to the value difference when
  making decisions. It determines the probability of selecting the left option
@@ -471,7 +472,7 @@ $$</p>
 
 
 <dt id="arg-lapse">lapse<a class="anchor" aria-label="anchor" href="#arg-lapse"></a></dt>
-<dd><p>[numeric]</p>
+<dd><p>[double]</p>
 <p>A numeric value between 0 and 1, representing the lapse rate.</p>
 <p>You can interpret this parameter as the probability of the agent "slipping"
  or making a random choice, irrespective of the learned action values. This
@@ -494,12 +495,12 @@ $$</p>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
-<dd><p>[vector]</p>
+<dd><p>[NumericVector]</p>
 <p>Extra parameters that may be used in functions.</p></dd>
 
 
 <dt id="arg-beta">beta<a class="anchor" aria-label="anchor" href="#arg-beta"></a></dt>
-<dd><p>[vector]</p>
+<dd><p>[NumericVector]</p>
 <p>Extra parameters that may be used in functions.</p></dd>
 
 
@@ -511,43 +512,43 @@ $$</p>
 
 
 <dt id="arg-util-func">util_func<a class="anchor" aria-label="anchor" href="#arg-util-func"></a></dt>
-<dd><p>[function]</p>
+<dd><p>[Function]</p>
 <p>Utility Function see <code><a href="func_gamma.html">func_gamma</a></code>.</p></dd>
 
 
 <dt id="arg-rate-func">rate_func<a class="anchor" aria-label="anchor" href="#arg-rate-func"></a></dt>
-<dd><p>[function]</p>
+<dd><p>[Function]</p>
 <p>Learning Rate Function see <code><a href="func_eta.html">func_eta</a></code>.</p></dd>
 
 
 <dt id="arg-expl-func">expl_func<a class="anchor" aria-label="anchor" href="#arg-expl-func"></a></dt>
-<dd><p>[function]</p>
+<dd><p>[Function]</p>
 <p>Exploration Strategy Function see <code><a href="func_epsilon.html">func_epsilon</a></code>.</p></dd>
 
 
 <dt id="arg-bias-func">bias_func<a class="anchor" aria-label="anchor" href="#arg-bias-func"></a></dt>
-<dd><p>[function]</p>
+<dd><p>[Function]</p>
 <p>Upper-Confidence-Bound see <code><a href="func_pi.html">func_pi</a></code>.</p></dd>
 
 
 <dt id="arg-prob-func">prob_func<a class="anchor" aria-label="anchor" href="#arg-prob-func"></a></dt>
-<dd><p>[function]</p>
+<dd><p>[Function]</p>
 <p>Soft-Max Function see <code><a href="func_tau.html">func_tau</a></code>.</p></dd>
 
 
 <dt id="arg-loss-func">loss_func<a class="anchor" aria-label="anchor" href="#arg-loss-func"></a></dt>
-<dd><p>[function]</p>
+<dd><p>[Function]</p>
 <p>Loss Function see <code><a href="func_logl.html">func_logl</a></code>.</p></dd>
 
 
 <dt id="arg-sub">sub<a class="anchor" aria-label="anchor" href="#arg-sub"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>Column name of subject ID</p>
 <p>e.g. <code>sub = "Subject"</code></p></dd>
 
 
 <dt id="arg-time-line">time_line<a class="anchor" aria-label="anchor" href="#arg-time-line"></a></dt>
-<dd><p>[vector]</p>
+<dd><p>[CharacterVector]</p>
 <p>A vector specifying the name of the column that the sequence of the
  experiment. This argument defines how the experiment is structured,
  such as whether it is organized by "Block" with breaks in between, and
@@ -556,62 +557,62 @@ $$</p>
 
 
 <dt id="arg-l-choice">L_choice<a class="anchor" aria-label="anchor" href="#arg-l-choice"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>Column name of left choice.</p>
 <p>default: <code>L_choice = "Left_Choice"</code></p></dd>
 
 
 <dt id="arg-r-choice">R_choice<a class="anchor" aria-label="anchor" href="#arg-r-choice"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>Column name of right choice.</p>
 <p>default: <code>R_choice = "Right_Choice"</code></p></dd>
 
 
 <dt id="arg-l-reward">L_reward<a class="anchor" aria-label="anchor" href="#arg-l-reward"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>Column name of the reward of left choice</p>
 <p>default: <code>L_reward = "Left_reward"</code></p></dd>
 
 
 <dt id="arg-r-reward">R_reward<a class="anchor" aria-label="anchor" href="#arg-r-reward"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>Column name of the reward of right choice</p>
 <p>default: <code>R_reward = "Right_reward"</code></p></dd>
 
 
 <dt id="arg-sub-choose">sub_choose<a class="anchor" aria-label="anchor" href="#arg-sub-choose"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>Column name of choices made by the subject.</p>
 <p>default: <code>sub_choose = "Choose"</code></p></dd>
 
 
 <dt id="arg-rob-choose">rob_choose<a class="anchor" aria-label="anchor" href="#arg-rob-choose"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>Column name of choices made by the model, which you could ignore.</p>
 <p>default: <code>rob_choose = "Rob_Choose"</code></p></dd>
 
 
 <dt id="arg-raw-cols">raw_cols<a class="anchor" aria-label="anchor" href="#arg-raw-cols"></a></dt>
-<dd><p>[vector]</p>
+<dd><p>[CharacterVector]</p>
 <p>Defaults to <code>NULL</code>. If left as <code>NULL</code>, it will directly capture
  all column names from the raw data.</p></dd>
 
 
 <dt id="arg-var-">var1<a class="anchor" aria-label="anchor" href="#arg-var-"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>Column name of extra variable 1. If your model uses more than just reward
  and expected value, and you need other information, such as whether the
  choice frame is Gain or Loss, then you can input the 'Frame' column as
  var1 into the model.</p>
-<p>default: <code>var1 = "Extra_Var1"</code></p></dd>
+<p>default: <code>var1 = NA_character_</code></p></dd>
 
 
 <dt id="arg-var-">var2<a class="anchor" aria-label="anchor" href="#arg-var-"></a></dt>
-<dd><p>[character]</p>
+<dd><p>[string]</p>
 <p>Column name of extra variable 2. If one additional variable, var1, does not
  meet your needs, you can add another additional variable, var2, into your
  model.</p>
-<p>default: <code>var2 = "Extra_Var2"</code></p></dd>
+<p>default: <code>var2 = NA_character_</code></p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
@@ -632,6 +633,13 @@ $$</p>
 <p>The number of decimal places to retain for columns related to select function.</p>
 <p>default: <code>digits_2 = 5</code></p></dd>
 
+
+<dt id="arg-engine">engine<a class="anchor" aria-label="anchor" href="#arg-engine"></a></dt>
+<dd><p>[string]</p>
+<p>- <code>"r"</code>: Use the pure R version of the code.</p>
+<p>- <code>"cpp"</code>: Use the Rcpp-optimized version.</p>
+<p>default: <code>engine = "cpp"</code></p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -640,7 +648,7 @@ $$</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Mason_2024_Exp1.html">Mason_2024_Exp1</a></span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="Mason_2024_G2.html">Mason_2024_G2</a></span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">binaryRL.res</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu">run_m</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  mode <span class="op">=</span> <span class="st">"replay"</span>,</span></span>
@@ -661,12 +669,12 @@ $$</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Upper-Confidence-Bound: off</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Soft-Max: on</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Model Fit:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Accuracy: 59.17%</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Log-Likelihood: -507.73</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Accuracy: 60.28%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Log-Likelihood: -384.88</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Log-Prior Probability: NA</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Log-Posterior Probability: NA</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   AIC: 1021.46</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   BIC: 1033.12</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   AIC: 775.76</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   BIC: 787.42</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Free Parameters:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   α: NA</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   β: NA</span>
@@ -692,12 +700,12 @@ $$</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Metric   Value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Accuracy   59.17</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     LogL -507.73</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Accuracy   60.28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     LogL -384.88</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3    LogPr      NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4    LogPo      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      AIC 1021.46</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      BIC 1033.12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      AIC  775.76</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      BIC  787.42</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

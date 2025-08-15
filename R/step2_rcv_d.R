@@ -72,7 +72,7 @@
 #'     more suitable.}
 #' }
 #' 
-#' @param policy [character]
+#' @param policy [string]
 #' 
 #' Specifies the learning policy to be used.
 #' This determines how the model updates action values based on observed or
@@ -116,7 +116,7 @@
 #'    \item \code{sub_choose} "Sub_Choose"
 #'  }
 #'  
-#' @param id [vector]
+#' @param id [CharacterVector]
 #' 
 #' Specifies which subject's data to use. In parameter and model recovery
 #'  analyses, the specific subject ID is often irrelevant. Although the
@@ -143,7 +143,7 @@
 #'  
 #'  default: \code{n_trials = NULL}
 #'  
-#' @param funcs [character]
+#' @param funcs [CharacterVector]
 #' 
 #' A character vector containing the names of all user-defined functions
 #'  required for the computation. When parallel computation is enabled
@@ -163,40 +163,40 @@
 #'  you must explicitly provide the names of your custom functions as a 
 #'  vector here.
 #'  
-#' @param model_names [list] 
+#' @param model_names [List] 
 #' 
 #' The names of fit modals
 #' 
 #' e.g. \code{model_names = c("TD", "RSTD", "Utility")}
 #'  
-#' @param simulate_models [list] 
+#' @param simulate_models [List] 
 #' 
 #' A collection of functions used to generate simulated data.
 #' 
-#' @param simulate_lower [list] 
+#' @param simulate_lower [List] 
 #' 
 #' The lower bounds for simulate models
 #' 
 #' e.g. \code{simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))}
 #' 
-#' @param simulate_upper [list] 
+#' @param simulate_upper [List] 
 #' The upper bounds for simulate models
 #' 
 #' e.g. \code{simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1))}
 #' 
-#' @param fit_models [list] 
+#' @param fit_models [List] 
 #' 
 #' A collection of functions applied to fit models to the data.
 #' 
 #' e.g. \code{fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility)}
 #' 
-#' @param fit_lower [list] 
+#' @param fit_lower [List] 
 #' 
 #' The lower bounds for model fit models
 #' 
 #' e.g. \code{fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))}
 #' 
-#' @param fit_upper [list] 
+#' @param fit_upper [List] 
 #' 
 #' The upper bounds for model fit models
 #' 
@@ -218,7 +218,7 @@
 #'  
 #' default: \code{iteration_f = 10}
 #' 
-#' @param initial_params [numeric]
+#' @param initial_params [NumericVector]
 #' 
 #' Initial values for the free parameters that the optimization algorithm will
 #'  search from. These are primarily relevant when using algorithms that require
@@ -262,7 +262,7 @@
 #' 
 #'  \code{default: nc = 1}
 #'  
-#' @param algorithm [character] 
+#' @param algorithm [string] 
 #' 
 #' Choose an algorithm package from
 #'  \code{L-BFGS-B}, \code{GenSA},\code{GA},\code{DEoptim},\code{PSO},
@@ -282,7 +282,7 @@
 #' @examples
 #' \dontrun{
 #' recovery <- binaryRL::rcv_d(
-#'   data = binaryRL::Mason_2024_Exp2,
+#'   data = binaryRL::Mason_2024_G2,
 #' #+-----------------------------------------------------------------------------+#
 #' #|----------------------------- black-box function ----------------------------|#
 #'   #funcs = c("your_funcs"),

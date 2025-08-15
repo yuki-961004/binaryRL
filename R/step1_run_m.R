@@ -12,8 +12,8 @@
 #'     \code{\link[binaryRL]{run_m}} function about the corresponding column 
 #'     names within your dataset
 #'     (e.g., 
-#'     \code{\link[binaryRL]{Mason_2024_Exp1}}, 
-#'     \code{\link[binaryRL]{Mason_2024_Exp2}}
+#'     \code{\link[binaryRL]{Mason_2024_G1}}, 
+#'     \code{\link[binaryRL]{Mason_2024_G2}}
 #'     )
 #'     This is a game, so it's critical that your dataset includes rewards
 #'     for both the human-chosen option and the unchosen options.
@@ -69,11 +69,11 @@
 #'  For more information, please refer to the homepage of this package:
 #'  \url{https://yuki-961004.github.io/binaryRL/}
 #' 
-#' @param name [character] 
+#' @param name [string] 
 #' 
 #' The name of your RL model
 #' 
-#' @param mode [character] 
+#' @param mode [string] 
 #' 
 #' This parameter controls the function's operational mode. It has three
 #'  possible values, each typically associated with a specific function:
@@ -88,7 +88,7 @@
 #'  In most cases, you won't need to modify this parameter directly, as suitable
 #'  default values are set for different contexts.
 #' 
-#' @param policy [character]
+#' @param policy [string]
 #' 
 #' Specifies the learning policy to be used.
 #' This determines how the model updates action values based on observed or
@@ -130,7 +130,7 @@
 #'    \item \code{sub_choose} "Sub_Choose"
 #'  }
 #' 
-#' @param id [integer] 
+#' @param id [string] 
 #' 
 #' Which subject is going to be analyzed. The value should correspond to an 
 #'  entry in the "sub" column, which must contain the subject IDs. 
@@ -145,7 +145,7 @@
 #' 
 #' The total number of trials in your experiment.
 #' 
-#' @param gamma [vector] 
+#' @param gamma [NumericVector] 
 #' 
 #'  \strong{Note}: This should not be confused with the discount rate parameter
 #'   (also named gamma) found in Temporal Difference (TD) models. 
@@ -168,7 +168,7 @@
 #'  
 #' default: \code{gamma = 1} 
 #' 
-#' @param eta [vector] 
+#' @param eta [NumericVector] 
 #' 
 #' Parameters used in the Learning Rate Function, 
 #'  \code{rate_func}, 
@@ -193,14 +193,14 @@
 #'  
 #'  RSTD: \code{eta = c(0.3, 0.7)}
 #'
-#' @param initial_value [numeric] 
+#' @param initial_value [double] 
 #' 
 #' Subject's initial expected value for each stimulus's reward. If this value 
 #'  is not set \code{initial_value = NA}, the subject will use the reward received 
 #'  after the first trial as the initial value for that stimulus. In other 
 #'  words, the learning rate for the first trial is 100%. 
 #'  
-#' default: \code{initial_value = NA}
+#' default: \code{initial_value = NA_real_}
 #'
 #' @param threshold [integer]
 #' 
@@ -220,7 +220,7 @@
 #'  
 #'  epsilon-first: \code{threshold = 20, epsilon = NA, lambda = NA}
 #'
-#' @param epsilon [numeric] 
+#' @param epsilon [NumericVector] 
 #' 
 #' A parameter used in the \strong{epsilon-greedy} exploration strategy. It 
 #'  defines the probability of making a completely random choice, as opposed 
@@ -237,7 +237,7 @@
 #' 
 #'  epsilon-greedy: \code{threshold = 1, epsilon = 0.1, lambda = NA}
 #' 
-#' @param lambda [vector] 
+#' @param lambda [NumericVector] 
 #' 
 #' A numeric value that controls the decay rate of exploration probability
 #'  in the \strong{epsilon-decreasing} strategy. A higher \code{lambda} value
@@ -251,7 +251,7 @@
 #'  
 #' epsilon-decreasing: \code{threshold = 1, epsilon = NA, lambda = 0.5}
 #' 
-#' @param pi [vector]
+#' @param pi [NumericVector]
 #' 
 #' Parameter used in the Upper-Confidence-Bound (UCB) action selection
 #'  formula. \code{bias_func} controls the degree of 
@@ -267,7 +267,7 @@
 #' 
 #' default: \code{pi = NA}
 #' 
-#' @param tau [vector] 
+#' @param tau [NumericVector] 
 #' 
 #' Parameters used in the Soft-Max Function. \code{prob_func} 
 #'  representing the sensitivity of the subject to the value difference when 
@@ -281,7 +281,7 @@
 #' 
 #'  default \code{tau = NA}
 #'  
-#' @param lapse [numeric] 
+#' @param lapse [double] 
 #' 
 #' A numeric value between 0 and 1, representing the lapse rate.
 #' 
@@ -308,11 +308,11 @@
 #' This ensures each option has a minimum selection probability of 1 percent 
 #'  in TAFC tasks. 
 #' 
-#' @param alpha [vector] 
+#' @param alpha [NumericVector] 
 #' 
 #' Extra parameters that may be used in functions. 
 #'
-#' @param beta [vector] 
+#' @param beta [NumericVector] 
 #' 
 #' Extra parameters that may be used in functions. 
 #' 
@@ -323,37 +323,37 @@
 #' 
 #'  default: \code{priors = NULL}
 #' 
-#' @param util_func [function] 
+#' @param util_func [Function] 
 #' 
 #'  Utility Function see \code{\link[binaryRL]{func_gamma}}.
 #' 
-#' @param rate_func [function] 
+#' @param rate_func [Function] 
 #' 
 #'  Learning Rate Function see \code{\link[binaryRL]{func_eta}}.
 #' 
-#' @param expl_func [function] 
+#' @param expl_func [Function] 
 #' 
 #'  Exploration Strategy Function see \code{\link[binaryRL]{func_epsilon}}.
 #' 
-#' @param bias_func [function] 
+#' @param bias_func [Function] 
 #' 
 #'  Upper-Confidence-Bound see \code{\link[binaryRL]{func_pi}}.
 #' 
-#' @param prob_func [function] 
+#' @param prob_func [Function] 
 #' 
 #'  Soft-Max Function see \code{\link[binaryRL]{func_tau}}.
 #' 
-#' @param loss_func [function] 
+#' @param loss_func [Function] 
 #' 
 #'  Loss Function see \code{\link[binaryRL]{func_logl}}.
 #' 
-#' @param sub [character] 
+#' @param sub [string] 
 #' 
 #'  Column name of subject ID
 #' 
 #'  e.g. \code{sub = "Subject"}
 #' 
-#' @param time_line [vector] 
+#' @param time_line [CharacterVector] 
 #' 
 #' A vector specifying the name of the column that the sequence of the 
 #'  experiment. This argument defines how the experiment is structured, 
@@ -362,63 +362,63 @@
 #'  
 #' default: \code{time_line = c("Block", "Trial")}
 #' 
-#' @param L_choice [character]
+#' @param L_choice [string]
 #'  
 #' Column name of left choice. 
 #' 
 #'  default: \code{L_choice = "Left_Choice"}
 #' 
-#' @param R_choice [character] 
+#' @param R_choice [string] 
 #' 
 #' Column name of right choice. 
 #' 
 #' default: \code{R_choice = "Right_Choice"}
 #'  
-#' @param L_reward [character] 
+#' @param L_reward [string] 
 #' 
 #' Column name of the reward of left choice 
 #' 
 #' default: \code{L_reward = "Left_reward"}
 #' 
-#' @param R_reward [character] 
+#' @param R_reward [string] 
 #' 
 #' Column name of the reward of right choice 
 #' 
 #' default: \code{R_reward = "Right_reward"}
 #'  
-#' @param sub_choose [character] 
+#' @param sub_choose [string] 
 #' 
 #' Column name of choices made by the subject. 
 #' 
 #' default: \code{sub_choose = "Choose"}
 #' 
-#' @param rob_choose [character] 
+#' @param rob_choose [string] 
 #' 
 #' Column name of choices made by the model, which you could ignore. 
 #' 
 #' default: \code{rob_choose = "Rob_Choose"}
 #'  
-#' @param raw_cols [vector] 
+#' @param raw_cols [CharacterVector] 
 #' 
 #' Defaults to \code{NULL}. If left as \code{NULL}, it will directly capture 
 #'  all column names from the raw data.
 #' 
-#' @param var1 [character] 
+#' @param var1 [string] 
 #' 
 #' Column name of extra variable 1. If your model uses more than just reward 
 #'  and expected value, and you need other information, such as whether the 
 #'  choice frame is Gain or Loss, then you can input the 'Frame' column as 
 #'  var1 into the model.
 #'  
-#' default: \code{var1 = "Extra_Var1"}
+#' default: \code{var1 = NA_character_}
 #' 
-#' @param var2 [character] 
+#' @param var2 [string] 
 #' 
 #' Column name of extra variable 2. If one additional variable, var1, does not 
 #'  meet your needs, you can add another additional variable, var2, into your 
 #'  model.
 #'  
-#' default: \code{var2 = "Extra_Var2"}
+#' default: \code{var2 = NA_character_}
 #' 
 #' @param seed [integer] 
 #' 
@@ -439,11 +439,19 @@
 #'  
 #' default: \code{digits_2 = 5}
 #'
+#' @param engine [string]
+#' 
+#' - \code{"r"}: Use the pure R version of the code. 
+#' 
+#' - \code{"cpp"}: Use the Rcpp-optimized version. 
+#' 
+#' default: \code{engine = "cpp"}
+#'
 #' @returns 
 #' A list of class \code{binaryRL} containing the results of the model fitting.
 #'  
 #' @examples
-#' data <- binaryRL::Mason_2024_Exp1
+#' data <- binaryRL::Mason_2024_G2
 #' 
 #' binaryRL.res <- binaryRL::run_m(
 #'   mode = "replay",
@@ -469,7 +477,7 @@ run_m <- function(
 
   gamma = 1,
   eta,
-  initial_value = NA,
+  initial_value = NA_real_,
   threshold = 1,
   epsilon = NA,
   lambda = NA,
@@ -497,12 +505,13 @@ run_m <- function(
   sub_choose = "Sub_Choose",
   rob_choose = "Rob_Choose",
   raw_cols = NULL,
-  var1 = NA,
-  var2 = NA,
+  var1 = NA_character_,
+  var2 = NA_character_,
   
   seed = 123,
   digits_1 = 2,
-  digits_2 = 5
+  digits_2 = 5,
+  engine = "cpp"
 ){
   # 只有fit模式需要关心是否是on-policy还是off-policy
   if (mode == "fit") {
@@ -558,6 +567,13 @@ run_m <- function(
     options = step1[["options"]], 
     initial_value = initial_value
   )
+  
+  if (engine == "cpp") {
+    decision_making <- decision_making_cpp
+  }
+  else {
+    decision_making <- decision_making_r
+  }
   
   step5 <- decision_making(
     mode = mode,

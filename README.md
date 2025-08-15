@@ -173,10 +173,7 @@ For more robust parameter estimates, the package supports **Maximum A Posteriori
 
 For a full Bayesian analysis, you can perform **Markov Chain Monte Carlo (MCMC)** to characterize the entire posterior distribution, capturing a complete picture of parameter uncertainty.  
 
-- `rstan`: Requires rewriting the entire MDP model in Stan, which reduces the flexibility and ease-of-use that `binaryRL` aims to provide.  
-
-- `LaplacesDemon`: Offers a convenient interface for Bayesian inference directly on black-box functions ([example code](./articles/MCMC.html)). However, it runs slower compared to `rstan`.   
-
+- `LaplacesDemon` provides a convenient interface for performing MCMC on any black-box function. If you use `rstan`, you would need to rewrite the entire markov decision process. The core functions of `binaryRL` are implemented in `Rcpp`, which ensures that the package remains flexible and easy-to-use while running very efficiently. We provide an [example code](./articles/MCMC.html).  
+  
 *Note*:   
-1. With a small number of iterations, the results may be less accurate compared to standard MLE algorithms.   
-2. The runtime would be very long because `binaryRL` is fully written in R, an interpreted language with slower execution speed.   
+1. With a small number of iterations, the results may be less accurate compared to standard MLE algorithms.  

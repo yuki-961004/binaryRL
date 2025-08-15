@@ -170,7 +170,7 @@
 #' @examples
 #' \dontrun{
 #' binaryRL.res <- binaryRL::optimize_para(
-#'   data = Mason_2024_Exp2,
+#'   data = Mason_2024_G2,
 #'   id = 1,
 #'   n_params = 3,
 #'   n_trials = 360,

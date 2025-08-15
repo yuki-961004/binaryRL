@@ -1,7 +1,49 @@
+# r
+testthat::test_that("r", {
+  
+  data <- binaryRL::Mason_2024_G2
+  
+  binaryRL.res <- binaryRL::run_m(
+    mode = "replay",
+    data = data,
+    id = 18,
+    eta = c(0.321, 0.765),
+    tau = 0.5,
+    n_params = 3, 
+    n_trials = 360,
+    engine = "r"
+  )
+  
+  summary(binaryRL.res)
+  
+  testthat::expect_type(binaryRL.res, "list")
+})
+
+# cpp
+testthat::test_that("cpp", {
+  
+  data <- binaryRL::Mason_2024_G2
+  
+  binaryRL.res <- binaryRL::run_m(
+    mode = "replay",
+    data = data,
+    id = 18,
+    eta = c(0.321, 0.765),
+    tau = 0.5,
+    n_params = 3, 
+    n_trials = 360,
+    engine = "cpp"
+  )
+  
+  summary(binaryRL.res)
+  
+  testthat::expect_type(binaryRL.res, "list")
+})
+
 # initial value
 testthat::test_that("run_m() works with valid input", {
   
-  data <- binaryRL::Mason_2024_Exp2
+  data <- binaryRL::Mason_2024_G2
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
@@ -28,7 +70,7 @@ testthat::test_that("run_m() works with valid input", {
 # epsilon-first
 testthat::test_that("run_m() works with valid input", {
   
-  data <- binaryRL::Mason_2024_Exp2
+  data <- binaryRL::Mason_2024_G2
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
@@ -55,7 +97,7 @@ testthat::test_that("run_m() works with valid input", {
 # epsilon-greedy
 testthat::test_that("run_m() works with valid input", {
   
-  data <- binaryRL::Mason_2024_Exp2
+  data <- binaryRL::Mason_2024_G2
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
@@ -82,7 +124,7 @@ testthat::test_that("run_m() works with valid input", {
 # epsilon-decreasing
 testthat::test_that("run_m() works with valid input", {
 
-  data <- binaryRL::Mason_2024_Exp2
+  data <- binaryRL::Mason_2024_G2
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
@@ -109,7 +151,7 @@ testthat::test_that("run_m() works with valid input", {
 # UCB
 testthat::test_that("run_m() works with valid input", {
   
-  data <- binaryRL::Mason_2024_Exp2
+  data <- binaryRL::Mason_2024_G2
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
@@ -136,7 +178,7 @@ testthat::test_that("run_m() works with valid input", {
 # soft-max
 testthat::test_that("run_m() works with valid input", {
   
-  data <- binaryRL::Mason_2024_Exp2
+  data <- binaryRL::Mason_2024_G2
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",

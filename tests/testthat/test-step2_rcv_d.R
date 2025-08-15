@@ -2,7 +2,7 @@
 testthat::test_that("rcv_d() works with valid input", {
   
   recovery <- binaryRL::rcv_d(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     model_names = c("TD", "RSTD", "Utility"),
     simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
     simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
@@ -24,7 +24,7 @@ testthat::test_that("rcv_d() works with valid input", {
 testthat::test_that("rcv_d() works with valid input", {
   
   recovery <- binaryRL::rcv_d(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     model_names = c("TD", "RSTD", "Utility"),
     simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
     simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),

@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -159,7 +159,7 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <a href="./demo/DATA/binaryRL_data.html">Example Data</a><a class="anchor" aria-label="anchor" href="#example-data"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va">Mason_2024_Exp2</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="11%">
@@ -263,7 +263,7 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="reference/run_m.html">run_m</a></span><span class="op">(</span></span>
 <span>  mode <span class="op">=</span> <span class="st">"replay"</span>,</span>
-<span>  data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span>,</span>
+<span>  data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va">Mason_2024_Exp2</span>,</span>
 <span>  id <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  eta <span class="op">=</span> <span class="fl">0.5</span>, tau <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  n_params <span class="op">=</span> <span class="fl">2</span>, n_trials <span class="op">=</span> <span class="fl">360</span></span>
@@ -429,12 +429,11 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 </h2>
 <p>For a full Bayesian analysis, you can perform <strong>Markov Chain Monte Carlo (MCMC)</strong> to characterize the entire posterior distribution, capturing a complete picture of parameter uncertainty.</p>
 <ul>
-<li><p><code>rstan</code>: Requires rewriting the entire MDP model in Stan, which reduces the flexibility and ease-of-use that <code>binaryRL</code> aims to provide.</p></li>
-<li><p><code>LaplacesDemon</code>: Offers a convenient interface for Bayesian inference directly on black-box functions (<a href="./articles/MCMC.html">example code</a>). However, it runs slower compared to <code>rstan</code>.</p></li>
+<li>
+<code>LaplacesDemon</code> provides a convenient interface for performing MCMC on any black-box function. If you use <code>rstan</code>, you would need to rewrite the entire markov decision process. The core functions of <code>binaryRL</code> are implemented in <code>Rcpp</code>, which ensures that the package remains flexible and easy-to-use while running very efficiently. We provide an <a href="./articles/MCMC.html">example code</a>.</li>
 </ul>
 <p><em>Note</em>:<br>
-1. With a small number of iterations, the results may be less accurate compared to standard MLE algorithms.<br>
-2. The runtime would be very long because <code>binaryRL</code> is fully written in R, an interpreted language with slower execution speed.</p>
+1. With a small number of iterations, the results may be less accurate compared to standard MLE algorithms.</p>
 </div>
 </div>
 

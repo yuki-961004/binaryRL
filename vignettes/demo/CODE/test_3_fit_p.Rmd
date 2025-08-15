@@ -13,7 +13,7 @@ library(ggplot2)
 
 ```{r eval=FALSE}
 comparison <- binaryRL::fit_p(
-  data = binaryRL::Mason_2024_Exp2,
+  data = binaryRL::Mason_2024_G2,
   policy = c("off", "on"),
   model_name = c("TD", "RSTD", "Utility"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),

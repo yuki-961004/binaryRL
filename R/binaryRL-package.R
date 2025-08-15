@@ -6,10 +6,10 @@
 #'
 #' @section Example Data:
 #'  \itemize{
-#'    \item \code{\link[binaryRL]{Mason_2024_Exp1}}: 
-#'      Experiment 1 of Mason et al. (2024)
-#'    \item \code{\link[binaryRL]{Mason_2024_Exp2}}: 
-#'      Experiment 2 of Mason et al. (2024)
+#'    \item \code{\link[binaryRL]{Mason_2024_G1}}: 
+#'      Group 1 of Mason et al. (2024)
+#'    \item \code{\link[binaryRL]{Mason_2024_G2}}: 
+#'      Group 2 of Mason et al. (2024)
 #' }
 #'
 #' @section Steps:

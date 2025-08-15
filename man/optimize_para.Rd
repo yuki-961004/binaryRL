@@ -259,7 +259,7 @@ This is an internal helper function for \code{fit_p}. Its primary purpose
 \examples{
 \dontrun{
 binaryRL.res <- binaryRL::optimize_para(
-  data = binaryRL::Mason_2024_Exp2,
+  data = binaryRL::Mason_2024_G2,
   id = 1,
   obj_func = binaryRL::RSTD,
   n_params = 3,

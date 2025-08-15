@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../../../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,7 +96,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../../../reference/rpl_e.html">rpl_e</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span>,</span>
+<span>    data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_G2.html">Mason_2024_G2</a></span>,</span>
 <span>    result <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"../OUTPUT/result_comparison.csv"</span><span class="op">)</span>, </span>
 <span>    model <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/TD.html">TD</a></span>,</span>
 <span>    model_name <span class="op">=</span> <span class="st">"TD"</span>,</span>
@@ -111,7 +111,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">list</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../../../reference/rpl_e.html">rpl_e</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span>,</span>
+<span>    data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_G2.html">Mason_2024_G2</a></span>,</span>
 <span>    result <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"../OUTPUT/result_comparison.csv"</span><span class="op">)</span>, </span>
 <span>    model <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/RSTD.html">RSTD</a></span>,</span>
 <span>    model_name <span class="op">=</span> <span class="st">"RSTD"</span>, </span>
@@ -126,7 +126,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">list</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../../../reference/rpl_e.html">rpl_e</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span>,</span>
+<span>    data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_G2.html">Mason_2024_G2</a></span>,</span>
 <span>    result <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"../OUTPUT/result_comparison.csv"</span><span class="op">)</span>, </span>
 <span>    model <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Utility.html">Utility</a></span>,</span>
 <span>    param_prefix <span class="op">=</span> <span class="st">"param_"</span>,</span>
@@ -168,7 +168,7 @@ Plot Function
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">Subject</span>, <span class="va">Frame</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">plot</span><span class="op">[[</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span><span class="op">%&gt;%</span></span>
+<span><span class="va">plot</span><span class="op">[[</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_G2.html">Mason_2024_G2</a></span><span class="op">%&gt;%</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Frame</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gain"</span>,<span class="st">"Loss"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Block</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">Subject</span>, <span class="va">Frame</span>, <span class="va">Sub_Choose</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
@@ -279,7 +279,7 @@ Plot Function
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">Subject</span>, <span class="va">Frame</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">plot</span><span class="op">[[</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_Exp2.html">Mason_2024_Exp2</a></span> <span class="op">%&gt;%</span></span>
+<span><span class="va">plot</span><span class="op">[[</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_G2.html">Mason_2024_G2</a></span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Frame</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gain"</span>,<span class="st">"Loss"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">Subject</span>, <span class="va">Frame</span>, <span class="va">Block</span>, <span class="va">Sub_Choose</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>

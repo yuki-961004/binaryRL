@@ -27,7 +27,7 @@ fit_p(
 )
 }
 \arguments{
-\item{policy}{[character]
+\item{policy}{[string]
 
 Specifies the learning policy to be used.
 This determines how the model updates action values based on observed or
@@ -58,7 +58,7 @@ This determines how the model updates action values based on observed or
  
 default: \code{policy = "off"}}
 
-\item{estimate}{[character] 
+\item{estimate}{[string] 
 
   Estimation method. Can be either \code{"MLE"} or \code{"MAP"}.
   \itemize{
@@ -110,7 +110,7 @@ This data should include the following mandatory columns:
    \item \code{sub_choose} "Sub_Choose"
  }}
 
-\item{id}{[vector]
+\item{id}{[CharacterVector]
 
  A vector specifying the subject ID(s) for which parameters should be
   fitted. The function will process only the subjects provided in this
@@ -140,7 +140,7 @@ Represents the total number of trials a single subject experienced
  
  default: \code{n_trials = NULL}}
 
-\item{funcs}{[character]
+\item{funcs}{[CharacterVector]
 
 A character vector containing the names of all user-defined functions
  required for the computation. When parallel computation is enabled
@@ -160,31 +160,31 @@ Therefore, if you have created your own reinforcement learning model
  you must explicitly provide the names of your custom functions as a 
  vector here.}
 
-\item{model_name}{[list] 
+\item{model_name}{[List] 
 
 The name of fit modals
 
 e.g. \code{model_name = c("TD", "RSTD", "Utility")}}
 
-\item{fit_model}{[list] 
+\item{fit_model}{[List] 
 
 A collection of functions applied to fit models to the data.
 
 e.g. \code{fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility)}}
 
-\item{lower}{[list] 
+\item{lower}{[List] 
 
 The lower bounds for model fit models
 
 e.g. \code{lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))}}
 
-\item{upper}{[list] 
+\item{upper}{[List] 
 
 The upper bounds for model fit models
 
 e.g. \code{upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10))}}
 
-\item{priors}{[list]
+\item{priors}{[List]
 
  A list specifying the prior distributions for the model parameters.
   This argument is mandatory when using \code{estimate = "MAP"}.
@@ -230,7 +230,7 @@ e.g. \code{upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10))}}
 
  default: \code{priors = NULL}}
 
-\item{tolerance}{[numeric] 
+\item{tolerance}{[double] 
 
 Convergence threshold for MAP estimation. If the change in
  log posterior probability between iterations is smaller than this value, the
@@ -256,7 +256,7 @@ The maximum number of iterations for the Expectation-Maximization (EM)
 
  default: \code{iteration_g = 0}.}
 
-\item{initial_params}{[vector]
+\item{initial_params}{[NumericVector]
 
 Initial values for the free parameters that the optimization algorithm will
  search from. These are primarily relevant when using algorithms that require
@@ -300,7 +300,7 @@ parallel computation can significantly speed up the fitting process:
 
  \code{default: nc = 1}}
 
-\item{algorithm}{[character] 
+\item{algorithm}{[string] 
 
 Choose an algorithm package from
  \code{L-BFGS-B}, \code{GenSA},\code{GA},\code{DEoptim},\code{PSO},
@@ -382,8 +382,8 @@ The key differences are as follows:
 \examples{
 \dontrun{
 comparison <- binaryRL::fit_p(
-  data = binaryRL::Mason_2024_Exp2,
-  id = unique(binaryRL::Mason_2024_Exp2$Subject),
+  data = binaryRL::Mason_2024_G2,
+  id = unique(binaryRL::Mason_2024_G2$Subject),
 #+-----------------------------------------------------------------------------+#
 #|----------------------------- black-box function ----------------------------|#
   #funcs = c("your_funcs"),
