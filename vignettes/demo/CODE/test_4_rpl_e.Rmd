@@ -6,6 +6,10 @@ vignette: >
   %\VignetteIndexEntry{Step 4: rpl_e}
   %\VignetteEngine{knitr::rmarkdown}
 ---
+<p align="center">
+    <img src="../../fig/rl_step4.png" alt="Step 4" width="80%" style="display: inline;">
+</p>
+
 ## Replay the Experiment
 ```{r eval=FALSE}
 list <- list()

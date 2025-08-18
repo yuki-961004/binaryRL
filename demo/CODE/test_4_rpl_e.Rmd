@@ -7,15 +7,15 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 ## Replay the Experiment
-```{r eval=FALSE}
+```{r}
 list <- list()
 ```
 
 ### TD
-```{r eval=FALSE}
+```{r}
 list[[1]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::TD,
     model_name = "TD",
@@ -26,10 +26,10 @@ list[[1]] <- dplyr::bind_rows(
 ```
 
 ### RSTD
-```{r eval=FALSE}
+```{r}
 list[[2]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::RSTD,
     model_name = "RSTD", 
@@ -40,10 +40,10 @@ list[[2]] <- dplyr::bind_rows(
 ```
 
 ### Utility
-```{r eval=FALSE}
+```{r}
 list[[3]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
-    data = binaryRL::Mason_2024_Exp2,
+    data = binaryRL::Mason_2024_G2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::Utility,
     param_prefix = "param_",
@@ -56,9 +56,7 @@ list[[3]] <- dplyr::bind_rows(
 ## Plot
 ### Frame
 
-<details>
-<summary>Plot Function</summary>
-```{r eval=FALSE}
+```{r}
 plot <- list()
 
 model_name <- c("TD", "RSTD", "Utility")
@@ -82,7 +80,7 @@ for(i in 1:3){
     dplyr::arrange(Subject, Frame)
 }
 
-plot[[4]] <- binaryRL::Mason_2024_Exp2%>%
+plot[[4]] <- binaryRL::Mason_2024_G2%>%
     dplyr::filter(Frame %in% c("Gain","Loss")) %>%
     dplyr::filter(Block %in% c(4, 5, 6)) %>%
     dplyr::select(Subject, Frame, Sub_Choose) %>%
@@ -163,17 +161,10 @@ p
 
 rm(plot, p)
 ```
-</details>
-
-<p align="center">
-    <img src="../FIGURE/Exp_Effect(Frame).png" alt="RL Models" width="80%" style="display: inline;">
-</p>
 
 ### Block
 
-<details>
-<summary>Plot Function</summary>
-```{r eval=FALSE}
+```{r}
 plot <- list()
 
 model_name <- c("TD", "RSTD", "Utility")
@@ -196,7 +187,7 @@ for(i in 1:3){
     dplyr::arrange(Subject, Frame)
 }
 
-plot[[4]] <- binaryRL::Mason_2024_Exp2 %>%
+plot[[4]] <- binaryRL::Mason_2024_G2 %>%
     dplyr::filter(Frame %in% c("Gain","Loss")) %>%
     dplyr::select(Subject, Frame, Block, Sub_Choose) %>%
     dplyr::mutate(
@@ -273,8 +264,3 @@ p
 
 rm(plot, p)
 ```
-</details>
-
-<p align="center">
-    <img src="../FIGURE/Exp_Effect(Block).png" alt="RL Models" width="80%" style="display: inline;">
-</p>

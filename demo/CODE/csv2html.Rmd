@@ -82,14 +82,14 @@ df_to_html(
 ```{r}
 binaryRL.res <- binaryRL::run_m(
   mode = "replay",
-  data = binaryRL::Mason_2024_Exp2,
+  data = binaryRL::Mason_2024_G2,
   id = 1,
   eta = 0.5, tau = 0.5,
   n_params = 2, n_trials = 360
 )
 
 df_to_html(
-  input_data = binaryRL::Mason_2024_Exp2 %>% dplyr::filter(Subject == 1),
+  input_data = binaryRL::Mason_2024_G2 %>% dplyr::filter(Subject == 1),
   output_html_path = "../DATA/binaryRL_data.html",
   page_title = "Example Data",
   encoding = "UTF-8" # Or "GBK", "CP936"

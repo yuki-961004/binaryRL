@@ -6,6 +6,10 @@ vignette: >
   %\VignetteIndexEntry{Step 1: run_m}
   %\VignetteEngine{knitr::rmarkdown}
 ---
+<p align="center">
+    <img src="../../fig/rl_step1.png" alt="Step 1" width="80%" style="display: inline;">
+</p>
+
 ```{r}
 library(binaryRL)
 ```

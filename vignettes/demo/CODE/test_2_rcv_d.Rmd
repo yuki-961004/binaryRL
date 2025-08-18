@@ -6,6 +6,10 @@ vignette: >
   %\VignetteIndexEntry{Step 2: rcv_d}
   %\VignetteEngine{knitr::rmarkdown}
 ---
+<p align="center">
+    <img src="../../fig/rl_step2.png" alt="Step 2" width="80%" style="display: inline;">
+</p>
+
 ```{r include=FALSE}
 library(dplyr)
 library(ggplot2)
@@ -14,25 +18,27 @@ library(ggplot2)
 ```{r eval=FALSE}
 recovery <- binaryRL::rcv_d(
   data = binaryRL::Mason_2024_G2,
+  policy = c("off", "on"),
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
-  iteration_s = 50,
-  iteration_f = 50,
+  fit_upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
+  iteration_s = 100,
+  iteration_f = 100,
   seed = 123,
   nc = 16,
   #algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)
   #algorithm = "GenSA"        # Simulated Annealing (GenSA)
   #algorithm = "GA"           # Genetic Algorithm (GA)
-  algorithm = "DEoptim"      # Differential Evolution (DEoptim)
+  #algorithm = "DEoptim"      # Differential Evolution (DEoptim)
   #algorithm = "PSO"          # Particle Swarm Optimization (pso)
   #algorithm = "Bayesian"     # Bayesian Optimization (mlrMBO)
   #algorithm = "CMA-ES"       # Covariance Matrix Adapting (cmaes)
-  #algorithm = "NLOPT_GN_MLSL"# Nonlinear Optimization (nloptr)
+  # Nonlinear Optimization (nloptr)
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 
 result <- dplyr::bind_rows(recovery) %>%
@@ -223,13 +229,13 @@ plot_param_rcv(
 ```
 
 <p align="center">
-  <img src="../FIGURE/param_rcv/lower_0/1_TD_eta.png" alt="TD_eta" width="30%" style="display: inline;">
-  <img src="../FIGURE/param_rcv/lower_0/3_Utility_eta.png" alt="Utility_eta" width="30%" style="display: inline;">
+  <img src="../FIGURE/tau_0/1_TD_eta.png" alt="TD_eta" width="30%" style="display: inline;">
+  <img src="../FIGURE/tau_0/3_Utility_eta.png" alt="Utility_eta" width="30%" style="display: inline;">
 </p>
 
 <p align="center">
-  <img src="../FIGURE/param_rcv/lower_0/2_RSTD_eta1.png" alt="RSTD_eta1" width="30%" style="display: inline;">
-  <img src="../FIGURE/param_rcv/lower_0/2_RSTD_eta2.png" alt="RSTD_eta2" width="30%" style="display: inline;">
+  <img src="../FIGURE/tau_0/2_RSTD_eta1.png" alt="RSTD_eta1" width="30%" style="display: inline;">
+  <img src="../FIGURE/tau_0/2_RSTD_eta2.png" alt="RSTD_eta2" width="30%" style="display: inline;">
 </p>
 
 ```{r}
@@ -265,7 +271,7 @@ plot_param_rcv(
 ```
 
 <p align="center">
-  <img src="../FIGURE/param_rcv/lower_0/3_Utility_gamma.png" alt="RL Models" width="30%" style="display: inline;">
+  <img src="../FIGURE/tau_0/3_Utility_gamma.png" alt="RL Models" width="30%" style="display: inline;">
 </p>
 
 ```{r}
@@ -308,9 +314,9 @@ plot_param_rcv(
 ```
 
 <p align="center">
-  <img src="../FIGURE/param_rcv/lower_0/1_TD_tau.png" alt="TD_tau" width="30%" style="display: inline;">
-  <img src="../FIGURE/param_rcv/lower_0/2_RSTD_tau.png" alt="RSTD_tau" width="30%" style="display: inline;">
-  <img src="../FIGURE/param_rcv/lower_0/3_Utility_tau.png" alt="Utility_tau" width="30%" style="display: inline;">
+  <img src="../FIGURE/tau_0/1_TD_tau.png" alt="TD_tau" width="30%" style="display: inline;">
+  <img src="../FIGURE/tau_0/2_RSTD_tau.png" alt="RSTD_tau" width="30%" style="display: inline;">
+  <img src="../FIGURE/tau_0/3_Utility_tau.png" alt="Utility_tau" width="30%" style="display: inline;">
 </p>
 
 ```{r}
@@ -448,6 +454,6 @@ plot_model_rcv(
 ```
 
 <p align="center">
-    <img src="../FIGURE/model_rcv/lower_0/matrix_confusion.png" alt="confusion_matrix" width="45%" style="display: inline;">
-    <img src="../FIGURE/model_rcv/lower_0/matrix_inversion.png" alt="inversion_matrix" width="45%" style="display: inline;">
+    <img src="../FIGURE/tau_0/matrix_confusion.png" alt="confusion_matrix" width="45%" style="display: inline;">
+    <img src="../FIGURE/tau_0/matrix_inversion.png" alt="inversion_matrix" width="45%" style="display: inline;">
 </p>

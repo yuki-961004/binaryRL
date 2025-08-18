@@ -13,37 +13,39 @@ library(ggplot2)
 
 ```{r eval=FALSE}
 comparison <- binaryRL::fit_p(
-  data = binaryRL::Mason_2024_Exp2,
+  policy = "on",
+  data = binaryRL::Mason_2024_G2,
   n_trials = 360,
-  id = unique(binaryRL::Mason_2024_Exp2$Subject),
+  id = unique(binaryRL::Mason_2024_G2$Subject),
   model_name = c("TD", "RSTD", "Utility"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   estimate = "MLE",
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
   upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
   priors = NULL,
-  iteration_i = 50,
+  iteration_i = 100,
   #iteration_g = 10,
   seed = 123,
   nc = 16,
   #algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)
   #algorithm = "GenSA"        # Simulated Annealing (GenSA::GenSA)
   #algorithm = "GA"           # Genetic Algorithm (GA::ga)
-  algorithm = "DEoptim"      # Differential Evolution (DEoptim::DEoptim)
+  #algorithm = "DEoptim"      # Differential Evolution (DEoptim::DEoptim)
   #algorithm = "PSO"          # Particle Swarm Optimization (pso::psoptim)
   #algorithm = "Bayesian"     # Bayesian Optimization (mlrMBO::mbo)
   #algorithm = "CMA-ES"       # Covariance Matrix Adapting (`cmaes::cma_es`)
-  #algorithm = "NLOPT_GN_MLSL"# Nonlinear Optimization (nloptr::nloptr)
+  # Nonlinear Optimization (nloptr::nloptr)
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 
 result <- dplyr::bind_rows(comparison)
 
-write.csv(result, "../OUTPUT/result_comparison(DEoptim).csv", row.names = FALSE)
+write.csv(result, "../OUTPUT/nloptr_on_result_comparison.csv", row.names = FALSE)
 ```
 
 ## Plot
 ### Read Result
-```{r eval=FALSE}
+```{r}
 data <- read.csv("../OUTPUT/result_comparison.csv") %>%
   dplyr::select(-dplyr::starts_with("param_")) %>%
   tidyr::pivot_longer(
@@ -70,9 +72,7 @@ data <- read.csv("../OUTPUT/result_comparison.csv") %>%
 
 ### Absolute
 
-<details>
-<summary>Plot Function</summary>
-```{r eval=FALSE}
+```{r}
 #| label: model_comparison(abs)
 #| fig.alt: "Model Comparison (absolute)"
 #| 
@@ -89,8 +89,8 @@ plots <- data %>%
       ggplot2::labs(x = "", y = "", title = .x$metric[1]) +
       ggplot2::coord_cartesian(
         ylim = c(
-          mean(.x$value) - 0.7*sd(.x$value), 
-          mean(.x$value) + 0.7*sd(.x$value))
+          mean(.x$value) - 0.3*sd(.x$value), 
+          mean(.x$value) + 0.3*sd(.x$value))
       ) +
       papaja::theme_apa() +
       ggplot2::theme(
@@ -125,17 +125,11 @@ ggplot2::ggsave(
 
 plot
 ```
-</details>
 
-<p align="center">
-    <img src="../FIGURE/model_comparison(abs).png" alt="RL Models" width="90%" style="display: inline;">
-</p>
 
 ### Relative
 
-<details>
-<summary>Plot Function</summary>
-```{r eval=FALSE}
+```{r}
 #| label: model_comparison(rel)
 #| fig.alt: "Model Comparison (relative)"
 #| 
@@ -155,10 +149,10 @@ plot <- ggplot2::ggplot(data, aes(x = metric, y = value_norm, fill = fit_model))
     plot.margin = margin(t = 5, r = 0, b = 0, l = 0),
     plot.title = element_text(
       family = "serif", face = "bold",
-      size = 25, hjust = -1.4
+      size = 25, hjust = -0.5
     ),
     legend.title = element_blank(),
-    legend.position.inside = c(0.8, 0.75),  
+    legend.position = c(0.8, 0.75),  
     legend.justification = c(0, 0), 
     text = element_text(
       family = "serif", 
@@ -181,8 +175,4 @@ ggplot2::ggsave(
 
 plot
 ```
-</details>
 
-<p align="center">
-    <img src="../FIGURE/model_comparison(rel).png" alt="RL Models" width="90%" style="display: inline;">
-</p>

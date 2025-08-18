@@ -9,6 +9,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+**The final optimal parameters are influenced by a variety of factors, including the number of iterations, the specific algorithm (e.g., DEoptim, Bayesian), the policy (on or off), and the estimation method (e.g., MLE, MAP, MCMC).**
+
+**The following results are a demo only, based on an on-policy approach using Maximum Likelihood Estimation (MLE). The global optimization algorithm used was "NLOPT_GN_MLSL", and the local optimization algorithm was "NLOPT_LN_BOBYQA".**
+
+---
+
 *In tasks with small, finite state sets (e.g. TAFC tasks in psychology), all states, actions, and their corresponding rewards could be recorded in tables.*  
 
 - Sutton & Barto [(2018)](https://mitpress.mit.edu/9780262039246/reinforcement-learning/) call this kind of scenario as the **tabular case** and the corresponding methods as **tabular methods**.  
@@ -477,6 +483,7 @@ recovery <- binaryRL::rcv_d(
 # ╔═══════════════════════════════════════════════════════════════════════════╗ #
 # ║ --------------------------- black-box function -------------------------- ║ #
   #funcs = c("your_funcs"),
+  policy = c("off", "on"),
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
@@ -490,7 +497,7 @@ recovery <- binaryRL::rcv_d(
 # ║ ------------------------------- algorithms ------------------------------ ║ #
   nc = 1,                  # <nc > 1>: parallel computation across subjects
   # Base R Optimization    
-  algorithm = "L-BFGS-B"   # Gradient-Based (stats)
+  #algorithm = "L-BFGS-B"   # Gradient-Based (stats)
 # ║ ------------------------------------------------------------------------- ║ #
   # Specialized External Optimization
   #algorithm = "GenSA"     # Simulated Annealing (GenSA)
@@ -501,7 +508,7 @@ recovery <- binaryRL::rcv_d(
   #algorithm = "CMA-ES"    # Covariance Matrix Adapting (cmaes)
 # ║ ------------------------------------------------------------------------- ║ #
   # Optimization Library (nloptr)
-  #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 # ║ ------------------------------- algorithms ------------------------------ ║ #
 # ╚═══════════════════════════════════════════════════════════════════════════╝ # 
 )
@@ -528,16 +535,16 @@ Check the Example Result: [result_recovery.csv](./demo/OUTPUT/result_recovery.ht
 <!---------------------------------------------------------->
 
 <p align="center">
-    <img src="./demo/FIGURE/param_rcv/lower_0/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./demo/FIGURE/param_rcv/lower_0/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/tau_0/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/tau_0/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
 </p>
 
 The value of the softmax parameter $\tau$ affects the recovery of other parameters in the model. Under the assumption that $\tau \sim \text{Exp}(1)$, adding 1 to all $\tau$ values improves the recovery of the learning rate  $\eta$, but decreases the recovery accuracy of  $\tau$ itself.
 
 
 <p align="center">
-    <img src="./demo/FIGURE/param_rcv/lower_1/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./demo/FIGURE/param_rcv/lower_1/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/tau_1/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/tau_1/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
 </p>
 
 <!---------------------------------------------------------->
@@ -549,15 +556,15 @@ The value of the softmax parameter $\tau$ affects the recovery of other paramete
 <!---------------------------------------------------------->
 
 <p align="center">
-    <img src="./demo/FIGURE/model_rcv/lower_0/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./demo/FIGURE/model_rcv/lower_0/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/tau_0/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/tau_0/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
 </p>
 
 > "In panel B, all of the softmax parameters $b$ and $b_{c}$ were increased by 1. This has the effect of reducing the amount of noise in the behavior, which makes the models more easily identifiable and the corresponding confusion matrix more diagonal."
 
 <p align="center">
-    <img src="./demo/FIGURE/model_rcv/lower_1/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./demo/FIGURE/model_rcv/lower_1/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/tau_1/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/tau_1/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
 </p>
 
 <!---------------------------------------------------------->
@@ -607,7 +614,7 @@ comparison <- binaryRL::fit_p(
 # ║ ------------------------------- algorithms ------------------------------ ║ #
   nc = 1,                  # <nc > 1>: parallel computation across subjects
   # Base R Optimization  
-  algorithm = "L-BFGS-B"   # Gradient-Based (stats)
+  #algorithm = "L-BFGS-B"   # Gradient-Based (stats)
 # ║ ------------------------------------------------------------------------- ║ #
   # Specialized External Optimization
   #algorithm = "GenSA"     # Simulated Annealing (GenSA)
@@ -618,7 +625,7 @@ comparison <- binaryRL::fit_p(
   #algorithm = "CMA-ES"    # Covariance Matrix Adapting (cmaes)
 # ║ ------------------------------------------------------------------------- ║ #
   # Optimization Library (nloptr)
-  #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 # ║ ------------------------------- algorithms ------------------------------ ║ #
 # ╚═══════════════════════════════════════════════════════════════════════════╝ # 
 )

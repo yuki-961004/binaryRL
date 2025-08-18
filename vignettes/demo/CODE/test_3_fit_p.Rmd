@@ -6,6 +6,10 @@ vignette: >
   %\VignetteIndexEntry{Step 3: fit_p}
   %\VignetteEngine{knitr::rmarkdown}
 ---
+<p align="center">
+    <img src="../../fig/rl_step3.png" alt="Step 4" width="80%" style="display: inline;">
+</p>
+
 ```{r include=FALSE}
 library(dplyr)
 library(ggplot2)
@@ -36,18 +40,19 @@ comparison <- binaryRL::fit_p(
       tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
     )
   ),
-  iteration_i = 10,
+  iteration_i = 100,
   iteration_g = 10,
   seed = 123,
   nc = 16,
   #algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)
   #algorithm = "GenSA"        # Simulated Annealing (GenSA::GenSA)
   #algorithm = "GA"           # Genetic Algorithm (GA::ga)
-  algorithm = "DEoptim"      # Differential Evolution (DEoptim::DEoptim)
+  #algorithm = "DEoptim"      # Differential Evolution (DEoptim::DEoptim)
   #algorithm = "PSO"          # Particle Swarm Optimization (pso::psoptim)
   #algorithm = "Bayesian"     # Bayesian Optimization (mlrMBO::mbo)
   #algorithm = "CMA-ES"       # Covariance Matrix Adapting (`cmaes::cma_es`)
-  #algorithm = "NLOPT_GN_MLSL"# Nonlinear Optimization (nloptr::nloptr)
+  # Nonlinear Optimization (nloptr::nloptr)
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 
 result <- dplyr::bind_rows(comparison)

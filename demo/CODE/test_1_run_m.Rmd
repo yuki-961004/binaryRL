@@ -18,7 +18,7 @@ head(binaryRL::Mason_2024_Exp2)
 
 ```{r}
 binaryRL.res <- binaryRL::run_m(
-  data = binaryRL::Mason_2024_Exp2,                    
+  data = binaryRL::Mason_2024_G2,                    
   id = 1,                       
   eta = c(0.123),  
   tau = c(0.789),
@@ -35,7 +35,7 @@ summary(binaryRL.res)
 
 ```{r}
 binaryRL.res <- binaryRL::run_m(
-  data = binaryRL::Mason_2024_Exp2,
+  data = binaryRL::Mason_2024_G2,
   id = 1,
   n_params = 3,
   n_trials = 360,
@@ -52,7 +52,7 @@ summary(binaryRL.res)
 
 ```{r}
 binaryRL.res <- binaryRL::run_m(
-  data = binaryRL::Mason_2024_Exp2,
+  data = binaryRL::Mason_2024_G2,
   id = 1,
   n_params = 3,
   n_trials = 360,
@@ -101,7 +101,7 @@ func_prospect <- function(
 ```{r}
 binaryRL.res <- binaryRL::run_m(
   name = "Prospect",
-  data = binaryRL::Mason_2024_Exp2,
+  data = binaryRL::Mason_2024_G2,
   id = 1,
   n_params = 5,
   n_trials = 360,

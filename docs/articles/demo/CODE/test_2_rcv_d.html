@@ -85,28 +85,32 @@
 
     
     
+<p align="center">
+<img src="../../fig/rl_step2.png" alt="Step 2" width="80%" style="display: inline;"></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">recovery</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../../../reference/rcv_d.html">rcv_d</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_G2.html">Mason_2024_G2</a></span>,</span>
+<span>  policy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"off"</span>, <span class="st">"on"</span><span class="op">)</span>,</span>
 <span>  model_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TD"</span>, <span class="st">"RSTD"</span>, <span class="st">"Utility"</span><span class="op">)</span>,</span>
 <span>  simulate_models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Utility.html">Utility</a></span><span class="op">)</span>,</span>
 <span>  simulate_lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  simulate_upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  fit_models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/TD.html">TD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/RSTD.html">RSTD</a></span>, <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Utility.html">Utility</a></span><span class="op">)</span>,</span>
 <span>  fit_lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  fit_upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  iteration_s <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>  iteration_f <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  fit_upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  iteration_s <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  iteration_f <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">123</span>,</span>
 <span>  nc <span class="op">=</span> <span class="fl">16</span>,</span>
 <span>  <span class="co">#algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)</span></span>
 <span>  <span class="co">#algorithm = "GenSA"        # Simulated Annealing (GenSA)</span></span>
 <span>  <span class="co">#algorithm = "GA"           # Genetic Algorithm (GA)</span></span>
-<span>  algorithm <span class="op">=</span> <span class="st">"DEoptim"</span>      <span class="co"># Differential Evolution (DEoptim)</span></span>
+<span>  <span class="co">#algorithm = "DEoptim"      # Differential Evolution (DEoptim)</span></span>
 <span>  <span class="co">#algorithm = "PSO"          # Particle Swarm Optimization (pso)</span></span>
 <span>  <span class="co">#algorithm = "Bayesian"     # Bayesian Optimization (mlrMBO)</span></span>
 <span>  <span class="co">#algorithm = "CMA-ES"       # Covariance Matrix Adapting (cmaes)</span></span>
-<span>  <span class="co">#algorithm = "NLOPT_GN_MLSL"# Nonlinear Optimization (nloptr)</span></span>
+<span>  <span class="co"># Nonlinear Optimization (nloptr)</span></span>
+<span>  algorithm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NLOPT_GN_MLSL"</span>, <span class="st">"NLOPT_LN_BOBYQA"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">recovery</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
@@ -290,29 +294,29 @@ Plot Function
 <span>  filename <span class="op">=</span> <span class="st">"../FIGURE/3_Utility_eta.png"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p align="center">
-<img src="../FIGURE/param_rcv/lower_0/1_TD_eta.png" alt="TD_eta" width="30%" style="display: inline;"><img src="../FIGURE/param_rcv/lower_0/3_Utility_eta.png" alt="Utility_eta" width="30%" style="display: inline;"></p>
+<img src="../FIGURE/tau_0/1_TD_eta.png" alt="TD_eta" width="30%" style="display: inline;"><img src="../FIGURE/tau_0/3_Utility_eta.png" alt="Utility_eta" width="30%" style="display: inline;"></p>
 <p align="center">
-<img src="../FIGURE/param_rcv/lower_0/2_RSTD_eta1.png" alt="RSTD_eta1" width="30%" style="display: inline;"><img src="../FIGURE/param_rcv/lower_0/2_RSTD_eta2.png" alt="RSTD_eta2" width="30%" style="display: inline;"></p>
+<img src="../FIGURE/tau_0/2_RSTD_eta1.png" alt="RSTD_eta1" width="30%" style="display: inline;"><img src="../FIGURE/tau_0/2_RSTD_eta2.png" alt="RSTD_eta2" width="30%" style="display: inline;"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"../OUTPUT/result_recovery.csv"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">simulate_model</span> <span class="op">==</span> <span class="va">fit_model</span> <span class="op">&amp;</span> <span class="va">simulate_model</span> <span class="op">==</span> <span class="st">"TD"</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">input_param_1</span>, <span class="va">data</span><span class="op">$</span><span class="va">output_param_1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.9446348</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.5977208</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"../OUTPUT/result_recovery.csv"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">simulate_model</span> <span class="op">==</span> <span class="va">fit_model</span> <span class="op">&amp;</span> <span class="va">simulate_model</span> <span class="op">==</span> <span class="st">"RSTD"</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">input_param_1</span>, <span class="va">data</span><span class="op">$</span><span class="va">output_param_1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4363978</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.08003312</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"../OUTPUT/result_recovery.csv"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">simulate_model</span> <span class="op">==</span> <span class="va">fit_model</span> <span class="op">&amp;</span> <span class="va">simulate_model</span> <span class="op">==</span> <span class="st">"RSTD"</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">input_param_2</span>, <span class="va">data</span><span class="op">$</span><span class="va">output_param_2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.8940345</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.3986268</span></span></code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"../OUTPUT/result_recovery.csv"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">simulate_model</span> <span class="op">==</span> <span class="va">fit_model</span> <span class="op">&amp;</span> <span class="va">simulate_model</span> <span class="op">==</span> <span class="st">"Utility"</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">input_param_1</span>, <span class="va">data</span><span class="op">$</span><span class="va">output_param_1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.8092457</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.3530222</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="gamma">gamma<a class="anchor" aria-label="anchor" href="#gamma"></a>
@@ -326,12 +330,12 @@ Plot Function
 <span>  filename <span class="op">=</span> <span class="st">"../FIGURE/3_Utility_gamma.png"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p align="center">
-<img src="../FIGURE/param_rcv/lower_0/3_Utility_gamma.png" alt="RL Models" width="30%" style="display: inline;"></p>
+<img src="../FIGURE/tau_0/3_Utility_gamma.png" alt="RL Models" width="30%" style="display: inline;"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"../OUTPUT/result_recovery.csv"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">simulate_model</span> <span class="op">==</span> <span class="va">fit_model</span> <span class="op">&amp;</span> <span class="va">simulate_model</span> <span class="op">==</span> <span class="st">"Utility"</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">input_param_2</span>, <span class="va">data</span><span class="op">$</span><span class="va">output_param_2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.8465714</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6326211</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="tau">tau<a class="anchor" aria-label="anchor" href="#tau"></a>
@@ -364,22 +368,22 @@ Plot Function
 <span>  filename <span class="op">=</span> <span class="st">"../FIGURE/3_Utility_tau.png"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p align="center">
-<img src="../FIGURE/param_rcv/lower_0/1_TD_tau.png" alt="TD_tau" width="30%" style="display: inline;"><img src="../FIGURE/param_rcv/lower_0/2_RSTD_tau.png" alt="RSTD_tau" width="30%" style="display: inline;"><img src="../FIGURE/param_rcv/lower_0/3_Utility_tau.png" alt="Utility_tau" width="30%" style="display: inline;"></p>
+<img src="../FIGURE/tau_0/1_TD_tau.png" alt="TD_tau" width="30%" style="display: inline;"><img src="../FIGURE/tau_0/2_RSTD_tau.png" alt="RSTD_tau" width="30%" style="display: inline;"><img src="../FIGURE/tau_0/3_Utility_tau.png" alt="Utility_tau" width="30%" style="display: inline;"></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"../OUTPUT/result_recovery.csv"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">simulate_model</span> <span class="op">==</span> <span class="va">fit_model</span> <span class="op">&amp;</span> <span class="va">simulate_model</span> <span class="op">==</span> <span class="st">"TD"</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">input_param_2</span>, <span class="va">data</span><span class="op">$</span><span class="va">output_param_2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.2000658</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.5260664</span></span></code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"../OUTPUT/result_recovery.csv"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">simulate_model</span> <span class="op">==</span> <span class="va">fit_model</span> <span class="op">&amp;</span> <span class="va">simulate_model</span> <span class="op">==</span> <span class="st">"RSTD"</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">input_param_3</span>, <span class="va">data</span><span class="op">$</span><span class="va">output_param_3</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.2624495</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4802545</span></span></code></pre>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"../OUTPUT/result_recovery.csv"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">simulate_model</span> <span class="op">==</span> <span class="va">fit_model</span> <span class="op">&amp;</span> <span class="va">simulate_model</span> <span class="op">==</span> <span class="st">"Utility"</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">input_param_3</span>, <span class="va">data</span><span class="op">$</span><span class="va">output_param_3</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.2313933</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4063158</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -495,7 +499,7 @@ Plot Function
 <span>  filename <span class="op">=</span> <span class="st">"../FIGURE/matrix_inversion.png"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p align="center">
-<img src="../FIGURE/model_rcv/lower_0/matrix_confusion.png" alt="confusion_matrix" width="45%" style="display: inline;"><img src="../FIGURE/model_rcv/lower_0/matrix_inversion.png" alt="inversion_matrix" width="45%" style="display: inline;"></p>
+<img src="../FIGURE/tau_0/matrix_confusion.png" alt="confusion_matrix" width="45%" style="display: inline;"><img src="../FIGURE/tau_0/matrix_inversion.png" alt="inversion_matrix" width="45%" style="display: inline;"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

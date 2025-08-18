@@ -12,43 +12,53 @@ library(ggplot2)
 ```
 
 ```{r eval=FALSE}
+policy <- "off"
+lower <- list(c(0, 0), c(0, 0, 0), c(0, 0, 0))
+algorithm <- "(nloptr)"
+
 recovery <- binaryRL::rcv_d(
-  policy = "off",
-  data = binaryRL::Mason_2024_Exp2,
+  policy = policy,
+  data = binaryRL::Mason_2024_G2,
   id = 1,
-  n_trials = 360,
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  simulate_lower = lower,
   simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  fit_lower = lower,
   fit_upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
   iteration_s = 100,
-  iteration_f = 50,
+  iteration_f = 100,
   seed = 123,
-  nc = 10,
+  nc = 16,
   #algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)
   #algorithm = "GenSA"        # Simulated Annealing (GenSA)
   #algorithm = "GA"           # Genetic Algorithm (GA)
-  algorithm = "DEoptim"      # Differential Evolution (DEoptim)
+  #algorithm = "DEoptim"      # Differential Evolution (DEoptim)
   #algorithm = "PSO"          # Particle Swarm Optimization (pso)
   #algorithm = "Bayesian"     # Bayesian Optimization (mlrMBO)
   #algorithm = "CMA-ES"       # Covariance Matrix Adapting (cmaes)
-  #algorithm = "NLOPT_GN_MLSL"# Nonlinear Optimization (nloptr)
+  # Nonlinear Optimization (nloptr)
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 
 result <- dplyr::bind_rows(recovery) %>%
   dplyr::select(simulate_model, fit_model, iteration, everything())
 
-write.csv(result, file = "../OUTPUT/result_recovery.csv", row.names = FALSE)
+path <- paste0(
+  "../OUTPUT/result_recovery", 
+  algorithm, "_", 
+  policy, "_", 
+  lower[[1]][[2]],
+  ".csv"
+)
+
+write.csv(result, file = path, row.names = FALSE)
 ```
 
 ## Parameter Recovery
 
-<details>
-<summary>Plot Function</summary>
-```{r eval=FALSE}
+```{r}
 plot_param_rcv <- function(
   data = read.csv("../OUTPUT/result_recovery.csv"),
   model,
@@ -185,10 +195,9 @@ plot_param_rcv <- function(
   return(plot)
 }
 ```
-</details>
 
 ### eta
-```{r eval=FALSE}
+```{r}
 #| label: plot_eta
 #| fig.alt: "plot input eta and output eta"
 #| 
@@ -225,16 +234,6 @@ plot_param_rcv(
 )
 ```
 
-<p align="center">
-  <img src="../FIGURE/param_rcv/lower_0/1_TD_eta.png" alt="TD_eta" width="30%" style="display: inline;">
-  <img src="../FIGURE/param_rcv/lower_0/3_Utility_eta.png" alt="Utility_eta" width="30%" style="display: inline;">
-</p>
-
-<p align="center">
-  <img src="../FIGURE/param_rcv/lower_0/2_RSTD_eta1.png" alt="RSTD_eta1" width="30%" style="display: inline;">
-  <img src="../FIGURE/param_rcv/lower_0/2_RSTD_eta2.png" alt="RSTD_eta2" width="30%" style="display: inline;">
-</p>
-
 ```{r}
 data <- read.csv("../OUTPUT/result_recovery.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "TD") 
@@ -254,7 +253,7 @@ cor(data$input_param_1, data$output_param_1)
 ```
 
 ### gamma
-```{r eval=FALSE}
+```{r}
 #| label: plot_gamma
 #| fig.alt: "plot input gamma and output gamma"
 #| 
@@ -267,10 +266,6 @@ plot_param_rcv(
 )
 ```
 
-<p align="center">
-  <img src="../FIGURE/param_rcv/lower_0/3_Utility_gamma.png" alt="RL Models" width="30%" style="display: inline;">
-</p>
-
 ```{r}
 data <- read.csv("../OUTPUT/result_recovery.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "Utility") 
@@ -278,7 +273,7 @@ cor(data$input_param_2, data$output_param_2)
 ```
 
 ### tau
-```{r eval=FALSE}
+```{r}
 #| label: plot_tau
 #| fig.alt: "plot input tau and output tau"
 #| 
@@ -310,12 +305,6 @@ plot_param_rcv(
 )
 ```
 
-<p align="center">
-  <img src="../FIGURE/param_rcv/lower_0/1_TD_tau.png" alt="TD_tau" width="30%" style="display: inline;">
-  <img src="../FIGURE/param_rcv/lower_0/2_RSTD_tau.png" alt="RSTD_tau" width="30%" style="display: inline;">
-  <img src="../FIGURE/param_rcv/lower_0/3_Utility_tau.png" alt="Utility_tau" width="30%" style="display: inline;">
-</p>
-
 ```{r}
 data <- read.csv("../OUTPUT/result_recovery.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "TD") 
@@ -331,10 +320,8 @@ cor(data$input_param_3, data$output_param_3)
 ```
 
 ## Model Recovery
-<details>
-<summary>Plot Function</summary>
 
-```{r eval=FALSE}
+```{r}
 plot_model_rcv <- function(
   data = read.csv("../OUTPUT/result_recovery.csv"),
   matrix_type,
@@ -431,9 +418,7 @@ plot_model_rcv <- function(
 }
 ```
 
-</details>
-
-```{r eval=FALSE}
+```{r}
 #| label: model_recovery
 #| fig.alt: "confusion matrix and inversion matrix"
 #| 
@@ -450,7 +435,3 @@ plot_model_rcv(
 )
 ```
 
-<p align="center">
-    <img src="../FIGURE/model_rcv/lower_0/matrix_confusion.png" alt="confusion_matrix" width="45%" style="display: inline;">
-    <img src="../FIGURE/model_rcv/lower_0/matrix_inversion.png" alt="inversion_matrix" width="45%" style="display: inline;">
-</p>

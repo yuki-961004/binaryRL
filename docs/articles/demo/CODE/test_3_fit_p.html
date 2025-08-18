@@ -85,6 +85,8 @@
 
     
     
+<p align="center">
+<img src="../../fig/rl_step3.png" alt="Step 4" width="80%" style="display: inline;"></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">comparison</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="../../../reference/fit_p.html">fit_p</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../../../reference/Mason_2024_G2.html">Mason_2024_G2</a></span>,</span>
@@ -110,18 +112,19 @@
 <span>      tau <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">dexp</a></span><span class="op">(</span><span class="va">x</span>, rate <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">}</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  iteration_i <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  iteration_i <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  iteration_g <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">123</span>,</span>
 <span>  nc <span class="op">=</span> <span class="fl">16</span>,</span>
 <span>  <span class="co">#algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)</span></span>
 <span>  <span class="co">#algorithm = "GenSA"        # Simulated Annealing (GenSA::GenSA)</span></span>
 <span>  <span class="co">#algorithm = "GA"           # Genetic Algorithm (GA::ga)</span></span>
-<span>  algorithm <span class="op">=</span> <span class="st">"DEoptim"</span>      <span class="co"># Differential Evolution (DEoptim::DEoptim)</span></span>
+<span>  <span class="co">#algorithm = "DEoptim"      # Differential Evolution (DEoptim::DEoptim)</span></span>
 <span>  <span class="co">#algorithm = "PSO"          # Particle Swarm Optimization (pso::psoptim)</span></span>
 <span>  <span class="co">#algorithm = "Bayesian"     # Bayesian Optimization (mlrMBO::mbo)</span></span>
 <span>  <span class="co">#algorithm = "CMA-ES"       # Covariance Matrix Adapting (`cmaes::cma_es`)</span></span>
-<span>  <span class="co">#algorithm = "NLOPT_GN_MLSL"# Nonlinear Optimization (nloptr::nloptr)</span></span>
+<span>  <span class="co"># Nonlinear Optimization (nloptr::nloptr)</span></span>
+<span>  algorithm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NLOPT_GN_MLSL"</span>, <span class="st">"NLOPT_LN_BOBYQA"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">comparison</span><span class="op">)</span></span>
