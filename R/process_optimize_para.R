@@ -297,7 +297,7 @@ optimize_para <- function(
   
   # 设定初始值
   if (is.na(initial_params)){
-    initial_params <- c(rep(1e-2, n_params))
+    initial_params <- lower + 1e-2
   }
   
   set.seed(seed)

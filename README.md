@@ -80,7 +80,7 @@ Mason, A., Ludvig, E. A., Spetch, M. L., & Madan, C. R. (2024). Rare and extreme
 ## [Example Data](./demo/DATA/binaryRL_data.html)
 
 ```r
-head(binaryRL::Mason_2024_Exp2)
+head(binaryRL::Mason_2024_G2)
 ```
 
 | Subject | Block | Trial | L_choice | R_choice | L_reward | R_reward | Sub_Choose | - |
@@ -111,7 +111,7 @@ head(binaryRL::Mason_2024_Exp2)
 ```r
 binaryRL::run_m(
   mode = "replay",
-  data = binaryRL::Mason_2024_Exp2,
+  data = binaryRL::Mason_2024_G2,
   id = 1,
   eta = 0.5, tau = 0.5,
   n_params = 2, n_trials = 360

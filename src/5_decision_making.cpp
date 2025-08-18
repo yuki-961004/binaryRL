@@ -1,5 +1,8 @@
 #include <Rcpp.h>
 #include <random>
+#include <algorithm>  // std::find
+#include <vector>
+#include <string>
 using namespace Rcpp;
 
 // [[Rcpp::export]]
@@ -38,6 +41,9 @@ Rcpp::DataFrame decision_making_cpp(
     Rcpp::Function bias_func,
     Rcpp::Function prob_func
 ) {
+  // 随机生成0, 1之间的数字
+  std::uniform_real_distribution <> runif(0.0, 1.0);
+
 ////////////////////////////////// [counts] ////////////////////////////////////
 
   // 用于记录每个选项作为刺激呈现次数的计数器
@@ -51,9 +57,6 @@ Rcpp::DataFrame decision_making_cpp(
   for (const auto & name : options) {
     pick_counts[Rcpp::as<std::string>(name)] = 0;
   }
-  
-  // 记录被选过的选项的名字
-  Rcpp::CharacterVector chosen;
 
 ////////////////////////////////// [vectors] ///////////////////////////////////
 
@@ -233,8 +236,9 @@ Rcpp::DataFrame decision_making_cpp(
     } 
     else if (policy == "on") {
       std::mt19937 engine(seed + i);
-      std::discrete_distribution<> dist({L_prob[i], R_prob[i]});
-      Rob_Choose_vec[i] = (dist(engine) == 0 ? L_choice_vec[i] : R_choice_vec[i]);
+      Rob_Choose_vec[i] = (
+        runif(engine) < L_prob[i] ? L_choice_vec[i] : R_choice_vec[i]
+      );
     }
 
 ///////////////////////////// [ chosen count ] /////////////////////////////////
@@ -247,27 +251,6 @@ Rcpp::DataFrame decision_making_cpp(
 
     // # 在计数器中给这两个刺激的呈现次数 +1, 仅针对不重复的情况
     pick_counts[choose] = pick_counts[choose] + 1;
-
-    // 判断 chosen 是否已经包含了 options 的所有元素
-    bool all_in = true;
-    for (auto & opt : options) {
-        bool found = false;
-        for (auto & ch : chosen) {
-            if (opt == ch) { // Rcpp::String 比较
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            all_in = false;
-            break;
-        }
-    }
-
-    // 如果还没全包含，则将当前选择加到 chosen
-    if (!all_in) {
-        chosen.push_back(choose); // 直接追加字符串
-    }
 
 //////////////////////////////// [ Reward ] ////////////////////////////////////
 
@@ -325,7 +308,7 @@ Rcpp::DataFrame decision_making_cpp(
 //////////////////////////// [ 1st Learning Rate ] /////////////////////////////
 
     // 如果没有设置初始值, 且是第一次选这个选项
-    if (Rcpp::NumericVector::is_na(initial_value) && Occurrence[i] == 1) {
+    if (Rcpp::NumericVector::is_na(initial_value) && Occurrence[i] == 0) {
       eta_col[i] = 1;
       V_update[i] = V_value[i] + eta_col[i] * (R_utility[i] - V_value[i]);
       // 传递V_update回到options_cols

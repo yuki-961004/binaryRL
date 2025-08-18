@@ -28,9 +28,6 @@ decision_making_r <- function(
   # 用于记录每个选项被选择次数的计数器
   pick_counts <- stats::setNames(object = rep(0L, length(options)), nm = options)
   
-  # 记录被选过的选项的名字
-  chosen <- c()
-  
 ########################### [update row by row] ################################  
   
   # 逐行更新Value
@@ -196,12 +193,6 @@ decision_making_r <- function(
 
     # 对被选的选项, 在计数器上+1
     pick_counts[data[[rob_choose]][i]] <- pick_counts[data[[rob_choose]][i]] + 1
-    
-    # 只有当 chosen 中还没有包含 options 的全部元素时, 才执行
-    if (!all(options %in% chosen)) {
-      # 在 chosen 这个向量中, 加上此次机器人的选择
-      chosen <- c(chosen, data[[rob_choose]][i])
-    }
      
 ################################## [ Reward ] ##################################    
     
@@ -266,7 +257,7 @@ decision_making_r <- function(
 ########################### [ 1st Learning Rate ] ############################## 
     
     # 如果没有设置初始值, 且是第一次选这个选项
-    if (is.na(initial_value) & data$Occurrence[[i]] == 1) {
+    if (is.na(initial_value) & data$Occurrence[[i]] == 0) {
       # 则此次学习率为1
       data$eta[i] <- 1
       # 以第一次见到的价值作为初始值
