@@ -12,8 +12,11 @@ library(ggplot2)
 ```
 
 ```{r eval=FALSE}
+algorithm <- "NLOPT"
+policy <- "on"
+
 comparison <- binaryRL::fit_p(
-  policy = "on",
+  policy = policy,
   data = binaryRL::Mason_2024_G2,
   n_trials = 360,
   id = unique(binaryRL::Mason_2024_G2$Subject),
@@ -21,7 +24,7 @@ comparison <- binaryRL::fit_p(
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   estimate = "MLE",
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
+  upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
   priors = NULL,
   iteration_i = 100,
   #iteration_g = 10,
@@ -40,13 +43,27 @@ comparison <- binaryRL::fit_p(
 
 result <- dplyr::bind_rows(comparison)
 
-write.csv(result, "../OUTPUT/nloptr_on_result_comparison.csv", row.names = FALSE)
+path <- paste0(
+  "../OUTPUT/",
+  algorithm, "_", 
+  policy, "_", 
+  "result_comparison", 
+  ".csv"
+)
+
+write.csv(result, file = path, row.names = FALSE)
+```
+
+## Load Result
+
+```{r}
+result <- read.csv("../OUTPUT/result_comparison.csv")
 ```
 
 ## Plot
 ### Read Result
 ```{r}
-data <- read.csv("../OUTPUT/result_comparison.csv") %>%
+data <- result %>%
   dplyr::select(-dplyr::starts_with("param_")) %>%
   tidyr::pivot_longer(
     cols = c(ACC, LogL, AIC, BIC),
