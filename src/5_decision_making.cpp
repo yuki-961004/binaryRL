@@ -1,9 +1,5 @@
 #include <Rcpp.h>
 #include <random>
-#include <algorithm>  // std::find
-#include <vector>
-#include <string>
-using namespace Rcpp;
 
 // [[Rcpp::export]]
 Rcpp::DataFrame decision_making_cpp(
@@ -41,10 +37,11 @@ Rcpp::DataFrame decision_making_cpp(
     Rcpp::Function bias_func,
     Rcpp::Function prob_func
 ) {
+
+///////////////////////////////// [ counts ] ///////////////////////////////////
+  
   // 随机生成0, 1之间的数字
   std::uniform_real_distribution <> runif(0.0, 1.0);
-
-////////////////////////////////// [counts] ////////////////////////////////////
 
   // 用于记录每个选项作为刺激呈现次数的计数器
   std::unordered_map<std::string, int> stim_freq;
@@ -58,7 +55,7 @@ Rcpp::DataFrame decision_making_cpp(
     pick_counts[Rcpp::as<std::string>(name)] = 0;
   }
 
-////////////////////////////////// [vectors] ///////////////////////////////////
+///////////////////////////////// [ vectors ] //////////////////////////////////
 
   // 表格中的逐行运算, 转化为向量运算
 
@@ -106,12 +103,13 @@ Rcpp::DataFrame decision_making_cpp(
   // 创建一个list对象, 里面包含了每个选项作为向量
   Rcpp::List option_cols;
     for (const auto & name : options) {
-        option_cols.push_back(data[std::string(name)]);
+      // 这是引用, 其中值一旦变化, 会直接反映在原始表格中. 无需回填
+      option_cols.push_back(data[std::string(name)]);
     }
     // 每个向量的名字就是options的名字
     option_cols.names() = options;
 
-//////////////////////////// [update row by row] ///////////////////////////////
+/////////////////////////// [ update row by row ] //////////////////////////////
 
   for (int i = 1; i < data.nrow(); i = i + 1) { 
     // 记录当前试次左右选项的名字
@@ -123,7 +121,7 @@ Rcpp::DataFrame decision_making_cpp(
       Rcpp::CharacterVector::create(L_name, R_name)
     );
 
-    // # 在计数器中给这两个刺激的呈现次数 +1, 仅针对不重复的情况
+    // 在计数器中给这两个刺激的呈现次数 +1, 仅针对不重复的情况
     for (const auto & name : shown_name) {
       // 这里可以直接通过名字作为键来访问 map 中的元素
       stim_freq[Rcpp::as<std::string>(name)] += 1;
@@ -158,6 +156,7 @@ Rcpp::DataFrame decision_making_cpp(
         Rcpp::_["alpha"] = alpha,
         Rcpp::_["beta"] = beta
     ));
+
 //////////////////////////////////// [ pi ] ////////////////////////////////////
 
     // pi: 对选项价值的偏差值, 默认和被被选次数成反比例
@@ -184,6 +183,7 @@ Rcpp::DataFrame decision_making_cpp(
       Rcpp::_["alpha"] = alpha, 
       Rcpp::_["beta"] = beta
     ));
+
 /////////////////////////////////// [ tau ] ////////////////////////////////////
 
     // tau: 左右选项备选的概率
@@ -220,20 +220,21 @@ Rcpp::DataFrame decision_making_cpp(
 ////////////////////////////// [ PASS VALUE ] //////////////////////////////////
 
     for (int j = 0; j < option_cols.size(); j = j + 1) {
-      // 获取第 j 列
+      // 暂时储存每一列选项的当前价值
       Rcpp::NumericVector option_vec = option_cols[j]; 
-      // 赋值：C++ 下标从 0 开始，所以 i-1 对应 R 的 i-1
+      // 从上一行获取决策前每个选项的价值是多少
       option_vec[i] = option_vec[i - 1]; 
-      // 更新回 list
+      // 更新后的列填回选项列中
       option_cols[j] = option_vec;
     }
+
 //////////////////////////// [ on/off policy ] /////////////////////////////////
 
-    // 根據 on-policy 或 off-policy 決定機器人的選擇
+    // off-policy [Q-learning]: 更新被人类选择的选项的价值
     if (policy == "off") {
-      // 如果是 off-policy, 直接使用人類的選擇
       Rob_Choose_vec[i] = Sub_Choose_vec[i];
     } 
+    // on-policy [SARSA]: 更新被机器人选择的选项的价值
     else if (policy == "on") {
       std::mt19937 engine(seed + i);
       Rob_Choose_vec[i] = (
@@ -305,15 +306,19 @@ Rcpp::DataFrame decision_making_cpp(
       Rcpp::_["beta"] = beta
     ));
 
-//////////////////////////// [ 1st Learning Rate ] /////////////////////////////
+////////////////////////// [ Rescorla-Wagner Model ] ///////////////////////////
 
     // 如果没有设置初始值, 且是第一次选这个选项
-    if (Rcpp::NumericVector::is_na(initial_value) && Occurrence[i] == 0) {
+    if (R_IsNA(initial_value) && Occurrence[i] == 0) {
+      // 第一次的学习率强制为1
       eta_col[i] = 1;
+      // Rescorla-Wagner Model
       V_update[i] = V_value[i] + eta_col[i] * (R_utility[i] - V_value[i]);
       // 传递V_update回到options_cols
       Rcpp::as<Rcpp::NumericVector>(option_cols[choose])[i] = V_update[i];
-    } else {
+    } 
+    else {
+      // Rescorla-Wagner Model
       V_update[i] = V_value[i] + eta_col[i] * (R_utility[i] - V_value[i]);
       // 传递V_update回到options_cols
       Rcpp::as<Rcpp::NumericVector>(option_cols[choose])[i] = V_update[i];
@@ -322,13 +327,6 @@ Rcpp::DataFrame decision_making_cpp(
 
 ////////////////////////////////// [ fill data ] ///////////////////////////////
 
-  data[L_choice] = L_choice_vec;
-  data[R_choice] = R_choice_vec;
-
-  data[L_reward] = L_reward_vec;
-  data[R_reward] = R_reward_vec;
-
-  data[sub_choose] = Sub_Choose_vec;
   data[rob_choose] = Rob_Choose_vec;
 
   data["L_value"] = L_value;

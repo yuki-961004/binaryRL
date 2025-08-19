@@ -146,6 +146,7 @@
 #'   alpha,
 #'   beta
 #' ){
+#'   set.seed(i)
 #'   # Epsilon-First: random choosing before a certain trial number
 #'   if (i <= threshold) {
 #'     try <- 1
@@ -202,6 +203,7 @@ func_epsilon <- function(
   alpha,
   beta
 ){
+  set.seed(i)
 ############################ [ Epsilon-First ] #################################
   if (i <= threshold) {
     try <- 1

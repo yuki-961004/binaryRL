@@ -55,12 +55,7 @@ decision_making_r <- function(
     data$L_value[i] <- data[[L_name]][i - 1]
     data$R_value[i] <- data[[R_name]][i - 1]
     
-################################## [action] ####################################  
-    
-    # 设置随机种子
-    set.seed(seed = seed + i)
-    
-################################## [epsilon] ###################################
+################################# [ epsilon ] ##################################
     
     # epsilon: 确定是否需要随机选择(探索)
     data$Try[i] <- expl_func(
@@ -81,7 +76,7 @@ decision_making_r <- function(
       beta = beta
     )
     
-#################################### [pi] ######################################   
+################################### [ pi ] #####################################   
     
     # pi: 对选项价值的偏差值, 默认和被被选次数成反比例
     data$L_bias[i] <- bias_func(
@@ -120,7 +115,7 @@ decision_making_r <- function(
       beta = beta
     )
     
-################################### [tau] ######################################
+################################## [ tau ] #####################################
     
     # tau: 左右选项备选的概率
     data$L_prob[i] <- prob_func(
@@ -170,11 +165,14 @@ decision_making_r <- function(
     
 ############################# [ on/off policy ] ################################    
     
-    # 如果是off-policy, 以人类的选择作为被更新的价值
+    # 设置随机种子
+    set.seed(seed = seed + i)
+
+    # off-policy [Q-learning]: 更新被人类选择的选项的价值
     if (policy == "off") {
       data[[rob_choose]][i] <- data[[sub_choose]][i] 
     }
-    # 如果是on-policy, 机器人自己做选择, 更新自己选择的价值
+    # on-policy [SARSA]: 更新被机器人选择的选项的价值
     else if (policy == "on") {
       data[[rob_choose]][i] <- sample(
         x = c(data[[L_choice]][i], data[[R_choice]][i]), 
@@ -200,7 +198,8 @@ decision_making_r <- function(
     if (data[[rob_choose]][i] == data[[L_choice]][i]){
       # 选了左边, 给左的奖励
       data$Reward[i] <- data[[L_reward]][i]
-    } else if (data[[rob_choose]][i] == data[[R_choice]][i]) {
+    } 
+    else if (data[[rob_choose]][i] == data[[R_choice]][i]) {
       # 选了右边, 给右的奖励
       data$Reward[i] <- data[[R_reward]][i]
     }
@@ -254,21 +253,23 @@ decision_making_r <- function(
       beta = beta
     )
     
-########################### [ 1st Learning Rate ] ############################## 
+########################## [ Rescorla-Wagner Model ] ########################### 
     
     # 如果没有设置初始值, 且是第一次选这个选项
     if (is.na(initial_value) & data$Occurrence[[i]] == 0) {
-      # 则此次学习率为1
+      # 第一次的学习率强制为1
       data$eta[i] <- 1
-      # 以第一次见到的价值作为初始值
+      # Rescorla-Wagner Model
       data$V_update[i] <- data$V_value[i] + 
         data$eta[i] * (data$R_utility[i] - data$V_value[i])
+      # 传递更新后的价值回原始表格
       data[[choose]][i] <- data$V_update[i]
     } 
     else {
-      # 以设定的值为初始值, 且依据设定的eta更新价值
+      # Rescorla-Wagner Model
       data$V_update[i] <- data$V_value[i] + 
         data$eta[i] * (data$R_utility[i] - data$V_value[i])
+      # 传递更新后的价值回原始表格
       data[[choose]][i] <- data$V_update[i]  
     }
   }

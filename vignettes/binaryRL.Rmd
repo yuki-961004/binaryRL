@@ -209,6 +209,7 @@ func_epsilon <- function(
   # extra parameters
   alpha, beta 
 ){
+  set.seed(i)
   # epsilon-first
   if (i <= threshold) {
     try <- 1
