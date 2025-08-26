@@ -1,1 +1,4 @@
+# 自动替换Windows和Linux/macOS中换行符不同的问题
+* text=auto
+# 忽略所有html文件的代码记录
 *.html linguist-generated=true
