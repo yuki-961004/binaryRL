@@ -13,9 +13,16 @@ In contrast, **Recurrent Neural Network (RNN)** uses a reverse approach. It take
 
 ## Install Packages
 
-```{r eval=FALSE}
-reticulate::install_miniconda()
-keras3::install_keras(method = "conda")
+```
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/msys2
+```
+
+https://www.tensorflow.org/install/pip
+
+```
+conda install numpy=1.26.4
 ```
 
 ## Simulating Data
@@ -127,10 +134,14 @@ rm(X, Y)
 ```
 
 ## Step 4: Training RNN Model
+```{r}
+reticulate::use_condaenv("tf-cpu", required = TRUE)
+#reticulate::use_condaenv("tf-gpu", required = TRUE)
+```
 
 ```{r eval=FALSE}
 # Initialize Model (sequential decision making)
-Model <- keras3::keras_model_sequential()
+Model <- keras::keras_model_sequential()
 
 algorithm = "GRU"
 
@@ -138,7 +149,7 @@ algorithm = "GRU"
 switch(
   EXPR = algorithm, 
   "GRU" = {
-    Model <- keras3::layer_gru(
+    Model <- keras::layer_gru(
       object = Model,
       units = 128,
       input_shape = c(n_trials, n_info), 
@@ -146,7 +157,7 @@ switch(
     ) 
   },
   "LSTM" = {
-    Model <- keras3::layer_lstm(
+    Model <- keras::layer_lstm(
       object = Model,
       units = 128,
       input_shape = c(n_trials, n_info), 
@@ -156,13 +167,13 @@ switch(
 )
 
 # Hidden Layer
-Model <- keras3::layer_dense(object = Model, units = 64, activation = "relu") 
+Model <- keras::layer_dense(object = Model, units = 64, activation = "relu") 
 
 # Output Layer
-Model <- keras3::layer_dense(object = Model, units = n_params, activation = "linear") 
+Model <- keras::layer_dense(object = Model, units = n_params, activation = "linear") 
 
 # Loss Function
-Model <- keras3::compile(
+Model <- keras::compile(
   object <- Model,
   loss = "mean_squared_error",
   optimizer = "adam",
@@ -170,7 +181,7 @@ Model <- keras3::compile(
 )
 
 # Training RNN Model
-history <- keras3::fit(
+history <- keras::fit(
   object = Model,
   x = X_train,
   y = Y_train,
@@ -179,11 +190,6 @@ history <- keras3::fit(
   validation_data = list(X_test, Y_test),
   verbose = 2
 )
-
-plot(x = history) +
-  ggplot2::scale_fill_manual(values = c("#053562", "#55c186")) +
-  ggplot2::scale_color_manual(values = c("#053562", "#55c186")) +
-  papaja::theme_apa()
 ```
 
 <p align="center">
@@ -235,8 +241,8 @@ cor(df_true$V2, df_pred$V2)
 ```
 
 ```
-[1] 0.9001984
-[1] 0.8639206
+[1] 0.8988817
+[1] 0.8428525
 ```
 
 <p align="center">
