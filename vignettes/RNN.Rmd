@@ -14,14 +14,20 @@ In contrast, **Recurrent Neural Network (RNN)** uses a reverse approach. It take
 ## Install Packages
 
 ```
+# You need to accept three terms of the conda license to install Miniconda.
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/msys2
 ```
 
-https://www.tensorflow.org/install/pip
+```{r eval=FALSE}
+reticulate::install_miniconda()
+```
+
+[Install TensorFlow](https://www.tensorflow.org/install/pip) according to system and CPU/GPU
 
 ```
+# To run TensorFlow, you need to downgrade NumPy.
 conda install numpy=1.26.4
 ```
 
@@ -36,10 +42,7 @@ list_simulated <- binaryRL::simulate_list(
   n_trials = 360,
   lower = c(0, 0),
   upper = c(1, 1),
-  iteration = 1100
-  # 800 train
-  # 200 test
-  # 100 check
+  iteration = 1100 # = [800(train) + 200(test)] + [100(recovery)]
 )
 ```
 
@@ -51,6 +54,7 @@ n_params = 2
 ```
 
 ## Step 1: List to Matrix
+
 ```{r eval=FALSE}
 # create NULL list
 X_list<- list()
@@ -59,11 +63,10 @@ Y_list <- list()
 # obtain options
 unique_L <- unique(list_simulated[[1]]$data$L_choice)
 unique_R <- unique(list_simulated[[1]]$data$R_choice)
-
 options <- sort(unique(c(unique_L, unique_R)))
-
 options <- as.vector(options)
 
+# as.matrix
 for (i in 1:n_sample) {
   
   # Input Info: L_choice, R_choice, Sub_Choose
@@ -97,8 +100,6 @@ for (i in 1:n_sample) {
     )
   )
 }
-
-rm(i, unique_L, unique_R)
 ```
 
 ## Step 2: Matrix to Array
@@ -117,8 +118,6 @@ Y <- array(NA, dim = c(n_sample, n_params))
 for (i in 1:n_sample) {
   Y[i, ] <- Y_list[[i]]
 }
-
-rm(i, X_list, Y_list)
 ```
 
 ## Step 3: Train & Test
@@ -129,14 +128,13 @@ Y_train <- Y[1:(n_sample*0.8), , drop = FALSE]
 
 X_test <- X[(n_sample*0.8+1):n_sample, , , drop = FALSE]
 Y_test <- Y[(n_sample*0.8+1):n_sample, , drop = FALSE]
-
-rm(X, Y)
 ```
 
 ## Step 4: Training RNN Model
+
 ```{r}
-reticulate::use_condaenv("tf-cpu", required = TRUE)
-#reticulate::use_condaenv("tf-gpu", required = TRUE)
+#reticulate::use_condaenv("tf-cpu", required = TRUE)
+reticulate::use_condaenv("tf-gpu", required = TRUE)
 ```
 
 ```{r eval=FALSE}
@@ -144,6 +142,7 @@ reticulate::use_condaenv("tf-cpu", required = TRUE)
 Model <- keras::keras_model_sequential()
 
 algorithm = "GRU"
+#algorithm = "LSTM"
 
 # Recurrent Layer
 switch(
@@ -164,25 +163,27 @@ switch(
       return_sequences = FALSE, 
     ) 
   },
-)
-
-# Hidden Layer
-Model <- keras::layer_dense(object = Model, units = 64, activation = "relu") 
-
-# Output Layer
-Model <- keras::layer_dense(object = Model, units = n_params, activation = "linear") 
-
-# Loss Function
-Model <- keras::compile(
-  object <- Model,
-  loss = "mean_squared_error",
-  optimizer = "adam",
-  metrics = c("mean_absolute_error")
-)
+) |>
+  # Hidden Layer
+  keras::layer_dense(
+    units = 64, 
+    activation = "relu"
+  ) |>
+  # Output Layer
+  keras::layer_dense(
+    units = n_params, 
+    activation = "linear"
+  ) |>
+  # Loss Function
+  keras::compile(
+    loss = "mean_squared_error",
+    optimizer = "adam",
+    metrics = c("mean_absolute_error")
+  )
 
 # Training RNN Model
-history <- keras::fit(
-  object = Model,
+history <- Model |>
+  keras::fit(
   x = X_train,
   y = Y_train,
   epochs = 100,
@@ -202,7 +203,7 @@ history <- keras::fit(
 X_pred_list <- vector("list", length = 100) 
 X_true_list <- vector("list", length = 100)
 
-for (i in (n_sample+1):(n_sample+100)) {
+for (i in (n_sample + 1):(n_sample + 100)) {
 
   X_sub <- array(NA, dim = c(1, n_trials, n_info))
   
@@ -249,3 +250,13 @@ cor(df_true$V2, df_pred$V2)
   <img src="./fig/RNN_eta.png" alt="RNN_eta" width="40%" style="display: inline;">
   <img src="./fig/RNN_tau.png" alt="RNN_tau" width="40%" style="display: inline;">
 </p>
+
+```{r eval=FALSE}
+rm(unique_L, unique_R)
+rm(X_list, Y_list)
+rm(X, Y)
+rm(algorithm, X_train, X_test, Y_train, Y_test)
+rm(i, X_sub, X_pred, n_sample, n_trials, n_info, n_params, options)
+rm(X_pred_list, X_true_list)
+```
+

@@ -11,7 +11,7 @@ articles:
   demo/CODE/test_2_rcv_d: demo/CODE/test_2_rcv_d.html
   demo/CODE/test_3_fit_p: demo/CODE/test_3_fit_p.html
   demo/CODE/test_4_rpl_e: demo/CODE/test_4_rpl_e.html
-last_built: 2025-09-06T19:17Z
+last_built: 2025-09-07T06:46Z
 urls:
   reference: https://yuki-961004.github.io/binaryRL/reference
   article: https://yuki-961004.github.io/binaryRL/articles
