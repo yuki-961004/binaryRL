@@ -124,7 +124,7 @@ conda install numpy=1.26.4</code></pre>
 <span>  n_trials <span class="op">=</span> <span class="fl">360</span>,</span>
 <span>  lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  iteration <span class="op">=</span> <span class="fl">1100</span> <span class="co"># = [800(train) + 200(test)] + [100(recovery)]</span></span>
+<span>  iteration <span class="op">=</span> <span class="fl">1100</span> <span class="co"># = [800(train) + 200(valid)] + [100(test recovery)]</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_sample</span> <span class="op">=</span> <span class="fl">1000</span></span>
@@ -200,14 +200,17 @@ conda install numpy=1.26.4</code></pre>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="step-3-train-test">Step 3: Train &amp; Test<a class="anchor" aria-label="anchor" href="#step-3-train-test"></a>
+<h2 id="step-3-train-valid">Step 3: Train &amp; Valid<a class="anchor" aria-label="anchor" href="#step-3-train-valid"></a>
 </h2>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">X_train</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">n_sample</span><span class="op">*</span><span class="fl">0.8</span><span class="op">)</span>, , , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
-<span><span class="va">Y_train</span> <span class="op">&lt;-</span> <span class="va">Y</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">n_sample</span><span class="op">*</span><span class="fl">0.8</span><span class="op">)</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">train_indices</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="fl">0.8</span> <span class="op">*</span> <span class="va">n_sample</span><span class="op">)</span></span>
+<span><span class="va">valid_indices</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="va">train_indices</span></span>
 <span></span>
-<span><span class="va">X_test</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span><span class="op">(</span><span class="va">n_sample</span><span class="op">*</span><span class="fl">0.8</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="va">n_sample</span>, , , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
-<span><span class="va">Y_test</span> <span class="op">&lt;-</span> <span class="va">Y</span><span class="op">[</span><span class="op">(</span><span class="va">n_sample</span><span class="op">*</span><span class="fl">0.8</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="va">n_sample</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span></code></pre></div>
+<span><span class="va">X_train</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span><span class="va">train_indices</span>, , , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">X_valid</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span><span class="va">valid_indices</span>, , , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">Y_train</span> <span class="op">&lt;-</span> <span class="va">Y</span><span class="op">[</span><span class="va">train_indices</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">Y_valid</span> <span class="op">&lt;-</span> <span class="va">Y</span><span class="op">[</span><span class="va">valid_indices</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="step-4-training-rnn-model">Step 4: Training RNN Model<a class="anchor" aria-label="anchor" href="#step-4-training-rnn-model"></a>
@@ -266,7 +269,7 @@ conda install numpy=1.26.4</code></pre>
 <span>  y <span class="op">=</span> <span class="va">Y_train</span>,</span>
 <span>  epochs <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  batch_size <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  validation_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">X_test</span>, <span class="va">Y_test</span><span class="op">)</span>,</span>
+<span>  validation_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">X_valid</span>, <span class="va">Y_valid</span><span class="op">)</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p align="center">
@@ -321,7 +324,7 @@ conda install numpy=1.26.4</code></pre>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">unique_L</span>, <span class="va">unique_R</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">X_list</span>, <span class="va">Y_list</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">algorithm</span>, <span class="va">X_train</span>, <span class="va">X_test</span>, <span class="va">Y_train</span>, <span class="va">Y_test</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">algorithm</span>, <span class="va">X_train</span>, <span class="va">X_test</span>, <span class="va">Y_train</span>, <span class="va">Y_test</span>, <span class="va">train_indices</span>, <span class="va">valid_indices</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">i</span>, <span class="va">X_sub</span>, <span class="va">X_pred</span>, <span class="va">n_sample</span>, <span class="va">n_trials</span>, <span class="va">n_info</span>, <span class="va">n_params</span>, <span class="va">options</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">X_pred_list</span>, <span class="va">X_true_list</span><span class="op">)</span></span></code></pre></div>
 </div>

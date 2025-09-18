@@ -182,7 +182,7 @@ For a full Bayesian analysis, you can perform **Markov Chain Monte Carlo (MCMC)*
 
 When learning is no longer based on a *visible value* but on an *invisible rule*, the log-likelihood becomes incomputable. At this point, traditional methods like MLE, MAP, and MCMC can no longer be used. Instead, you must use an **Recurrent Neural Network (RNN)** and input the entire sequence of choices to directly analyze the discrepancy between the real and predicted behavior. This analysis then allows you to compute the optimal parameters.
 
-- `keras3` provides a highly accessible front-end for `tensorflow`. Users can simply convert their simulated data from a list to a array, and the model is ready to run. We provide an [example code](https://yuki-961004.github.io/binaryRL/articles/RNN.html). 
+- `keras` provides a highly accessible front-end for `tensorflow`. Users can simply convert their simulated data from a list to a array, and the model is ready to run. We provide an [example code](https://yuki-961004.github.io/binaryRL/articles/RNN.html). 
 
 *Note*:   
 1. The input can be either a single column (`Sub_Choose`) or the entire data table (`L_choice`, `R_choice`, `L_reward`, `R_reward`, `Sub_Choose`). More information will result in a slower training speed. 

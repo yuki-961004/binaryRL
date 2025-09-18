@@ -42,7 +42,7 @@ list_simulated <- binaryRL::simulate_list(
   n_trials = 360,
   lower = c(0, 0),
   upper = c(1, 1),
-  iteration = 1100 # = [800(train) + 200(test)] + [100(recovery)]
+  iteration = 1100 # = [800(train) + 200(valid)] + [100(test recovery)]
 )
 ```
 
@@ -120,14 +120,17 @@ for (i in 1:n_sample) {
 }
 ```
 
-## Step 3: Train & Test
+## Step 3: Train & Valid
 
 ```{r eval=FALSE}
-X_train <- X[1:(n_sample*0.8), , , drop = FALSE]
-Y_train <- Y[1:(n_sample*0.8), , drop = FALSE]
+train_indices <- 1:floor(0.8 * n_sample)
+valid_indices <- -train_indices
 
-X_test <- X[(n_sample*0.8+1):n_sample, , , drop = FALSE]
-Y_test <- Y[(n_sample*0.8+1):n_sample, , drop = FALSE]
+X_train <- X[train_indices, , , drop = FALSE]
+X_valid <- X[valid_indices, , , drop = FALSE]
+
+Y_train <- Y[train_indices, , drop = FALSE]
+Y_valid <- Y[valid_indices, , drop = FALSE]
 ```
 
 ## Step 4: Training RNN Model
@@ -188,7 +191,7 @@ history <- Model |>
   y = Y_train,
   epochs = 100,
   batch_size = 10,
-  validation_data = list(X_test, Y_test),
+  validation_data = list(X_valid, Y_valid),
   verbose = 2
 )
 ```
@@ -255,7 +258,7 @@ cor(df_true$V2, df_pred$V2)
 rm(unique_L, unique_R)
 rm(X_list, Y_list)
 rm(X, Y)
-rm(algorithm, X_train, X_test, Y_train, Y_test)
+rm(algorithm, X_train, X_test, Y_train, Y_test, train_indices, valid_indices)
 rm(i, X_sub, X_pred, n_sample, n_trials, n_info, n_params, options)
 rm(X_pred_list, X_true_list)
 ```

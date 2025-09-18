@@ -442,7 +442,7 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <p>When learning is no longer based on a <em>visible value</em> but on an <em>invisible rule</em>, the log-likelihood becomes incomputable. At this point, traditional methods like MLE, MAP, and MCMC can no longer be used. Instead, you must use an <strong>Recurrent Neural Network (RNN)</strong> and input the entire sequence of choices to directly analyze the discrepancy between the real and predicted behavior. This analysis then allows you to compute the optimal parameters.</p>
 <ul>
 <li>
-<code>keras3</code> provides a highly accessible front-end for <code>tensorflow</code>. Users can simply convert their simulated data from a list to a array, and the model is ready to run. We provide an <a href="https://yuki-961004.github.io/binaryRL/articles/RNN.html">example code</a>.</li>
+<code>keras</code> provides a highly accessible front-end for <code>tensorflow</code>. Users can simply convert their simulated data from a list to a array, and the model is ready to run. We provide an <a href="https://yuki-961004.github.io/binaryRL/articles/RNN.html">example code</a>.</li>
 </ul>
 <p><em>Note</em>:<br>
 1. The input can be either a single column (<code>Sub_Choose</code>) or the entire data table (<code>L_choice</code>, <code>R_choice</code>, <code>L_reward</code>, <code>R_reward</code>, <code>Sub_Choose</code>). More information will result in a slower training speed.</p>
