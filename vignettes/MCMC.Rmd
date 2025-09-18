@@ -10,6 +10,11 @@ vignette: >
 
 The core functions of `binaryRL` have already been rewritten in `Rcpp`. This optimization reduces the runtime to roughly one-tenth of the previous R-based for-loop implementation. As a result, running MCMC with `LaplacesDemon` on `binaryRL` is very fast, while still allowing users to easily define and customize their reinforcement learning models.
 
+## Install Package
+```{r eval=FALSE}
+install.packages("LaplacesDemon")
+```
+
 ## Example Data
 
 ```{r}
@@ -22,7 +27,7 @@ test_data <- test_data[test_data$Subject <= 5, ]
 unique(test_data$Subject)
 ```
 
-## Object Function
+## Step 1: Object Function
 
 ### Argument 1: parm
 
@@ -66,7 +71,7 @@ Data <- list(
 )
 ```
 
-### Defining Object Function
+## Step 2: Defining Model
 
 Create a model function that accepts `parm` and `Data` as its arguments, with a return value that conforms to the structure required by `LaplacesDemon.` Within this function, you need to calculate the sum of the log-likelihoods and the sum of the log-posteriors across all subjects by using specified prior distributions. 
 
@@ -127,14 +132,14 @@ Model <- function(parm, Data) {
 }
 ```
 
-### Test Object Function
+## Step 3: Test Model
 
 ```{r}
 Initial.Values <- stats::runif(Data$N * Data$n_params)
 Model(parm = Initial.Values, Data = Data)
 ```
 
-## Run LaplacesDemon
+## Step 4: Run LaplacesDemon
 
 ```{r eval=FALSE}
 Fit <- LaplacesDemon::LaplacesDemon(

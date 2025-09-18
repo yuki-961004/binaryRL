@@ -99,9 +99,15 @@ result, running MCMC with <code>LaplacesDemon</code> on
 <code>binaryRL</code> is very fast, while still allowing users to easily
 define and customize their reinforcement learning models.</p>
 <div class="section level2">
-<h2 id="example-data">Example Data<a class="anchor" aria-label="anchor" href="#example-data"></a>
+<h2 id="install-package">Install Package<a class="anchor" aria-label="anchor" href="#install-package"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"LaplacesDemon"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="example-data">Example Data<a class="anchor" aria-label="anchor" href="#example-data"></a>
+</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">test_data</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/Mason_2024_G2.html">Mason_2024_G2</a></span></span>
 <span><span class="co"># Ensure the Subject ID is a numeric value for easier indexing</span></span>
 <span><span class="va">test_data</span><span class="op">$</span><span class="va">Subject</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">test_data</span><span class="op">$</span><span class="va">Subject</span><span class="op">)</span></span>
@@ -112,7 +118,7 @@ define and customize their reinforcement learning models.</p>
 <pre><code><span><span class="co">## [1] 1 2 3 4 5</span></span></code></pre>
 </div>
 <div class="section level2">
-<h2 id="object-function">Object Function<a class="anchor" aria-label="anchor" href="#object-function"></a>
+<h2 id="step-1-object-function">Step 1: Object Function<a class="anchor" aria-label="anchor" href="#step-1-object-function"></a>
 </h2>
 <div class="section level3">
 <h3 id="argument-1-parm">Argument 1: parm<a class="anchor" aria-label="anchor" href="#argument-1-parm"></a>
@@ -136,7 +142,7 @@ supplementary information—such as prior distributions, trial counts, or
 policy settings—directly to the model. Consequently, users can avoid
 more cumbersome methods, like environment binding, and instead bundle
 all necessary data and constants into a single, well-organized list.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="co"># The prepared dataframe containing the experimental data</span></span>
 <span>  df <span class="op">=</span> <span class="va">test_data</span>,</span>
@@ -169,16 +175,17 @@ all necessary data and constants into a single, well-organized list.</p>
 <span>  N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">test_data</span><span class="op">$</span><span class="va">Subject</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="defining-object-function">Defining Object Function<a class="anchor" aria-label="anchor" href="#defining-object-function"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="step-2-defining-model">Step 2: Defining Model<a class="anchor" aria-label="anchor" href="#step-2-defining-model"></a>
+</h2>
 <p>Create a model function that accepts <code>parm</code> and
 <code>Data</code> as its arguments, with a return value that conforms to
 the structure required by <code>LaplacesDemon.</code> Within this
 function, you need to calculate the sum of the log-likelihoods and the
 sum of the log-posteriors across all subjects by using specified prior
 distributions.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">parm</span>, <span class="va">Data</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
 <span>  <span class="co"># Initialize accumulators for sum of log-likelihood and log-posterior</span></span>
@@ -234,10 +241,10 @@ distributions.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="test-object-function">Test Object Function<a class="anchor" aria-label="anchor" href="#test-object-function"></a>
-</h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="section level2">
+<h2 id="step-3-test-model">Step 3: Test Model<a class="anchor" aria-label="anchor" href="#step-3-test-model"></a>
+</h2>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Initial.Values</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">Data</span><span class="op">$</span><span class="va">N</span> <span class="op">*</span> <span class="va">Data</span><span class="op">$</span><span class="va">n_params</span><span class="op">)</span></span>
 <span><span class="fu">Model</span><span class="op">(</span>parm <span class="op">=</span> <span class="va">Initial.Values</span>, Data <span class="op">=</span> <span class="va">Data</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $LP</span></span>
@@ -257,11 +264,10 @@ distributions.</p>
 <span><span class="co">##  [1] 0.080750138 0.834333037 0.600760886 0.157208442 0.007399441 0.466393497</span></span>
 <span><span class="co">##  [7] 0.497777389 0.289767245 0.732881987 0.772521511</span></span></code></pre>
 </div>
-</div>
 <div class="section level2">
-<h2 id="run-laplacesdemon">Run LaplacesDemon<a class="anchor" aria-label="anchor" href="#run-laplacesdemon"></a>
+<h2 id="step-4-run-laplacesdemon">Step 4: Run LaplacesDemon<a class="anchor" aria-label="anchor" href="#step-4-run-laplacesdemon"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Fit</span> <span class="op">&lt;-</span> <span class="fu">LaplacesDemon</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/LaplacesDemon/man/LaplacesDemon.html" class="external-link">LaplacesDemon</a></span><span class="op">(</span></span>
 <span>  Model <span class="op">=</span> <span class="va">Model</span>,</span>
 <span>  Data <span class="op">=</span> <span class="va">Data</span>,</span>
