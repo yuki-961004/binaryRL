@@ -46,7 +46,30 @@ reference:
     contents:
       - summary.binaryRL
 
+articles:
+  - title: "Tutorial"
+    navbar: "Tutorial"
+    contents:
+      - demo/CODE/test_1_run_m
+      - demo/CODE/test_2_rcv_d         
+      - demo/CODE/test_3_fit_p         
+      - demo/CODE/test_4_rpl_e         
+
+  - title: "Background"
+    navbar: "Background"
+    contents:
+      - arguments     
+      - functions     
+
+  - title: "Advanced"
+    navbar: "Advanced"
+    contents:
+      - MCMC   
+      - RNN            
+      
+
 navbar:
   structure:
     left: [intro, reference, news, articles, extensions]
     right: [search, github]
+  

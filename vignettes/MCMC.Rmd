@@ -5,6 +5,7 @@ output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{MCMC}
   %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 The core functions of `binaryRL` have already been rewritten in `Rcpp`. This optimization reduces the runtime to roughly one-tenth of the previous R-based for-loop implementation. As a result, running MCMC with `LaplacesDemon` on `binaryRL` is very fast, while still allowing users to easily define and customize their reinforcement learning models.

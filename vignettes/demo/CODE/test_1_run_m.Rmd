@@ -5,6 +5,7 @@ output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Step 1: run_m}
   %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 <p align="center">
     <img src="../../fig/rl_step1.png" alt="Step 1" width="80%" style="display: inline;">
