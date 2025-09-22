@@ -19,26 +19,14 @@ library(ggplot2)
 ```{r eval=FALSE}
 recovery <- binaryRL::rcv_d(
   data = binaryRL::Mason_2024_G2,
-  policy = c("off", "on"),
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  fit_upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
+  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
   iteration_s = 100,
   iteration_f = 100,
-  seed = 123,
-  nc = 16,
-  #algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)
-  #algorithm = "GenSA"        # Simulated Annealing (GenSA)
-  #algorithm = "GA"           # Genetic Algorithm (GA)
-  #algorithm = "DEoptim"      # Differential Evolution (DEoptim)
-  #algorithm = "PSO"          # Particle Swarm Optimization (pso)
-  #algorithm = "Bayesian"     # Bayesian Optimization (mlrMBO)
-  #algorithm = "CMA-ES"       # Covariance Matrix Adapting (cmaes)
-  # Nonlinear Optimization (nloptr)
+  nc = 1,
   algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 

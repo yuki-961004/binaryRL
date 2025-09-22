@@ -37,7 +37,7 @@ The last parameter, representing the temperature (tau) in the soft-max
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,11 +98,10 @@ The last parameter, representing the temperature (tau) in the soft-max
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">simulate_list</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  id <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  <span class="va">obj_func</span>,</span>
 <span>  <span class="va">n_params</span>,</span>
 <span>  <span class="va">n_trials</span>,</span>
-<span>  <span class="va">lower</span>,</span>
-<span>  <span class="va">upper</span>,</span>
+<span>  <span class="va">obj_func</span>,</span>
+<span>  <span class="va">rfun</span>,</span>
 <span>  iteration <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">123</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -138,6 +137,16 @@ The last parameter, representing the temperature (tau) in the soft-max
 <p>default: <code>id = NULL</code></p></dd>
 
 
+<dt id="arg-n-params">n_params<a class="anchor" aria-label="anchor" href="#arg-n-params"></a></dt>
+<dd><p>[integer]</p>
+<p>The number of free parameters in your model.</p></dd>
+
+
+<dt id="arg-n-trials">n_trials<a class="anchor" aria-label="anchor" href="#arg-n-trials"></a></dt>
+<dd><p>[integer]</p>
+<p>The total number of trials in your experiment.</p></dd>
+
+
 <dt id="arg-obj-func">obj_func<a class="anchor" aria-label="anchor" href="#arg-obj-func"></a></dt>
 <dd><p>[function]</p>
 <p>The objective function that the optimization algorithm package accepts.
@@ -152,30 +161,21 @@ The last parameter, representing the temperature (tau) in the soft-max
  ).</p></dd>
 
 
-<dt id="arg-n-params">n_params<a class="anchor" aria-label="anchor" href="#arg-n-params"></a></dt>
-<dd><p>[integer]</p>
-<p>The number of free parameters in your model.</p></dd>
-
-
-<dt id="arg-n-trials">n_trials<a class="anchor" aria-label="anchor" href="#arg-n-trials"></a></dt>
-<dd><p>[integer]</p>
-<p>The total number of trials in your experiment.</p></dd>
-
-
-<dt id="arg-lower">lower<a class="anchor" aria-label="anchor" href="#arg-lower"></a></dt>
-<dd><p>[vector]</p>
-<p>Lower bounds of free parameters</p></dd>
-
-
-<dt id="arg-upper">upper<a class="anchor" aria-label="anchor" href="#arg-upper"></a></dt>
-<dd><p>[vector]</p>
-<p>Upper bounds of free parameters</p></dd>
+<dt id="arg-rfun">rfun<a class="anchor" aria-label="anchor" href="#arg-rfun"></a></dt>
+<dd><p>[List]</p>
+<p>A nested list of functions used to generate random parameter values for
+ simulation. The top-level elements of the list should be named
+ according to the models. Each of these elements must be a named list
+ of functions, where each name corresponds to a model parameter and its
+ value is the random number generation function.</p>
+<p>e.g., <code><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">stats::runif</a></code>, <code><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">stats::rexp</a></code></p></dd>
 
 
 <dt id="arg-iteration">iteration<a class="anchor" aria-label="anchor" href="#arg-iteration"></a></dt>
 <dd><p>[integer]</p>
 <p>This parameter determines how many simulated datasets are created for
- subsequent model and parameter recovery analyses.</p></dd>
+ subsequent model and parameter recovery analyses.</p>
+<p>default: <code>iteration_s = 10</code></p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
@@ -198,22 +198,12 @@ The last parameter, representing the temperature (tau) in the soft-max
 <span class="r-in"><span>  obj_func <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="RSTD.html">RSTD</a></span>,</span></span>
 <span class="r-in"><span>  n_params <span class="op">=</span> <span class="fl">3</span>,</span></span>
 <span class="r-in"><span>  n_trials <span class="op">=</span> <span class="fl">360</span>,</span></span>
-<span class="r-in"><span>  lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  iteration <span class="op">=</span> <span class="fl">100</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">df_recovery</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="recovery_data.html">recovery_data</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  list <span class="op">=</span> <span class="va">list_simulated</span>,</span></span>
-<span class="r-in"><span>  fit_model <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="RSTD.html">RSTD</a></span>,</span></span>
-<span class="r-in"><span>  model_name <span class="op">=</span> <span class="st">"RSTD"</span>,</span></span>
-<span class="r-in"><span>  n_params <span class="op">=</span> <span class="fl">3</span>,</span></span>
-<span class="r-in"><span>  n_trials <span class="op">=</span> <span class="fl">360</span>,</span></span>
-<span class="r-in"><span>  lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  iteration <span class="op">=</span> <span class="fl">100</span>,</span></span>
-<span class="r-in"><span>  nc <span class="op">=</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>  algorithm <span class="op">=</span> <span class="st">"L-BFGS-B"</span></span></span>
+<span class="r-in"><span>  rfun <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    etan <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">}</span>,</span></span>
+<span class="r-in"><span>    etap <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">}</span>,</span></span>
+<span class="r-in"><span>    tau <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">}</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  iteration <span class="op">=</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>

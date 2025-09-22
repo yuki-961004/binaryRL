@@ -5,6 +5,7 @@
 \title{Step 2: Generating fake data for parameter and model recovery}
 \usage{
 rcv_d(
+  estimate = "MLE",
   policy = "off",
   data,
   id = NULL,
@@ -12,21 +13,61 @@ rcv_d(
   funcs = NULL,
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  rfun = NULL,
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 10)),
-  iteration_s = 10,
-  iteration_f = 10,
+  dfun = NULL,
+  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
   initial_params = NA,
   initial_size = 50,
-  seed = 1,
+  tolerance = 0.001,
+  seed = 123,
+  iteration_s = 100,
+  iteration_f = 100,
   nc = 1,
   algorithm
 )
 }
 \arguments{
+\item{estimate}{[string] 
+
+  Estimation method. Can be either \code{"MLE"} or \code{"MAP"}.
+  \itemize{
+    \item{\code{"MLE"}: (Default) Maximum Likelihood Estimation. This
+      method finds the parameter values that maximize the log-likelihood
+      of the data. A higher log-likelihood indicates that the parameters
+      provide a better explanation for the observed human behavior. In
+      other words, data simulated using these parameters would most
+      closely resemble the actual human data. This method does not
+      consider any prior information about the parameters.}
+      
+    \item{\code{"MAP"}: Maximum A Posteriori Estimation. This method
+      finds the parameter values that maximize the posterior probability.
+      It is an iterative process based on the Expectation-Maximization
+      (EM) framework.
+      
+      \itemize{
+        \item{\strong{Initialization}: The process begins by assuming a
+          uniform distribution as the prior for each parameter, making the
+          initial log-prior zero. The first optimization is thus
+          equivalent to MLE.}
+        \item{\strong{Iteration}: After finding the best parameters for
+          all subjects, the algorithm assesses the actual distribution of
+          each parameter and fits a normal distribution to it. This
+          fitted distribution becomes the new empirical prior.}
+        \item{\strong{Re-estimation}: The parameters are then re-optimized
+          to maximize the updated posterior probability.}
+        \item{\strong{Convergence}: This cycle repeats until the posterior
+          probability converges or the maximum number of iterations
+          (specified by \code{iteration_g}) is reached.}
+      }
+      Using this method requires that the \code{priors} argument
+      be specified to define the initial prior distributions.
+    }
+   }
+
+default: \code{estimate = "MLE"}}
+
 \item{policy}{[string]
 
 Specifies the learning policy to be used.
@@ -126,52 +167,53 @@ e.g. \code{model_names = c("TD", "RSTD", "Utility")}}
 
 \item{simulate_models}{[List] 
 
-A collection of functions used to generate simulated data.}
+A list of functions used to simulate data from different models. Each
+ function in the list should represent one model.
 
-\item{simulate_lower}{[List] 
+e.g. \code{
+ simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility)
+}}
 
-The lower bounds for simulate models
+\item{rfun}{[List]
 
-e.g. \code{simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))}}
-
-\item{simulate_upper}{[List] 
-The upper bounds for simulate models
-
-e.g. \code{simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1))}}
+A nested list of functions used to generate random parameter values for
+ simulation. The top-level elements of the list should be named
+ according to the models. Each of these elements must be a named list
+ of functions, where each name corresponds to a model parameter and its
+ value is the random number generation function.
+ 
+e.g., \code{stats::runif}, \code{stats::rexp}}
 
 \item{fit_models}{[List] 
 
-A collection of functions applied to fit models to the data.
+A list of functions used to fit different models to the data. Each
+function in the list should represent one model.
 
-e.g. \code{fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility)}}
+e.g. \code{
+ fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility)
+}}
 
-\item{fit_lower}{[List] 
+\item{dfun}{[List]
 
-The lower bounds for model fit models
-
-e.g. \code{fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))}}
-
-\item{fit_upper}{[List] 
-
-The upper bounds for model fit models
-
-e.g. \code{fit_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 10))}}
-
-\item{iteration_s}{[integer]
-
-This parameter determines how many simulated datasets are created for 
- subsequent model and parameter recovery analyses.
+A nested list that defines the probability density/mass functions (PDF/PMF)
+ for each model's parameters. The top-level names of the list must match the
+ model names. Each element must be another named list, where each name
+ corresponds to a model parameter and its value is the probability density
+ function.
  
-default: \code{iteration_s = 10}}
+e.g., \code{stats::dunif}, \code{stats::dexp}}
 
-\item{iteration_f}{[integer]
+\item{lower}{[List] 
 
-The number of iterations the optimization algorithm will perform
- when searching for the best-fitting parameters during the fitting
- phase. A higher number of iterations may increase the likelihood of 
- finding a global optimum but also increases computation time.
- 
-default: \code{iteration_f = 10}}
+The lower bounds of models' free parameters.
+
+e.g. \code{lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))}}
+
+\item{upper}{[List] 
+
+The upper bounds of models' free parameters.
+
+e.g. \code{upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 10))}}
 
 \item{initial_params}{[NumericVector]
 
@@ -192,12 +234,43 @@ This parameter corresponds to the population size in genetic
  
  default: \code{initial_size = 50}.}
 
+\item{tolerance}{[double] 
+
+Convergence threshold for MAP estimation. If the change in
+ log posterior probability between iterations is smaller than this value, the
+ algorithm is considered to have converged and the program will stop.
+
+default: \code{tolerance = 0.001}}
+
 \item{seed}{[integer] 
 
 Random seed. This ensures that the results are 
  reproducible and remain the same each time the function is run. 
  
  default: \code{seed = 123}}
+
+\item{iteration_s}{[integer]
+
+This parameter determines how many simulated datasets are created for 
+ subsequent model and parameter recovery analyses.
+ 
+default: \code{iteration_s = 10}}
+
+\item{iteration_f}{[NumericVector]
+
+The number of iterations for the optimization algorithm. The required
+  format depends on the estimation method used.
+  \itemize{
+    \item {If \code{estimate = "MLE"}, this should be a single 
+      \code{numeric} value specifying the total number of iterations.}
+      
+    \item {If \code{estimate = "MAP"}, this should be a \code{NumericVector} 
+      of length two: \code{c(MLE_iterations, MAP_iterations).}}
+  }
+  A higher number of iterations may increase the likelihood of finding a
+  global optimum but also increases computation time.
+ 
+default: \code{iteration_f = 10}}
 
 \item{nc}{[integer]
 
@@ -311,21 +384,56 @@ recovery <- binaryRL::rcv_d(
   data = binaryRL::Mason_2024_G2,
 #+-----------------------------------------------------------------------------+#
 #|----------------------------- black-box function ----------------------------|#
-  #funcs = c("your_funcs"),
+  funcs = c("your_funcs"),
+  estimate = c("MLE", "MAP"),
+  policy = c("off", "on"),
   model_names = c("TD", "RSTD", "Utility"),
+#|------------------------------- simulate models -----------------------------|#
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  simulate_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
-  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
+  rfun = list(
+    list(
+      eta = function() { stats::runif(n = 1, min = 0, max = 1) },
+      tau = function() { stats::rexp(n = 1, rate = 1) }
+    ),
+    list(
+      etan = function() { stats::runif(n = 1, min = 0, max = 1) },
+      etap = function() { stats::runif(n = 1, min = 0, max = 1) },
+      tau = function() { stats::rexp(n = 1, rate = 1) }
+    ),
+    list(
+      eta = function() { stats::runif(n = 1, min = 0, max = 1) },
+      gamma = function() { stats::runif(n = 1, min = 0, max = 1) },
+      tau = function() { stats::rexp(n = 1, rate = 1) }
+    ),
+  ),
+#|---------------------------------- fit models -------------------------------|#
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  fit_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
-  fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
+  dfun = list(
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    ),
+    list(
+      etan = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      etap = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    ),
+    list(
+      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      gamma = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+    ),
+  ),
+#|---------------------------------- bound ------------------------------------|#
+  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
 #|----------------------------- interation number -----------------------------|#
   iteration_s = 100,
-  iteration_f = 100,
+  iteration_f = c(100, 10),
 #|-------------------------------- algorithms ---------------------------------|#
   nc = 1,                 # <nc > 1>: parallel computation across subjects
   # Base R Optimization
-  algorithm = "L-BFGS-B"  # Gradient-Based (stats)
+  #algorithm = "L-BFGS-B"  # Gradient-Based (stats)
 #|-----------------------------------------------------------------------------|#
   # Specialized External Optimization
   #algorithm = "GenSA"    # Simulated Annealing (GenSA)
@@ -336,7 +444,7 @@ recovery <- binaryRL::rcv_d(
   #algorithm = "CMA-ES"   # Covariance Matrix Adapting (cmaes)
 #|-----------------------------------------------------------------------------|#
   # Optimization Library (nloptr)
-  #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 #|-------------------------------- algorithms ---------------------------------|#
 #+#############################################################################+#
 )

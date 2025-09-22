@@ -13,15 +13,15 @@ fit_p(
   funcs = NULL,
   model_name = c("TD", "RSTD", "Utility"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   priors = NULL,
-  tolerance = 0.001,
-  iteration_i = 10,
-  iteration_g = 0,
+  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
   initial_params = NA,
   initial_size = 50,
+  tolerance = 0.001,
   seed = 123,
+  iteration_i = 10,
+  iteration_g = 0,
   nc = 1,
   algorithm
 )
@@ -172,18 +172,6 @@ A collection of functions applied to fit models to the data.
 
 e.g. \code{fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility)}}
 
-\item{lower}{[List] 
-
-The lower bounds for model fit models
-
-e.g. \code{lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))}}
-
-\item{upper}{[List] 
-
-The upper bounds for model fit models
-
-e.g. \code{upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10))}}
-
 \item{priors}{[List]
 
  A list specifying the prior distributions for the model parameters.
@@ -230,31 +218,17 @@ e.g. \code{upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10))}}
 
  default: \code{priors = NULL}}
 
-\item{tolerance}{[double] 
+\item{lower}{[List] 
 
-Convergence threshold for MAP estimation. If the change in
- log posterior probability between iterations is smaller than this value, the
- algorithm is considered to have converged and the program will stop.
+The lower bounds for model fit models
 
-default: \code{tolerance = 0.001}}
+e.g. \code{lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))}}
 
-\item{iteration_i}{[integer] 
+\item{upper}{[List] 
 
-The number of iterations the optimization algorithm will perform
- when searching for the best-fitting parameters during the fitting
- phase. A higher number of iterations may increase the likelihood of 
- finding a global optimum but also increases computation time.
- 
- default: \code{iteration_i = 10}.}
+The upper bounds for model fit models
 
-\item{iteration_g}{[integer]
-
-The maximum number of iterations for the Expectation-Maximization (EM)
- based MAP estimation. The algorithm will stop once this iteration
- count is reached, even if the change in the log-posterior value has
- not yet fallen below the \code{tolerance} threshold.
-
- default: \code{iteration_g = 0}.}
+e.g. \code{upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10))}}
 
 \item{initial_params}{[NumericVector]
 
@@ -275,12 +249,38 @@ This parameter corresponds to the population size in genetic
  
  default: \code{initial_size = 50}.}
 
+\item{tolerance}{[double] 
+
+Convergence threshold for MAP estimation. If the change in
+ log posterior probability between iterations is smaller than this value, the
+ algorithm is considered to have converged and the program will stop.
+
+default: \code{tolerance = 0.001}}
+
 \item{seed}{[integer] 
 
 Random seed. This ensures that the results are 
  reproducible and remain the same each time the function is run. 
  
 default: \code{seed = 123}}
+
+\item{iteration_i}{[integer] 
+
+The number of iterations the optimization algorithm will perform
+ when searching for the best-fitting parameters during the fitting
+ phase. A higher number of iterations may increase the likelihood of 
+ finding a global optimum but also increases computation time.
+ 
+ default: \code{iteration_i = 10}.}
+
+\item{iteration_g}{[integer]
+
+The maximum number of iterations for the Expectation-Maximization (EM)
+ based MAP estimation. The algorithm will stop once this iteration
+ count is reached, even if the change in the log-posterior value has
+ not yet fallen below the \code{tolerance} threshold.
+
+ default: \code{iteration_g = 0}.}
 
 \item{nc}{[integer]
 
@@ -383,19 +383,14 @@ The key differences are as follows:
 \dontrun{
 comparison <- binaryRL::fit_p(
   data = binaryRL::Mason_2024_G2,
-  id = unique(binaryRL::Mason_2024_G2$Subject),
 #+-----------------------------------------------------------------------------+#
 #|----------------------------- black-box function ----------------------------|#
-  #funcs = c("your_funcs"),
-  policy = c("off", "on"),
-  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  model_name = c("TD", "RSTD", "Utility"),
-#|--------------------------------- estimate ----------------------------------|#
+  funcs = c("your_funcs"),
   estimate = c("MLE", "MAP"),
-#|------------------------------------ MLE ------------------------------------|#
-  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
-#|------------------------------------ MAP ------------------------------------|#
+  policy = c("off", "on"),
+  model_name = c("TD", "RSTD", "Utility"),
+#|-------------------------------- fit models ---------------------------------|#
+  fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   priors = list(
     list(
       eta = function(x) {stats::dunif(x, min = 0, max = 1, log = TRUE)}, 
@@ -412,13 +407,16 @@ comparison <- binaryRL::fit_p(
       tau = function(x) {stats::dexp(x, rate = 1, log = TRUE)}
     )
   ),
+#|---------------------------------- bound ------------------------------------|#
+  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
 #|----------------------------- iteration number ------------------------------|#
   iteration_i = 10,
   iteration_g = 10,
 #|-------------------------------- algorithms ---------------------------------|#
   nc = 1,                 # <nc > 1>: parallel computation across subjects
   # Base R Optimization
-  algorithm = "L-BFGS-B"  # Gradient-Based (stats)
+  #algorithm = "L-BFGS-B"  # Gradient-Based (stats)
 #|-----------------------------------------------------------------------------|#
   # Specialized External Optimization
   #algorithm = "GenSA"    # Simulated Annealing (GenSA)
@@ -429,7 +427,7 @@ comparison <- binaryRL::fit_p(
   #algorithm = "CMA-ES"   # Covariance Matrix Adapting (cmaes)
 #|-----------------------------------------------------------------------------|#
   # Optimization Library (nloptr)
-  #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 #|-------------------------------- algorithms ---------------------------------|#
 #################################################################################
 )

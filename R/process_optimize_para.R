@@ -296,7 +296,7 @@ optimize_para <- function(
   environment(obj_func) <- binaryRL.env
   
   # 设定初始值
-  if (is.na(initial_params)){
+  if (length(initial_params) == 1 && is.na(initial_params)){
     initial_params <- lower + 1e-2
   }
   

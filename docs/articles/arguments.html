@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -338,38 +338,9 @@ action having the maximal value.”</p>
 <p>In many reinforcement learning models, softmax is used to represent
 the exploration-exploitation trade-off, rather than the three methods
 mentioned above.</p>
-<blockquote>
-<p>“In this section we consider learning a numerical preference for each
-action <em>a</em>, which we denote <span class="math inline">\(H_t(a)
-\in \mathbb{R}\)</span>. The larger the preference, the more often that
-action is taken, but the preference has no interpretation in terms of
-reward.”</p>
-</blockquote>
-<p>Additionally, when using the <code><a href="../reference/rcv_d.html">rcv_d()</a></code> function, please
-note the following two points. During the recovery process, the
-<strong>last</strong> element of both <code>simulate_lower</code> and
-<code>simulate_upper</code> corresponds to the <span class="math inline">\(\tau\)</span> parameter used in the softmax
-function.</p>
-<ul>
-<li><p><code>simulate_lower</code> represents a fixed positive increment
-applied to all <span class="math inline">\(\tau\)</span> values.<br>
-if this value is set to 1, it means that 1 is added to every <span class="math inline">\(\tau\)</span> during simulation.</p></li>
-<li><p><code>simulate_upper</code> specifies the rate parameter of an
-exponential distribution from which <span class="math inline">\(\tau\)</span> is sampled.<br>
-if this value is 1, then <span class="math inline">\(\tau\)</span> is
-drawn from an exponential distribution with a rate of 10, i.e., <span class="math inline">\(\tau \sim \text{Exp}(1)\)</span>.</p></li>
-</ul>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>binaryRL<span class="sc">::</span><span class="fu">rcv_d</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  ...</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">simulate_lower =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>)),</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">simulate_upper =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)),</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  ...</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>Reference</strong></p>
 <p>Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement Learning:
 An Introduction</em> (2nd ed). MIT press.</p>
-<p>Wilson, R. C., &amp; Collins, A. G. (2019). Ten simple rules for the
-computational modeling of behavioral data. <em>Elife</em>, 8, e49547. <a href="https://doi.org/10.7554/eLife.49547" class="external-link uri">https://doi.org/10.7554/eLife.49547</a></p>
 <!---------------------------------------------------------->
 </div>
 </div>

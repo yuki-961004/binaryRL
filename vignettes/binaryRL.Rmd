@@ -481,37 +481,15 @@ Here, using the publicly available data from Mason et al. [(2024)](https://doi.o
 ```{r eval=FALSE}
 recovery <- binaryRL::rcv_d(
   data = binaryRL::Mason_2024_G2,
-# ╔═══════════════════════════════════════════════════════════════════════════╗ #
-# ║ --------------------------- black-box function -------------------------- ║ #
-  #funcs = c("your_funcs"),
-  policy = c("off", "on"),
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  simulate_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  fit_lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  fit_upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
-# ║ --------------------------- interation number --------------------------- ║ #
+  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 10)),
   iteration_s = 100,
   iteration_f = 100,
-# ║ ------------------------------- algorithms ------------------------------ ║ #
-  nc = 1,                  # <nc > 1>: parallel computation across subjects
-  # Base R Optimization    
-  #algorithm = "L-BFGS-B"   # Gradient-Based (stats)
-# ║ ------------------------------------------------------------------------- ║ #
-  # Specialized External Optimization
-  #algorithm = "GenSA"     # Simulated Annealing (GenSA)
-  #algorithm = "GA"        # Genetic Algorithm (GA)
-  #algorithm = "DEoptim"   # Differential Evolution (DEoptim)
-  #algorithm = "PSO"       # Particle Swarm Optimization (pso)
-  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO)
-  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (cmaes)
-# ║ ------------------------------------------------------------------------- ║ #
-  # Optimization Library (nloptr)
+  nc = 1,
   algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
-# ║ ------------------------------- algorithms ------------------------------ ║ #
-# ╚═══════════════════════════════════════════════════════════════════════════╝ # 
 )
 
 result <- dplyr::bind_rows(recovery) %>%
@@ -580,55 +558,13 @@ Following the recommendations of Wilson & Collins [(2019)](https://doi.org/10.75
 ```{r eval=FALSE}
 comparison <- binaryRL::fit_p(
   data = binaryRL::Mason_2024_G2,
-  id = unique(binaryRL::Mason_2024_G2$Subject),
-# ╔═══════════════════════════════════════════════════════════════════════════╗ #
-# ║ --------------------------- black-box function -------------------------- ║ #
-  #funcs = c("your_funcs"),
-  policy = c("off", "on"),
   model_name = c("TD", "RSTD", "Utility"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-# ║ ------------------------------- estimate -------------------------------- ║ #
-  estimate = c("MLE", "MAP"),
-# ║ ---------------------------------- MLE ---------------------------------- ║ #
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
-# ║ ---------------------------------- MAP ---------------------------------- ║ #
-  priors = list(
-    list(
-      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
-    ), 
-    list(
-      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
-    ), 
-    list(
-      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      gamma = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
-    )
-  ),
-# ║ ---------------------------- iteration number --------------------------- ║ #
+  upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
   iteration_i = 100,
-  iteration_g = 100,
-# ║ ------------------------------- algorithms ------------------------------ ║ #
-  nc = 1,                  # <nc > 1>: parallel computation across subjects
-  # Base R Optimization  
-  #algorithm = "L-BFGS-B"   # Gradient-Based (stats)
-# ║ ------------------------------------------------------------------------- ║ #
-  # Specialized External Optimization
-  #algorithm = "GenSA"     # Simulated Annealing (GenSA)
-  #algorithm = "GA"        # Genetic Algorithm (GA)
-  #algorithm = "DEoptim"   # Differential Evolution (DEoptim)
-  #algorithm = "PSO"       # Particle Swarm Optimization (pso)
-  #algorithm = "Bayesian"  # Bayesian Optimization (mlrMBO)
-  #algorithm = "CMA-ES"    # Covariance Matrix Adapting (cmaes)
-# ║ ------------------------------------------------------------------------- ║ #
-  # Optimization Library (nloptr)
+  nc = 1,
   algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
-# ║ ------------------------------- algorithms ------------------------------ ║ #
-# ╚═══════════════════════════════════════════════════════════════════════════╝ # 
 )
 
 result <- dplyr::bind_rows(comparison)
@@ -672,8 +608,7 @@ list[[1]] <- dplyr::bind_rows(
     data = binaryRL::Mason_2024_G2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::TD,
-    model_name = "TD", 
-    param_prefix = "param_",
+    model_name = "TD"
   )
 )
 
@@ -682,8 +617,7 @@ list[[2]] <- dplyr::bind_rows(
     data = binaryRL::Mason_2024_G2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::RSTD,
-    model_name = "RSTD", 
-    param_prefix = "param_",
+    model_name = "RSTD"
   )
 )
 
@@ -692,8 +626,7 @@ list[[3]] <- dplyr::bind_rows(
     data = binaryRL::Mason_2024_G2,
     result = read.csv("../OUTPUT/result_comparison.csv"), 
     model = binaryRL::Utility,
-    param_prefix = "param_",
-    model_name = "Utility", 
+    model_name = "Utility"
   )
 )
 ```

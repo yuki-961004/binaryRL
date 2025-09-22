@@ -19,47 +19,19 @@ library(ggplot2)
 ```{r eval=FALSE}
 comparison <- binaryRL::fit_p(
   data = binaryRL::Mason_2024_G2,
-  policy = c("off", "on"),
   model_name = c("TD", "RSTD", "Utility"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  estimate = c("MLE", "MAP"),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
-  priors = list(
-    list(
-      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
-    ), 
-    list(
-      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
-    ), 
-    list(
-      eta = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      gamma = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
-      tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
-    )
-  ),
-  iteration_i = 100,
-  iteration_g = 10,
-  seed = 123,
-  nc = 16,
-  #algorithm = "L-BFGS-B"     # Gradient-Based (stats::optim)
-  #algorithm = "GenSA"        # Simulated Annealing (GenSA::GenSA)
-  #algorithm = "GA"           # Genetic Algorithm (GA::ga)
-  #algorithm = "DEoptim"      # Differential Evolution (DEoptim::DEoptim)
-  #algorithm = "PSO"          # Particle Swarm Optimization (pso::psoptim)
-  #algorithm = "Bayesian"     # Bayesian Optimization (mlrMBO::mbo)
-  #algorithm = "CMA-ES"       # Covariance Matrix Adapting (`cmaes::cma_es`)
-  # Nonlinear Optimization (nloptr::nloptr)
+  upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
+  iteration_i = 10,
+  nc = 1,
   algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 
 result <- dplyr::bind_rows(comparison)
 
 write.csv(result, "../OUTPUT/result_comparison.csv", row.names = FALSE)
-```
+``` 
 
 ## Plot
 ### Read Result

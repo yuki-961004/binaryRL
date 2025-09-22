@@ -192,31 +192,9 @@ Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* 
 
 In many reinforcement learning models, softmax is used to represent the exploration-exploitation trade-off, rather than the three methods mentioned above.  
 
-> "In this section we consider learning a numerical preference for each action *a*, which we denote $H_t(a) \in \mathbb{R}$. The larger the preference, the more often that action is taken, but the preference has no interpretation in terms of reward."  
-
-Additionally, when using the `rcv_d()` function, please note the following two points. During the recovery process, the **last** element of both `simulate_lower` and `simulate_upper` corresponds to the $\tau$ parameter used in the softmax function.
-
-- `simulate_lower` represents a fixed positive increment applied to all $\tau$ values.   
-if this value is set to 1, it means that 1 is added to every $\tau$ during simulation.
-
-- `simulate_upper` specifies the rate parameter of an exponential distribution from which $\tau$ is sampled.  
-if this value is 1, then $\tau$ is drawn from an exponential distribution with a rate of 10, i.e., $\tau \sim \text{Exp}(1)$.
-
-
-```{r eval=FALSE}
-binaryRL::rcv_d(
-  ...
-  simulate_lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
-  simulate_upper = list(c(1, 1), c(1, 1, 1), c(1, 1, 1)),
-  ...
-)
-```
-
 **Reference**  
 
 Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* (2nd ed). MIT press.  
-
-Wilson, R. C., & Collins, A. G. (2019). Ten simple rules for the computational modeling of behavioral data. *Elife*, 8, e49547. https://doi.org/10.7554/eLife.49547
 
 <!---------------------------------------------------------->
 

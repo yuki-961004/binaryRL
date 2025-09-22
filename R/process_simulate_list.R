@@ -62,18 +62,22 @@
 #' 
 #' The total number of trials in your experiment.
 #' 
-#' @param lower [vector] 
+#' @param rfun [List]
 #' 
-#' Lower bounds of free parameters
+#' A nested list of functions used to generate random parameter values for
+#'  simulation. The top-level elements of the list should be named
+#'  according to the models. Each of these elements must be a named list
+#'  of functions, where each name corresponds to a model parameter and its
+#'  value is the random number generation function.
 #' 
-#' @param upper [vector] 
-#' 
-#' Upper bounds of free parameters
+#' e.g., \code{stats::runif}, \code{stats::rexp}
 #'  
 #' @param iteration [integer]
 #' 
 #' This parameter determines how many simulated datasets are created for 
 #'  subsequent model and parameter recovery analyses.
+#'  
+#' default: \code{iteration_s = 10}
 #'  
 #' @param seed [integer] 
 #' 
@@ -91,33 +95,22 @@
 #'   obj_func = binaryRL::RSTD,
 #'   n_params = 3,
 #'   n_trials = 360,
-#'   lower = c(0, 0, 1),
-#'   upper = c(1, 1, 1),
-#'   iteration = 100
-#' )
-#'
-#' df_recovery <- binaryRL::recovery_data(
-#'   list = list_simulated,
-#'   fit_model = binaryRL::RSTD,
-#'   model_name = "RSTD",
-#'   n_params = 3,
-#'   n_trials = 360,
-#'   lower = c(0, 0, 1),
-#'   upper = c(1, 1, 5),
-#'   iteration = 100,
-#'   nc = 1,
-#'   algorithm = "L-BFGS-B"
+#'   rfun = list(
+#'     etan = function() { stats::runif(n = 1, min = 0, max = 1) },
+#'     etap = function() { stats::runif(n = 1, min = 0, max = 1) },
+#'     tau = function() { stats::rexp(n = 1, rate = 1) }
+#'   ),
+#'   iteration = 10
 #' )
 #' }
 #' 
 simulate_list <- function(
   data,
   id = 1,
-  obj_func, 
   n_params, 
   n_trials,
-  lower, 
-  upper,
+  obj_func, 
+  rfun,
   iteration = 10,
   seed = 123
 ) {
@@ -130,17 +123,28 @@ simulate_list <- function(
   for (i in 1:iteration) {
     params <- c()
     
-    for (j in 1:n_params) {
-      # 确保每次种子不同
-      set.seed(seed + n_params * i + j) 
-      if (j == n_params) {
-        params[j] <- stats::rexp(1, rate = upper[j]) + lower[j]
-      } else {
-        # 其他参数服从均匀分布
-        params[j] <- stats::runif(n = 1, min = lower[j], max = upper[j])
+    # 如果没有设置rfun, 则除了逆温度参数服从Exp(1), 其他服从U(0, 1)
+    if (is.null(rfun)){
+      for (j in 1:n_params) {
+        # 确保每次种子不同
+        set.seed(seed + n_params * i + j) 
+        if (j == n_params) {
+          params[j] <- stats::rexp(n = 1, rate = 1)
+        } else {
+          # 其他参数服从均匀分布
+          params[j] <- stats::runif(n = 1, min = 0, max = 1)
+        }
       }
     }
-    
+    # 如果设置了rfun, 则根据预设分布生成随机数
+    else {
+      for (j in 1:n_params) {
+        # 确保每次种子不同
+        set.seed(seed + n_params * i + j) 
+        params[j] <- rfun[[j]]()
+      }
+    }
+
     # 创建临时环境
     binaryRL.env <- new.env()
     

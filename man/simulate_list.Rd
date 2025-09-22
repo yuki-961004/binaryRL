@@ -7,11 +7,10 @@
 simulate_list(
   data,
   id = 1,
-  obj_func,
   n_params,
   n_trials,
-  lower,
-  upper,
+  obj_func,
+  rfun,
   iteration = 10,
   seed = 123
 )
@@ -45,6 +44,14 @@ The default value for this argument is \code{NULL}. When \code{id = NULL},
  
 default: \code{id = NULL}}
 
+\item{n_params}{[integer] 
+
+The number of free parameters in your model.}
+
+\item{n_trials}{[integer] 
+
+The total number of trials in your experiment.}
+
 \item{obj_func}{[function]
 
 The objective function that the optimization algorithm package accepts.
@@ -58,26 +65,22 @@ The objective function that the optimization algorithm package accepts.
     \code{\link[binaryRL]{Utility}}
  ).}
 
-\item{n_params}{[integer] 
+\item{rfun}{[List]
 
-The number of free parameters in your model.}
+A nested list of functions used to generate random parameter values for
+ simulation. The top-level elements of the list should be named
+ according to the models. Each of these elements must be a named list
+ of functions, where each name corresponds to a model parameter and its
+ value is the random number generation function.
 
-\item{n_trials}{[integer] 
-
-The total number of trials in your experiment.}
-
-\item{lower}{[vector] 
-
-Lower bounds of free parameters}
-
-\item{upper}{[vector] 
-
-Upper bounds of free parameters}
+e.g., \code{stats::runif}, \code{stats::rexp}}
 
 \item{iteration}{[integer]
 
 This parameter determines how many simulated datasets are created for 
- subsequent model and parameter recovery analyses.}
+ subsequent model and parameter recovery analyses.
+ 
+default: \code{iteration_s = 10}}
 
 \item{seed}{[integer] 
 
@@ -109,22 +112,12 @@ list_simulated <- binaryRL::simulate_list(
   obj_func = binaryRL::RSTD,
   n_params = 3,
   n_trials = 360,
-  lower = c(0, 0, 1),
-  upper = c(1, 1, 1),
-  iteration = 100
-)
-
-df_recovery <- binaryRL::recovery_data(
-  list = list_simulated,
-  fit_model = binaryRL::RSTD,
-  model_name = "RSTD",
-  n_params = 3,
-  n_trials = 360,
-  lower = c(0, 0, 1),
-  upper = c(1, 1, 5),
-  iteration = 100,
-  nc = 1,
-  algorithm = "L-BFGS-B"
+  rfun = list(
+    etan = function() { stats::runif(n = 1, min = 0, max = 1) },
+    etap = function() { stats::runif(n = 1, min = 0, max = 1) },
+    tau = function() { stats::rexp(n = 1, rate = 1) }
+  ),
+  iteration = 10
 )
 }
 

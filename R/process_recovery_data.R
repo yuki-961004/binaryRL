@@ -10,6 +10,45 @@
 #' The fitting procedure is analogous to that performed by \code{fit_p},
 #'  and it similarly leverages parallel computation across subjects
 #'  to significantly accelerate the parameter estimation process.
+#' 
+#' @param estimate [string] 
+#' 
+#'   Estimation method. Can be either \code{"MLE"} or \code{"MAP"}.
+#'   \itemize{
+#'     \item{\code{"MLE"}: (Default) Maximum Likelihood Estimation. This
+#'       method finds the parameter values that maximize the log-likelihood
+#'       of the data. A higher log-likelihood indicates that the parameters
+#'       provide a better explanation for the observed human behavior. In
+#'       other words, data simulated using these parameters would most
+#'       closely resemble the actual human data. This method does not
+#'       consider any prior information about the parameters.}
+#'       
+#'     \item{\code{"MAP"}: Maximum A Posteriori Estimation. This method
+#'       finds the parameter values that maximize the posterior probability.
+#'       It is an iterative process based on the Expectation-Maximization
+#'       (EM) framework.
+#'       
+#'       \itemize{
+#'         \item{\strong{Initialization}: The process begins by assuming a
+#'           uniform distribution as the prior for each parameter, making the
+#'           initial log-prior zero. The first optimization is thus
+#'           equivalent to MLE.}
+#'         \item{\strong{Iteration}: After finding the best parameters for
+#'           all subjects, the algorithm assesses the actual distribution of
+#'           each parameter and fits a normal distribution to it. This
+#'           fitted distribution becomes the new empirical prior.}
+#'         \item{\strong{Re-estimation}: The parameters are then re-optimized
+#'           to maximize the updated posterior probability.}
+#'         \item{\strong{Convergence}: This cycle repeats until the posterior
+#'           probability converges or the maximum number of iterations
+#'           (specified by \code{iteration_g}) is reached.}
+#'       }
+#'       Using this method requires that the \code{priors} argument
+#'       be specified to define the initial prior distributions.
+#'     }
+#'    }
+#' 
+#' default: \code{estimate = "MLE"}
 #'  
 #' @param list [list] 
 #' 
@@ -90,19 +129,69 @@
 #' 
 #' @param model_name [character] 
 #' 
-#' The name of your modal
+#' The name of modal
 #'
 #' @param fit_model [function] 
 #' 
-#' fit model
+#' fit model object function
 #'
-#' @param lower [vector] 
+#' @param lower [List] 
 #' 
-#' Lower bounds of free parameters
+#' The lower bounds of model's free parameters.
 #' 
-#' @param upper [vector] 
+#' e.g. \code{lower = c(0, 0, 0)}
 #' 
-#' Upper bounds of free parameters
+#' @param upper [List] 
+#' 
+#' The upper bounds of model's free parameters.
+#' 
+#' e.g. \code{upper = c(1, 1, 5)}
+#'
+#' @param dfun [list]
+#' 
+#'  A list specifying the prior distributions for the model parameters.
+#'   This argument is mandatory when using \code{estimate = "MAP"}.
+#'   There are two primary scenarios for its use:
+#'
+#'   \strong{1. Static MAP Estimation (Non-Hierarchical)}
+#'   This approach is used when you have a strong, pre-defined belief about
+#'   the parameter priors and do not want the model to update them iteratively.
+#'   \describe{
+#'     \item{Configuration:}{
+#'       \itemize{
+#'         \item{Set \code{estimate = "MAP"}.}
+#'         \item{Provide a \code{list} defining your confident prior
+#'           distributions.}
+#'         \item{Keep \code{iteration_g = 0} (the default).}
+#'       }
+#'     }
+#'     \item{Behavior:}{ The algorithm maximizes the posterior
+#'       probability based solely on your specified priors. It will not
+#'       use the EM (Expectation-Maximization) framework to learn new
+#'       priors from the data.}
+#'   }
+#'
+#'   \strong{2. Hierarchical Bayesian Estimation via EM}
+#'   This approach is used to let the model learn the group-level (hierarchical)
+#'   prior distributions directly from the data.
+#'   \describe{
+#'     \item{Configuration:}{
+#'       \itemize{
+#'         \item{Set \code{estimate = "MAP"}.}
+#'         \item{Specify a weak or non-informative initial prior, such as a
+#'           uniform distribution for all parameters.}
+#'         \item{Set \code{iteration_g} to a value greater than 0.}
+#'       }
+#'     }
+#'     \item{Behavior:}{ With a uniform prior, the initial
+#'       log-posterior equals the log-likelihood, making the first estimation
+#'       step equivalent to MLE. The algorithm then initiates the EM procedure:
+#'       it iteratively assesses the actual parameter distribution across all
+#'       subjects and updates the group-level priors. This cycle continues
+#'       until the posterior converges or \code{iteration_g} is reached.}
+#'   }
+#' 
+#'  default: \code{dfun = NULL}
 #'
 #' @param initial_params [numeric]
 #' 
@@ -123,19 +212,27 @@
 #'  
 #'  default: \code{initial_size = 50}.
 #'  
-#' @param iteration [integer] 
+#' @param tolerance [double] 
 #' 
-#' The number of iterations the optimization algorithm will perform
-#'  when searching for the best-fitting parameters during the fitting
-#'  phase. A higher number of iterations may increase the likelihood of 
-#'  finding a global optimum but also increases computation time.
-#'  
+#' Convergence threshold for MAP estimation. If the change in
+#'  log posterior probability between iterations is smaller than this value, the
+#'  algorithm is considered to have converged and the program will stop.
+#' 
+#' default: \code{tolerance = 0.001}
+#' 
 #' @param seed [integer] 
 #' 
 #' Random seed. This ensures that the results are 
 #'  reproducible and remain the same each time the function is run. 
 #'  
 #'  default: \code{seed = 123}
+#'  
+#' @param iteration [integer] 
+#' 
+#' The number of iterations the optimization algorithm will perform
+#'  when searching for the best-fitting parameters during the fitting
+#'  phase. A higher number of iterations may increase the likelihood of 
+#'  finding a global optimum but also increases computation time.
 #'  
 #' @param nc [integer]
 #' 
@@ -169,41 +266,53 @@
 #' @return a data frame for parameter recovery and model recovery
 #' @examples
 #' \dontrun{
-#' binaryRL.res <- binaryRL::optimize_para(
-#'   data = Mason_2024_G2,
-#'   id = 1,
-#'   n_params = 3,
-#'   n_trials = 360,
-#'   obj_func = binaryRL::RSTD,
+#' df_recovery <- recovery_data(
+#'   list = list_simulated,
+#'   policy = "off",
+#'   estimate = "MAP", 
+#'   model_name = "RSTD",
+#'   fit_model = binaryRL::RSTD,
+#'   dfun = list(
+#'     etan = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+#'     etap = function(x) { stats::dunif(x, min = 0, max = 1, log = TRUE) }, 
+#'     tau = function(x) { stats::dexp(x, rate = 1, log = TRUE) }
+#'   ),
 #'   lower = c(0, 0, 0),
 #'   upper = c(1, 1, 10),
-#'   iteration = 100,
-#'   algorithm = "L-BFGS-B"
+#'   iteration = c(10, 3),
+#'   nc = 10,
+#'   algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 #' )
-#'
-#' summary(binaryRL.res)
 #' }
 recovery_data <- function(
+    policy,
+    estimate,   
+  
     list,
     id = 1,
     n_trials,
     n_params, 
     
     funcs = NULL,
-    policy,
     model_name,
     fit_model,
+    dfun,
+    
     lower,
     upper,
     
     initial_params = NA,
     initial_size = 50,
-    
-    iteration = 10,
+    tolerance,
     seed = 123,
+    
+    iteration,
+    
     nc = 1,
     algorithm
 ){
+############################### [ Col-Name ] ###################################
+  
   # 创建一个空数据集, 用于存放结果
   recovery <- data.frame(
     fit_model = rep(model_name, length(list)),
@@ -214,6 +323,7 @@ recovery_data <- function(
     AIC = NA,
     BIC = NA
   )
+  
   # 检测是都用同一个被试的题目, 还是每次都更换题目
   if (length(id) == 1) {
     id <- rep(id, length(list))
@@ -233,7 +343,9 @@ recovery_data <- function(
     recovery[, i + 7 + n_input_params] <- NA
     names(recovery)[i + 7 + n_input_params] <- paste0("output_param_", i)
   }
-  
+
+############################### [ Parallel ] ###################################
+    
   sys <- Sys.info()[["sysname"]]
   
   if (nc == 1) {
@@ -254,6 +366,8 @@ recovery_data <- function(
   
   doFuture::registerDoFuture()
 
+############################### [ Progress ] ###################################
+  
   # 以迭代次数作为进度条
   n_iterations <- length(list) 
   
@@ -268,6 +382,8 @@ recovery_data <- function(
     # 初始化(定义)foreach中的i
     i <- NA
     
+################################# [ MLE ] ######################################
+    
     # 抑制每个线程加载包时的信息
     suppressMessages({
       model_result <- foreach::foreach(
@@ -280,7 +396,7 @@ recovery_data <- function(
         
         binaryRL.res <- binaryRL::optimize_para(
           policy = policy,
-          estimate = "MLE",
+          estimate = estimate,
           
           data = data_i,
           id = id[i],
@@ -290,22 +406,24 @@ recovery_data <- function(
           obj_func = fit_model,
           lower = lower,
           upper = upper,
-          priors = NULL,
+          priors = dfun,
 
           initial_params = initial_params,
           initial_size = initial_size,
           
-          iteration = iteration,
+          iteration = iteration[[1]],
           seed = seed,
           algorithm = algorithm
         )
         
-        row_i <- data.frame(matrix(NA, nrow = 1, ncol = 7 + n_input_params + n_output_params))
+        row_i <- data.frame(
+          matrix(NA, nrow = 1, ncol = 7 + n_input_params + n_output_params)
+        )
         row_i[1, 1] <- model_name
         row_i[1, 2] <- binaryRL.res$acc
-        row_i[1, 3] <- binaryRL.res$ll
-        row_i[1, 4] <- binaryRL.res$lpr
-        row_i[1, 5] <- binaryRL.res$lpo
+        row_i[1, 3] <- -binaryRL.res$ll
+        row_i[1, 4] <- -binaryRL.res$lpr
+        row_i[1, 5] <- -binaryRL.res$lpo
         row_i[1, 6] <- binaryRL.res$aic
         row_i[1, 7] <- binaryRL.res$bic
         
@@ -323,6 +441,155 @@ recovery_data <- function(
       }
     })
   })
+  
+  # 继承recovery的列名
+  colnames(model_result) <- colnames(recovery)
+  
+################################# [ MAP ] ######################################
+  
+  # Expectation-Maximization Algorithm
+  if (estimate == "MAP") {
+    
+    # 基于上面第一次的结果更新先验概率
+    params_priors <- update_priors(
+      model_result = model_result,
+      priors = dfun, 
+      n_params = n_params,
+      param_prefix = "output_param_"
+    )
+    
+    # 计算第一次拟合时的似然后验值
+    LogPo <- sum(model_result$LogPo)
+    
+    # MAP需要iteration输入的是二元素向量
+    if (length(iteration) == 2) {
+      iteration_i <- iteration[[1]]
+      iteration_g <- iteration[[2]]
+    }
+    # 如果iteration_g > 0, 则说明用户希望进行层级贝叶斯, 至少进行一次EM
+    if (iteration_g > 0) {
+      delta_LogPo <- tolerance + 1
+      message(
+        paste0(
+          "Starting Expectation-Maximization Algorithm", "\n",
+          "Log-Posterior Probability: ", round(LogPo, 2)
+        )
+      )
+    }
+    # 如果iteration_g == 0, 则意味着被试想只进行MAP或MLE, 而不是层级贝叶斯
+    else {
+      delta_LogPo <- 0
+    }
+    
+    # 初始化后验迭代次数
+    iteration <- 0
+    
+    while (abs(delta_LogPo) > tolerance) {
+      
+      # 进度条
+      progressr::handlers(progressr::handler_txtprogressbar)
+      
+      progressr::with_progress({
+        
+        # 进度条与此时运行的被试数绑定
+        p <- progressr::progressor(steps = n_iterations)
+        
+        # doRNG保证种子不变
+        doRNG::registerDoRNG(seed = seed)
+        
+        # 初始化(定义)foreach中的j (无意义, 仅为通过R CMD check)
+        i <- NA
+        
+        # 抑制每个线程加载包时的信息
+        suppressMessages({
+          model_result <- foreach::foreach(
+            i = 1:n_iterations, .combine = rbind,
+            .packages = c("binaryRL"),
+            .export = funcs
+          ) %dorng% {
+            
+            data_i <- list[[i]][["data"]]
+            
+            binaryRL.res <- binaryRL::optimize_para(
+              policy = policy,
+              estimate = estimate,
+              
+              data = data_i,
+              id = id[i],
+              n_trials = n_trials,
+              n_params = n_params,
+              
+              obj_func = fit_model,
+              lower = lower,
+              upper = upper,
+              priors = params_priors,
+              
+              initial_params = initial_params,
+              initial_size = initial_size,
+              
+              iteration = iteration_i,
+              seed = seed,
+              algorithm = algorithm
+            )
+            
+            row_i <- data.frame(
+              matrix(NA, nrow = 1, ncol = 7 + n_input_params + n_output_params)
+            )
+            row_i[1, 1] <- model_name
+            row_i[1, 2] <- binaryRL.res$acc
+            row_i[1, 3] <- -binaryRL.res$ll
+            row_i[1, 4] <- -binaryRL.res$lpr
+            row_i[1, 5] <- -binaryRL.res$lpo
+            row_i[1, 6] <- binaryRL.res$aic
+            row_i[1, 7] <- binaryRL.res$bic
+            
+            for (j in 1:n_input_params) {
+              row_i[1, 7 + j] <- list[[i]]$input[j]
+            }
+            for (j in 1:n_output_params) {
+              row_i[1, 7 + n_input_params + j] <- binaryRL.res$output[j]
+            }
+            
+            # 更新進度條
+            p() 
+            
+            return(row_i)
+          }
+        })
+      })
+      
+      # 继承recovery的列名
+      colnames(model_result) <- colnames(recovery)
+      
+      # 计算此时的似然后验变化量
+      delta_LogPo <- sum(model_result$LogPo) - LogPo
+      
+      # 更新似然后验
+      LogPo <- sum(model_result$LogPo)
+      
+      message(
+        paste0(
+          "Log-Posterior Probability: ", round(LogPo, 2),
+          ", ",
+          "\u0394: ", sign_numbers(delta_LogPo), round(delta_LogPo, 2)
+        )
+      )
+      
+      # 修改先验分布
+      params_priors <- update_priors(
+        model_result = model_result,
+        priors = params_priors, 
+        n_params = n_params,
+        param_prefix = "output_param_"
+      )
+      
+      # EM也不会无限制跑下去
+      iteration <- iteration + 1
+      if (iteration >= iteration_g) {
+        break 
+      }
+    }
+  }
   
   # 继承recovery的列名
   colnames(model_result) <- colnames(recovery)

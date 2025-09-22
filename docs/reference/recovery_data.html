@@ -33,7 +33,7 @@ The fitting procedure is analogous to that performed by fit_p,
 
     <a class="navbar-brand me-2" href="../index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,20 +90,23 @@ The fitting procedure is analogous to that performed by fit_p,
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">recovery_data</span><span class="op">(</span></span>
+<span>  <span class="va">policy</span>,</span>
+<span>  <span class="va">estimate</span>,</span>
 <span>  <span class="va">list</span>,</span>
 <span>  id <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">n_trials</span>,</span>
 <span>  <span class="va">n_params</span>,</span>
 <span>  funcs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">policy</span>,</span>
 <span>  <span class="va">model_name</span>,</span>
 <span>  <span class="va">fit_model</span>,</span>
+<span>  <span class="va">dfun</span>,</span>
 <span>  <span class="va">lower</span>,</span>
 <span>  <span class="va">upper</span>,</span>
 <span>  initial_params <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  initial_size <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>  iteration <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  <span class="va">tolerance</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">123</span>,</span>
+<span>  <span class="va">iteration</span>,</span>
 <span>  nc <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">algorithm</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -113,7 +116,62 @@ The fitting procedure is analogous to that performed by fit_p,
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-list">list<a class="anchor" aria-label="anchor" href="#arg-list"></a></dt>
+<dl><dt id="arg-policy">policy<a class="anchor" aria-label="anchor" href="#arg-policy"></a></dt>
+<dd><p>[character]</p>
+<p>Specifies the learning policy to be used.
+This determines how the model updates action values based on observed or
+  simulated choices. It can be either <code>"off"</code> or <code>"on"</code>.</p>
+<p></p><ul><li><p><strong>Off-Policy (Q-learning): </strong>
+   This is the most common approach for modeling
+    reinforcement learning in Two-Alternative Forced Choice (TAFC) tasks.
+    In this mode, the model's goal is to learn the underlying value of
+    each option by observing the human participant's behavior. It achieves
+    this by consistently updating the value of the option that the
+    human actually chose. The focus is on understanding the value
+    representation that likely drove the participant's decisions.</p></li>
+<li><p><strong>Off-Policy (SARSA): </strong>
+   In this mode, the target policy and the behavior policy are identical.
+    The model first computes the selection probability for each option based
+    on their current values. Critically, it then uses these probabilities to
+    sample its own action. The value update is then performed on the action
+    that the model itself selected. This approach focuses more on directly
+    mimicking the stochastic choice patterns of the agent, rather than just
+    learning the underlying values from a fixed sequence of actions.</p></li>
+</ul><p>default: <code>policy = "off"</code></p></dd>
+
+
+<dt id="arg-estimate">estimate<a class="anchor" aria-label="anchor" href="#arg-estimate"></a></dt>
+<dd><p>[string]</p>
+<p>Estimation method. Can be either <code>"MLE"</code> or <code>"MAP"</code>.</p><ul><li><p><code>"MLE"</code>: (Default) Maximum Likelihood Estimation. This
+      method finds the parameter values that maximize the log-likelihood
+      of the data. A higher log-likelihood indicates that the parameters
+      provide a better explanation for the observed human behavior. In
+      other words, data simulated using these parameters would most
+      closely resemble the actual human data. This method does not
+      consider any prior information about the parameters.</p></li>
+<li><p><code>"MAP"</code>: Maximum A Posteriori Estimation. This method
+      finds the parameter values that maximize the posterior probability.
+      It is an iterative process based on the Expectation-Maximization
+      (EM) framework.      </p><ul><li><p><strong>Initialization</strong>: The process begins by assuming a
+          uniform distribution as the prior for each parameter, making the
+          initial log-prior zero. The first optimization is thus
+          equivalent to MLE.</p></li>
+<li><p><strong>Iteration</strong>: After finding the best parameters for
+          all subjects, the algorithm assesses the actual distribution of
+          each parameter and fits a normal distribution to it. This
+          fitted distribution becomes the new empirical prior.</p></li>
+<li><p><strong>Re-estimation</strong>: The parameters are then re-optimized
+          to maximize the updated posterior probability.</p></li>
+<li><p><strong>Convergence</strong>: This cycle repeats until the posterior
+          probability converges or the maximum number of iterations
+          (specified by <code>iteration_g</code>) is reached.</p></li>
+</ul>
+      Using this method requires that the <code>priors</code> argument
+      be specified to define the initial prior distributions.</li>
+</ul><p>default: <code>estimate = "MLE"</code></p></dd>
+
+
+<dt id="arg-list">list<a class="anchor" aria-label="anchor" href="#arg-list"></a></dt>
 <dd><p>[list]</p>
 <p>A list generated by function <code><a href="simulate_list.html">simulate_list()</a></code></p></dd>
 
@@ -161,48 +219,68 @@ The fitting procedure is analogous to that performed by fit_p,
  vector here.</p></dd>
 
 
-<dt id="arg-policy">policy<a class="anchor" aria-label="anchor" href="#arg-policy"></a></dt>
-<dd><p>[character]</p>
-<p>Specifies the learning policy to be used.
-This determines how the model updates action values based on observed or
-  simulated choices. It can be either <code>"off"</code> or <code>"on"</code>.</p>
-<p></p><ul><li><p><strong>Off-Policy (Q-learning): </strong>
-   This is the most common approach for modeling
-    reinforcement learning in Two-Alternative Forced Choice (TAFC) tasks.
-    In this mode, the model's goal is to learn the underlying value of
-    each option by observing the human participant's behavior. It achieves
-    this by consistently updating the value of the option that the
-    human actually chose. The focus is on understanding the value
-    representation that likely drove the participant's decisions.</p></li>
-<li><p><strong>Off-Policy (SARSA): </strong>
-   In this mode, the target policy and the behavior policy are identical.
-    The model first computes the selection probability for each option based
-    on their current values. Critically, it then uses these probabilities to
-    sample its own action. The value update is then performed on the action
-    that the model itself selected. This approach focuses more on directly
-    mimicking the stochastic choice patterns of the agent, rather than just
-    learning the underlying values from a fixed sequence of actions.</p></li>
-</ul><p>default: <code>policy = "off"</code></p></dd>
-
-
 <dt id="arg-model-name">model_name<a class="anchor" aria-label="anchor" href="#arg-model-name"></a></dt>
 <dd><p>[character]</p>
-<p>The name of your modal</p></dd>
+<p>The name of modal</p></dd>
 
 
 <dt id="arg-fit-model">fit_model<a class="anchor" aria-label="anchor" href="#arg-fit-model"></a></dt>
 <dd><p>[function]</p>
-<p>fit model</p></dd>
+<p>fit model object function</p></dd>
+
+
+<dt id="arg-dfun">dfun<a class="anchor" aria-label="anchor" href="#arg-dfun"></a></dt>
+<dd><p>[list]</p>
+<p>A list specifying the prior distributions for the model parameters.
+  This argument is mandatory when using <code>estimate = "MAP"</code>.
+  There are two primary scenarios for its use:</p>
+<p><strong>1. Static MAP Estimation (Non-Hierarchical)</strong>
+  This approach is used when you have a strong, pre-defined belief about
+  the parameter priors and do not want the model to update them iteratively.</p><dl><dt>Configuration:</dt>
+<dd><p></p><ul><li><p>Set <code>estimate = "MAP"</code>.</p></li>
+<li><p>Provide a <code>list</code> defining your confident prior
+          distributions.</p></li>
+<li><p>Keep <code>iteration_g = 0</code> (the default).</p></li>
+</ul><p></p></dd>
+
+    <dt>Behavior:</dt>
+<dd><p>The algorithm maximizes the posterior
+      probability based solely on your specified priors. It will not
+      use the EM (Expectation-Maximization) framework to learn new
+      priors from the data.</p></dd>
+
+
+</dl><p><strong>2. Hierarchical Bayesian Estimation via EM</strong>
+  This approach is used to let the model learn the group-level (hierarchical)
+  prior distributions directly from the data.</p><dl><dt>Configuration:</dt>
+<dd><p></p><ul><li><p>Set <code>estimate = "MAP"</code>.</p></li>
+<li><p>Specify a weak or non-informative initial prior, such as a
+          uniform distribution for all parameters.</p></li>
+<li><p>Set <code>iteration_g</code> to a value greater than 0.</p></li>
+</ul><p></p></dd>
+
+    <dt>Behavior:</dt>
+<dd><p>With a uniform prior, the initial
+      log-posterior equals the log-likelihood, making the first estimation
+      step equivalent to MLE. The algorithm then initiates the EM procedure:
+      it iteratively assesses the actual parameter distribution across all
+      subjects and updates the group-level priors. This cycle continues
+      until the posterior converges or <code>iteration_g</code> is reached.</p></dd>
+
+
+</dl><p>default: <code>dfun = NULL</code></p></dd>
 
 
 <dt id="arg-lower">lower<a class="anchor" aria-label="anchor" href="#arg-lower"></a></dt>
-<dd><p>[vector]</p>
-<p>Lower bounds of free parameters</p></dd>
+<dd><p>[List]</p>
+<p>The lower bounds of model's free parameters.</p>
+<p>e.g. <code>lower = c(0, 0, 0)</code></p></dd>
 
 
 <dt id="arg-upper">upper<a class="anchor" aria-label="anchor" href="#arg-upper"></a></dt>
-<dd><p>[vector]</p>
-<p>Upper bounds of free parameters</p></dd>
+<dd><p>[List]</p>
+<p>The upper bounds of model's free parameters.</p>
+<p>e.g. <code>upper = c(1, 1, 5)</code></p></dd>
 
 
 <dt id="arg-initial-params">initial_params<a class="anchor" aria-label="anchor" href="#arg-initial-params"></a></dt>
@@ -224,12 +302,12 @@ This determines how the model updates action values based on observed or
 <p>default: <code>initial_size = 50</code>.</p></dd>
 
 
-<dt id="arg-iteration">iteration<a class="anchor" aria-label="anchor" href="#arg-iteration"></a></dt>
-<dd><p>[integer]</p>
-<p>The number of iterations the optimization algorithm will perform
- when searching for the best-fitting parameters during the fitting
- phase. A higher number of iterations may increase the likelihood of
- finding a global optimum but also increases computation time.</p></dd>
+<dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
+<dd><p>[double]</p>
+<p>Convergence threshold for MAP estimation. If the change in
+ log posterior probability between iterations is smaller than this value, the
+ algorithm is considered to have converged and the program will stop.</p>
+<p>default: <code>tolerance = 0.001</code></p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
@@ -237,6 +315,14 @@ This determines how the model updates action values based on observed or
 <p>Random seed. This ensures that the results are
  reproducible and remain the same each time the function is run.</p>
 <p>default: <code>seed = 123</code></p></dd>
+
+
+<dt id="arg-iteration">iteration<a class="anchor" aria-label="anchor" href="#arg-iteration"></a></dt>
+<dd><p>[integer]</p>
+<p>The number of iterations the optimization algorithm will perform
+ when searching for the best-fitting parameters during the fitting
+ phase. A higher number of iterations may increase the likelihood of
+ finding a global optimum but also increases computation time.</p></dd>
 
 
 <dt id="arg-nc">nc<a class="anchor" aria-label="anchor" href="#arg-nc"></a></dt>
@@ -274,19 +360,23 @@ Choose an algorithm package from
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">binaryRL.res</span> <span class="op">&lt;-</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="fu"><a href="optimize_para.html">optimize_para</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="va">Mason_2024_G2</span>,</span></span>
-<span class="r-in"><span>  id <span class="op">=</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>  n_params <span class="op">=</span> <span class="fl">3</span>,</span></span>
-<span class="r-in"><span>  n_trials <span class="op">=</span> <span class="fl">360</span>,</span></span>
-<span class="r-in"><span>  obj_func <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="RSTD.html">RSTD</a></span>,</span></span>
+<span class="r-in"><span><span class="va">df_recovery</span> <span class="op">&lt;-</span> <span class="fu">recovery_data</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  list <span class="op">=</span> <span class="va">list_simulated</span>,</span></span>
+<span class="r-in"><span>  policy <span class="op">=</span> <span class="st">"off"</span>,</span></span>
+<span class="r-in"><span>  estimate <span class="op">=</span> <span class="st">"MAP"</span>, </span></span>
+<span class="r-in"><span>  model_name <span class="op">=</span> <span class="st">"RSTD"</span>,</span></span>
+<span class="r-in"><span>  fit_model <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="RSTD.html">RSTD</a></span>,</span></span>
+<span class="r-in"><span>  dfun <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    etan <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">dunif</a></span><span class="op">(</span><span class="va">x</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">}</span>, </span></span>
+<span class="r-in"><span>    etap <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">dunif</a></span><span class="op">(</span><span class="va">x</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">}</span>, </span></span>
+<span class="r-in"><span>    tau <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">dexp</a></span><span class="op">(</span><span class="va">x</span>, rate <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">}</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  iteration <span class="op">=</span> <span class="fl">100</span>,</span></span>
-<span class="r-in"><span>  algorithm <span class="op">=</span> <span class="st">"L-BFGS-B"</span></span></span>
+<span class="r-in"><span>  iteration <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  nc <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  algorithm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NLOPT_GN_MLSL"</span>, <span class="st">"NLOPT_LN_BOBYQA"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">binaryRL.res</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
