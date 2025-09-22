@@ -32,9 +32,9 @@ else if (policy == "on") {
 
 These two strategies have distinct advantages and are suited for different analytical goals:
 
-- Off-policy (e.g., Q-learning): This approach generally leads to more accurate parameter estimation. In parameter recovery tests, this is demonstrated by a higher correlation between the ground-truth input parameters and the final fitted output parameters.
+- **Off-policy (e.g., Q-learning)**: This approach generally leads to more accurate parameter estimation. In parameter recovery tests, this is demonstrated by a higher correlation between the ground-truth input parameters and the final fitted output parameters.
 
-- On-policy (e.g., SARSA): This approach, in contrast, is better at mimicking human behavioral patterns. Its strength is evident in the ability of the resulting parameters to better reproduce key experimental effects observed in psychological studies.
+- **On-policy (e.g., SARSA)**: This approach, in contrast, is better at mimicking human behavioral patterns. Its strength is evident in the ability of the resulting parameters to better reproduce key experimental effects observed in psychological studies.
 
 In published research, many studies favor the off-policy approach to achieve greater parameter accuracy. However, there is no definitive "better" choice. The most suitable strategy for your research depends on your primary objective—whether it is to precisely quantify cognitive processes or to more faithfully simulate behavioral patterns. The final decision is left to the user.
 
@@ -189,12 +189,21 @@ Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* 
 ### Soft-Max Function
 
 > "With continuous policy parameterization the action probabilities change smoothly as a function of the learned parameter, whereas in $\epsilon$-greedy selection the action probabilities may change dramatically for an arbitrarily small change in the estimated action values, if that change results in a different action having the maximal value."  
-
-In many reinforcement learning models, softmax is used to represent the exploration-exploitation trade-off, rather than the three methods mentioned above.  
-
+ 
 **Reference**  
-
+ 
 Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* (2nd ed). MIT press.  
+
+```{r eval=FALSE}
+run_m(
+  ...
+  lapse = 0.02,
+  ...
+)
+```
+
+
+To avoid the occurrence of zero probabilities in the softmax function—which would lead the log-likelihood to diverge to negative infinity (`log(P) -> log(0) -> -Inf`)—we imposed a lapse rate of 0.02. In TAFC tasks, this adjustment guarantees that each option retains a minimum selection probability of 1%.
 
 <!---------------------------------------------------------->
 

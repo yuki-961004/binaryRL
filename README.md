@@ -130,13 +130,15 @@ binaryRL::run_m(
 
 # Estimation Methods
 
-## Maximum Likelihood Estimation (MLE)
+While this R package is primarily designed for constructing **Reinforcement Learning (RL)** models (with `run_m()` at its core), its key functions, `rcv_d()` and `fit_p()`, also serve as a versatile algorithmic library for fitting any **black-box functions** in parallel. Given that MAP extends MLE by leveraging the Expectation-Maximization (EM) algorithm, this package offers robust solutions for both of these powerful estimation methods. We also provide example code for three other algorithms: MCMC, ABC, and RNN. 
 
-While this R package is primarily designed for constructing **Reinforcement Learning (RL)** models (with `run_m()` at its core), its flexibility extends further. 
+In general, `MLE` can lack robustness, `MAP` is time-consuming, and `MCMC` is often prohibitively slow. In contrast to these log-likelihood-based algorithms, methods like `ABC` and `RNN` do not need to repeatedly run the black-box function. Instead, they use simulated data to train a direct mapping between behavioral outcomes and parameters. As a result, they offer a level of speed and robustness that log-likelihood methods cannot match. Based on our tests, We think `ABC` is the best estimation method.
 
-The key functions, `rcv_d()` and `fit_p()`, provide a unified interface to seamlessly integrate a diverse range of optimization algorithms. Crucially, they offer a parallel solution for tasks like parameter optimization, parameter recovery, and model recovery.
+## Based on Log-Likelihood
 
-This means you can leverage this package not only for building and fitting RL models, but also as a versatile algorithm library for fitting other **"black-box functions"** in parallel for each subject. This significantly reduces processing time, provided your function's parameters can be optimized independently for each subject.
+Estimation methods like MLE, MAP, and MCMC are only viable when the log-likelihood of the black-box function is computable. 
+
+### Maximum Likelihood Estimation (MLE)
 
 **Base R Optimization**  
   - L-BFGS-B (from `stats::optim`)   
@@ -157,7 +159,7 @@ This means you can leverage this package not only for building and fitting RL mo
 2. This package supports **parallel computation**. When you set the `nc` argument in `rcv_d()` or `fit_p()` to a value greater than 1, calculations will run in parallel, meaning each participant's parameter optimization happens simultaneously.  
 3. If you've defined a custom model, you must provide the names of your custom functions as a character vector to the `funcs` argument within `rcv_d()` or `fit_p()`.  
 
-## Maximum A Posteriori (MAP)
+### Maximum A Posteriori (MAP)
 
 For more robust parameter estimates, the package supports **Maximum A Posteriori (MAP)** estimation via an EM-like algorithm (adapted from [mfit](https://github.com/sjgershm/mfit)). This approach leverages the entire group's data to inform and regularize individual-level fits. 
 
@@ -169,7 +171,7 @@ For more robust parameter estimates, the package supports **Maximum A Posteriori
 1. To enable MAP estimation, specify `estimate = "MAP"` in the `fit_p()` function and provide a prior distribution for each free parameter.  
 2. The fitting process forces a Normal distribution on all parameters except for the inverse temperature, which is given an Exponential prior. This may not always be appropriate.   
 
-## Markov Chain Monte Carlo (MCMC)
+### Markov Chain Monte Carlo (MCMC)
 
 For a full Bayesian analysis, you can perform **Markov Chain Monte Carlo (MCMC)** to characterize the entire posterior distribution, capturing a complete picture of parameter uncertainty.  
 
@@ -178,11 +180,19 @@ For a full Bayesian analysis, you can perform **Markov Chain Monte Carlo (MCMC)*
 *Note*:   
 1. With a small number of iterations, the results may be less accurate compared to standard MLE algorithms.  
 
-## Recurrent Neural Networks (RNN)
+## Bypass Log-Likelihood
 
-When learning is no longer based on a *visible value* but on an *invisible rule*, the log-likelihood becomes incomputable. At this point, traditional methods like MLE, MAP, and MCMC can no longer be used. Instead, you must use an **Recurrent Neural Network (RNN)** and input the entire sequence of choices to directly analyze the discrepancy between the real and predicted behavior. This analysis then allows you to compute the optimal parameters.
+When learning is no longer based on a *visible value* but on an *invisible rule*, the log-likelihood becomes incomputable, which requires an estimation method that bypass the log-likelihood.
 
-- `keras` provides a highly accessible front-end for `tensorflow`. Users can simply convert their simulated data from a list to a array, and the model is ready to run. We provide an [example code](https://yuki-961004.github.io/binaryRL/articles/RNN.html). 
+### Approximate Bayesian Computation (ABC)
+- `abc` works by learning the mapping from input parameters to summary statistics. Once this mapping is established, it can be used to estimate the input parameters that likely produced a given set of summary statistics.  We provide an [example code](https://yuki-961004.github.io/binaryRL/articles/ABC.html). 
+
+*Note*:   
+1. While a wide range of metrics can serve as summary statistics, in this example code, we use the mean and standard deviation of the agent's probability of making a risky choice. 
+
+### Recurrent Neural Networks (RNN)
+
+- `GRU` or `LSTM` works by learning the mapping from input parameters to behavioral outcomes. Once this mapping is established, it can be used to estimate the input parameters that likely produced a given series of behavioral decisions. We provide an [example code](https://yuki-961004.github.io/binaryRL/articles/RNN.html). 
 
 *Note*:   
 1. The input can be either a single column (`Sub_Choose`) or the entire data table (`L_choice`, `R_choice`, `L_reward`, `R_reward`, `Sub_Choose`). More information will result in a slower training speed. 

@@ -9,9 +9,19 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-**The final optimal parameters are influenced by a variety of factors, including the number of iterations, the specific algorithm (e.g., DEoptim, Bayesian), the policy (on or off), and the estimation method (e.g., MLE, MAP, MCMC).**
-
-**The following results are a demo only, based on an on-policy approach using Maximum Likelihood Estimation (MLE). The global optimization algorithm used was "NLOPT_GN_MLSL", and the local optimization algorithm was "NLOPT_LN_BOBYQA".**
+> **Note on Optimal Parameters**  
+>  
+> The final optimal parameters are influenced by several factors (ordered by importance):  
+> 1. **Estimation Method** (MLE, MAP, MCMC, ABC, RNN)  
+> 2. **Algorithm Package** (L-BFGS-B, GenSA, GA, DEoptim, PSO, Bayesian, CMA-ES, NLOPT)  
+> 3. **Policy** (on or off)  
+> 4. **Number of iterations**  
+>  
+> The following results are for demonstration only, based on:  
+> - `estimate = "MLE"`  
+> - `algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")`  
+> - `policy = "off"`  
+> - `iteration = 100`
 
 ---
 

@@ -64,6 +64,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced</h6></li>
     <li><a class="dropdown-item" href="../articles/MCMC.html">Markov Chain Monte Carlo</a></li>
+    <li><a class="dropdown-item" href="../articles/ABC.html">Approximate Bayesian Computation</a></li>
     <li><a class="dropdown-item" href="../articles/RNN.html">Recurrent Neural Networks</a></li>
   </ul>
 </li>
@@ -95,14 +96,21 @@
 
     
     
-<p><strong>The final optimal parameters are influenced by a variety of
-factors, including the number of iterations, the specific algorithm
-(e.g., DEoptim, Bayesian), the policy (on or off), and the estimation
-method (e.g., MLE, MAP, MCMC).</strong></p>
-<p><strong>The following results are a demo only, based on an on-policy
-approach using Maximum Likelihood Estimation (MLE). The global
-optimization algorithm used was “NLOPT_GN_MLSL”, and the local
-optimization algorithm was “NLOPT_LN_BOBYQA”.</strong></p>
+<blockquote>
+<p><strong>Note on Optimal Parameters</strong></p>
+<p>The final optimal parameters are influenced by several factors
+(ordered by importance):<br>
+1. <strong>Estimation Method</strong> (MLE, MAP, MCMC, ABC, RNN)<br>
+2. <strong>Algorithm Package</strong> (L-BFGS-B, GenSA, GA, DEoptim,
+PSO, Bayesian, CMA-ES, NLOPT)<br>
+3. <strong>Policy</strong> (on or off)<br>
+4. <strong>Number of iterations</strong></p>
+<p>The following results are for demonstration only, based on:<br>
+- <code>estimate = "MLE"</code><br>
+- <code>algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")</code><br>
+- <code>policy = "off"</code><br>
+- <code>iteration = 100</code></p>
+</blockquote>
 <hr>
 <p><em>In tasks with small, finite state sets (e.g. TAFC tasks in
 psychology), all states, actions, and their corresponding rewards could

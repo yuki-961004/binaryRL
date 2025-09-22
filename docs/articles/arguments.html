@@ -60,6 +60,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced</h6></li>
     <li><a class="dropdown-item" href="../articles/MCMC.html">Markov Chain Monte Carlo</a></li>
+    <li><a class="dropdown-item" href="../articles/ABC.html">Approximate Bayesian Computation</a></li>
     <li><a class="dropdown-item" href="../articles/RNN.html">Recurrent Neural Networks</a></li>
   </ul>
 </li>
@@ -119,14 +120,16 @@ Q-learning) and on-policy (akin to SARSA).</p>
 <p>These two strategies have distinct advantages and are suited for
 different analytical goals:</p>
 <ul>
-<li><p>Off-policy (e.g., Q-learning): This approach generally leads to
-more accurate parameter estimation. In parameter recovery tests, this is
-demonstrated by a higher correlation between the ground-truth input
-parameters and the final fitted output parameters.</p></li>
-<li><p>On-policy (e.g., SARSA): This approach, in contrast, is better at
-mimicking human behavioral patterns. Its strength is evident in the
-ability of the resulting parameters to better reproduce key experimental
-effects observed in psychological studies.</p></li>
+<li><p><strong>Off-policy (e.g., Q-learning)</strong>: This approach
+generally leads to more accurate parameter estimation. In parameter
+recovery tests, this is demonstrated by a higher correlation between the
+ground-truth input parameters and the final fitted output
+parameters.</p></li>
+<li><p><strong>On-policy (e.g., SARSA)</strong>: This approach, in
+contrast, is better at mimicking human behavioral patterns. Its strength
+is evident in the ability of the resulting parameters to better
+reproduce key experimental effects observed in psychological
+studies.</p></li>
 </ul>
 <p>In published research, many studies favor the off-policy approach to
 achieve greater parameter accuracy. However, there is no definitive
@@ -335,12 +338,19 @@ probabilities may change dramatically for an arbitrarily small change in
 the estimated action values, if that change results in a different
 action having the maximal value.”</p>
 </blockquote>
-<p>In many reinforcement learning models, softmax is used to represent
-the exploration-exploitation trade-off, rather than the three methods
-mentioned above.</p>
 <p><strong>Reference</strong></p>
 <p>Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement Learning:
 An Introduction</em> (2nd ed). MIT press.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">run_m</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  ...</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">lapse =</span> <span class="fl">0.02</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  ...</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>)</span></code></pre></div>
+<p>To avoid the occurrence of zero probabilities in the softmax
+function—which would lead the log-likelihood to diverge to negative
+infinity (<code>log(P) -&gt; log(0) -&gt; -Inf</code>)—we imposed a
+lapse rate of 0.02. In TAFC tasks, this adjustment guarantees that each
+option retains a minimum selection probability of 1%.</p>
 <!---------------------------------------------------------->
 </div>
 </div>

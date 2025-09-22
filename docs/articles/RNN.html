@@ -60,6 +60,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced</h6></li>
     <li><a class="dropdown-item" href="../articles/MCMC.html">Markov Chain Monte Carlo</a></li>
+    <li><a class="dropdown-item" href="../articles/ABC.html">Approximate Bayesian Computation</a></li>
     <li><a class="dropdown-item" href="../articles/RNN.html">Recurrent Neural Networks</a></li>
   </ul>
 </li>
@@ -130,7 +131,6 @@ conda install numpy=1.26.4</code></pre>
 <span>  </span>
 <span>  obj_func <span class="op">=</span> <span class="fu">binaryRL</span><span class="fu">::</span><span class="va"><a href="../reference/TD.html">TD</a></span>,</span>
 <span>  rfun <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    eta <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">}</span>,</span>
 <span>    eta <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">}</span>,</span>
 <span>    tau <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">}</span></span>
 <span>  <span class="op">)</span>,</span>
@@ -229,7 +229,9 @@ conda install numpy=1.26.4</code></pre>
 <code class="sourceCode R"><span><span class="co">#reticulate::use_condaenv("tf-cpu", required = TRUE)</span></span>
 <span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">use_condaenv</a></span><span class="op">(</span><span class="st">"tf-gpu"</span>, required <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Initialize Model (sequential decision making)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Initialize Model (sequential decision making)</span></span>
 <span><span class="va">Model</span> <span class="op">&lt;-</span> <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keras/man/keras_model_sequential.html" class="external-link">keras_model_sequential</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">algorithm</span> <span class="op">=</span> <span class="st">"GRU"</span></span>
@@ -275,13 +277,13 @@ conda install numpy=1.26.4</code></pre>
 <span><span class="co"># Training RNN Model</span></span>
 <span><span class="va">history</span> <span class="op">&lt;-</span> <span class="va">Model</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">keras</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="va">X_train</span>,</span>
-<span>  y <span class="op">=</span> <span class="va">Y_train</span>,</span>
-<span>  epochs <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  batch_size <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  validation_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">X_valid</span>, <span class="va">Y_valid</span><span class="op">)</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="fl">2</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span>    x <span class="op">=</span> <span class="va">X_train</span>,</span>
+<span>    y <span class="op">=</span> <span class="va">Y_train</span>,</span>
+<span>    epochs <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>    batch_size <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>    validation_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">X_valid</span>, <span class="va">Y_valid</span><span class="op">)</span>,</span>
+<span>    verbose <span class="op">=</span> <span class="fl">2</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p align="center">
 <img src="fig/RNN.png" alt="RL Process" width="80%" style="display: inline;"></p>
 </div>
@@ -326,8 +328,8 @@ conda install numpy=1.26.4</code></pre>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">df_true</span><span class="op">$</span><span class="va">V1</span>, <span class="va">df_pred</span><span class="op">$</span><span class="va">V1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">df_true</span><span class="op">$</span><span class="va">V2</span>, <span class="va">df_pred</span><span class="op">$</span><span class="va">V2</span><span class="op">)</span></span></code></pre></div>
-<pre><code>[1] 0.8988817
-[1] 0.8428525</code></pre>
+<pre><code>[1] 0.8991028
+[1] 0.8661612</code></pre>
 <p align="center">
 <img src="fig/RNN_eta.png" alt="RNN_eta" width="40%" style="display: inline;"><img src="fig/RNN_tau.png" alt="RNN_tau" width="40%" style="display: inline;"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">

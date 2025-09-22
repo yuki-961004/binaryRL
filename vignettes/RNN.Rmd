@@ -44,7 +44,6 @@ list_simulated <- binaryRL::simulate_list(
   obj_func = binaryRL::TD,
   rfun = list(
     eta = function() { stats::runif(n = 1, min = 0, max = 1) },
-    eta = function() { stats::runif(n = 1, min = 0, max = 1) },
     tau = function() { stats::rexp(n = 1, rate = 1) }
   ),
   iteration = 1100 # = [800(train) + 200(valid)] + [100(test recovery)]
@@ -145,7 +144,9 @@ Y_valid <- Y[valid_indices, , drop = FALSE]
 reticulate::use_condaenv("tf-gpu", required = TRUE)
 ```
 
-```{r eval=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+set.seed(123)
+
 # Initialize Model (sequential decision making)
 Model <- keras::keras_model_sequential()
 
@@ -192,13 +193,13 @@ switch(
 # Training RNN Model
 history <- Model |>
   keras::fit(
-  x = X_train,
-  y = Y_train,
-  epochs = 100,
-  batch_size = 10,
-  validation_data = list(X_valid, Y_valid),
-  verbose = 2
-)
+    x = X_train,
+    y = Y_train,
+    epochs = 100,
+    batch_size = 10,
+    validation_data = list(X_valid, Y_valid),
+    verbose = 2
+  )
 ```
 
 <p align="center">
@@ -207,7 +208,7 @@ history <- Model |>
 
 ## Parameter Recovery
 
-```{r eval=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE}
 X_pred_list <- vector("list", length = 100) 
 X_true_list <- vector("list", length = 100)
 
@@ -250,8 +251,8 @@ cor(df_true$V2, df_pred$V2)
 ```
 
 ```
-[1] 0.8988817
-[1] 0.8428525
+[1] 0.8991028
+[1] 0.8661612
 ```
 
 <p align="center">

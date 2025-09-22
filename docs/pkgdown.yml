@@ -2,6 +2,7 @@ pandoc: 3.6.3
 pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
+  ABC: ABC.html
   arguments: arguments.html
   binaryRL: binaryRL.html
   functions: functions.html
@@ -11,7 +12,7 @@ articles:
   demo/CODE/test_2_rcv_d: demo/CODE/test_2_rcv_d.html
   demo/CODE/test_3_fit_p: demo/CODE/test_3_fit_p.html
   demo/CODE/test_4_rpl_e: demo/CODE/test_4_rpl_e.html
-last_built: 2025-09-22T07:15Z
+last_built: 2025-09-22T11:06Z
 urls:
   reference: https://yuki-961004.github.io/binaryRL/reference
   article: https://yuki-961004.github.io/binaryRL/articles

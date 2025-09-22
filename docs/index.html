@@ -62,6 +62,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced</h6></li>
     <li><a class="dropdown-item" href="articles/MCMC.html">Markov Chain Monte Carlo</a></li>
+    <li><a class="dropdown-item" href="articles/ABC.html">Approximate Bayesian Computation</a></li>
     <li><a class="dropdown-item" href="articles/RNN.html">Recurrent Neural Networks</a></li>
   </ul>
 </li>
@@ -397,12 +398,15 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <div class="section level1">
 <h1 id="estimation-methods">Estimation Methods<a class="anchor" aria-label="anchor" href="#estimation-methods"></a>
 </h1>
+<p>While this R package is primarily designed for constructing <strong>Reinforcement Learning (RL)</strong> models (with <code><a href="reference/run_m.html">run_m()</a></code> at its core), its key functions, <code><a href="reference/rcv_d.html">rcv_d()</a></code> and <code><a href="reference/fit_p.html">fit_p()</a></code>, also serve as a versatile algorithmic library for fitting any <strong>black-box functions</strong> in parallel. Given that MAP extends MLE by leveraging the Expectation-Maximization (EM) algorithm, this package offers robust solutions for both of these powerful estimation methods. We also provide example code for three other algorithms: MCMC, ABC, and RNN.</p>
+<p>In general, <code>MLE</code> can lack robustness, <code>MAP</code> is time-consuming, and <code>MCMC</code> is often prohibitively slow. In contrast to these log-likelihood-based algorithms, methods like <code>ABC</code> and <code>RNN</code> do not need to repeatedly run the black-box function. Instead, they use simulated data to train a direct mapping between behavioral outcomes and parameters. As a result, they offer a level of speed and robustness that log-likelihood methods cannot match. Based on our tests, We think <code>ABC</code> is the best estimation method.</p>
 <div class="section level2">
-<h2 id="maximum-likelihood-estimation-mle">Maximum Likelihood Estimation (MLE)<a class="anchor" aria-label="anchor" href="#maximum-likelihood-estimation-mle"></a>
+<h2 id="based-on-log-likelihood">Based on Log-Likelihood<a class="anchor" aria-label="anchor" href="#based-on-log-likelihood"></a>
 </h2>
-<p>While this R package is primarily designed for constructing <strong>Reinforcement Learning (RL)</strong> models (with <code><a href="reference/run_m.html">run_m()</a></code> at its core), its flexibility extends further.</p>
-<p>The key functions, <code><a href="reference/rcv_d.html">rcv_d()</a></code> and <code><a href="reference/fit_p.html">fit_p()</a></code>, provide a unified interface to seamlessly integrate a diverse range of optimization algorithms. Crucially, they offer a parallel solution for tasks like parameter optimization, parameter recovery, and model recovery.</p>
-<p>This means you can leverage this package not only for building and fitting RL models, but also as a versatile algorithm library for fitting other <strong>“black-box functions”</strong> in parallel for each subject. This significantly reduces processing time, provided your function’s parameters can be optimized independently for each subject.</p>
+<p>Estimation methods like MLE, MAP, and MCMC are only viable when the log-likelihood of the black-box function is computable.</p>
+<div class="section level3">
+<h3 id="maximum-likelihood-estimation-mle">Maximum Likelihood Estimation (MLE)<a class="anchor" aria-label="anchor" href="#maximum-likelihood-estimation-mle"></a>
+</h3>
 <p><strong>Base R Optimization</strong><br>
 - L-BFGS-B (from <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">stats::optim</a></code>)</p>
 <p><strong>Specialized External Optimization</strong><br>
@@ -419,9 +423,9 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 2. This package supports <strong>parallel computation</strong>. When you set the <code>nc</code> argument in <code><a href="reference/rcv_d.html">rcv_d()</a></code> or <code><a href="reference/fit_p.html">fit_p()</a></code> to a value greater than 1, calculations will run in parallel, meaning each participant’s parameter optimization happens simultaneously.<br>
 3. If you’ve defined a custom model, you must provide the names of your custom functions as a character vector to the <code>funcs</code> argument within <code><a href="reference/rcv_d.html">rcv_d()</a></code> or <code><a href="reference/fit_p.html">fit_p()</a></code>.</p>
 </div>
-<div class="section level2">
-<h2 id="maximum-a-posteriori-map">Maximum A Posteriori (MAP)<a class="anchor" aria-label="anchor" href="#maximum-a-posteriori-map"></a>
-</h2>
+<div class="section level3">
+<h3 id="maximum-a-posteriori-map">Maximum A Posteriori (MAP)<a class="anchor" aria-label="anchor" href="#maximum-a-posteriori-map"></a>
+</h3>
 <p>For more robust parameter estimates, the package supports <strong>Maximum A Posteriori (MAP)</strong> estimation via an EM-like algorithm (adapted from <a href="https://github.com/sjgershm/mfit" class="external-link">mfit</a>). This approach leverages the entire group’s data to inform and regularize individual-level fits.</p>
 <ul>
 <li><p><strong>M-Step (Update Priors)</strong>: Find the optimal parameter values for each subject individually and calculate the log-posterior using the prior distributions.</p></li>
@@ -431,9 +435,9 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 1. To enable MAP estimation, specify <code>estimate = "MAP"</code> in the <code><a href="reference/fit_p.html">fit_p()</a></code> function and provide a prior distribution for each free parameter.<br>
 2. The fitting process forces a Normal distribution on all parameters except for the inverse temperature, which is given an Exponential prior. This may not always be appropriate.</p>
 </div>
-<div class="section level2">
-<h2 id="markov-chain-monte-carlo-mcmc">Markov Chain Monte Carlo (MCMC)<a class="anchor" aria-label="anchor" href="#markov-chain-monte-carlo-mcmc"></a>
-</h2>
+<div class="section level3">
+<h3 id="markov-chain-monte-carlo-mcmc">Markov Chain Monte Carlo (MCMC)<a class="anchor" aria-label="anchor" href="#markov-chain-monte-carlo-mcmc"></a>
+</h3>
 <p>For a full Bayesian analysis, you can perform <strong>Markov Chain Monte Carlo (MCMC)</strong> to characterize the entire posterior distribution, capturing a complete picture of parameter uncertainty.</p>
 <ul>
 <li>
@@ -442,16 +446,31 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <p><em>Note</em>:<br>
 1. With a small number of iterations, the results may be less accurate compared to standard MLE algorithms.</p>
 </div>
+</div>
 <div class="section level2">
-<h2 id="recurrent-neural-networks-rnn">Recurrent Neural Networks (RNN)<a class="anchor" aria-label="anchor" href="#recurrent-neural-networks-rnn"></a>
+<h2 id="bypass-log-likelihood">Bypass Log-Likelihood<a class="anchor" aria-label="anchor" href="#bypass-log-likelihood"></a>
 </h2>
-<p>When learning is no longer based on a <em>visible value</em> but on an <em>invisible rule</em>, the log-likelihood becomes incomputable. At this point, traditional methods like MLE, MAP, and MCMC can no longer be used. Instead, you must use an <strong>Recurrent Neural Network (RNN)</strong> and input the entire sequence of choices to directly analyze the discrepancy between the real and predicted behavior. This analysis then allows you to compute the optimal parameters.</p>
+<p>When learning is no longer based on a <em>visible value</em> but on an <em>invisible rule</em>, the log-likelihood becomes incomputable, which requires an estimation method that bypass the log-likelihood.</p>
+<div class="section level3">
+<h3 id="approximate-bayesian-computation-abc">Approximate Bayesian Computation (ABC)<a class="anchor" aria-label="anchor" href="#approximate-bayesian-computation-abc"></a>
+</h3>
 <ul>
 <li>
-<code>keras</code> provides a highly accessible front-end for <code>tensorflow</code>. Users can simply convert their simulated data from a list to a array, and the model is ready to run. We provide an <a href="https://yuki-961004.github.io/binaryRL/articles/RNN.html">example code</a>.</li>
+<code>abc</code> works by learning the mapping from input parameters to summary statistics. Once this mapping is established, it can be used to estimate the input parameters that likely produced a given set of summary statistics. We provide an <a href="https://yuki-961004.github.io/binaryRL/articles/ABC.html">example code</a>.</li>
+</ul>
+<p><em>Note</em>:<br>
+1. While a wide range of metrics can serve as summary statistics, in this example code, we use the mean and standard deviation of the agent’s probability of making a risky choice.</p>
+</div>
+<div class="section level3">
+<h3 id="recurrent-neural-networks-rnn">Recurrent Neural Networks (RNN)<a class="anchor" aria-label="anchor" href="#recurrent-neural-networks-rnn"></a>
+</h3>
+<ul>
+<li>
+<code>GRU</code> or <code>LSTM</code> works by learning the mapping from input parameters to behavioral outcomes. Once this mapping is established, it can be used to estimate the input parameters that likely produced a given series of behavioral decisions. We provide an <a href="https://yuki-961004.github.io/binaryRL/articles/RNN.html">example code</a>.</li>
 </ul>
 <p><em>Note</em>:<br>
 1. The input can be either a single column (<code>Sub_Choose</code>) or the entire data table (<code>L_choice</code>, <code>R_choice</code>, <code>L_reward</code>, <code>R_reward</code>, <code>Sub_Choose</code>). More information will result in a slower training speed.</p>
+</div>
 </div>
 </div>
 

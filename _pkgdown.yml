@@ -64,7 +64,8 @@ articles:
   - title: "Advanced"
     navbar: "Advanced"
     contents:
-      - MCMC   
+      - MCMC 
+      - ABC
       - RNN            
       
 
