@@ -92,8 +92,7 @@
 #'     data = binaryRL::Mason_2024_G2,
 #'     result = read.csv("../OUTPUT/result_comparison.csv"),
 #'     model = binaryRL::TD,
-#'     model_name = "TD",
-#'     param_prefix = "param_",
+#'     model_name = "TD"
 #'   )
 #' )
 #'
@@ -102,8 +101,7 @@
 #'     data = binaryRL::Mason_2024_G2,
 #'     result = read.csv("../OUTPUT/result_comparison.csv"),
 #'     model = binaryRL::RSTD,
-#'     model_name = "RSTD",
-#'     param_prefix = "param_",
+#'     model_name = "RSTD"
 #'   )
 #' )
 #'
@@ -112,8 +110,7 @@
 #'     data = binaryRL::Mason_2024_G2,
 #'     result = read.csv("../OUTPUT/result_comparison.csv"),
 #'     model = binaryRL::Utility,
-#'     param_prefix = "param_",
-#'     model_name = "Utility",
+#'     model_name = "Utility"
 #'   )
 #' )
 #' }

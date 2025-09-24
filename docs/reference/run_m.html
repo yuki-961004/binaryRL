@@ -15,7 +15,7 @@ Data Input and Specification: You must provide the raw
     (e.g.,
     Mason_2024_G1,
     Mason_2024_G2
-    )
+    ).
     This is a game, so it's critical that your dataset includes rewards
     for both the human-chosen option and the unchosen options.
 Customizable RL Models: This function allows you
@@ -34,7 +34,7 @@ Utility Function: You can directly adjust the form
              the built-in func_gamma only takes the
              form of a power function, consistent with Stevens' Power Law.
 
-Exploration–Exploitation Trade-off:
+Exploration-Exploitation Trade-off:
 Initial Values: This involves setting the
              initial expected value for each option when it hasn't been
              chosen yet. A higher initial value encourages exploration.
@@ -74,7 +74,7 @@ Data Input and Specification: You must provide the raw
     (e.g.,
     Mason_2024_G1,
     Mason_2024_G2
-    )
+    ).
     This is a game, so it's critical that your dataset includes rewards
     for both the human-chosen option and the unchosen options.
 Customizable RL Models: This function allows you
@@ -93,7 +93,7 @@ Utility Function: You can directly adjust the form
              the built-in func_gamma only takes the
              form of a power function, consistent with Stevens' Power Law.
 
-Exploration–Exploitation Trade-off:
+Exploration-Exploitation Trade-off:
 Initial Values: This involves setting the
              initial expected value for each option when it hasn't been
              chosen yet. A higher initial value encourages exploration.
@@ -191,7 +191,7 @@ learning models.</p>
     (e.g.,
     <code><a href="Mason_2024_G1.html">Mason_2024_G1</a></code>,
     <code><a href="Mason_2024_G2.html">Mason_2024_G2</a></code>
-    )
+    ).
     This is a game, so it's critical that your dataset includes rewards
     for both the human-chosen option and the unchosen options.</p></li>
 <li><p><strong>Customizable RL Models:</strong> This function allows you
@@ -208,7 +208,7 @@ learning models.</p>
              the built-in <code><a href="func_gamma.html">func_gamma</a></code> only takes the
              form of a power function, consistent with Stevens' Power Law.</p></li>
 </ul></li>
-<li><p><em>Exploration–Exploitation Trade-off:</em></p><ul><li><p><em>Initial Values:</em> This involves setting the
+<li><p><em>Exploration-Exploitation Trade-off:</em></p><ul><li><p><em>Initial Values:</em> This involves setting the
              initial expected value for each option when it hasn't been
              chosen yet. A higher initial value encourages exploration.</p></li>
 <li><p><em>Epsilon:</em> Adjusting the <code>threshold</code>,
@@ -319,7 +319,7 @@ This determines how the model updates action values based on observed or
     this by consistently updating the value of the option that the
     human actually chose. The focus is on understanding the value
     representation that likely drove the participant's decisions.</p></li>
-<li><p><strong>Off-Policy (SARSA): </strong>
+<li><p><strong>On-Policy (SARSA): </strong>
    In this mode, the target policy and the behavior policy are identical.
     The model first computes the selection probability for each option based
     on their current values. Critically, it then uses these probabilities to

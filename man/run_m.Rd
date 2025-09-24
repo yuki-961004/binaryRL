@@ -85,7 +85,7 @@ This determines how the model updates action values based on observed or
     representation that likely drove the participant's decisions.
   }
   \item {
-   \strong{Off-Policy (SARSA): }
+   \strong{On-Policy (SARSA): }
    In this mode, the target policy and the behavior policy are identical. 
     The model first computes the selection probability for each option based 
     on their current values. Critically, it then uses these probabilities to 
@@ -442,7 +442,7 @@ Items for model construction:
     (e.g., 
     \code{\link[binaryRL]{Mason_2024_G1}}, 
     \code{\link[binaryRL]{Mason_2024_G2}}
-    )
+    ).
     This is a game, so it's critical that your dataset includes rewards
     for both the human-chosen option and the unchosen options.
   \item \strong{Customizable RL Models:} This function allows you
@@ -463,7 +463,7 @@ Items for model construction:
              the built-in \code{\link[binaryRL]{func_gamma}} only takes the 
              form of a power function, consistent with Stevens' Power Law.
          }
-      \item \emph{Exploration–Exploitation Trade-off:} 
+      \item \emph{Exploration-Exploitation Trade-off:} 
          \itemize{
            \item \emph{Initial Values:} This involves setting the 
              initial expected value for each option when it hasn't been 

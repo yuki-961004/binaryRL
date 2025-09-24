@@ -45,7 +45,7 @@ This determines how the model updates action values based on observed or
     representation that likely drove the participant's decisions.
   }
   \item {
-   \strong{Off-Policy (SARSA): }
+   \strong{On-Policy (SARSA): }
    In this mode, the target policy and the behavior policy are identical. 
     The model first computes the selection probability for each option based 
     on their current values. Critically, it then uses these probabilities to 
@@ -62,15 +62,15 @@ default: \code{policy = "off"}}
 
   Estimation method. Can be either \code{"MLE"} or \code{"MAP"}.
   \itemize{
-    \item{\code{"MLE"}: (Default) Maximum Likelihood Estimation. This
-      method finds the parameter values that maximize the log-likelihood
+    \item{\strong{Maximum Likelihood Estimation} \code{"MLE"}: (Default): 
+      This method finds the parameter values that maximize the log-likelihood
       of the data. A higher log-likelihood indicates that the parameters
       provide a better explanation for the observed human behavior. In
       other words, data simulated using these parameters would most
       closely resemble the actual human data. This method does not
       consider any prior information about the parameters.}
       
-    \item{\code{"MAP"}: Maximum A Posteriori Estimation. This method
+    \item{\strong{Maximum A Posteriori Estimation} \code{"MAP"}: This method
       finds the parameter values that maximize the posterior probability.
       It is an iterative process based on the Expectation-Maximization
       (EM) framework.
@@ -87,8 +87,8 @@ default: \code{policy = "off"}}
         \item{\strong{Re-estimation}: The parameters are then re-optimized
           to maximize the updated posterior probability.}
         \item{\strong{Convergence}: This cycle repeats until the posterior
-          probability converges or the maximum number of iterations
-          (specified by \code{iteration_g}) is reached.}
+          probability converges or the maximum number of iterations is 
+          reached.}
       }
       Using this method requires that the \code{priors} argument
       be specified to define the initial prior distributions.
@@ -151,51 +151,15 @@ The name of modal}
 
 fit model object function}
 
-\item{dfun}{[list]
+\item{dfun}{[List]
 
- A list specifying the prior distributions for the model parameters.
-  This argument is mandatory when using \code{estimate = "MAP"}.
-  There are two primary scenarios for its use:
-
-  \strong{1. Static MAP Estimation (Non-Hierarchical)}
-  This approach is used when you have a strong, pre-defined belief about
-  the parameter priors and do not want the model to update them iteratively.
-  \describe{
-    \item{Configuration:}{
-      \itemize{
-        \item{Set \code{estimate = "MAP"}.}
-        \item{Provide a \code{list} defining your confident prior
-          distributions.}
-        \item{Keep \code{iteration_g = 0} (the default).}
-      }
-    }
-    \item{Behavior:}{ The algorithm maximizes the posterior
-      probability based solely on your specified priors. It will not
-      use the EM (Expectation-Maximization) framework to learn new
-      priors from the data.}
-  }
-
-  \strong{2. Hierarchical Bayesian Estimation via EM}
-  This approach is used to let the model learn the group-level (hierarchical)
-  prior distributions directly from the data.
-  \describe{
-    \item{Configuration:}{
-      \itemize{
-        \item{Set \code{estimate = "MAP"}.}
-        \item{Specify a weak or non-informative initial prior, such as a
-          uniform distribution for all parameters.}
-        \item{Set \code{iteration_g} to a value greater than 0.}
-      }
-    }
-    \item{Behavior:}{ With a uniform prior, the initial
-      log-posterior equals the log-likelihood, making the first estimation
-      step equivalent to MLE. The algorithm then initiates the EM procedure:
-      it iteratively assesses the actual parameter distribution across all
-      subjects and updates the group-level priors. This cycle continues
-      until the posterior converges or \code{iteration_g} is reached.}
-  }
-
- default: \code{dfun = NULL}}
+A nested list that defines the probability density/mass functions (PDF/PMF)
+ for each model's parameters. The top-level names of the list must match the
+ model names. Each element must be another named list, where each name
+ corresponds to a model parameter and its value is the probability density
+ function.
+ 
+e.g., \code{stats::dunif}, \code{stats::dexp}}
 
 \item{lower}{[List] 
 

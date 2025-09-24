@@ -15,16 +15,31 @@ The core functions of `binaryRL` have already been rewritten in `Rcpp`. This opt
 install.packages("LaplacesDemon")
 ```
 
-## Example Data
+## Simulating Data
 
-```{r}
-test_data <- binaryRL::Mason_2024_G2
-# Ensure the Subject ID is a numeric value for easier indexing
-test_data$Subject <- as.numeric(test_data$Subject)
-# Filter the dataset to include only subjects 1 through 5
-test_data <- test_data[test_data$Subject <= 5, ]
+```{r eval=FALSE}
+list_simulated <- binaryRL::simulate_list(
+  data = binaryRL::Mason_2024_G2,
+  id = 1,
+  n_params = 2,
+  n_trials = 360,
+  
+  obj_func = binaryRL::TD,
+  rfun = list(
+    eta = function() { stats::rbeta(n = 1, shape1 = 2, shape2 = 2) },
+    tau = function() { stats::rexp(n = 1, rate = 1) }
+  ),
+  iteration = 1100 # = [1000(drop) + 100(test)]]
+)
 
-unique(test_data$Subject)
+list_drop <- list_simulated[1:1000]
+list_test <- list_simulated[1001:1100]
+
+for (i in seq_along(list_test)) {
+  list_test[[i]][["data"]]$Subject <- i
+}
+
+test_data <- dplyr::bind_rows(purrr::map(list_test, "data"))
 ```
 
 ## Step 1: Object Function
@@ -37,7 +52,7 @@ Similar to other frameworks designed for individual-level analysis, the primary 
 
 A key convenience of `LaplacesDemon` is that the user-defined Model function can accept a `Data` argument. This feature provides a clean and explicit mechanism for passing supplementary information—such as prior distributions, trial counts, or policy settings—directly to the model. Consequently, users can avoid more cumbersome methods, like environment binding, and instead bundle all necessary data and constants into a single, well-organized list.
 
-```{r}
+```{r eval=FALSE}
 Data <- list(
   # The prepared dataframe containing the experimental data
   df = test_data,
@@ -56,7 +71,6 @@ Data <- list(
   # A vector of descriptive names for each parameter across all subjects
   parm.names = LaplacesDemon::as.parm.names(
     list(
-      # Creates names like "[1,1]", "[1,2]", "[2,1]", "[2,2]", etc.
       outer(
         X = c("eta", "tau"),
         Y = 1:length(unique(test_data$Subject)),
@@ -69,13 +83,18 @@ Data <- list(
   # The total number of subjects
   N = length(unique(test_data$Subject))
 )
+
+# Add Block [eta, tau] 
+Data$B <- lapply(1:length(unique(test_data$Subject)), function(i) {
+  c((i - 1) * Data$n_params + 1, (i - 1) * Data$n_params + 2)
+})
 ```
 
 ## Step 2: Defining Model
 
 Create a model function that accepts `parm` and `Data` as its arguments, with a return value that conforms to the structure required by `LaplacesDemon.` Within this function, you need to calculate the sum of the log-likelihoods and the sum of the log-posteriors across all subjects by using specified prior distributions. 
 
-```{r}
+```{r eval=FALSE}
 Model <- function(parm, Data) {
   
   # Initialize accumulators for sum of log-likelihood and log-posterior
@@ -83,39 +102,48 @@ Model <- function(parm, Data) {
   sum_LP <- 0
   
   # Loop through each subject ID provided in the Data list
-  for (i in as.vector(Data$id)) {
-    
-    # read unconstrained params
-    eta_unconstrained <- parm[(i - 1) * 2 + 1]
-    tau_unconstrained <- parm[(i - 1) * 2 + 2]
-    
-    # convert to constrained params
-    eta <- stats::plogis(eta_unconstrained)
-    tau <- exp(tau_unconstrained)
-    
-    # pass constrained params to the input vector
-    #parm[(i - 1) * 2 + 1] <- eta
-    #parm[(i - 1) * 2 + 2] <- tau
-    
-    res <- binaryRL::run_m(
-      data = Data$df,
-      id = Data$id[i],
-      eta = eta,
-      tau = tau,
-      priors = Data$priors,
-      n_params = Data$n_params,
-      n_trials = Data$n_trials,
-      mode = Data$mode,
-      policy = Data$policy
-    )
-    
-    # Add the log-likelihood of the current subject to the total
-    sum_LL <- sum_LL + res$ll
-    # Add the log-posterior of the current subject to the total
-    LP_eta <- stats::dnorm(x = eta, mean = 0.5, sd = 0.15, log = TRUE)
-    LP_tau <- stats::dexp(x = tau, rate = 1, log = TRUE)
-    sum_LP <- sum_LP + LP_eta + LP_tau
-  }
+  results <- parallel::parLapply(
+    cl = cl,
+    X = as.vector(Data$id),
+    fun = function(i) {
+      
+      # Read unconstrained params for the current subject
+      eta_unconstrained <- parm[(i - 1) * 2 + 1]
+      tau_unconstrained <- parm[(i - 1) * 2 + 2]
+      
+      # Convert to constrained params
+      eta <- stats::plogis(eta_unconstrained)
+      tau <- exp(tau_unconstrained)
+      
+      # Run the model for the current subject
+      res <- binaryRL::run_m(
+        data = Data$df,
+        id = i, 
+        eta = eta,
+        tau = tau,
+        priors = Data$priors,
+        n_params = Data$n_params,
+        n_trials = Data$n_trials,
+        mode = Data$mode,
+        policy = Data$policy
+      )
+      
+      # Calculate the log-posterior components for this subject
+      LP_eta <- stats::dbeta(x = eta, shape1 = 2, shape2 = 2, log = TRUE)
+      LP_tau <- stats::dexp(x = tau, rate = 1, log = TRUE)
+      
+      # Return a list with the results for this subject
+      return(c(ll = res$ll, lp = LP_eta + LP_tau))
+    }
+  )
+  
+  # After the loop, aggregate the results from the list
+  sums <- rowSums(do.call(cbind, results))
+  # Extract all log-likelihoods and sum them up
+  sum_LL <- sums["ll"]
+  
+  # Extract all subject-wise log-posteriors and sum them up
+  sum_LP <- sums["lp"]
   
   LP <- sum_LL + sum_LP
   
@@ -134,9 +162,21 @@ Model <- function(parm, Data) {
 
 ## Step 3: Test Model
 
-```{r}
-Initial.Values <- stats::runif(Data$N * Data$n_params)
-Model(parm = Initial.Values, Data = Data)
+```{r eval=FALSE}
+set.seed(123)
+cl <- parallel::makeCluster(10) 
+parallel::clusterEvalQ(cl = cl, expr = library(binaryRL))
+Initial.Values <- stats::runif(length(Data$id) * Data$n_params)
+parallel::clusterExport(cl, varlist = c("Initial.Values"))
+
+profvis::profvis({Model(
+  parm = Initial.Values, 
+  Data = Data
+)})
+Model(
+  parm = Initial.Values, 
+  Data = Data
+)
 ```
 
 ## Step 4: Run LaplacesDemon
@@ -147,11 +187,11 @@ Fit <- LaplacesDemon::LaplacesDemon(
   Data = Data,
   Packages = "binaryRL",
   # Set initial values (# of free params * # of subjects)
-  Initial.Values = stats::runif(length(Data$id) * Data$n_params),
+  Initial.Values = Initial.Values,
   # The relationship between `Algorithm` and `Specs` is special
   # Refer to the LaplacesDemon help documents for details
-  Algorithm = "MWG", Specs = list(B = NULL),
-  #Algorithm = "NUTS", Specs = list(A = 5, delta = 0.6, epsilon = NULL, Lmax = Inf),
+  Algorithm = "MWG", Specs = list(B = Data$B),
+  #Algorithm = "NUTS", Specs = list(A = 500, delta = 0.6, epsilon = NULL, Lmax = Inf),
   # The total number of iterations to perform in each chain.
   Iterations = 10,
   # The thinning interval. A value of n keeps one sample every n-th iteration.
@@ -159,6 +199,8 @@ Fit <- LaplacesDemon::LaplacesDemon(
   # Logs for every ? iterations
   Status = 1
 )
+
+parallel::stopCluster(cl)
 
 LaplacesDemon::Consort(Fit)
 ```
@@ -168,31 +210,35 @@ LaplacesDemon::Consort(Fit)
 # Consort with Laplace's Demon                              #
 #############################################################
 Call:
-LaplacesDemon::LaplacesDemon(Model = Model, Data = Data, Initial.Values = stats::runif(length(Data$id) * 
-    Data$n_params), Iterations = 10, Status = 1, Thinning = 1, 
-    Algorithm = "MWG", Specs = list(B = NULL), Packages = "binaryRL")
+LaplacesDemon::LaplacesDemon(
+  Model = Model, Data = Data, Initial.Values = Initial.Values,
+  Iterations = 10, Status = 1, Thinning = 1, 
+  Algorithm = "MWG", Specs = list(B = Data$B), Packages = "binaryRL"
+)
 
-Acceptance Rate: 0.29091
+Acceptance Rate: 0.79
 Algorithm: Metropolis-within-Gibbs
 Covariance Matrix: (NOT SHOWN HERE; diagonal shown instead)
-    [1,1]     [2,1]     [1,2]     [2,2]     [1,3]     [2,3]     [1,4]     [2,4]     [1,5]     [2,5] 
-0.5670132 0.5670132 0.5670132 0.5670132 0.5670132 0.5670132 0.5670132 0.5670132 0.5670132 0.5670132 
+     [1,1]      [2,1]      [1,2]      [2,2]      [1,3]      [2,3]
+0.02835066 0.02835066 0.02835066 0.02835066 0.02835066 0.02835066 
+...
 
 Covariance (Diagonal) History: (NOT SHOWN HERE)
 Deviance Information Criterion (DIC):
-          All Stationary
-Dbar 3355.960   3355.960
-pD    378.877    378.877
-DIC  3734.837   3734.837
+           All Stationary
+Dbar  52925.39   52925.39
+pD   156998.62  156998.62
+DIC  209924.01  209924.01
 Initial Values:
- [1] 0.09859165 0.69300856 0.75132556 0.99870695 0.34549739 0.29300554 0.66773598 0.59801099 0.70105000 0.10186876
+  [1] 0.2875775201 0.7883051354 0.4089769218 0.8830174040 0.9404672843 
+...
 
 Iterations: 11
 Log(Marginal Likelihood): NA
-Minutes of run-time: 1.39
+Minutes of run-time: 34.03
 Model: (NOT SHOWN HERE)
 Monitor: (NOT SHOWN HERE)
-Parameters (Number of): 10
+Parameters (Number of): 200
 Posterior1: (NOT SHOWN HERE)
 Posterior2: (NOT SHOWN HERE)
 Recommended Burn-In of Thinned Samples: 0
@@ -207,48 +253,54 @@ Thinning: 1
 
 
 Summary of All Samples
-                  Mean          SD        MCSE          ESS            LB        Median            UB
-[1,1]    -6.326389e-01  0.00000000  0.00000000 2.220446e-16 -6.326389e-01 -6.326389e-01    -0.6326389
-[2,1]     6.930086e-01  0.00000000  0.00000000 2.220446e-16  6.930086e-01  6.930086e-01     0.6930086
-[1,2]    -7.464188e-03  0.19969803  0.09095104 1.100000e+01 -9.168507e-02 -9.168507e-02     0.4487322
-[2,2]     9.987070e-01  0.00000000  0.00000000 2.220446e-16  9.987070e-01  9.987070e-01     0.9987070
-[1,3]     6.445531e-01  0.00000000  0.00000000 2.220446e-16  6.445531e-01  6.445531e-01     0.6445531
-[2,3]    -5.424715e-01  0.31279239  0.14245907 1.100000e+01 -6.743889e-01 -6.743889e-01     0.1720812
-[1,4]     6.677360e-01  0.00000000  0.00000000 2.220446e-16  6.677360e-01  6.677360e-01     0.6677360
-[2,4]    -2.994002e-01  0.30341356  0.22470223 2.220446e-16 -7.339427e-01 -2.994002e-01     0.1351423
-[1,5]     7.705329e-01  0.04985889  0.03392331 3.014025e+00  6.831834e-01  8.100874e-01     0.8100874
-[2,5]     4.602979e-01  0.59291341  0.43910024 2.220446e-16 -3.888602e-01  4.602979e-01     1.3094560
-Deviance  3.355960e+03 27.52734495 14.79642686 3.718372e+00  3.330060e+03  3.349300e+03  3415.7700000
-LP       -1.683476e+03 13.59142083  7.03639451 3.903581e+00 -1.713494e+03 -1.679777e+03 -1671.8078968
+                  Mean           SD         MCSE       ESS            LB        Median            UB
+[1,1]     1.767571e-01 5.826327e-02 4.213680e-02  1.435352  9.628475e-02  1.892334e-01  2.631710e-01
+[2,1]     7.222023e-01 4.039864e-02 2.679293e-02  2.264387  6.770064e-01  7.335398e-01  7.885450e-01
+[1,2]     4.306596e-01 2.253195e-02 1.059517e-02 11.000000  4.032490e-01  4.310931e-01  4.655382e-01
+[2,2]     9.438012e-01 3.990277e-02 2.470063e-02  2.168657  8.731643e-01  9.635338e-01  9.816604e-01
+[1,3]     8.858296e-01 3.415728e-02 1.745856e-02  3.874139  8.214295e-01  9.014520e-01  9.143744e-01
+[2,3]    -2.304814e-02 4.930958e-02 3.747143e-02  1.308741 -8.159860e-02 -3.981861e-02  4.360556e-02
+[1,4]     5.211726e-01 3.274488e-02 1.998962e-02  2.233907  4.862525e-01  5.261202e-01  5.694293e-01
+[2,4]     8.254009e-01 2.712795e-02 1.599573e-02  2.983164  7.853919e-01  8.421988e-01  8.528547e-01
+[1,5]     5.033317e-01 4.083967e-02 3.047860e-02  1.493804  4.436491e-01  5.266891e-01  5.513182e-01
+[2,5]     4.498422e-01 2.069964e-02 1.162955e-02 11.000000  4.110313e-01  4.566147e-01  4.718698e-01
+...
+ [ reached getOption("max.print") -- omitted 60 rows ]
 
 
 Summary of Stationary Samples
-                  Mean          SD        MCSE          ESS            LB        Median            UB
-[1,1]    -6.326389e-01  0.00000000  0.00000000 2.220446e-16 -6.326389e-01 -6.326389e-01    -0.6326389
-[2,1]     6.930086e-01  0.00000000  0.00000000 2.220446e-16  6.930086e-01  6.930086e-01     0.6930086
-[1,2]    -7.464188e-03  0.19969803  0.09095104 1.100000e+01 -9.168507e-02 -9.168507e-02     0.4487322
-[2,2]     9.987070e-01  0.00000000  0.00000000 2.220446e-16  9.987070e-01  9.987070e-01     0.9987070
-[1,3]     6.445531e-01  0.00000000  0.00000000 2.220446e-16  6.445531e-01  6.445531e-01     0.6445531
-[2,3]    -5.424715e-01  0.31279239  0.14245907 1.100000e+01 -6.743889e-01 -6.743889e-01     0.1720812
-[1,4]     6.677360e-01  0.00000000  0.00000000 2.220446e-16  6.677360e-01  6.677360e-01     0.6677360
-[2,4]    -2.994002e-01  0.30341356  0.22470223 2.220446e-16 -7.339427e-01 -2.994002e-01     0.1351423
-[1,5]     7.705329e-01  0.04985889  0.03392331 3.014025e+00  6.831834e-01  8.100874e-01     0.8100874
-[2,5]     4.602979e-01  0.59291341  0.43910024 2.220446e-16 -3.888602e-01  4.602979e-01     1.3094560
-Deviance  3.355960e+03 27.52734495 14.79642686 3.718372e+00  3.330060e+03  3.349300e+03  3415.7700000
-LP       -1.683476e+03 13.59142083  7.03639451 3.903581e+00 -1.713494e+03 -1.679777e+03 -1671.8078968
+                  Mean           SD         MCSE       ESS            LB        Median            UB
+[1,1]     1.767571e-01 5.826327e-02 4.213680e-02  1.435352  9.628475e-02  1.892334e-01  2.631710e-01
+[2,1]     7.222023e-01 4.039864e-02 2.679293e-02  2.264387  6.770064e-01  7.335398e-01  7.885450e-01
+[1,2]     4.306596e-01 2.253195e-02 1.059517e-02 11.000000  4.032490e-01  4.310931e-01  4.655382e-01
+[2,2]     9.438012e-01 3.990277e-02 2.470063e-02  2.168657  8.731643e-01  9.635338e-01  9.816604e-01
+[1,3]     8.858296e-01 3.415728e-02 1.745856e-02  3.874139  8.214295e-01  9.014520e-01  9.143744e-01
+[2,3]    -2.304814e-02 4.930958e-02 3.747143e-02  1.308741 -8.159860e-02 -3.981861e-02  4.360556e-02
+[1,4]     5.211726e-01 3.274488e-02 1.998962e-02  2.233907  4.862525e-01  5.261202e-01  5.694293e-01
+[2,4]     8.254009e-01 2.712795e-02 1.599573e-02  2.983164  7.853919e-01  8.421988e-01  8.528547e-01
+[1,5]     5.033317e-01 4.083967e-02 3.047860e-02  1.493804  4.436491e-01  5.266891e-01  5.513182e-01
+[2,5]     4.498422e-01 2.069964e-02 1.162955e-02 11.000000  4.110313e-01  4.566147e-01  4.718698e-01
+...
+ [ reached getOption("max.print") -- omitted 60 rows ]
 
 Demonic Suggestion
 
 Due to the combination of the following conditions,
 
 1. Metropolis-within-Gibbs
-2. The acceptance rate (0.2909091) is within the interval [0.15,0.5].
+2. The acceptance rate (0.79) is above 0.5.
 3. At least one target MCSE is >= 6.27% of its marginal posterior
    standard deviation.
 4. At least one target distribution has an effective sample size
-   (ESS) less than 100. The worst mixing chain is: [1,1] (ESS=2.220446e-16).
+   (ESS) less than 100. The worst mixing chain is: [2,73] (ESS=1.121322).
 5. Each target distribution became stationary by
    1 iteration.
+
+Quantiles of Absolute Posterior1 Correlation:
+          0%          25%          50%          75%         100% 
+8.216533e-06 3.237191e-01 5.822562e-01 7.866556e-01 1.000000e+00 
+
+Possibly excessive posterior correlation for a componentwise algorithm.
 
 Laplace's Demon has not been appeased, and suggests
 copy/pasting the following R code into the R console,
@@ -256,8 +308,8 @@ and running it.
 
 Initial.Values <- as.initial.values(Fit)
 Fit <- LaplacesDemon(Model, Data=Data, Initial.Values,
-     Covar=Fit$Covar, Iterations=110, Status=7, Thinning=10,
-     Algorithm="AMWG", Specs=list(B=NULL, n=11, Periodicity=34))
+     Covar=Fit$Covar, Iterations=110, Status=0, Thinning=10,
+     Algorithm="AMWG", Specs=list(B=Fit$Specs$B, n=11, Periodicity=13))
 
 Laplace's Demon is finished consorting.
 ```

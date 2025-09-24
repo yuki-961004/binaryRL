@@ -11,6 +11,8 @@ vignette: >
     <img src="../../fig/rl_step4.png" alt="Step 4" width="80%" style="display: inline;">
 </p>
 
+# On-Policy
+
 ## Replay the Experiment
 ```{r eval=FALSE}
 list <- list()
@@ -21,7 +23,7 @@ list <- list()
 list[[1]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
     data = binaryRL::Mason_2024_G2,
-    result = read.csv("../OUTPUT/result_comparison.csv"), 
+    result = read.csv("../OUTPUT/result_comparison_on.csv"), 
     model = binaryRL::TD,
     model_name = "TD"
   )
@@ -33,7 +35,7 @@ list[[1]] <- dplyr::bind_rows(
 list[[2]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
     data = binaryRL::Mason_2024_G2,
-    result = read.csv("../OUTPUT/result_comparison.csv"), 
+    result = read.csv("../OUTPUT/result_comparison_on.csv"), 
     model = binaryRL::RSTD,
     model_name = "RSTD"
   )
@@ -45,7 +47,7 @@ list[[2]] <- dplyr::bind_rows(
 list[[3]] <- dplyr::bind_rows(
   binaryRL::rpl_e(
     data = binaryRL::Mason_2024_G2,
-    result = read.csv("../OUTPUT/result_comparison.csv"), 
+    result = read.csv("../OUTPUT/result_comparison_on.csv"), 
     model = binaryRL::Utility,
     model_name = "Utility"
   )
@@ -56,7 +58,7 @@ list[[3]] <- dplyr::bind_rows(
 ### Frame
 
 <details>
-<summary>Plot Function</summary>
+<summary>Plot Code</summary>
 ```{r eval=FALSE}
 plot <- list()
 
@@ -165,13 +167,13 @@ rm(plot, p)
 </details>
 
 <p align="center">
-    <img src="../FIGURE/Exp_Effect(Frame).png" alt="RL Models" width="80%" style="display: inline;">
+    <img src="../FIGURE/on-policy/Exp_Effect(Frame).png" alt="RL Models" width="80%" style="display: inline;">
 </p>
 
 ### Block
 
 <details>
-<summary>Plot Function</summary>
+<summary>Plot Code</summary>
 ```{r eval=FALSE}
 plot <- list()
 
@@ -275,5 +277,61 @@ rm(plot, p)
 </details>
 
 <p align="center">
-    <img src="../FIGURE/Exp_Effect(Block).png" alt="RL Models" width="80%" style="display: inline;">
+    <img src="../FIGURE/on-policy/Exp_Effect(Block).png" alt="RL Models" width="80%" style="display: inline;">
+</p>
+
+# Off-Policy
+
+## Replay the Experiment
+```{r eval=FALSE}
+list <- list()
+```
+
+### TD
+```{r eval=FALSE}
+list[[1]] <- dplyr::bind_rows(
+  binaryRL::rpl_e(
+    data = binaryRL::Mason_2024_G2,
+    result = read.csv("../OUTPUT/result_comparison_off.csv"), 
+    model = binaryRL::TD,
+    model_name = "TD"
+  )
+)
+```
+
+### RSTD
+```{r eval=FALSE}
+list[[2]] <- dplyr::bind_rows(
+  binaryRL::rpl_e(
+    data = binaryRL::Mason_2024_G2,
+    result = read.csv("../OUTPUT/result_comparison_off.csv"), 
+    model = binaryRL::RSTD,
+    model_name = "RSTD"
+  )
+)
+```
+
+### Utility
+```{r eval=FALSE}
+list[[3]] <- dplyr::bind_rows(
+  binaryRL::rpl_e(
+    data = binaryRL::Mason_2024_G2,
+    result = read.csv("../OUTPUT/result_comparison_off.csv"), 
+    model = binaryRL::Utility,
+    model_name = "Utility"
+  )
+)
+```
+
+## Plot
+### Frame
+
+<p align="center">
+    <img src="../FIGURE/off-policy/Exp_Effect(Frame).png" alt="RL Models" width="80%" style="display: inline;">
+</p>
+
+### Block
+
+<p align="center">
+    <img src="../FIGURE/off-policy/Exp_Effect(Block).png" alt="RL Models" width="80%" style="display: inline;">
 </p>

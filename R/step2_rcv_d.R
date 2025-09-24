@@ -76,15 +76,15 @@
 #' 
 #'   Estimation method. Can be either \code{"MLE"} or \code{"MAP"}.
 #'   \itemize{
-#'     \item{\code{"MLE"}: (Default) Maximum Likelihood Estimation. This
-#'       method finds the parameter values that maximize the log-likelihood
+#'     \item{\strong{Maximum Likelihood Estimation} \code{"MLE"}: (Default): 
+#'       This method finds the parameter values that maximize the log-likelihood
 #'       of the data. A higher log-likelihood indicates that the parameters
 #'       provide a better explanation for the observed human behavior. In
 #'       other words, data simulated using these parameters would most
 #'       closely resemble the actual human data. This method does not
 #'       consider any prior information about the parameters.}
 #'       
-#'     \item{\code{"MAP"}: Maximum A Posteriori Estimation. This method
+#'     \item{\strong{Maximum A Posteriori Estimation} \code{"MAP"}: This method
 #'       finds the parameter values that maximize the posterior probability.
 #'       It is an iterative process based on the Expectation-Maximization
 #'       (EM) framework.
@@ -101,8 +101,8 @@
 #'         \item{\strong{Re-estimation}: The parameters are then re-optimized
 #'           to maximize the updated posterior probability.}
 #'         \item{\strong{Convergence}: This cycle repeats until the posterior
-#'           probability converges or the maximum number of iterations
-#'           (specified by \code{iteration_g}) is reached.}
+#'           probability converges or the maximum number of iterations is 
+#'           reached.}
 #'       }
 #'       Using this method requires that the \code{priors} argument
 #'       be specified to define the initial prior distributions.
@@ -246,29 +246,6 @@
 #'  
 #' e.g., \code{stats::dunif}, \code{stats::dexp}
 #' 
-#' @param iteration_s [integer]
-#' 
-#' This parameter determines how many simulated datasets are created for 
-#'  subsequent model and parameter recovery analyses.
-#'  
-#' default: \code{iteration_s = 10}
-#' 
-#' @param iteration_f [NumericVector]
-#' 
-#' The number of iterations for the optimization algorithm. The required
-#'   format depends on the estimation method used.
-#'   \itemize{
-#'     \item {If \code{estimate = "MLE"}, this should be a single 
-#'       \code{numeric} value specifying the total number of iterations.}
-#'       
-#'     \item {If \code{estimate = "MAP"}, this should be a \code{NumericVector} 
-#'       of length two: \code{c(MLE_iterations, MAP_iterations).}}
-#'   }
-#'   A higher number of iterations may increase the likelihood of finding a
-#'   global optimum but also increases computation time.
-#'  
-#' default: \code{iteration_f = 10}
-#' 
 #' @param lower [List] 
 #' 
 #' The lower bounds of models' free parameters.
@@ -315,6 +292,30 @@
 #' 
 #' default: \code{tolerance = 0.001}
 #'  
+#' @param iteration_s [integer]
+#' 
+#' This parameter determines how many simulated datasets are created for 
+#'  subsequent model and parameter recovery analyses.
+#'  
+#' default: \code{iteration_s = 10}
+#' 
+#' @param iteration_f [NumericVector]
+#' 
+#' The number of iterations for the optimization algorithm. The required
+#'   format depends on the estimation method used.
+#'   \itemize{
+#'     \item {If \code{estimate = "MLE"}, this should be a single 
+#'       \code{numeric} value specifying the total number of iterations.}
+#'       
+#'     \item {If \code{estimate = "MAP"}, this should be a \code{NumericVector} 
+#'       of length two: \code{c(MLE_iterations, MAP_iterations).}}
+#'       (e.g. \code{iteration_f = c(100, 10)})
+#'   }
+#'   A higher number of iterations may increase the likelihood of finding a
+#'   global optimum but also increases computation time.
+#'  
+#' default: \code{iteration_f = 10}
+#' 
 #' @param nc [integer]
 #' 
 #' Number of cores to use for parallel processing. Since fitting
@@ -344,6 +345,8 @@
 #'  you need to input a character vector. The first element represents
 #'  the algorithm used for global search, and the second element represents
 #'  the algorithm used for local search.
+#'  
+#' e.g. \code{algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")}
 #'
 #' @returns 
 #' A list where each element is a data.frame. 

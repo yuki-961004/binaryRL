@@ -1,17 +1,18 @@
 #' Process: Simulating Fake Data
 #' 
 #' @description
-#' This function is responsible for generating synthetic (fake) data
-#'  using random numbers. For all parameters except the last one, their
-#'  values are drawn from a uniform distribution within their respective
-#'  specified ranges.
+#' This function generates random input parameters for a model based on
+#'  user-specified distributions. For example, if the first parameter,
+#'  \code{eta}, is set to follow a uniform distribution from 0 to 1, its
+#'  values will be randomly sampled from \code{U(0, 1)}.
 #'
-#' The last parameter, representing the temperature (\code{tau}) in the soft-max
-#'  function, is drawn from an exponential distribution. If its \code{upper} bound
-#'  is set to 1, it implies \code{tau} is sampled from \code{Exp(1)} (an exponential
-#'  distribution with a rate parameter of 1). If its \code{lower} bound is set
-#'  to 1, this means that after \code{tau} is randomly generated, it is shifted
-#'  to the right by adding 1 (i.e., \code{tau+1}), establishing a minimum value.
+#' You can also specify parameters to be drawn from a normal distribution. 
+#'  For example, \code{
+#'    eta = function() { stats::rnorm(n = 1, mean = 0.5, sd = 0.1) }
+#'  }. 
+#'  Make sure the last parameter, which typically represents the inverse 
+#'  temperature parameter in the soft-max function, is sampled from an 
+#'  exponential distribution.
 #' 
 #' @param data [data.frame] 
 #' 

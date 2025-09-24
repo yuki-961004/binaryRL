@@ -187,14 +187,14 @@ The process involves generating synthetic datasets. First, parameters
 
 <dl><dt id="arg-estimate">estimate<a class="anchor" aria-label="anchor" href="#arg-estimate"></a></dt>
 <dd><p>[string]</p>
-<p>Estimation method. Can be either <code>"MLE"</code> or <code>"MAP"</code>.</p><ul><li><p><code>"MLE"</code>: (Default) Maximum Likelihood Estimation. This
-      method finds the parameter values that maximize the log-likelihood
+<p>Estimation method. Can be either <code>"MLE"</code> or <code>"MAP"</code>.</p><ul><li><p><strong>Maximum Likelihood Estimation</strong> <code>"MLE"</code>: (Default):
+      This method finds the parameter values that maximize the log-likelihood
       of the data. A higher log-likelihood indicates that the parameters
       provide a better explanation for the observed human behavior. In
       other words, data simulated using these parameters would most
       closely resemble the actual human data. This method does not
       consider any prior information about the parameters.</p></li>
-<li><p><code>"MAP"</code>: Maximum A Posteriori Estimation. This method
+<li><p><strong>Maximum A Posteriori Estimation</strong> <code>"MAP"</code>: This method
       finds the parameter values that maximize the posterior probability.
       It is an iterative process based on the Expectation-Maximization
       (EM) framework.      </p><ul><li><p><strong>Initialization</strong>: The process begins by assuming a
@@ -208,8 +208,8 @@ The process involves generating synthetic datasets. First, parameters
 <li><p><strong>Re-estimation</strong>: The parameters are then re-optimized
           to maximize the updated posterior probability.</p></li>
 <li><p><strong>Convergence</strong>: This cycle repeats until the posterior
-          probability converges or the maximum number of iterations
-          (specified by <code>iteration_g</code>) is reached.</p></li>
+          probability converges or the maximum number of iterations is
+          reached.</p></li>
 </ul>
       Using this method requires that the <code>priors</code> argument
       be specified to define the initial prior distributions.</li>
@@ -401,7 +401,8 @@ function in the list should represent one model.</p>
   format depends on the estimation method used.</p><ul><li><p>If <code>estimate = "MLE"</code>, this should be a single
       <code>numeric</code> value specifying the total number of iterations.</p></li>
 <li><p>If <code>estimate = "MAP"</code>, this should be a <code>NumericVector</code>
-      of length two: <code>c(MLE_iterations, MAP_iterations).</code></p></li>
+      of length two: <code>c(MLE_iterations, MAP_iterations).</code>
+      (e.g. <code>iteration_f = c(100, 10)</code>)</p></li>
 </ul><p>A higher number of iterations may increase the likelihood of finding a
   global optimum but also increases computation time.</p>
 <p>default: <code>iteration_f = 10</code></p></dd>
@@ -431,7 +432,8 @@ parallel computation can significantly speed up the fitting process:</p><ul><li>
  supported. If your chosen <code>nloptr</code> algorithm requires a local search,
  you need to input a character vector. The first element represents
  the algorithm used for global search, and the second element represents
- the algorithm used for local search.</p></dd>
+ the algorithm used for local search.</p>
+<p>e.g. <code>algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")</code></p></dd>
 
 </dl></div>
     <div class="section level2">

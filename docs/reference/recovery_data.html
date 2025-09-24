@@ -130,7 +130,7 @@ This determines how the model updates action values based on observed or
     this by consistently updating the value of the option that the
     human actually chose. The focus is on understanding the value
     representation that likely drove the participant's decisions.</p></li>
-<li><p><strong>Off-Policy (SARSA): </strong>
+<li><p><strong>On-Policy (SARSA): </strong>
    In this mode, the target policy and the behavior policy are identical.
     The model first computes the selection probability for each option based
     on their current values. Critically, it then uses these probabilities to
@@ -143,14 +143,14 @@ This determines how the model updates action values based on observed or
 
 <dt id="arg-estimate">estimate<a class="anchor" aria-label="anchor" href="#arg-estimate"></a></dt>
 <dd><p>[string]</p>
-<p>Estimation method. Can be either <code>"MLE"</code> or <code>"MAP"</code>.</p><ul><li><p><code>"MLE"</code>: (Default) Maximum Likelihood Estimation. This
-      method finds the parameter values that maximize the log-likelihood
+<p>Estimation method. Can be either <code>"MLE"</code> or <code>"MAP"</code>.</p><ul><li><p><strong>Maximum Likelihood Estimation</strong> <code>"MLE"</code>: (Default):
+      This method finds the parameter values that maximize the log-likelihood
       of the data. A higher log-likelihood indicates that the parameters
       provide a better explanation for the observed human behavior. In
       other words, data simulated using these parameters would most
       closely resemble the actual human data. This method does not
       consider any prior information about the parameters.</p></li>
-<li><p><code>"MAP"</code>: Maximum A Posteriori Estimation. This method
+<li><p><strong>Maximum A Posteriori Estimation</strong> <code>"MAP"</code>: This method
       finds the parameter values that maximize the posterior probability.
       It is an iterative process based on the Expectation-Maximization
       (EM) framework.      </p><ul><li><p><strong>Initialization</strong>: The process begins by assuming a
@@ -164,8 +164,8 @@ This determines how the model updates action values based on observed or
 <li><p><strong>Re-estimation</strong>: The parameters are then re-optimized
           to maximize the updated posterior probability.</p></li>
 <li><p><strong>Convergence</strong>: This cycle repeats until the posterior
-          probability converges or the maximum number of iterations
-          (specified by <code>iteration_g</code>) is reached.</p></li>
+          probability converges or the maximum number of iterations is
+          reached.</p></li>
 </ul>
       Using this method requires that the <code>priors</code> argument
       be specified to define the initial prior distributions.</li>
@@ -231,45 +231,13 @@ This determines how the model updates action values based on observed or
 
 
 <dt id="arg-dfun">dfun<a class="anchor" aria-label="anchor" href="#arg-dfun"></a></dt>
-<dd><p>[list]</p>
-<p>A list specifying the prior distributions for the model parameters.
-  This argument is mandatory when using <code>estimate = "MAP"</code>.
-  There are two primary scenarios for its use:</p>
-<p><strong>1. Static MAP Estimation (Non-Hierarchical)</strong>
-  This approach is used when you have a strong, pre-defined belief about
-  the parameter priors and do not want the model to update them iteratively.</p><dl><dt>Configuration:</dt>
-<dd><p></p><ul><li><p>Set <code>estimate = "MAP"</code>.</p></li>
-<li><p>Provide a <code>list</code> defining your confident prior
-          distributions.</p></li>
-<li><p>Keep <code>iteration_g = 0</code> (the default).</p></li>
-</ul><p></p></dd>
-
-    <dt>Behavior:</dt>
-<dd><p>The algorithm maximizes the posterior
-      probability based solely on your specified priors. It will not
-      use the EM (Expectation-Maximization) framework to learn new
-      priors from the data.</p></dd>
-
-
-</dl><p><strong>2. Hierarchical Bayesian Estimation via EM</strong>
-  This approach is used to let the model learn the group-level (hierarchical)
-  prior distributions directly from the data.</p><dl><dt>Configuration:</dt>
-<dd><p></p><ul><li><p>Set <code>estimate = "MAP"</code>.</p></li>
-<li><p>Specify a weak or non-informative initial prior, such as a
-          uniform distribution for all parameters.</p></li>
-<li><p>Set <code>iteration_g</code> to a value greater than 0.</p></li>
-</ul><p></p></dd>
-
-    <dt>Behavior:</dt>
-<dd><p>With a uniform prior, the initial
-      log-posterior equals the log-likelihood, making the first estimation
-      step equivalent to MLE. The algorithm then initiates the EM procedure:
-      it iteratively assesses the actual parameter distribution across all
-      subjects and updates the group-level priors. This cycle continues
-      until the posterior converges or <code>iteration_g</code> is reached.</p></dd>
-
-
-</dl><p>default: <code>dfun = NULL</code></p></dd>
+<dd><p>[List]</p>
+<p>A nested list that defines the probability density/mass functions (PDF/PMF)
+ for each model's parameters. The top-level names of the list must match the
+ model names. Each element must be another named list, where each name
+ corresponds to a model parameter and its value is the probability density
+ function.</p>
+<p>e.g., <code><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">stats::dunif</a></code>, <code><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">stats::dexp</a></code></p></dd>
 
 
 <dt id="arg-lower">lower<a class="anchor" aria-label="anchor" href="#arg-lower"></a></dt>

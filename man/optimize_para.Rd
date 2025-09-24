@@ -5,8 +5,8 @@
 \title{Process: Optimizing Parameters}
 \usage{
 optimize_para(
-  policy = "off",
   estimate = "MLE",
+  policy = "off",
   data,
   id,
   n_trials,
@@ -23,6 +23,45 @@ optimize_para(
 )
 }
 \arguments{
+\item{estimate}{[string] 
+
+  Estimation method. Can be either \code{"MLE"} or \code{"MAP"}.
+  \itemize{
+    \item{\strong{Maximum Likelihood Estimation} \code{"MLE"}: (Default): 
+      This method finds the parameter values that maximize the log-likelihood
+      of the data. A higher log-likelihood indicates that the parameters
+      provide a better explanation for the observed human behavior. In
+      other words, data simulated using these parameters would most
+      closely resemble the actual human data. This method does not
+      consider any prior information about the parameters.}
+      
+    \item{\strong{Maximum A Posteriori Estimation} \code{"MAP"}: This method
+      finds the parameter values that maximize the posterior probability.
+      It is an iterative process based on the Expectation-Maximization
+      (EM) framework.
+      
+      \itemize{
+        \item{\strong{Initialization}: The process begins by assuming a
+          uniform distribution as the prior for each parameter, making the
+          initial log-prior zero. The first optimization is thus
+          equivalent to MLE.}
+        \item{\strong{Iteration}: After finding the best parameters for
+          all subjects, the algorithm assesses the actual distribution of
+          each parameter and fits a normal distribution to it. This
+          fitted distribution becomes the new empirical prior.}
+        \item{\strong{Re-estimation}: The parameters are then re-optimized
+          to maximize the updated posterior probability.}
+        \item{\strong{Convergence}: This cycle repeats until the posterior
+          probability converges or the maximum number of iterations is 
+          reached.}
+      }
+      Using this method requires that the \code{priors} argument
+      be specified to define the initial prior distributions.
+    }
+   }
+
+default: \code{estimate = "MLE"}}
+
 \item{policy}{[character]
 
 Specifies the learning policy to be used.
@@ -41,7 +80,7 @@ This determines how the model updates action values based on observed or
     representation that likely drove the participant's decisions.
   }
   \item {
-   \strong{Off-Policy (SARSA): }
+   \strong{On-Policy (SARSA): }
    In this mode, the target policy and the behavior policy are identical. 
     The model first computes the selection probability for each option based 
     on their current values. Critically, it then uses these probabilities to 
@@ -53,44 +92,6 @@ This determines how the model updates action values based on observed or
  }
  
 default: \code{policy = "off"}}
-
-\item{estimate}{[character] 
-
-  Estimation method. Can be either \code{"MLE"} or \code{"MAP"}.
-  \itemize{
-    \item{\code{"MLE"}: (Default) Maximum Likelihood Estimation. This
-      method finds the parameter values that maximize the log-likelihood
-      of the data. A higher log-likelihood indicates that the parameters
-      provide a better explanation for the observed human behavior. In
-      other words, data simulated using these parameters would most
-      closely resemble the actual human data. This method does not
-      consider any prior information about the parameters.}
-      
-    \item{\code{"MAP"}: Maximum A Posteriori Estimation. This method
-      finds the parameter values that maximize the posterior probability.
-      It is an iterative process based on the Expectation-Maximization
-      (EM) framework.
-      \itemize{
-        \item{\strong{Initialization}: The process begins by assuming a
-          uniform distribution as the prior for each parameter, making the
-          initial log-prior zero. The first optimization is thus
-          equivalent to MLE.}
-        \item{\strong{Iteration}: After finding the best parameters for
-          all subjects, the algorithm assesses the actual distribution of
-          each parameter and fits a normal distribution to it. This
-          fitted distribution becomes the new empirical prior.}
-        \item{\strong{Re-estimation}: The parameters are then re-optimized
-          to maximize the updated posterior probability.}
-        \item{\strong{Convergence}: This cycle repeats until the posterior
-          probability converges or the maximum number of iterations
-          (specified by \code{iteration_g}) is reached.}
-      }
-      Using this method requires that the \code{priors} argument
-      be specified to define the initial prior distributions.
-    }
-   }
-
-default: \code{estimate = "MLE"}}
 
 \item{data}{[data.frame] 
 
@@ -141,8 +142,9 @@ Lower bounds of free parameters}
 
 Upper bounds of free parameters}
 
-\item{priors}{[list]
-  A list specifying the prior distributions for the model parameters.
+\item{priors}{[List]
+
+ A list specifying the prior distributions for the model parameters.
   This argument is mandatory when using \code{estimate = "MAP"}.
   There are two primary scenarios for its use:
 
@@ -153,8 +155,8 @@ Upper bounds of free parameters}
     \item{Configuration:}{
       \itemize{
         \item{Set \code{estimate = "MAP"}.}
-        \item{Provide a \code{list} defining your confident prior
-          distributions.}
+        \item{Provide \code{pirors} defining probability density function of
+         free parameters}
         \item{Keep \code{iteration_g = 0} (the default).}
       }
     }
@@ -172,7 +174,7 @@ Upper bounds of free parameters}
       \itemize{
         \item{Set \code{estimate = "MAP"}.}
         \item{Specify a weak or non-informative initial prior, such as a
-          uniform distribution for all parameters.}
+          uniform distribution for all free parameters.}
         \item{Set \code{iteration_g} to a value greater than 0.}
       }
     }
@@ -268,14 +270,14 @@ binaryRL.res <- binaryRL::optimize_para(
   upper = c(1, 1, 1),
   iteration = 10,
   seed = 123,
-  algorithm = "L-BFGS-B"   # Gradient-Based (stats)
+  #algorithm = "L-BFGS-B"   # Gradient-Based (stats)
   #algorithm = "GenSA"    # Simulated Annealing (GenSA)
   #algorithm = "GA"       # Genetic Algorithm (GA)
   #algorithm = "DEoptim"  # Differential Evolution (DEoptim)
   #algorithm = "PSO"      # Particle Swarm Optimization (pso)
   #algorithm = "Bayesian" # Bayesian Optimization (mlrMBO)
   #algorithm = "CMA-ES"   # Covariance Matrix Adapting (cmaes)
-  #algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 summary(binaryRL.res)
 }

@@ -130,9 +130,9 @@ binaryRL::run_m(
 
 # Estimation Methods
 
-While this R package is primarily designed for constructing **Reinforcement Learning (RL)** models (with `run_m()` at its core), its key functions, `rcv_d()` and `fit_p()`, also serve as a versatile algorithmic library for fitting any **black-box functions** in parallel. Given that MAP extends MLE by leveraging the Expectation-Maximization (EM) algorithm, this package offers robust solutions for both of these powerful estimation methods. We also provide example code for three other algorithms: MCMC, ABC, and RNN. 
+While this R package is primarily designed for constructing **Reinforcement Learning (RL)** models (with `run_m()` at its core), its key functions, `rcv_d()` and `fit_p()`, also serve as a versatile algorithmic library for fitting any **black-box functions** in parallel. Given that MAP extends MLE by leveraging the Expectation-Maximization (EM) algorithm, this package offers robust solutions for both of these powerful estimation methods. We also provide [example code](https://yuki-961004.github.io/binaryRL/articles/) for three other estimation methods: MCMC, ABC, and RNN. 
 
-In general, `MLE` can lack robustness, `MAP` is time-consuming, and `MCMC` is often prohibitively slow. In contrast to these log-likelihood-based algorithms, methods like `ABC` and `RNN` do not need to repeatedly run the black-box function. Instead, they use simulated data to train a direct mapping between behavioral outcomes and parameters. As a result, they offer a level of speed and robustness that log-likelihood methods cannot match. Based on our tests, We think `ABC` is the best estimation method.
+In general, `MLE` can lack robustness, `MAP` is time-consuming, and `MCMC` is often prohibitively slow. In contrast to these log-likelihood-based estimation methods, methods like `ABC` and `RNN` do not need to repeatedly run the black-box function. Instead, they use simulated data to train a direct mapping between behavioral outcomes and parameters. As a result, they offer a level of speed and robustness that log-likelihood methods cannot match. Based on our tests, We think `ABC` is the best estimation method.
 
 ## Based on Log-Likelihood
 
@@ -168,17 +168,17 @@ For more robust parameter estimates, the package supports **Maximum A Posteriori
 - **E-Step (Update Posterior)**: Update the prior distributions based on the optimal parameters obtained from the M-step, then repeat the M-step iteratively.
 
 *Note*:   
-1. To enable MAP estimation, specify `estimate = "MAP"` in the `fit_p()` function and provide a prior distribution for each free parameter.  
-2. The fitting process forces a Normal distribution on all parameters except for the inverse temperature, which is given an Exponential prior. This may not always be appropriate.   
+1. To enable MAP estimation, specify `estimate = "MAP"` in the `rcv_d()` or `fit_p()` function and provide a probability density function for each free parameter.  
+2. The fitting process forces a Normal distribution on all parameters except for the inverse temperature (make sure it is the last free parameter), which is given an Exponential prior. This may not always be appropriate.   
 
 ### Markov Chain Monte Carlo (MCMC)
 
 For a full Bayesian analysis, you can perform **Markov Chain Monte Carlo (MCMC)** to characterize the entire posterior distribution, capturing a complete picture of parameter uncertainty.  
 
-- `LaplacesDemon` provides a convenient interface for performing MCMC on any black-box function. If you use `rstan`, you would need to rewrite the entire markov decision process. The core functions of `binaryRL` are implemented in `Rcpp`, which ensures that the package remains flexible and easy-to-use while running very efficiently. We provide an [example code](https://yuki-961004.github.io/binaryRL/articles/MCMC.html).  
+- `LaplacesDemon` provides a convenient interface for performing MCMC on any black-box function. If you use `rstan`, you would need to rewrite the entire MDP. The core functions of `binaryRL` are implemented in `Rcpp`, which ensures that the package remains flexible and easy-to-use while running very efficiently. We provide an [example code](https://yuki-961004.github.io/binaryRL/articles/MCMC.html).  
   
 *Note*:   
-1. With a small number of iterations, the results may be less accurate compared to standard MLE algorithms.  
+1. The only thing you need to care about is if you can accept how long the MCMC takes to run.  
 
 ## Bypass Log-Likelihood
 
@@ -192,7 +192,7 @@ When learning is no longer based on a *visible value* but on an *invisible rule*
 
 ### Recurrent Neural Networks (RNN)
 
-- `GRU` or `LSTM` works by learning the mapping from input parameters to behavioral outcomes. Once this mapping is established, it can be used to estimate the input parameters that likely produced a given series of behavioral decisions. We provide an [example code](https://yuki-961004.github.io/binaryRL/articles/RNN.html). 
+- `GRU` and `LSTM` are architecture of RNN. They work by learning the mapping from input parameters to behavioral outcomes. Once this mapping is established, it can be used to estimate the input parameters that likely produced a given series of behavioral decisions. We provide an [example code](https://yuki-961004.github.io/binaryRL/articles/RNN.html). 
 
 *Note*:   
-1. The input can be either a single column (`Sub_Choose`) or the entire data table (`L_choice`, `R_choice`, `L_reward`, `R_reward`, `Sub_Choose`). More information will result in a slower training speed. 
+1. The behavioral outcomes can be either a single column (`Sub_Choose`) or the entire data table (`L_choice`, `R_choice`, `L_reward`, `R_reward`, `Sub_Choose`). More information will result in a slower training speed. 

@@ -5,8 +5,8 @@
 \title{Step 3: Optimizing parameters to fit real data}
 \usage{
 fit_p(
-  policy = "off",
   estimate = "MLE",
+  policy = "off",
   data,
   id = NULL,
   n_trials = NULL,
@@ -27,6 +27,45 @@ fit_p(
 )
 }
 \arguments{
+\item{estimate}{[string] 
+
+  Estimation method. Can be either \code{"MLE"} or \code{"MAP"}.
+  \itemize{
+    \item{\strong{Maximum Likelihood Estimation} \code{"MLE"}: (Default): 
+      This method finds the parameter values that maximize the log-likelihood
+      of the data. A higher log-likelihood indicates that the parameters
+      provide a better explanation for the observed human behavior. In
+      other words, data simulated using these parameters would most
+      closely resemble the actual human data. This method does not
+      consider any prior information about the parameters.}
+      
+    \item{\strong{Maximum A Posteriori Estimation} \code{"MAP"}: This method
+      finds the parameter values that maximize the posterior probability.
+      It is an iterative process based on the Expectation-Maximization
+      (EM) framework.
+      
+      \itemize{
+        \item{\strong{Initialization}: The process begins by assuming a
+          uniform distribution as the prior for each parameter, making the
+          initial log-prior zero. The first optimization is thus
+          equivalent to MLE.}
+        \item{\strong{Iteration}: After finding the best parameters for
+          all subjects, the algorithm assesses the actual distribution of
+          each parameter and fits a normal distribution to it. This
+          fitted distribution becomes the new empirical prior.}
+        \item{\strong{Re-estimation}: The parameters are then re-optimized
+          to maximize the updated posterior probability.}
+        \item{\strong{Convergence}: This cycle repeats until the posterior
+          probability converges or the maximum number of iterations is 
+          reached.}
+      }
+      Using this method requires that the \code{priors} argument
+      be specified to define the initial prior distributions.
+    }
+   }
+
+default: \code{estimate = "MLE"}}
+
 \item{policy}{[string]
 
 Specifies the learning policy to be used.
@@ -45,7 +84,7 @@ This determines how the model updates action values based on observed or
     representation that likely drove the participant's decisions.
   }
   \item {
-   \strong{Off-Policy (SARSA): }
+   \strong{On-Policy (SARSA): }
    In this mode, the target policy and the behavior policy are identical. 
     The model first computes the selection probability for each option based 
     on their current values. Critically, it then uses these probabilities to 
@@ -57,45 +96,6 @@ This determines how the model updates action values based on observed or
  }
  
 default: \code{policy = "off"}}
-
-\item{estimate}{[string] 
-
-  Estimation method. Can be either \code{"MLE"} or \code{"MAP"}.
-  \itemize{
-    \item{\code{"MLE"}: (Default) Maximum Likelihood Estimation. This
-      method finds the parameter values that maximize the log-likelihood
-      of the data. A higher log-likelihood indicates that the parameters
-      provide a better explanation for the observed human behavior. In
-      other words, data simulated using these parameters would most
-      closely resemble the actual human data. This method does not
-      consider any prior information about the parameters.}
-      
-    \item{\code{"MAP"}: Maximum A Posteriori Estimation. This method
-      finds the parameter values that maximize the posterior probability.
-      It is an iterative process based on the Expectation-Maximization
-      (EM) framework.
-      
-      \itemize{
-        \item{\strong{Initialization}: The process begins by assuming a
-          uniform distribution as the prior for each parameter, making the
-          initial log-prior zero. The first optimization is thus
-          equivalent to MLE.}
-        \item{\strong{Iteration}: After finding the best parameters for
-          all subjects, the algorithm assesses the actual distribution of
-          each parameter and fits a normal distribution to it. This
-          fitted distribution becomes the new empirical prior.}
-        \item{\strong{Re-estimation}: The parameters are then re-optimized
-          to maximize the updated posterior probability.}
-        \item{\strong{Convergence}: This cycle repeats until the posterior
-          probability converges or the maximum number of iterations
-          (specified by \code{iteration_g}) is reached.}
-      }
-      Using this method requires that the \code{priors} argument
-      be specified to define the initial prior distributions.
-    }
-   }
-
-default: \code{estimate = "MLE"}}
 
 \item{data}{[data.frame] 
 
@@ -185,8 +185,8 @@ e.g. \code{fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility)}}
     \item{Configuration:}{
       \itemize{
         \item{Set \code{estimate = "MAP"}.}
-        \item{Provide a \code{list} defining your confident prior
-          distributions.}
+        \item{Provide \code{pirors} defining probability density function of
+         free parameters}
         \item{Keep \code{iteration_g = 0} (the default).}
       }
     }
@@ -204,7 +204,7 @@ e.g. \code{fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility)}}
       \itemize{
         \item{Set \code{estimate = "MAP"}.}
         \item{Specify a weak or non-informative initial prior, such as a
-          uniform distribution for all parameters.}
+          uniform distribution for all free parameters.}
         \item{Set \code{iteration_g} to a value greater than 0.}
       }
     }
@@ -228,7 +228,7 @@ e.g. \code{lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0))}}
 
 The upper bounds for model fit models
 
-e.g. \code{upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10))}}
+e.g. \code{upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5))}}
 
 \item{initial_params}{[NumericVector]
 
@@ -310,7 +310,9 @@ In addition, any algorithm from the \code{nloptr} package is also
  supported. If your chosen \code{nloptr} algorithm requires a local search,
  you need to input a character vector. The first element represents
  the algorithm used for global search, and the second element represents
- the algorithm used for local search.}
+ the algorithm used for local search.
+ 
+e.g. \code{algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")}}
 }
 \value{
 The optimal parameters found by the algorithm for each subject,
