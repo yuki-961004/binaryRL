@@ -32,7 +32,7 @@ output <- function(
   sum_logLi <- round(sum(data$L_logl) + sum(data$R_logl), digits = 2)
   
   # 如果没有输入先验分布, 则说明使用的是MLE
-  if (is.null(priors)) {
+  if (base::is.null(priors)) {
     estimate <- "MLE"
     sum_logPr <- NA
     sum_logPo <- NA
@@ -40,30 +40,25 @@ output <- function(
   # 输入了先验分布, 就计算后验概率
   else {
     estimate <- "MAP"
-    # 找到priors定义了几类参数的先验概率
-    priors_name <- unique(names(priors))
     
-    # 存储自由参数的数值
-    params_value <- c()
+    # 避免显式循环和扁平化。直接使用 mapply 同时遍历 priors 和 params。
+    log_densities <- base::mapply(
+      FUN = function(param_values, prior_fn) {
+        # 对参数向量中的每一个值，应用对应的先验函数
+        base::sapply(
+          X = param_values,
+          FUN = prior_fn
+        )
+      },
+      param_values = params[base::names(priors)], # 确保只传入有 prior 的参数
+      prior_fn = priors,
+      SIMPLIFY = FALSE
+    )
     
-    # 定义了先验概率的才是自由参数
-    for (param_name in priors_name) {
-      # 把带入run_m的自由参数存在params_value中
-      params_value <- c(params_value, params[[param_name]])
-    }
+    # 求和所有对数先验概率密度
+    sum_logPr <- base::sum(base::unlist(log_densities))
     
-    # 初始化Log Prior Probability
-    logPr <- c()
-    
-    for (i in 1:length(priors)) {
-      # 使用先验分布概率, 计算该参数对应的概率密度
-      logPr[i] <- priors[[i]](params_value[i])
-    }
-    
-    # 求和每个参数对应的log先验概率密度
-    sum_logPr <- sum(logPr)
-    
-    # Log-Posterior Probability
+    # Log-Posterior Probability (假设 sum_logLi 已定义)
     sum_logPo <- sum_logLi + sum_logPr
   }
   
