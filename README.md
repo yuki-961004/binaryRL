@@ -10,7 +10,7 @@
 <!-- badges: end -->
 
 ## Overview
-This package is designed to help users build the **Rescorla-Wagner Model** for **Two-Alternative Forced Choice** tasks (e.g. multi-armed bandit). Beginners can define models using simple **`if-else`** logic, making model construction more accessible.  
+This package is designed to help users build the **Rescorla-Wagner Model** for **Two-Alternative Forced Choice** tasks (for multi-armed bandit see [multiRL](https://github.com/yuki-961004/multiRL)). Beginners can define models using simple **`if-else`** logic, making model construction more accessible.  
 
 * [Step 1](./articles/binaryRL.html#id_1-run-model): Build Reinforcement Learning Models `run_m()`
 * [Step 2](./articles/binaryRL.html#id_2-recovery): Parameter and Model Recovery `rcv_d()`
