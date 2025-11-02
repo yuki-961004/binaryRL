@@ -20,9 +20,9 @@ This package is designed to help users build the **Rescorla-Wagner Model** for *
 <!---------------------------------------------------------->
 
 ## How to cite 
-YuKi. (2025). binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks. R package version 0.9.0. https://CRAN.R-project.org/package=binaryRL
+Hu, M., Liu, Z., Wang, X. (XiaoTian), & Li, R. (2025). *binaryRL: Reinforcement Learning Modeling of Two-Alternative Forced Choice Decision Making in R — A Step-by-Step Tutorial.* PsyArXiv. https://doi.org/10.31234/osf.io/b7tvc_v1
 
-Hu, M., & Liu, Z. (2025). binaryRL: A Package for Building Reinforcement Learning Models in R. *Journal(7)*, 100-123. https://doi.org/
+YuKi. (2025). *binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks.* https://CRAN.R-project.org/package=binaryRL
 
 ## Installation
 ```r
