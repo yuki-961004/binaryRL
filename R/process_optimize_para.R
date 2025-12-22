@@ -302,6 +302,9 @@ optimize_para <- function(
     initial_params <- lower + 1e-2
   }
   
+  lower <- lower + 1e-5
+  upper <- upper - 1e-5
+  
   set.seed(seed)
   
   if (algorithm[[1]] == "L-BFGS-B") {
@@ -340,8 +343,8 @@ optimize_para <- function(
       lower = lower,
       upper = upper,
       maxiter = iteration,
-      monitor = FALSE
-      #parallel = TRUE
+      monitor = FALSE,
+      seed = seed
     )
   } 
   else if (algorithm[[1]] == "DEoptim") {
@@ -448,7 +451,8 @@ optimize_para <- function(
       opts = list(
         algorithm = algorithm[[1]], 
         local_opts = local_opts,
-        maxeval = iteration
+        maxeval = iteration,
+        ranseed = seed
       )
     )
   }

@@ -509,8 +509,8 @@ run_m <- function(
   var2 = NA_character_,
   
   seed = 123,
-  digits_1 = 2,
-  digits_2 = 5,
+  digits_1 = NA_real_,
+  digits_2 = NA_real_,
   engine = "cpp"
 ){
   # 只有fit模式需要关心是否是on-policy还是off-policy

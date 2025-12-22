@@ -1,0 +1,245 @@
+---
+title: "Untitled"
+author: "yuki"
+date: "2025-12-22"
+output: html_document
+---
+```{r}
+df_simulate <- binaryRL::run_m(
+  mode = "simulate",
+  data = binaryRL::Mason_2024_G2,
+  id = 1,
+  n_params = 2,
+  n_trials = 360,
+  initial_value = NA,
+  threshold = 1,
+  pi = 0.1,
+  epsilon = NA_real_,
+  eta = 0.60260929,
+  tau = 0.833578742,
+  priors = list(
+    eta = function(x) {stats::dbeta(x, shape1 = 2, shape2 = 2, log = TRUE)}, 
+    tau = function(x) {stats::dexp(x, rate = 1, log = TRUE)}
+  ),
+  policy = "off",
+  engine = "cpp"
+)
+```
+
+```{r}
+name = NA
+mode = c("simulate", "fit", "replay")
+policy = c("on", "off")
+
+data
+id
+n_params
+n_trials
+
+gamma = 1
+eta
+initial_value = NA_real_
+threshold = 1
+epsilon = NA
+lambda = NA
+pi = NA
+tau = NA
+lapse = 0.02
+alpha = NA
+beta = NA
+
+priors = NULL
+
+util_func = func_gamma
+rate_func = func_eta
+expl_func = func_epsilon
+bias_func = func_pi
+prob_func = func_tau
+loss_func = func_logl
+
+sub = "Subject"
+time_line = c("Block", "Trial")
+L_choice = "L_choice"
+R_choice = "R_choice"
+L_reward = "L_reward"
+R_reward = "R_reward"
+sub_choose = "Sub_Choose"
+rob_choose = "Rob_Choose"
+raw_cols = NULL
+var1 = NA_character_
+var2 = NA_character_
+
+seed = 123
+digits_1 = 2
+digits_2 = 5
+engine = "cpp"
+
+```
+
+
+```{r}
+mode = "fit"
+data = df_simulate$data
+id = 1
+n_params = 2
+n_trials = 360
+initial_value = NA
+threshold = 1
+pi = 0.1
+epsilon = NA_real_
+eta = 0.60260929
+tau = 0.833578742
+priors = list(
+  eta = function(x) {stats::dbeta(x, shape1 = 2, shape2 = 2, log = TRUE)}, 
+  tau = function(x) {stats::dexp(x, rate = 1, log = TRUE)}
+)
+policy = "off"
+engine = "cpp"
+```
+
+```{r}
+# 只有fit模式需要关心是否是on-policy还是off-policy
+if (mode == "fit") {
+  policy <- policy
+# 因为不论是simulate还是repay, 都是根据参数生成假数据, 一定是on
+} else {
+  policy <- "on"
+}
+
+
+
+# model name
+if (!(is.na(name))) {
+  name <- name
+} else if (is.na(name) & length(eta) == 1 & gamma == 1) {
+  name <- "TD"
+} else if (is.na(name) & length(eta) == 2 & gamma == 1) {
+  name <- "RSTD"
+} else if (is.na(name) & length(eta) == 1 & gamma != 1) {
+  name <- "Utility"
+} else {
+  name <- "Customed"
+}
+
+# 原始数据集的列名
+if (is.null(raw_cols)) {
+  raw_cols = colnames(data)
+}
+
+# 选择被试
+data <- data[data[[sub]] == id, ]
+
+step1 <- binaryRL:::unique_choice(
+  data = data,
+  L_choice = L_choice, 
+  R_choice = R_choice
+)
+
+step2 <- binaryRL:::arrange_data(
+  data = step1[["data"]],
+  time_line = time_line
+)
+
+step3 <- binaryRL:::add_NA(
+  data = step2
+)
+
+step4 <- binaryRL:::set_initial_value(
+  data = step3, 
+  options = step1[["options"]], 
+  initial_value = initial_value
+)
+
+if (engine == "cpp") {
+  decision_making <- decision_making_cpp
+}
+else {
+  decision_making <- decision_making_r
+}
+
+step5 <- decision_making(
+  mode = mode,
+  policy = policy,
+  data = step4,
+  options = step1[["options"]],
+  seed = seed,
+  sub_choose = sub_choose, rob_choose = rob_choose,
+  L_choice = L_choice, R_choice = R_choice,
+  L_reward = L_reward, R_reward = R_reward,
+  var1 = var1, var2 = var2,
+  
+  initial_value = initial_value,
+  threshold = threshold,
+  lapse = lapse,
+  
+  alpha = alpha,
+  beta = beta,
+  gamma = gamma,
+  eta = eta,
+  epsilon = epsilon,
+  lambda = lambda,
+  pi = pi,
+  tau = tau,
+  
+  util_func = util_func,
+  rate_func = rate_func,
+  expl_func = expl_func,
+  bias_func = bias_func,
+  prob_func = prob_func
+)
+
+step6 <- model_fit(
+  data = step5, 
+  loss_func = loss_func,
+  alpha = alpha,
+  beta = beta,
+  var1 = var1,
+  var2 = var2,
+  L_choice = L_choice, 
+  R_choice = R_choice, 
+  sub_choose = sub_choose
+)
+
+step7 <- digits(
+  data = step6, 
+  options = step1[["options"]],
+  digits_1 = digits_1, 
+  digits_2 = digits_2
+)
+
+step8 <- output(
+  mode = mode,
+  policy = policy,
+  
+  data = step7,
+  name = name,
+  n_params = n_params,
+  n_trials = n_trials,
+  
+  initial_value = initial_value,
+  threshold = threshold,
+  lapse = lapse,
+  
+  alpha = alpha,
+  beta = beta,
+  gamma = gamma,
+  eta = eta,
+  epsilon = epsilon,
+  lambda = lambda,
+  pi = pi,
+  tau = tau,
+  
+  priors = priors
+)
+
+step9 <- mode(
+  data = step8,
+  mode = mode,
+  sub_choose = sub_choose,
+  rob_choose = rob_choose,
+  raw_cols = raw_cols
+)
+
+final <- step9
+```
+

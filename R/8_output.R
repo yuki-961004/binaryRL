@@ -29,7 +29,7 @@ output <- function(
   mean_ACC <- round(mean(data$ACC), digits = 4) * 100
   
   # Log-Likelihood
-  sum_logLi <- round(sum(data$L_logl) + sum(data$R_logl), digits = 2)
+  sum_logLi <- sum(data$L_logl) + sum(data$R_logl)
   
   # 如果没有输入先验分布, 则说明使用的是MLE
   if (base::is.null(priors)) {
@@ -66,8 +66,8 @@ output <- function(
     estimate <- NA
   }
 
-  AIC <- round(2 * n_params - 2 * sum_logLi, digits = 2)
-  BIC <- round(n_params * log(n_trials) - 2 * sum_logLi, digits = 2)
+  AIC <- 2 * n_params - 2 * sum_logLi
+  BIC <- n_params * log(n_trials) - 2 * sum_logLi
   
   res <- list(
     data = data,
