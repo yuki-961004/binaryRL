@@ -8,7 +8,7 @@ Description: Tools for building Rescorla-Wagner Models for Two-Alternative
   The package allows for the intuitive definition of RL models using simple 
   if-else statements and three basic models built into this R package are 
   referenced from 
-  Niv et al. (2012)<doi:10.1523/JNEUROSCI.5498-10.2012>. 
+  Niv et al. (2012) <doi:10.1523/JNEUROSCI.5498-10.2012>. 
   Our approach to constructing and evaluating these computational models 
   is informed by the guidelines proposed in 
   Wilson & Collins (2019) <doi:10.7554/eLife.49547>. 

@@ -5,6 +5,7 @@ testthat::test_that("r", {
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
+    policy = "off",
     data = data,
     id = 18,
     eta = c(0.321, 0.765),
@@ -26,6 +27,7 @@ testthat::test_that("cpp", {
   
   binaryRL.res <- binaryRL::run_m(
     mode = "replay",
+    policy = "off",
     data = data,
     id = 18,
     eta = c(0.321, 0.765),

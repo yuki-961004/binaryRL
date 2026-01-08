@@ -25,10 +25,10 @@ recovery <- binaryRL::rcv_d(
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
+  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
   iteration_s = 100,
   iteration_f = 100,
-  nc = 1,
+  nc = 10,
   algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 

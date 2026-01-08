@@ -25,9 +25,9 @@ comparison <- binaryRL::fit_p(
   model_name = c("TD", "RSTD", "Utility"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
-  iteration_i = 10,
-  nc = 1,
+  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
+  iteration_i = 100,
+  nc = 10,
   algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 
