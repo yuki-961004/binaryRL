@@ -584,23 +584,19 @@ procedure is known as ‘Parameter Recovery’, and is a crucial part of any
 model-based analysis.”</p>
 </blockquote>
 <!---------------------------------------------------------->
+<div class="section level4">
+<h4 id="on-policy">on-policy<a class="anchor" aria-label="anchor" href="#on-policy"></a>
+</h4>
 <p align="center">
-<img src="demo/FIGURE/tau_0/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/tau_0/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;"></p>
-<p>The value of the inverse temperature parameter (<span class="math inline">\(\tau\)</span>) affects the recovery of other
-parameters in the model. Wilson &amp; Collins <a href="https://doi.org/10.7554/eLife.49547" class="external-link">(2019)</a> recommend
-increasing <span class="math inline">\(\tau\)</span> by 1, as this can
-help reduce the amount of noise in behavior. As our results show, Under
-the assumption that <span class="math inline">\(\tau \sim
-\text{Exp}(1)\)</span>, adding 1 to all <span class="math inline">\(\tau\)</span> values improves the recovery of the
-learning rate <span class="math inline">\(\eta\)</span>, but decreases
-the recovery accuracy of <span class="math inline">\(\tau\)</span>
-itself. Only estimation methods that bypass the log-likelihood, such as
-<a href="https://yuki-961004.github.io/binaryRL/articles/ABC.html">ABC</a>
-and <a href="https://yuki-961004.github.io/binaryRL/articles/RNN.html">RNN</a>,
-seem to achieve excellent simultaneous recovery for both parameters.</p>
+<img src="demo/FIGURE/on-policy/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/on-policy/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;"></p>
+</div>
+<div class="section level4">
+<h4 id="off-policy">off-policy<a class="anchor" aria-label="anchor" href="#off-policy"></a>
+</h4>
 <p align="center">
-<img src="demo/FIGURE/tau_1/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/tau_1/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;"></p>
+<img src="demo/FIGURE/off-policy/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/off-policy/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;"></p>
 <!---------------------------------------------------------->
+</div>
 </div>
 <div class="section level3">
 <h3 id="model-recovery">Model Recovery<a class="anchor" aria-label="anchor" href="#model-recovery"></a>
@@ -617,17 +613,19 @@ is, <em>p</em>(<em>fit model</em> = B | <em>simulated model</em> =
 A).”</p>
 </blockquote>
 <!---------------------------------------------------------->
+<div class="section level4">
+<h4 id="on-policy-1">on-policy<a class="anchor" aria-label="anchor" href="#on-policy-1"></a>
+</h4>
 <p align="center">
-<img src="demo/FIGURE/tau_0/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/tau_0/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;"></p>
-<blockquote>
-<p>“In panel B, all of the softmax parameters <span class="math inline">\(b\)</span> and <span class="math inline">\(b_{c}\)</span> were increased by 1. This has the
-effect of reducing the amount of noise in the behavior, which makes the
-models more easily identifiable and the corresponding confusion matrix
-more diagonal.”</p>
-</blockquote>
+<img src="demo/FIGURE/on-policy/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/on-policy/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;"></p>
+</div>
+<div class="section level4">
+<h4 id="off-policy-1">off-policy<a class="anchor" aria-label="anchor" href="#off-policy-1"></a>
+</h4>
 <p align="center">
-<img src="demo/FIGURE/tau_1/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/tau_1/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;"></p>
+<img src="demo/FIGURE/off-policy/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;"><img src="demo/FIGURE/off-policy/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;"></p>
 <!---------------------------------------------------------->
+</div>
 </div>
 </div>
 <div class="section level2">

@@ -520,16 +520,18 @@ Check the Example Result: [result_recovery.csv](./demo/OUTPUT/result_recovery.ht
 
 <!---------------------------------------------------------->
 
+#### on-policy
+
 <p align="center">
-    <img src="./demo/FIGURE/tau_0/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./demo/FIGURE/tau_0/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/on-policy/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/on-policy/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
 </p>
 
-The value of the inverse temperature parameter ($\tau$) affects the recovery of other parameters in the model. Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547) recommend increasing $\tau$ by 1, as this can help reduce the amount of noise in behavior. As our results show, Under the assumption that $\tau \sim \text{Exp}(1)$, adding 1 to all $\tau$ values improves the recovery of the learning rate  $\eta$, but decreases the recovery accuracy of  $\tau$ itself. Only estimation methods that bypass the log-likelihood, such as [ABC](https://yuki-961004.github.io/binaryRL/articles/ABC.html) and [RNN](https://yuki-961004.github.io/binaryRL/articles/RNN.html), seem to achieve excellent simultaneous recovery for both parameters.
- 
+#### off-policy
+
 <p align="center">
-    <img src="./demo/FIGURE/tau_1/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./demo/FIGURE/tau_1/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/off-policy/1_TD_eta.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/off-policy/1_TD_tau.png" alt="RL Models" width="45%" style="display: inline;">
 </p>
 
 <!---------------------------------------------------------->
@@ -540,16 +542,18 @@ The value of the inverse temperature parameter ($\tau$) affects the recovery of 
 
 <!---------------------------------------------------------->
 
+#### on-policy
+
 <p align="center">
-    <img src="./demo/FIGURE/tau_0/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./demo/FIGURE/tau_0/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/on-policy/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/on-policy/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
 </p>
 
-> "In panel B, all of the softmax parameters $b$ and $b_{c}$ were increased by 1. This has the effect of reducing the amount of noise in the behavior, which makes the models more easily identifiable and the corresponding confusion matrix more diagonal."
+#### off-policy
 
 <p align="center">
-    <img src="./demo/FIGURE/tau_1/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
-    <img src="./demo/FIGURE/tau_1/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/off-policy/matrix_confusion.png" alt="RL Models" width="45%" style="display: inline;">
+    <img src="./demo/FIGURE/off-policy/matrix_inversion.png" alt="RL Models" width="45%" style="display: inline;">
 </p>
 
 <!---------------------------------------------------------->

@@ -143,7 +143,7 @@ plot <- ggplot2::ggplot(data, aes(x = metric, y = value_norm, fill = fit_model))
   ggplot2::labs(x = "", y = "", fill = "Model") +
   ggplot2::ggtitle("Model Comparison (relative)") +
   ggplot2::scale_fill_manual(values = c("#053562", "#55c186", "#f0de36")) +
-  ggplot2::coord_cartesian(ylim = c(0, 0.80)) +
+  ggplot2::coord_cartesian(ylim = c(0, 1)) +
   ggplot2::scale_y_continuous(labels = scales::percent) +
   papaja::theme_apa() +
   ggplot2::theme(
@@ -191,9 +191,9 @@ comparison <- binaryRL::fit_p(
   model_name = c("TD", "RSTD", "Utility"),
   fit_model = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
   lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
-  upper = list(c(1, 5), c(1, 1, 5), c(1, 1, 5)),
-  iteration_i = 10,
-  nc = 1,
+  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
+  iteration_i = 100,
+  nc = 10,
   algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 

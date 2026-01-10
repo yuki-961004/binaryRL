@@ -16,10 +16,11 @@ library(dplyr)
 library(ggplot2)
 ```
 
-# $\tau \sim \text{Exp}(1)$
+# On-Policy
 
 ```{r eval=FALSE}
 recovery <- binaryRL::rcv_d(
+  policy = "on",
   data = binaryRL::Mason_2024_G2,
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
@@ -35,7 +36,7 @@ recovery <- binaryRL::rcv_d(
 result <- dplyr::bind_rows(recovery) %>%
   dplyr::select(simulate_model, fit_model, iteration, everything())
 
-write.csv(result, file = "../OUTPUT/result_recovery_0.csv", row.names = FALSE)
+write.csv(result, file = "../OUTPUT/result_recovery_on.csv", row.names = FALSE)
 ```
 
 ## Parameter Recovery
@@ -187,7 +188,7 @@ plot_param_rcv <- function(
 #| fig.alt: "plot input eta and output eta"
 #| 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_0.csv"),
+  data = read.csv("../OUTPUT/result_recovery_on.csv"),
   model = "TD",
   param_index = 1,
   param_name = "η",
@@ -195,7 +196,7 @@ plot_param_rcv(
 )
 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_0.csv"),
+  data = read.csv("../OUTPUT/result_recovery_on.csv"),
   model = "RSTD",
   param_index = 1,
   param_name = "η-",
@@ -203,7 +204,7 @@ plot_param_rcv(
 )
 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_0.csv"),
+  data = read.csv("../OUTPUT/result_recovery_on.csv"),
   model = "RSTD",
   param_index = 2,
   param_name = "η+",
@@ -211,7 +212,7 @@ plot_param_rcv(
 )
 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_0.csv"),
+  data = read.csv("../OUTPUT/result_recovery_on.csv"),
   model = "Utility",
   param_index = 1,
   param_name = "η",
@@ -220,29 +221,29 @@ plot_param_rcv(
 ```
 
 <p align="center">
-  <img src="../FIGURE/tau_0/1_TD_eta.png" alt="TD_eta" width="30%" style="display: inline;">
-  <img src="../FIGURE/tau_0/3_Utility_eta.png" alt="Utility_eta" width="30%" style="display: inline;">
+  <img src="../FIGURE/on-policy/1_TD_eta.png" alt="TD_eta" width="30%" style="display: inline;">
+  <img src="../FIGURE/on-policy/3_Utility_eta.png" alt="Utility_eta" width="30%" style="display: inline;">
 </p>
 
 <p align="center">
-  <img src="../FIGURE/tau_0/2_RSTD_eta1.png" alt="RSTD_eta1" width="30%" style="display: inline;">
-  <img src="../FIGURE/tau_0/2_RSTD_eta2.png" alt="RSTD_eta2" width="30%" style="display: inline;">
+  <img src="../FIGURE/on-policy/2_RSTD_eta1.png" alt="RSTD_eta1" width="30%" style="display: inline;">
+  <img src="../FIGURE/on-policy/2_RSTD_eta2.png" alt="RSTD_eta2" width="30%" style="display: inline;">
 </p>
 
 ```{r}
-data <- read.csv("../OUTPUT/result_recovery_0.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_on.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "TD") 
 cor(data$input_param_1, data$output_param_1)
 
-data <- read.csv("../OUTPUT/result_recovery_0.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_on.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "RSTD") 
 cor(data$input_param_1, data$output_param_1)
 
-data <- read.csv("../OUTPUT/result_recovery_0.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_on.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "RSTD") 
 cor(data$input_param_2, data$output_param_2)
 
-data <- read.csv("../OUTPUT/result_recovery_0.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_on.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "Utility") 
 cor(data$input_param_1, data$output_param_1)
 ```
@@ -253,7 +254,7 @@ cor(data$input_param_1, data$output_param_1)
 #| fig.alt: "plot input gamma and output gamma"
 #| 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_0.csv"),
+  data = read.csv("../OUTPUT/result_recovery_on.csv"),
   model = "Utility",
   param_index = 2,
   param_name = "γ",
@@ -262,11 +263,11 @@ plot_param_rcv(
 ```
 
 <p align="center">
-  <img src="../FIGURE/tau_0/3_Utility_gamma.png" alt="RL Models" width="30%" style="display: inline;">
+  <img src="../FIGURE/on-policy/3_Utility_gamma.png" alt="RL Models" width="30%" style="display: inline;">
 </p>
 
 ```{r}
-data <- read.csv("../OUTPUT/result_recovery_0.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_on.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "Utility") 
 cor(data$input_param_2, data$output_param_2)
 ```
@@ -277,7 +278,7 @@ cor(data$input_param_2, data$output_param_2)
 #| fig.alt: "plot input tau and output tau"
 #| 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_0.csv"),
+  data = read.csv("../OUTPUT/result_recovery_on.csv"),
   model = "TD",
   param_index = 2,
   param_name = "τ",
@@ -286,7 +287,7 @@ plot_param_rcv(
 )
 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_0.csv"),
+  data = read.csv("../OUTPUT/result_recovery_on.csv"),
   model = "RSTD",
   param_index = 3,
   param_name = "τ",
@@ -295,7 +296,7 @@ plot_param_rcv(
 )
 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_0.csv"),
+  data = read.csv("../OUTPUT/result_recovery_on.csv"),
   model = "Utility",
   param_index = 3,
   param_name = "τ",
@@ -305,21 +306,21 @@ plot_param_rcv(
 ```
 
 <p align="center">
-  <img src="../FIGURE/tau_0/1_TD_tau.png" alt="TD_tau" width="30%" style="display: inline;">
-  <img src="../FIGURE/tau_0/2_RSTD_tau.png" alt="RSTD_tau" width="30%" style="display: inline;">
-  <img src="../FIGURE/tau_0/3_Utility_tau.png" alt="Utility_tau" width="30%" style="display: inline;">
+  <img src="../FIGURE/on-policy/1_TD_tau.png" alt="TD_tau" width="30%" style="display: inline;">
+  <img src="../FIGURE/on-policy/2_RSTD_tau.png" alt="RSTD_tau" width="30%" style="display: inline;">
+  <img src="../FIGURE/on-policy/3_Utility_tau.png" alt="Utility_tau" width="30%" style="display: inline;">
 </p>
 
 ```{r}
-data <- read.csv("../OUTPUT/result_recovery_0.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_on.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "TD") 
 cor(data$input_param_2, data$output_param_2)
 
-data <- read.csv("../OUTPUT/result_recovery_0.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_on.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "RSTD") 
 cor(data$input_param_3, data$output_param_3)
 
-data <- read.csv("../OUTPUT/result_recovery_0.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_on.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "Utility") 
 cor(data$input_param_3, data$output_param_3)
 ```
@@ -432,59 +433,44 @@ plot_model_rcv <- function(
 #| fig.alt: "confusion matrix and inversion matrix"
 #| 
 plot_model_rcv(
-  data = read.csv("../OUTPUT/result_recovery_0.csv"),
+  data = read.csv("../OUTPUT/result_recovery_on.csv"),
   matrix_type = "confusion",
   filename = "../FIGURE/matrix_confusion.png"
 )
 
 plot_model_rcv(
-  data = read.csv("../OUTPUT/result_recovery_0.csv"),
+  data = read.csv("../OUTPUT/result_recovery_on.csv"),
   matrix_type = "inversion",
   filename = "../FIGURE/matrix_inversion.png"
 )
 ```
 
 <p align="center">
-    <img src="../FIGURE/tau_0/matrix_confusion.png" alt="confusion_matrix" width="45%" style="display: inline;">
-    <img src="../FIGURE/tau_0/matrix_inversion.png" alt="inversion_matrix" width="45%" style="display: inline;">
+    <img src="../FIGURE/on-policy/matrix_confusion.png" alt="confusion_matrix" width="45%" style="display: inline;">
+    <img src="../FIGURE/on-policy/matrix_inversion.png" alt="inversion_matrix" width="45%" style="display: inline;">
 </p>
 
-# $\tau \sim \text{Exp}(1) + 1$
+# Off-Policy
 
 ```{r eval=FALSE}
 recovery <- binaryRL::rcv_d(
+  policy = "off",
   data = binaryRL::Mason_2024_G2,
   model_names = c("TD", "RSTD", "Utility"),
   simulate_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  rfun = list(
-    list(
-      eta = function() { stats::runif(n = 1, min = 0, max = 1) },
-      tau = function() { stats::rexp(n = 1, rate = 1) + 1 }
-    ),
-    list(
-      etan = function() { stats::runif(n = 1, min = 0, max = 1) },
-      etap = function() { stats::runif(n = 1, min = 0, max = 1) },
-      tau = function() { stats::rexp(n = 1, rate = 1) + 1 }
-    ),
-    list(
-      eta = function() { stats::runif(n = 1, min = 0, max = 1) },
-      gamma = function() { stats::runif(n = 1, min = 0, max = 1) },
-      tau = function() { stats::rexp(n = 1, rate = 1) + 1 }
-    ),
-  ),
   fit_models = list(binaryRL::TD, binaryRL::RSTD, binaryRL::Utility),
-  lower = list(c(0, 1), c(0, 0, 1), c(0, 0, 1)),
-  upper = list(c(1, 6), c(1, 1, 6), c(1, 1, 6)),
+  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0)),
+  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 10)),
   iteration_s = 100,
   iteration_f = 100,
-  nc = 1,
+  nc = 10,
   algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
 )
 
 result <- dplyr::bind_rows(recovery) %>%
   dplyr::select(simulate_model, fit_model, iteration, everything())
 
-write.csv(result, file = "../OUTPUT/result_recovery_1.csv", row.names = FALSE)
+write.csv(result, file = "../OUTPUT/result_recovery_off.csv", row.names = FALSE)
 ```
 
 ## Parameter Recovery
@@ -495,7 +481,7 @@ write.csv(result, file = "../OUTPUT/result_recovery_1.csv", row.names = FALSE)
 #| fig.alt: "plot input eta and output eta"
 #| 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_1.csv"),
+  data = read.csv("../OUTPUT/result_recovery_off.csv"),
   model = "TD",
   param_index = 1,
   param_name = "η",
@@ -503,7 +489,7 @@ plot_param_rcv(
 )
 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_1.csv"),
+  data = read.csv("../OUTPUT/result_recovery_off.csv"),
   model = "RSTD",
   param_index = 1,
   param_name = "η-",
@@ -511,7 +497,7 @@ plot_param_rcv(
 )
 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_1.csv"),
+  data = read.csv("../OUTPUT/result_recovery_off.csv"),
   model = "RSTD",
   param_index = 2,
   param_name = "η+",
@@ -519,7 +505,7 @@ plot_param_rcv(
 )
 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_1.csv"),
+  data = read.csv("../OUTPUT/result_recovery_off.csv"),
   model = "Utility",
   param_index = 1,
   param_name = "η",
@@ -528,29 +514,29 @@ plot_param_rcv(
 ```
 
 <p align="center">
-  <img src="../FIGURE/tau_1/1_TD_eta.png" alt="TD_eta" width="30%" style="display: inline;">
-  <img src="../FIGURE/tau_1/3_Utility_eta.png" alt="Utility_eta" width="30%" style="display: inline;">
+  <img src="../FIGURE/off-policy/1_TD_eta.png" alt="TD_eta" width="30%" style="display: inline;">
+  <img src="../FIGURE/off-policy/3_Utility_eta.png" alt="Utility_eta" width="30%" style="display: inline;">
 </p>
 
 <p align="center">
-  <img src="../FIGURE/tau_1/2_RSTD_eta1.png" alt="RSTD_eta1" width="30%" style="display: inline;">
-  <img src="../FIGURE/tau_1/2_RSTD_eta2.png" alt="RSTD_eta2" width="30%" style="display: inline;">
+  <img src="../FIGURE/off-policy/2_RSTD_eta1.png" alt="RSTD_eta1" width="30%" style="display: inline;">
+  <img src="../FIGURE/off-policy/2_RSTD_eta2.png" alt="RSTD_eta2" width="30%" style="display: inline;">
 </p>
 
 ```{r}
-data <- read.csv("../OUTPUT/result_recovery_1.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_off.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "TD") 
 cor(data$input_param_1, data$output_param_1)
 
-data <- read.csv("../OUTPUT/result_recovery_1.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_off.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "RSTD") 
 cor(data$input_param_1, data$output_param_1)
 
-data <- read.csv("../OUTPUT/result_recovery_1.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_off.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "RSTD") 
 cor(data$input_param_2, data$output_param_2)
 
-data <- read.csv("../OUTPUT/result_recovery_1.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_off.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "Utility") 
 cor(data$input_param_1, data$output_param_1)
 ```
@@ -561,7 +547,7 @@ cor(data$input_param_1, data$output_param_1)
 #| fig.alt: "plot input gamma and output gamma"
 #| 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_1.csv"),
+  data = read.csv("../OUTPUT/result_recovery_off.csv"),
   model = "Utility",
   param_index = 2,
   param_name = "γ",
@@ -570,11 +556,11 @@ plot_param_rcv(
 ```
 
 <p align="center">
-  <img src="../FIGURE/tau_1/3_Utility_gamma.png" alt="RL Models" width="30%" style="display: inline;">
+  <img src="../FIGURE/off-policy/3_Utility_gamma.png" alt="RL Models" width="30%" style="display: inline;">
 </p>
 
 ```{r}
-data <- read.csv("../OUTPUT/result_recovery_1.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_off.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "Utility") 
 cor(data$input_param_2, data$output_param_2)
 ```
@@ -585,7 +571,7 @@ cor(data$input_param_2, data$output_param_2)
 #| fig.alt: "plot input tau and output tau"
 #| 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_1.csv"),
+  data = read.csv("../OUTPUT/result_recovery_off.csv"),
   model = "TD",
   param_index = 2,
   param_name = "τ-1",
@@ -594,7 +580,7 @@ plot_param_rcv(
 )
 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_1.csv"),
+  data = read.csv("../OUTPUT/result_recovery_off.csv"),
   model = "RSTD",
   param_index = 3,
   param_name = "τ-1",
@@ -603,7 +589,7 @@ plot_param_rcv(
 )
 
 plot_param_rcv(
-  data = read.csv("../OUTPUT/result_recovery_1.csv"),
+  data = read.csv("../OUTPUT/result_recovery_off.csv"),
   model = "Utility",
   param_index = 3,
   param_name = "τ-1",
@@ -613,21 +599,21 @@ plot_param_rcv(
 ```
 
 <p align="center">
-  <img src="../FIGURE/tau_1/1_TD_tau.png" alt="TD_tau" width="30%" style="display: inline;">
-  <img src="../FIGURE/tau_1/2_RSTD_tau.png" alt="RSTD_tau" width="30%" style="display: inline;">
-  <img src="../FIGURE/tau_1/3_Utility_tau.png" alt="Utility_tau" width="30%" style="display: inline;">
+  <img src="../FIGURE/off-policy/1_TD_tau.png" alt="TD_tau" width="30%" style="display: inline;">
+  <img src="../FIGURE/off-policy/2_RSTD_tau.png" alt="RSTD_tau" width="30%" style="display: inline;">
+  <img src="../FIGURE/off-policy/3_Utility_tau.png" alt="Utility_tau" width="30%" style="display: inline;">
 </p>
 
 ```{r}
-data <- read.csv("../OUTPUT/result_recovery_1.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_off.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "TD") 
 cor(data$input_param_2, data$output_param_2)
 
-data <- read.csv("../OUTPUT/result_recovery_1.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_off.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "RSTD") 
 cor(data$input_param_3, data$output_param_3)
 
-data <- read.csv("../OUTPUT/result_recovery_1.csv") %>%
+data <- read.csv("../OUTPUT/result_recovery_off.csv") %>%
   dplyr::filter(simulate_model == fit_model & simulate_model == "Utility") 
 cor(data$input_param_3, data$output_param_3)
 ```
@@ -639,19 +625,19 @@ cor(data$input_param_3, data$output_param_3)
 #| fig.alt: "confusion matrix and inversion matrix"
 #| 
 plot_model_rcv(
-  data = read.csv("../OUTPUT/result_recovery_1.csv"),
+  data = read.csv("../OUTPUT/result_recovery_off.csv"),
   matrix_type = "confusion",
   filename = "../FIGURE/matrix_confusion.png"
 )
 
 plot_model_rcv(
-  data = read.csv("../OUTPUT/result_recovery_1.csv"),
+  data = read.csv("../OUTPUT/result_recovery_off.csv"),
   matrix_type = "inversion",
   filename = "../FIGURE/matrix_inversion.png"
 )
 ```
 
 <p align="center">
-    <img src="../FIGURE/tau_1/matrix_confusion.png" alt="confusion_matrix" width="45%" style="display: inline;">
-    <img src="../FIGURE/tau_1/matrix_inversion.png" alt="inversion_matrix" width="45%" style="display: inline;">
+    <img src="../FIGURE/off-policy/matrix_confusion.png" alt="confusion_matrix" width="45%" style="display: inline;">
+    <img src="../FIGURE/off-policy/matrix_inversion.png" alt="inversion_matrix" width="45%" style="display: inline;">
 </p>
