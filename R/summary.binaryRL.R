@@ -98,11 +98,11 @@ summary.binaryRL <- function(object, ...) {
     "Model Fit:\n",
     # Indent model fit metrics
     "  ", "Accuracy: ", object$acc, "%\n",
-    "  ", "Log-Likelihood: ", object$ll, "\n",
-    "  ", "Log-Prior Probability: ", object$lpr, "\n",
-    "  ", "Log-Posterior Probability: ", object$lpo, "\n",
-    "  ", "AIC: ", object$aic, "\n",
-    "  ", "BIC: ", object$bic,"\n"
+    "  ", "Log-Likelihood: ", round(object$ll, 2), "\n",
+    "  ", "Log-Prior Probability: ", round(object$lpr, 2), "\n",
+    "  ", "Log-Posterior Probability: ", round(object$lpo, 2), "\n",
+    "  ", "AIC: ", round(object$aic, 2), "\n",
+    "  ", "BIC: ", round(object$bic, 2),"\n"
   )
   
   message(
