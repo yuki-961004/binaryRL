@@ -20,7 +20,7 @@ This package is designed to help users build the **Rescorla-Wagner Model** for *
 <!---------------------------------------------------------->
 
 ## How to cite 
-Hu, M., Liu, Z., Wang, X. (XiaoTian), & Li, R. (2025). *binaryRL: Reinforcement Learning Modeling of Two-Alternative Forced Choice Decision Making in R — A Step-by-Step Tutorial.* PsyArXiv. https://doi.org/10.31234/osf.io/b7tvc_v1
+Hu, M., Liu, Z., Wang, X.T., & Li, R. (2025). *binaryRL: Reinforcement Learning Modeling of Two-Alternative Forced Choice Decision Making in R — A Step-by-Step Tutorial.* PsyArXiv. https://doi.org/10.31234/osf.io/b7tvc_v1
 
 YuKi. (2025). *binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks.* https://CRAN.R-project.org/package=binaryRL
 
@@ -53,10 +53,10 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <!---------------------------------------------------------->
 
 # Tutorial
-*In tasks with small, finite state sets (e.g. TAFC tasks in psychology), all states, actions, and their corresponding rewards could be recorded in tables.*  
+*In tasks with small, finite state sets (e.g. TAFC tasks in psychology), all states, actions, and their corresponding rewards can be recorded in tables.*  
 
-- Sutton & Barto [(2018)](https://mitpress.mit.edu/9780262039246/reinforcement-learning/) call this kind of scenario as the **tabular case** and the corresponding methods as **tabular methods**.  
-- The development and usage workflow of this R package adheres to the **four** stages (ten rules) recommended by Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547).  
+- Sutton & Barto [(2018)](https://mitpress.mit.edu/9780262039246/reinforcement-learning/) term this kind of scenario as the **tabular case** and the corresponding methods as **tabular methods**.  
+- The development and usage workflow of this R package follows to the **four** stages (ten rules) recommended by Wilson & Collins [(2019)](https://doi.org/10.7554/eLife.49547).  
 - The **three** basic models built into this R package are referenced from Niv et al. [(2012)](https://doi.org/10.1523/JNEUROSCI.5498-10.2012).  
 - The **example data** used in this R package is an open data from Mason et. al. [(2024)](https://osf.io/hy3q4/)
 
@@ -130,9 +130,9 @@ binaryRL::run_m(
 
 # Estimation Methods
 
-While this R package is primarily designed for constructing **Reinforcement Learning (RL)** models (with `run_m()` at its core), its key functions, `rcv_d()` and `fit_p()`, also serve as a versatile algorithmic library for fitting any **black-box functions** in parallel. Given that MAP extends MLE by leveraging the Expectation-Maximization (EM) algorithm, this package offers robust solutions for both of these powerful estimation methods. We also provide [example code](https://yuki-961004.github.io/binaryRL/articles/) for three other estimation methods: MCMC, ABC, and RNN. 
+While this R package is built for constructing **Reinforcement Learning (RL)** models (with `run_m()` at its core), its key functions, `rcv_d()` and `fit_p()`, also serve as a versatile algorithmic library for fitting any **black-box functions** in parallel. Given that MAP extends MLE by leveraging the Expectation-Maximization (EM) algorithm, this package offers robust solutions for both of these powerful estimation methods. We also provide [example code](https://yuki-961004.github.io/binaryRL/articles/) for three other estimation methods: MCMC, ABC, and RNN. 
 
-In general, `MLE` can lack robustness, `MAP` is time-consuming, and `MCMC` is often prohibitively slow. In contrast to these log-likelihood-based estimation methods, methods like `ABC` and `RNN` do not need to repeatedly run the black-box function. Instead, they use simulated data to train a direct mapping between behavioral outcomes and parameters. As a result, they offer a level of speed and robustness that log-likelihood methods cannot match. Based on our tests, We think `ABC` is the best estimation method.
+In general, `MLE` can lack robustness, `MAP` is time-consuming, and `MCMC` is often prohibitively slow. In contrast, methods like `ABC` and `RNN` bypass the log-likelihood entirely. Instead of iteratively searching for parameters, they learn a direct mapping from simulated data. As a result, they offer a level of speed and robustness that log-likelihood methods cannot match. Based on our tests, we believe `ABC` is the best estimation method.
 
 ## Based on Log-Likelihood
 
