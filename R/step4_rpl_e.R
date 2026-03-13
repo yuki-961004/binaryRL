@@ -125,9 +125,7 @@ rpl_e <- function(
   n_trials = NULL
 ) {
   # 事前准备. 探测信息
-  info <- suppressWarnings(suppressMessages(
-    detect_information(data = data, seed = seed)
-  ))
+  info <- suppressWarnings(suppressMessages(detect_information(data = data)))
   
   # 自动获取被试id列的列名
   Subject <- info[["sub_col_name"]]

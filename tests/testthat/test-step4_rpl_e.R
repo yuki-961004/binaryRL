@@ -10,7 +10,7 @@ testthat::test_that("rev_e() works with valid input", {
     result = comparison, 
     model = binaryRL::TD,
     model_name = "TD", 
-    param_prefix = "param_",
+    param_prefix = "param_"
   )
   
   testthat::expect_type(replay, "list")

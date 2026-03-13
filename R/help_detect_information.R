@@ -37,7 +37,7 @@
 #'
 #' @noRd
 #'
-detect_information <- function(data, seed) {
+detect_information <- function(data, seed = 123) {
   # 1. Find column names containing "sub" 
   # (case-insensitive)
   col_names <- names(data)
