@@ -12,6 +12,7 @@ vignette: >
 </p>
 
 ```{r}
+#install.packages("binaryRL")
 library(binaryRL)
 ```
 
@@ -72,6 +73,7 @@ summary(binaryRL.res)
 ```
 
 ## Prospect {#prospect}
+
 ```{r}
 func_prospect <- function(
   i, L_freq, R_freq, L_pick, R_pick, L_value, R_value, var1 = NA, var2 = NA,  
@@ -121,3 +123,31 @@ binaryRL.res <- binaryRL::run_m(
 
 summary(binaryRL.res)
 ```
+
+### Demo
+
+```{r}
+Prospect <- function(params){
+  
+  res <- binaryRL::run_m(
+    data = data,                   
+    id = id,                        
+    name = "Prospect",
+    eta = c(params[1]),
+    gamma = c(params[2], params[3]),
+    beta = c(params[4]),
+    tau = c(params[5]),
+    util_func = func_prospect,
+    priors = priors,
+    n_params = n_params,                   
+    n_trials = n_trials,
+    mode = mode, 
+    policy = policy
+  )
+  
+  assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
+  loss <- switch(EXPR = estimate, "MLE" = -res$ll, "MAP" = -res$lpo)
+  switch(EXPR = mode, "fit" = loss, "simulate" = res, "replay" = res)
+}
+```
+

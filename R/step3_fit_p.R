@@ -448,7 +448,9 @@ fit_p <- function(
 ################################# [ info ] #####################################   
   
   # 事前准备. 探测信息
-  info <- suppressWarnings(suppressMessages(detect_information(data = data)))
+  info <- suppressWarnings(suppressMessages(
+    detect_information(data = data, seed = seed)
+  ))
   
   if (is.null(n_trials)) {
     n_trials <- info[["n_trials"]]

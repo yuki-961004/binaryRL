@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="index.html">binaryRL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,7 +109,7 @@
 <div class="section level2">
 <h2 id="how-to-cite">How to cite<a class="anchor" aria-label="anchor" href="#how-to-cite"></a>
 </h2>
-<p>Hu, M., Liu, Z., Wang, X. (XiaoTian), &amp; Li, R. (2025). <em>binaryRL: Reinforcement Learning Modeling of Two-Alternative Forced Choice Decision Making in R — A Step-by-Step Tutorial.</em> PsyArXiv. <a href="https://doi.org/10.31234/osf.io/b7tvc_v1" class="external-link uri">https://doi.org/10.31234/osf.io/b7tvc_v1</a></p>
+<p>Hu, M., Liu, Z., Wang, X.T., &amp; Li, R. (2025). <em>binaryRL: Reinforcement Learning Modeling of Two-Alternative Forced Choice Decision Making in R — A Step-by-Step Tutorial.</em> PsyArXiv. <a href="https://doi.org/10.31234/osf.io/b7tvc_v1" class="external-link uri">https://doi.org/10.31234/osf.io/b7tvc_v1</a></p>
 <p>YuKi. (2025). <em>binaryRL: Reinforcement Learning Tools for Two-Alternative Forced Choice Tasks.</em> <a href="https://CRAN.R-project.org/package=binaryRL" class="external-link uri">https://CRAN.R-project.org/package=binaryRL</a></p>
 </div>
 <div class="section level2">
@@ -143,11 +143,11 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <div class="section level1">
 <h1 id="tutorial">Tutorial<a class="anchor" aria-label="anchor" href="#tutorial"></a>
 </h1>
-<p><em>In tasks with small, finite state sets (e.g. TAFC tasks in psychology), all states, actions, and their corresponding rewards could be recorded in tables.</em></p>
+<p><em>In tasks with small, finite state sets (e.g. TAFC tasks in psychology), all states, actions, and their corresponding rewards can be recorded in tables.</em></p>
 <ul>
-<li>Sutton &amp; Barto <a href="https://mitpress.mit.edu/9780262039246/reinforcement-learning/" class="external-link">(2018)</a> call this kind of scenario as the <strong>tabular case</strong> and the corresponding methods as <strong>tabular methods</strong>.<br>
+<li>Sutton &amp; Barto <a href="https://mitpress.mit.edu/9780262039246/reinforcement-learning/" class="external-link">(2018)</a> term this kind of scenario as the <strong>tabular case</strong> and the corresponding methods as <strong>tabular methods</strong>.<br>
 </li>
-<li>The development and usage workflow of this R package adheres to the <strong>four</strong> stages (ten rules) recommended by Wilson &amp; Collins <a href="https://doi.org/10.7554/eLife.49547" class="external-link">(2019)</a>.<br>
+<li>The development and usage workflow of this R package follows to the <strong>four</strong> stages (ten rules) recommended by Wilson &amp; Collins <a href="https://doi.org/10.7554/eLife.49547" class="external-link">(2019)</a>.<br>
 </li>
 <li>The <strong>three</strong> basic models built into this R package are referenced from Niv et al. <a href="https://doi.org/10.1523/JNEUROSCI.5498-10.2012" class="external-link">(2012)</a>.<br>
 </li>
@@ -398,8 +398,8 @@ _.__/  _| _|  _| \__,_| _|    \__, |  ║ | ██║  ██║ |  ████
 <div class="section level1">
 <h1 id="estimation-methods">Estimation Methods<a class="anchor" aria-label="anchor" href="#estimation-methods"></a>
 </h1>
-<p>While this R package is primarily designed for constructing <strong>Reinforcement Learning (RL)</strong> models (with <code><a href="reference/run_m.html">run_m()</a></code> at its core), its key functions, <code><a href="reference/rcv_d.html">rcv_d()</a></code> and <code><a href="reference/fit_p.html">fit_p()</a></code>, also serve as a versatile algorithmic library for fitting any <strong>black-box functions</strong> in parallel. Given that MAP extends MLE by leveraging the Expectation-Maximization (EM) algorithm, this package offers robust solutions for both of these powerful estimation methods. We also provide <a href="https://yuki-961004.github.io/binaryRL/articles/">example code</a> for three other estimation methods: MCMC, ABC, and RNN.</p>
-<p>In general, <code>MLE</code> can lack robustness, <code>MAP</code> is time-consuming, and <code>MCMC</code> is often prohibitively slow. In contrast to these log-likelihood-based estimation methods, methods like <code>ABC</code> and <code>RNN</code> do not need to repeatedly run the black-box function. Instead, they use simulated data to train a direct mapping between behavioral outcomes and parameters. As a result, they offer a level of speed and robustness that log-likelihood methods cannot match. Based on our tests, We think <code>ABC</code> is the best estimation method.</p>
+<p>While this R package is built for constructing <strong>Reinforcement Learning (RL)</strong> models (with <code><a href="reference/run_m.html">run_m()</a></code> at its core), its key functions, <code><a href="reference/rcv_d.html">rcv_d()</a></code> and <code><a href="reference/fit_p.html">fit_p()</a></code>, also serve as a versatile algorithmic library for fitting any <strong>black-box functions</strong> in parallel. Given that MAP extends MLE by leveraging the Expectation-Maximization (EM) algorithm, this package offers robust solutions for both of these powerful estimation methods. We also provide <a href="https://yuki-961004.github.io/binaryRL/articles/">example code</a> for three other estimation methods: MCMC, ABC, and RNN.</p>
+<p>In general, <code>MLE</code> can lack robustness, <code>MAP</code> is time-consuming, and <code>MCMC</code> is often prohibitively slow. In contrast, methods like <code>ABC</code> and <code>RNN</code> bypass the log-likelihood entirely. Instead of iteratively searching for parameters, they learn a direct mapping from simulated data. As a result, they offer a level of speed and robustness that log-likelihood methods cannot match. Based on our tests, we believe <code>ABC</code> is the best estimation method.</p>
 <div class="section level2">
 <h2 id="based-on-log-likelihood">Based on Log-Likelihood<a class="anchor" aria-label="anchor" href="#based-on-log-likelihood"></a>
 </h2>

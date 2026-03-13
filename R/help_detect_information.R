@@ -37,7 +37,7 @@
 #'
 #' @noRd
 #'
-detect_information <- function(data) {
+detect_information <- function(data, seed) {
   # 1. Find column names containing "sub" 
   # (case-insensitive)
   col_names <- names(data)
@@ -81,6 +81,7 @@ detect_information <- function(data) {
     ))
   }
   
+  set.seed(seed)
   random_subject_id <- sample(valid_subject_ids, 1)
   message(paste(
     "Randomly selected subject ID: '", 

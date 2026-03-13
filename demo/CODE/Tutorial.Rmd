@@ -1,0 +1,627 @@
+---
+title: "Untitled"
+author: "yuki"
+date: "2026-03-03"
+output: html_document
+---
+
+```{r}
+library(binaryRL)
+```
+
+```{r}
+head(binaryRL::Mason_2024_G2)
+# check the number of logical processors on your PC
+parallel::detectCores(logical = TRUE)
+```
+
+
+## TD
+
+### Step 1 Model
+
+```{r}
+TD <- function(params){
+  
+  res <- binaryRL::run_m(
+    data = data,                   
+    id = id,                        
+    eta = c(params[1]), 
+    tau = c(params[2]),
+    priors = priors,
+    n_params = n_params,                   
+    n_trials = n_trials,
+    mode = mode, 
+    policy = policy
+  )
+  
+  assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
+  loss <- switch(EXPR = estimate, "MLE" = -res$ll, "MAP" = -res$lpo)
+  switch(EXPR = mode, "fit" = loss, "simulate" = res, "replay" = res)
+}
+```
+
+### Step 2: Recovery
+
+```{r}
+recovery.td <- binaryRL::rcv_d(
+  policy = "off",
+  data = binaryRL::Mason_2024_G2,
+  model_names = c("TD"),
+  simulate_models = list(binaryRL::TD),
+  fit_models = list(binaryRL::TD),
+  lower = list(c(0, 0)),
+  upper = list(c(1, 10)),
+  iteration_s = 100,
+  iteration_f = 100,
+  nc = 10,
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
+)
+```
+
+### Step 3: Fit
+
+```{r}
+fit.td <- binaryRL::fit_p(
+  policy = "off",
+  data = binaryRL::Mason_2024_G2,
+  model_name = c("TD"),
+  fit_model = list(binaryRL::TD),
+  lower = list(c(0, 0)),
+  upper = list(c(1, 10)),
+  iteration_i = 100,
+  nc = 10,
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
+)
+```
+
+### Step 4: Replay
+
+```{r}
+replay <- dplyr::bind_rows(
+  binaryRL::rpl_e(
+    data = binaryRL::Mason_2024_G2,
+    result = fit.td[[1]], 
+    model = binaryRL::TD,
+    model_name = "TD"
+  )
+)
+```
+
+## Prospect
+
+### Step 1: Model
+
+#### util_func()
+
+```{r}
+func_prospect <- function(
+  i, L_freq, R_freq, L_pick, R_pick, L_value, R_value, var1 = NA, var2 = NA,  
+  value, utility, reward, occurrence,
+  gamma, alpha, beta
+){
+  # Stevens's Power Law
+  if (length(gamma) == 1) {
+    gamma <- as.numeric(gamma)
+    utility <- sign(reward) * (abs(reward) ^ gamma)
+  }
+  # Prospect Theory
+  else if (length(gamma) == 2 & reward < 0) {
+    gamma <- as.numeric(gamma[1])
+    beta <- as.numeric(beta)
+    
+    utility <- beta * sign(reward) * (abs(reward) ^ gamma)
+  }
+  else if (length(gamma) == 2 & reward >= 0) {
+    gamma <- as.numeric(gamma[2])
+    beta <- 1
+    
+    utility <- beta * sign(reward) * (abs(reward) ^ gamma)
+  }
+  else {
+    utility <- "ERROR" 
+  }
+  return(list(gamma, utility))
+}
+```
+
+#### test
+
+```{r}
+binaryRL.res <- binaryRL::run_m(
+  mode = "replay",
+  name = "Prospect",
+  data = binaryRL::Mason_2024_G2,
+  id = 1,
+  n_params = 5,
+  n_trials = 360,
+  eta = c(0.5),
+  gamma = c(0.12, 0.89),
+  tau = c(0.34),
+  beta = c(1.56),
+  util_func = func_prospect,
+  priors = NULL
+)
+
+summary(binaryRL.res)
+```
+
+#### obj_func()
+
+```{r}
+Prospect <- function(params){
+  
+  res <- binaryRL::run_m(
+    data = data,                   
+    id = id,                        
+    name = "Prospect",
+    eta = c(params[1]),
+    gamma = c(params[2], params[3]),
+    beta = c(params[4]),
+    tau = c(params[5]),
+    util_func = func_prospect,
+    priors = priors,
+    n_params = n_params,                   
+    n_trials = n_trials,
+    mode = mode, 
+    policy = policy
+  )
+  
+  assign(x = "binaryRL.res", value = res, envir = binaryRL.env)
+  loss <- switch(EXPR = estimate, "MLE" = -res$ll, "MAP" = -res$lpo)
+  switch(EXPR = mode, "fit" = loss, "simulate" = res, "replay" = res)
+}
+```
+
+### Step 2: Recovery
+
+```{r}
+recovery.prospect <- binaryRL::rcv_d(
+  policy = "off",
+  data = binaryRL::Mason_2024_G2,
+  model_names = c("Prospect"),
+  funcs = c("func_prospect"),
+  simulate_models = list(Prospect),
+  fit_models = list(Prospect),
+  rfun = list(
+    list(
+      eta = function() { stats::runif(n = 1, min = 0, max = 1) },
+      gamma = function() { stats::runif(n = 1, min = 0, max = 1) },
+      gamma = function() { stats::runif(n = 1, min = 0, max = 1) },
+      beta = function() { stats::runif(n = 1, min = 1, max = 10) },
+      tau = function() { stats::rexp(n = 1, rate = 1) }
+    )
+  ),
+  lower = list(c(0, 0, 0, 1, 0)),
+  upper = list(c(1, 1, 1, 10, 10)),
+  iteration_s = 100,
+  iteration_f = 100,
+  nc = 10,
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
+)
+```
+
+#### Plot Recovery
+
+```{r}
+plot_param_rcv(
+  data = recovery[[1]][[1]],
+  model = "Prospect",
+  param_index = 1,
+  param_name = "η",
+  filename = "./1_Prospect_eta.png"
+)
+
+plot_param_rcv(
+  data = recovery[[1]][[1]],
+  model = "Prospect",
+  param_index = 2,
+  param_name = "γ-",
+  filename = "./2_Prospect_gamma_neg.png"
+)
+
+plot_param_rcv(
+  data = recovery[[1]][[1]],
+  model = "Prospect",
+  param_index = 3,
+  param_name = "γ+",
+  filename = "./3_Prospect_gamma_pos.png"
+)
+
+plot_param_rcv(
+  data = recovery[[1]][[1]],
+  model = "Prospect",
+  param_index = 5,
+  param_name = "τ",
+  rate = 1,
+  filename = "./5_Prospect_tau.png"
+)
+
+data <- recovery[[1]][[1]] %>%
+  dplyr::filter(simulate_model == fit_model & simulate_model == "Prospect") %>%
+  dplyr::mutate(
+    input_param = .data[[paste0("input_param_", 4)]],
+    output_param = .data[[paste0("output_param_", 4)]]
+  )
+
+
+  x <- runif(100, 1, 10)
+  norm <- data.frame(
+    x = x,
+    y = x + rnorm(100, 0, 0.1)
+  )
+  
+  x_min <- trunc(min(norm$x))
+  if (max(norm$x) < 1) {
+    x_max <- 1
+  } else {
+    x_max <- trunc(max(norm$x))
+  }
+  
+  y_min <- trunc(min(norm$y))
+  if (max(norm$y) < 1) {
+    y_max <- 1
+  } else {
+    y_max <- trunc(max(norm$y))
+  }
+
+
+plot <- ggplot2::ggplot(data, aes(x = input_param, y = output_param)) +
+  ggplot2::geom_smooth(
+    data = norm,
+    mapping = aes(x = x, y = y),
+    method = "lm", color = "#55c186", se = FALSE
+  ) +
+  ggplot2::geom_point(
+    data = norm,
+    mapping = aes(x = x, y = y),
+    color = "#55c186",  
+    alpha = 0.5, shape = 1
+  ) +
+  ggplot2::geom_point(color = "#053562") +  # 绘制散点
+  ggplot2::scale_y_continuous(
+    limits = c(y_min-0.3, y_max+0.3), expand = c(0, 0),
+    labels = 
+      if (grepl("τ", "β")) {
+        function(x) parse(text = paste0("10^", x))
+      } 
+      else {
+        waiver()  
+      }
+  ) +
+  ggplot2::scale_x_continuous(
+    limits = c(x_min-0.3, x_max+0.3), expand = c(0, 0),
+    labels = 
+      if (grepl("τ", "β")) {
+        function(x) parse(text = paste0("10^", x))
+      } 
+      else {
+        waiver()  
+      }
+  ) +
+  ggplot2::labs(
+    x = paste("simulated", "β"),
+    y = paste("fit", "β"),
+    title = paste("Prospect", "Model")
+  ) +
+  papaja::theme_apa() +
+  ggplot2::theme(
+    text = element_text(
+      family = "serif", 
+      face = "bold",
+      size = 15
+    ),
+    axis.text = element_text(
+      color = "black",
+      family = "serif", 
+      face = "plain",
+      size = 10
+    ),
+    plot.title = element_text(
+      family = "serif", face = "bold",
+      size = 15, hjust = 0.5
+    ),
+    plot.margin = margin(t = 1, r = 1, b = 1, l = 1),
+  )
+
+ggplot2::ggsave(
+  plot = plot,
+  filename = "./4_Prospect_beta.png", 
+  width = 4, height = 3
+) 
+```
+
+
+### Step 3: Fit
+
+```{r}
+fit.prospect <- binaryRL::fit_p(
+  policy = "off",
+  data = binaryRL::Mason_2024_G2,
+  model_name = c("Prospect"),
+  funcs = c("func_prospect"),
+  fit_model = list(Prospect),
+  lower = list(c(0, 0, 0, 1, 0)),
+  upper = list(c(1, 1, 1, 10, 10)),
+  iteration_i = 100,
+  nc = 10,
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
+)
+```
+
+```{r eval=FALSE}
+comparison <- binaryRL::fit_p(
+  policy = "off",
+  data = binaryRL::Mason_2024_G2,
+  model_name = c("TD", "RSTD", "Prospect"),
+  funcs = c("func_prospect"),
+  fit_model = list(binaryRL::TD, binaryRL::RSTD, Prospect),
+  lower = list(c(0, 0), c(0, 0, 0), c(0, 0, 0, 1, 0)),
+  upper = list(c(1, 10), c(1, 1, 10), c(1, 1, 1, 5, 10)),
+  iteration_i = 100,
+  nc = 10,
+  algorithm = c("NLOPT_GN_MLSL", "NLOPT_LN_BOBYQA")
+)
+
+result <- dplyr::bind_rows(comparison)
+```
+
+### Step 4: Replay
+
+#### Prospect
+
+```{r}
+replay <- dplyr::bind_rows(
+  binaryRL::rpl_e(
+    data = binaryRL::Mason_2024_G2,
+    result = fit[[4]], 
+    model = Prospect,
+    model_name = "Prospect"
+  )
+)
+```
+
+#### TD
+```{r eval=FALSE}
+list[[1]] <- dplyr::bind_rows(
+  binaryRL::rpl_e(
+    data = binaryRL::Mason_2024_G2,
+    result = result, 
+    model = binaryRL::TD,
+    model_name = "TD"
+  )
+)
+```
+
+#### RSTD
+```{r eval=FALSE}
+list[[2]] <- dplyr::bind_rows(
+  binaryRL::rpl_e(
+    data = binaryRL::Mason_2024_G2,
+    result = result, 
+    model = binaryRL::RSTD,
+    model_name = "RSTD"
+  )
+)
+```
+
+#### Prospect
+```{r eval=FALSE}
+list[[3]] <- dplyr::bind_rows(
+  binaryRL::rpl_e(
+    data = binaryRL::Mason_2024_G2,
+    result = result, 
+    model = Prospect,
+    model_name = "Prospect"
+  )
+)
+```
+
+#### Plot Replay
+
+```{r eval=FALSE}
+plot <- list()
+
+model_name <- c("TD", "RSTD", "Prospect")
+
+for(i in 1:3){
+  plot[[i]] <- list[[i]]%>%
+    dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+    dplyr::filter(Block %in% c(4, 5, 6)) %>%
+    dplyr::select(Subject, Frame, Rob_Choose) %>%
+    dplyr::mutate(
+      Model = model_name[i],
+      Subject = factor(Subject),
+      Rob_Choose = case_when(
+        Rob_Choose %in% c("A", "C") ~ 0,
+        Rob_Choose %in% c("B", "D") ~ 1,
+    ),
+    ) %>%
+    dplyr::group_by(Model, Subject, Frame) %>%
+    dplyr::summarise(Rate = mean(Rob_Choose)) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(Subject, Frame)
+}
+
+plot[[4]] <- binaryRL::Mason_2024_G2%>%
+    dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+    dplyr::filter(Block %in% c(4, 5, 6)) %>%
+    dplyr::select(Subject, Frame, Sub_Choose) %>%
+    dplyr::mutate(
+      Model = "Human",
+      Subject = factor(Subject),
+      Sub_Choose = case_when(
+        Sub_Choose %in% c("A", "C") ~ 0,
+        Sub_Choose %in% c("B", "D") ~ 1,
+    ),
+    ) %>%
+    dplyr::group_by(Model, Subject, Frame) %>%
+    dplyr::summarise(Rate = mean(Sub_Choose)) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(Subject, Frame)
+
+plot <- dplyr::bind_rows(plot) %>%
+  dplyr::group_by(Model, Frame) %>%
+  dplyr::summarise(
+    mean_Rate = mean(Rate),
+    se_Rate = sd(Rate) / sqrt(n_distinct(Subject) - 1),
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    Model = factor(Model, levels = c("Human", "TD", "RSTD", "Prospect"))
+  )
+
+rm(i, model_name)
+
+p <- ggplot2::ggplot(
+  data = plot, 
+  ggplot2::aes(
+    x = factor(Frame), y = mean_Rate, color = Model, group = Model)
+  ) +
+  ggplot2::geom_line(linewidth = 1.5) +
+  ggplot2::geom_point(size = 5) +
+  ggplot2::scale_color_manual(
+    values = c("grey", "#053562", "#55c186", "#f0de36")
+  ) +
+  ggplot2::scale_y_continuous(
+    limits = c(0, 1.1),
+    breaks = c(0, 0.25, 0.5, 0.75, 1), 
+    labels = c("0%", "25%", "50%", "75%", "100%"),
+    expand = c(0, 0)
+  ) +
+  ggplot2::labs(
+    x = "Frame", 
+    y = "The Ratio of Choosing Risky Option",
+    title = "Experimental Effect (final three blocks)"
+  ) +
+  papaja::theme_apa() +
+  ggplot2::theme(
+    legend.position = c(0.8, 0.7),  
+    legend.justification = c(0, 0), 
+    legend.title = element_blank(),
+    text = element_text(
+      family = "serif", 
+      face = "bold",
+      size = 20
+    ),
+    axis.text = element_text(
+      color = "black",
+      family = "serif", 
+      face = "bold",
+      size = 20
+    )
+  )
+
+ggplot2::ggsave(
+  plot = p, 
+  filename = "./Exp_Effect(Frame).png",
+  width = 8,
+  height = 6
+)
+
+plot
+p
+
+rm(plot, p)
+```
+
+```{r eval=FALSE}
+plot <- list()
+
+model_name <- c("TD", "RSTD", "Prospect")
+
+for(i in 1:3){
+  plot[[i]] <- list[[i]] %>%
+    dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+    dplyr::select(Subject, Frame, Block, Rob_Choose) %>%
+    dplyr::mutate(
+      Model = model_name[i],
+      Subject = factor(Subject),
+      Rob_Choose = case_when(
+        Rob_Choose %in% c("A", "C") ~ 0,
+        Rob_Choose %in% c("B", "D") ~ 1,
+    ),
+    ) %>%
+    dplyr::group_by(Model, Subject, Block, Frame) %>%
+    dplyr::summarise(Rate = mean(Rob_Choose)) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(Subject, Frame)
+}
+
+plot[[4]] <- binaryRL::Mason_2024_G2 %>%
+    dplyr::filter(Frame %in% c("Gain","Loss")) %>%
+    dplyr::select(Subject, Frame, Block, Sub_Choose) %>%
+    dplyr::mutate(
+      Model = "Human",
+      Subject = factor(Subject),
+      Sub_Choose = case_when(
+        Sub_Choose %in% c("A", "C") ~ 0,
+        Sub_Choose %in% c("B", "D") ~ 1,
+    ),
+    ) %>%
+    dplyr::group_by(Model, Subject, Block, Frame) %>%
+    dplyr::summarise(Rate = mean(Sub_Choose)) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(Subject, Frame)
+
+plot <- dplyr::bind_rows(plot) %>%
+  dplyr::group_by(Model, Frame, Block) %>%
+  dplyr::summarise(
+    mean_Rate = mean(Rate),
+    se_Rate = sd(Rate) / sqrt(n_distinct(Subject) - 1),
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    Model = factor(Model, levels = c("Human", "TD", "RSTD", "Prospect"))
+  )
+
+rm(i, model_name)
+
+p <- ggplot2::ggplot(
+  data = plot, 
+  ggplot2::aes(
+    x = Block, y = mean_Rate, color = Model, group = Model)
+  ) +
+  ggplot2::geom_line(linewidth = 1.5) +
+  ggplot2::geom_point(size = 5) +
+  ggplot2::scale_color_manual(
+    values = c("grey", "#053562", "#55c186", "#f0de36")
+  ) +
+  ggplot2::scale_y_continuous(
+    limits = c(0, 1.1),
+    breaks = c(0, 0.25, 0.5, 0.75, 1), 
+    labels = c("0%", "25%", "50%", "75%", "100%"),
+    expand = c(0, 0)
+  ) +
+  ggplot2::labs(x = "Frame", y = "The Ratio of Choosing Risky Option") +
+  ggplot2::facet_wrap(~ Frame, ncol = 2) +
+  papaja::theme_apa() +
+  ggplot2::theme(
+    legend.position = c(0.8, 0.7),  
+    legend.justification = c(0, 0), 
+    legend.title = element_blank(),
+    text = element_text(
+      family = "serif", 
+      face = "bold",
+      size = 20
+    ),
+    axis.text = element_text(
+      color = "black",
+      family = "serif", 
+      face = "bold",
+      size = 20
+    )
+  )
+
+ggplot2::ggsave(
+  plot = p, 
+  filename = "./Exp_Effect(Block).png",
+  width = 8,
+  height = 6
+)
+
+plot
+p
+
+rm(plot, p)
+```

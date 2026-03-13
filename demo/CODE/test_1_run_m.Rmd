@@ -11,7 +11,7 @@ library(binaryRL)
 ```
 
 ```{r}
-head(binaryRL::Mason_2024_Exp2)
+head(binaryRL::Mason_2024_G2)
 ```
 
 ## TD {#td}
